@@ -120,14 +120,6 @@ bool NGPGFX_CLASS::hint(void)
 
 void NGPGFX_CLASS::set_pixel_format(const MDFN_PixelFormat &format)
 {
- for(int x = 0; x < 4096; x++)
- {
-  int r = (x & 0xF) * 17;
-  int g = ((x >> 4) & 0xF) * 17;
-  int b = ((x >> 8) & 0xF) * 17;
-
-  ColorMap[x] = MAKECOLOR(r, g, b, 0);
- }
 }
 
 bool NGPGFX_CLASS::draw(MDFN_Surface *surface, bool skip)
@@ -142,7 +134,14 @@ bool NGPGFX_CLASS::draw(MDFN_Surface *surface, bool skip)
 
                 uint32 *dest = surface->pixels + surface->pitch32 * raster_line;
                 for(int x = 0; x < SCREEN_WIDTH; x++)
-                 dest[x] = ColorMap[cfb_scanline[x] & 4095];
+                {
+                   uint32 col = cfb_scanline[x];
+                   int r = (col & 0xF) * 17;
+                   int g = ((col >> 4) & 0xF) * 17;
+                   int b = ((col >> 8) & 0xF) * 17;
+
+                   dest[x] = MAKECOLOR(r, g, b, 0);
+                }
         }
 	raster_line++;
 
