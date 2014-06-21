@@ -126,7 +126,7 @@ void NGPGFX_CLASS::set_pixel_format(const MDFN_PixelFormat &format)
   int g = ((x >> 4) & 0xF) * 17;
   int b = ((x >> 8) & 0xF) * 17;
 
-  ColorMap[x] = format.MakeColor(r, g, b);
+  ColorMap[x] = MAKECOLOR(r, g, b, 0);
  }
 }
 
