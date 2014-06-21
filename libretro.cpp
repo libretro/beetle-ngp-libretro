@@ -75,11 +75,6 @@ static Deinterlacer deint;
 
 #define FB_MAX_HEIGHT FB_HEIGHT
 
-#ifdef WANT_16BPP
-static uint16_t mednafen_buf[FB_WIDTH * FB_MAX_HEIGHT];
-#else
-static uint32_t mednafen_buf[FB_WIDTH * FB_MAX_HEIGHT];
-#endif
 const char *mednafen_core_str = MEDNAFEN_CORE_NAME;
 
 static void check_system_specs(void)
@@ -233,7 +228,7 @@ bool retro_load_game(const struct retro_game_info *info)
    MDFN_PixelFormat pix_fmt(MDFN_COLORSPACE_RGB, 16, 8, 0, 24);
    memset(&last_pixel_format, 0, sizeof(MDFN_PixelFormat));
    
-   surf = new MDFN_Surface(mednafen_buf, FB_WIDTH, FB_HEIGHT, FB_WIDTH, pix_fmt);
+   surf = new MDFN_Surface(NULL, FB_WIDTH, FB_HEIGHT, FB_WIDTH, pix_fmt);
 
 #ifdef NEED_DEINTERLACER
 	PrevInterlaced = false;
