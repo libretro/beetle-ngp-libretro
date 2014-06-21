@@ -16,6 +16,10 @@
 #include "mem.h"
 #include "gfx.h"
 
+#ifndef MAKECOLOR_NGP
+#define MAKECOLOR_NGP(col) MAKECOLOR((((col) & 0xF) * 17), ((((col) >> 4) & 0xF) * 17), ((((col) >> 8) & 0xF) * 17), 0)
+#endif
+
 //=============================================================================
 
 void NGPGFX_CLASS::MonoPlot(uint8 x, uint8* palette_ptr, uint16 pal_hi, uint8 index, uint8 depth)
@@ -41,9 +45,9 @@ void NGPGFX_CLASS::MonoPlot(uint8 x, uint8* palette_ptr, uint16 pal_hi, uint8 in
 	uint16 b = (data8 & 7) << 9;
 
 	if (negative)
-		cfb_scanline[x] = (r | g | b);
+		cfb_scanline[x] = MAKECOLOR_NGP((r | g | b));
 	else
-		cfb_scanline[x] = ~(r | g | b);
+		cfb_scanline[x] = MAKECOLOR_NGP((~(r | g | b)));
 }
 
 void NGPGFX_CLASS::drawMonoPattern(uint8 screenx, uint16 tile, uint8 tiley, uint16 mirror, 
@@ -142,7 +146,7 @@ void NGPGFX_CLASS::draw_scanline_mono(int layer_enable, int ngpc_scanline)
 	if (ngpc_scanline < winy)
 	{
 		for (int x = 0; x < SCREEN_WIDTH; x++)
-			cfb_scanline[x] = data16;
+			cfb_scanline[x] = MAKECOLOR_NGP(data16);
 	}
 	else
 	{
@@ -150,14 +154,14 @@ void NGPGFX_CLASS::draw_scanline_mono(int layer_enable, int ngpc_scanline)
 		if (ngpc_scanline < winy + winh)
 		{
 			for (int x = 0; x < min(winx, SCREEN_WIDTH); x++)
-				cfb_scanline[x] = data16;
+				cfb_scanline[x] = MAKECOLOR_NGP(data16);
 			for (int x = min(winx + winw, SCREEN_WIDTH); x < SCREEN_WIDTH; x++)
-				cfb_scanline[x] = data16;
+				cfb_scanline[x] = MAKECOLOR_NGP(data16);
 		}
 		else	//Bottom
 		{
 			for (int x = 0; x < SCREEN_WIDTH; x++)
-				cfb_scanline[x] = data16;
+				cfb_scanline[x] = MAKECOLOR_NGP(data16);
 		}
 	}
 
@@ -178,7 +182,7 @@ void NGPGFX_CLASS::draw_scanline_mono(int layer_enable, int ngpc_scanline)
 		
 		//Draw background!
 		for (int x = winx; x < min(winx + winw, SCREEN_WIDTH); x++)	
-			cfb_scanline[x] = data16;
+			cfb_scanline[x] = MAKECOLOR_NGP(data16);
 
 		//Swap Front/Back scroll planes?
 		if (planeSwap)

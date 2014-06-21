@@ -22,6 +22,8 @@
 #define ZDEPTH_FOREGROUND_SCROLL	5
 #define ZDEPTH_FRONT_SPRITE			6
 
+extern uint16_t cfb_scanline[256];	// __attribute__ ((aligned (8)));
+
 class NGPGFX_CLASS
 {
  public:
@@ -48,7 +50,6 @@ class NGPGFX_CLASS
 
  // TODO: Alignment for faster memset
  uint8 zbuffer[256];		//  __attribute__ ((aligned (8)));	//Line z-buffer
- uint16 cfb_scanline[256];	// __attribute__ ((aligned (8)));
 
  uint8 winx, winw;
  uint8 winy, winh;

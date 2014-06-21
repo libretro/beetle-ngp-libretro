@@ -16,6 +16,10 @@
 #include "mem.h"
 #include "gfx.h"
 
+#ifndef MAKECOLOR_NGP
+#define MAKECOLOR_NGP(col) MAKECOLOR((((col) & 0xF) * 17), ((((col) >> 4) & 0xF) * 17), ((((col) >> 8) & 0xF) * 17), 0)
+#endif
+
 //=============================================================================
 
 static const unsigned char mirrored[] = {
@@ -95,9 +99,9 @@ void NGPGFX_CLASS::drawColourPattern(uint8 screenx, uint16 tile, uint8 tiley, ui
 		data16 = LoadU16_LE(&palette_ptr[index&3]);
 		
 		if (negative)
-			cfb_scanline[xx] = ~data16;
+			cfb_scanline[xx] = MAKECOLOR_NGP(~data16);
 		else
-			cfb_scanline[xx] = data16;
+			cfb_scanline[xx] = MAKECOLOR_NGP(data16);
 	}
 }
 
@@ -159,7 +163,7 @@ void NGPGFX_CLASS::draw_scanline_colour(int layer_enable, int ngpc_scanline)
 	if (ngpc_scanline < winy)
 	{
 		for (int x = 0; x < SCREEN_WIDTH; x++)
-			cfb_scanline[x] = data16;
+			cfb_scanline[x] = MAKECOLOR_NGP(data16);
 	}
 	else
 	{
@@ -167,15 +171,15 @@ void NGPGFX_CLASS::draw_scanline_colour(int layer_enable, int ngpc_scanline)
 		if (ngpc_scanline < winy + winh)
 		{
 			for (int x = 0; x < min(winx, SCREEN_WIDTH); x++)
-				cfb_scanline[x] = data16;
+				cfb_scanline[x] = MAKECOLOR_NGP(data16);
 			
 			for (int x = min(winx + winw, SCREEN_WIDTH); x < SCREEN_WIDTH; x++)
-				cfb_scanline[x] = data16;
+				cfb_scanline[x] = MAKECOLOR_NGP(data16);
 		}
 		else	//Bottom
 		{
 			for (int x = 0; x < SCREEN_WIDTH; x++)
-				cfb_scanline[x] = data16;
+				cfb_scanline[x] = MAKECOLOR_NGP(data16);
 		}
 	}
 
@@ -193,7 +197,7 @@ void NGPGFX_CLASS::draw_scanline_colour(int layer_enable, int ngpc_scanline)
 		
 		//Draw background!
 		for (int x = winx; x < min(winx + winw, SCREEN_WIDTH); x++)	
-			cfb_scanline[x] = data16;
+			cfb_scanline[x] = MAKECOLOR_NGP(data16);
 
 		//Swap Front/Back scroll planes?
 		if (planeSwap)

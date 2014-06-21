@@ -19,6 +19,8 @@
 #include "dma.h"
 #include "TLCS-900h/TLCS900h_registers.h"
 
+uint16_t cfb_scanline[256];
+
 NGPGFX_CLASS::NGPGFX_CLASS(void)
 {
  layer_enable = 1 | 2 | 4;
@@ -133,15 +135,7 @@ bool NGPGFX_CLASS::draw(MDFN_Surface *surface, bool skip)
                 else                   draw_scanline_mono(layer_enable, raster_line);
 
                 uint16 *dest = surface->pixels16 + surface->pitchinpix * raster_line;
-                for(int x = 0; x < SCREEN_WIDTH; x++)
-                {
-                   uint16 col = cfb_scanline[x];
-                   int r = (col & 0xF) * 17;
-                   int g = ((col >> 4) & 0xF) * 17;
-                   int b = ((col >> 8) & 0xF) * 17;
-
-                   dest[x] = MAKECOLOR(r, g, b, 0);
-                }
+                memcpy(dest, cfb_scanline, SCREEN_WIDTH * sizeof(uint16));
         }
 	raster_line++;
 
