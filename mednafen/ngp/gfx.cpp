@@ -132,10 +132,10 @@ bool NGPGFX_CLASS::draw(MDFN_Surface *surface, bool skip)
                 if (!K2GE_MODE)        draw_scanline_colour(layer_enable, raster_line);
                 else                   draw_scanline_mono(layer_enable, raster_line);
 
-                uint32 *dest = surface->pixels + surface->pitch32 * raster_line;
+                uint16 *dest = surface->pixels16 + surface->pitchinpix * raster_line;
                 for(int x = 0; x < SCREEN_WIDTH; x++)
                 {
-                   uint32 col = cfb_scanline[x];
+                   uint16 col = cfb_scanline[x];
                    int r = (col & 0xF) * 17;
                    int g = ((col >> 4) & 0xF) * 17;
                    int b = ((col >> 8) & 0xF) * 17;
