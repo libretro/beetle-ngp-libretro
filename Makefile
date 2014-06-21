@@ -237,11 +237,6 @@ else
    FLAGS += -DHAVE__MKDIR
 endif
 
-ifeq ($(NEED_THREADING), 1)
-   FLAGS += -DWANT_THREADING
-	THREAD_SOURCES += threads.c
-endif
-
 ifeq ($(NEED_CRC32), 1)
    FLAGS += -DWANT_CRC32
 	LIBRETRO_SOURCES += scrc32.cpp
