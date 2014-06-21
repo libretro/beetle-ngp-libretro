@@ -47,10 +47,11 @@ void NGPGFX_CLASS::MonoPlot(uint16_t *cfb_scanline, uint8_t *zbuffer, uint8 x, u
 	uint16 b = (data8 & 7) << 9;
 
    uint16_t *scan = &cfb_scanline[x];
+   uint16_t data16 = ~(r | g | b);
 	if (negative)
-		*scan++ = MAKECOLOR_NGP((r | g | b));
-	else
-		*scan++ = MAKECOLOR_NGP((~(r | g | b)));
+      data16 = ~(data16);
+
+   *scan++ = MAKECOLOR_NGP(data16);
 }
 
 void NGPGFX_CLASS::drawMonoPattern(uint16_t *cfb_scanline, uint8_t *zbuffer, uint8 screenx, uint16 tile, uint8 tiley, uint16 mirror, 
@@ -138,10 +139,9 @@ void NGPGFX_CLASS::draw_scanline_mono(uint16_t *cfb_scanline, int layer_enable, 
 	uint16 g = (uint16)oowc << 5;
 	uint16 b = (uint16)oowc << 9;
 	
+   data16 = ~(r | g | b);
 	if (negative)
-		data16 = (r | g | b);
-	else
-		data16 = ~(r | g | b);
+		data16 = ~data16;
 
    int x = 0;
    uint16_t *scan = &cfb_scanline[x];
@@ -173,6 +173,7 @@ void NGPGFX_CLASS::draw_scanline_mono(uint16_t *cfb_scanline, int layer_enable, 
 	//Ignore above and below the window's top and bottom
 	if (ngpc_scanline >= winy && ngpc_scanline < winy + winh)
 	{
+      data16 = 0x0FFF;
 		//Background colour Enabled?
 		if ((bgc & 0xC0) == 0x80)
 		{
@@ -181,8 +182,6 @@ void NGPGFX_CLASS::draw_scanline_mono(uint16_t *cfb_scanline, int layer_enable, 
 			b = (uint16)(bgc & 7) << 9;
 			data16 = ~(r | g | b);
 		}
-		else
-         data16 = 0x0FFF;
 
 		if (negative) data16 = ~data16;
 
