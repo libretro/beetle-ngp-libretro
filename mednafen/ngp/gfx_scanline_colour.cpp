@@ -160,34 +160,24 @@ void NGPGFX_CLASS::draw_scanline_colour(uint16_t *cfb_scanline, int layer_enable
 	data16 = LoadU16_LE((uint16*)(ColorPaletteRAM + 0x01F0 + (oowc << 1)));
 	if (negative) data16 = ~data16;
 
-	//Top
-	if (ngpc_scanline < winy)
-	{
-      uint16_t *scan = &cfb_scanline[0];
-		for (int x = 0; x < SCREEN_WIDTH; x++)
-			*scan++ = MAKECOLOR_NGP(data16);
-	}
-	else
-	{
-      uint16_t *scan = &cfb_scanline[0];
-      int x;
-		//Middle
-		if (ngpc_scanline < winy + winh)
-		{
-			for (x = 0; x < min(winx, SCREEN_WIDTH); x++)
-				*scan++ = MAKECOLOR_NGP(data16);
-			
-         x = min(winx + winw, SCREEN_WIDTH);
-         scan = &cfb_scanline[x];
-			for (; x < SCREEN_WIDTH; x++)
-				*scan++ = MAKECOLOR_NGP(data16);
-		}
-		else	//Bottom
-		{
-			for (x = 0; x < SCREEN_WIDTH; x++)
-				*scan++ = MAKECOLOR_NGP(data16);
-		}
-	}
+   uint16_t *scan = &cfb_scanline[0];
+   int x;
+   //Middle
+   if (!(ngpc_scanline < winy) && ngpc_scanline < winy + winh)
+   {
+      for (x = 0; x < min(winx, SCREEN_WIDTH); x++)
+         *scan++ = MAKECOLOR_NGP(data16);
+
+      x = min(winx + winw, SCREEN_WIDTH);
+      scan = &cfb_scanline[x];
+      for (; x < SCREEN_WIDTH; x++)
+         *scan++ = MAKECOLOR_NGP(data16);
+   }
+   else	//Bottom and Top
+   {
+      for (x = 0; x < SCREEN_WIDTH; x++)
+         *scan++ = MAKECOLOR_NGP(data16);
+   }
 
 	//Ignore above and below the window's top and bottom
 	if (ngpc_scanline >= winy && ngpc_scanline < winy + winh)
