@@ -145,30 +145,18 @@ void NGPGFX_CLASS::draw_scanline_mono(uint16_t *cfb_scanline, int layer_enable, 
 
    int x = 0;
    uint16_t *scan = &cfb_scanline[x];
-	//Top
-	if (ngpc_scanline < winy)
-	{
-		for (; x < SCREEN_WIDTH; x++)
-			*scan++ = MAKECOLOR_NGP(data16);
-	}
-	else
-	{
-		//Middle
-		if (ngpc_scanline < winy + winh)
-		{
-			for (; x < min(winx, SCREEN_WIDTH); x++)
-				*scan++ = MAKECOLOR_NGP(data16);
 
-         x = min(winx + winw, SCREEN_WIDTH);
-			for (; x < SCREEN_WIDTH; x++)
-				*scan++ = MAKECOLOR_NGP(data16);
-		}
-		else	//Bottom
-		{
-			for (; x < SCREEN_WIDTH; x++)
-				*scan++ = MAKECOLOR_NGP(data16);
-		}
-	}
+   //Middle
+   if (!(ngpc_scanline < winy) && ngpc_scanline < winy + winh)
+   {
+      for (; x < min(winx, SCREEN_WIDTH); x++)
+         *scan++ = MAKECOLOR_NGP(data16);
+
+      x = min(winx + winw, SCREEN_WIDTH);
+   }
+   // Bottom and Top
+   for (; x < SCREEN_WIDTH; x++)
+      *scan++ = MAKECOLOR_NGP(data16);
 
 	//Ignore above and below the window's top and bottom
 	if (ngpc_scanline >= winy && ngpc_scanline < winy + winh)
