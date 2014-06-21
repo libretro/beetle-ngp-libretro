@@ -117,11 +117,6 @@ static void Emulate(EmulateSpecStruct *espec)
 	espec->DisplayRect.w = 160;
 	espec->DisplayRect.h = 152;
 
-	if(espec->VideoFormatChanged)
-	 NGPGfx->set_pixel_format(espec->surface->format);
-		//espec->surface->format.Rshift, espec->surface->format.Gshift,
-		//espec->surface->format.Bshift);
-
 	if(espec->SoundFormatChanged)
 	 MDFNNGPC_SetSoundRate(espec->SoundRate);
 
