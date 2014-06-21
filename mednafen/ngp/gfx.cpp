@@ -19,8 +19,6 @@
 #include "dma.h"
 #include "TLCS-900h/TLCS900h_registers.h"
 
-uint16_t cfb_scanline[256];
-
 NGPGFX_CLASS::NGPGFX_CLASS(void)
 {
  layer_enable = 1 | 2 | 4;
@@ -131,11 +129,14 @@ bool NGPGFX_CLASS::draw(MDFN_Surface *surface, bool skip)
         //Draw the scanline
         if (raster_line < SCREEN_HEIGHT && !skip)
         {
-                if (!K2GE_MODE)        draw_scanline_colour(layer_enable, raster_line);
-                else                   draw_scanline_mono(layer_enable, raster_line);
+           uint16_t cfb_scanline[256];
+           if (!K2GE_MODE)
+              draw_scanline_colour(cfb_scanline, layer_enable, raster_line);
+           else
+              draw_scanline_mono(cfb_scanline, layer_enable, raster_line);
 
-                uint16 *dest = surface->pixels16 + surface->pitchinpix * raster_line;
-                memcpy(dest, cfb_scanline, SCREEN_WIDTH * sizeof(uint16));
+           uint16 *dest = surface->pixels16 + surface->pitchinpix * raster_line;
+           memcpy(dest, cfb_scanline, SCREEN_WIDTH * sizeof(uint16));
         }
 	raster_line++;
 

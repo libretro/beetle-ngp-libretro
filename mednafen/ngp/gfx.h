@@ -48,9 +48,6 @@ class NGPGFX_CLASS
 
  private:
 
- // TODO: Alignment for faster memset
- uint8 zbuffer[256];		//  __attribute__ ((aligned (8)));	//Line z-buffer
-
  uint8 winx, winw;
  uint8 winy, winh;
  uint8 scroll1x, scroll1y;
@@ -62,18 +59,18 @@ class NGPGFX_CLASS
  void reset(void);
  void delayed_settings(void);
 
- void draw_scanline_colour(int, int);
- void drawColourPattern(uint8 screenx, uint16 tile, uint8 tiley, uint16 mirror,
+ void draw_scanline_colour(uint16_t *, int, int);
+ void drawColourPattern(uint16_t *cfb_scanline, uint8_t *zbuf, uint8 screenx, uint16 tile, uint8 tiley, uint16 mirror,
                                  uint16* palette_ptr, uint8 pal, uint8 depth);
- void draw_colour_scroll1(uint8 depth, int ngpc_scanline);
- void draw_colour_scroll2(uint8 depth, int ngpc_scanline);
+ void draw_colour_scroll1(uint16_t *cfb_scanline, uint8_t *zbuf, uint8 depth, int ngpc_scanline);
+ void draw_colour_scroll2(uint16_t *cfb_scanline, uint8_t *zbuf, uint8 depth, int ngpc_scanline);
 
- void draw_scanline_mono(int, int);
- void MonoPlot(uint8 x, uint8* palette_ptr, uint16 pal_hi, uint8 index, uint8 depth);
- void drawMonoPattern(uint8 screenx, uint16 tile, uint8 tiley, uint16 mirror,
+ void draw_scanline_mono(uint16_t*, int, int);
+ void MonoPlot(uint16_t *cfb_scanline, uint8_t *zbuf, uint8 x, uint8* palette_ptr, uint16 pal_hi, uint8 index, uint8 depth);
+ void drawMonoPattern(uint16_t *cfb_scanline, uint8_t *zbuf, uint8 screenx, uint16 tile, uint8 tiley, uint16 mirror,
                                  uint8* palette_ptr, uint16 pal, uint8 depth);
- void draw_mono_scroll1(uint8 depth, int ngpc_scanline);
- void draw_mono_scroll2(uint8 depth, int ngpc_scanline);
+ void draw_mono_scroll1(uint16_t *cfb_scanline, uint8_t *zbuf, uint8 depth, int ngpc_scanline);
+ void draw_mono_scroll2(uint16_t *cfb_scanline, uint8_t *zbuf, uint8 depth, int ngpc_scanline);
 
 
 
