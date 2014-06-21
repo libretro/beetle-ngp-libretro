@@ -33,9 +33,6 @@
     <Filter Include="Source Files\mednafen\trio">
       <UniqueIdentifier>{35dd6f7d-5243-42fb-bf3b-66ae5808c1da}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\mednafen\cputest">
-      <UniqueIdentifier>{597d81a5-6308-49ec-8a03-c84348b80785}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\mednafen\Stream.cpp">
@@ -193,9 +190,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\mednafen\ngp-09333\Z80_interface.cpp">
       <Filter>Source Files\mednafen\ngp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\cputest\cputest.c">
-      <Filter>Source Files\mednafen\cputest</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
