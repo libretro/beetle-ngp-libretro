@@ -88,10 +88,8 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Xbox 360'">CompileAsC</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Xbox 360'">CompileAsC</CompileAs>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\video\Deinterlacer.cpp" />
     <ClCompile Include="..\..\..\mednafen\video\surface.cpp" />
     <ClCompile Include="..\..\..\scrc32.cpp" />
-    <ClCompile Include="..\..\..\stubs.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{38462FE9-E3FC-4336-B241-50F5599C537B}</ProjectGuid>
