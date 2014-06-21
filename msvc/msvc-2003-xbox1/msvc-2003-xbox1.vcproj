@@ -331,9 +331,6 @@
 						RelativePath="..\..\..\mednafen\ngp\mem.cpp">
 					</File>
 					<File
-						RelativePath="..\..\..\mednafen\ngp\neopop.cpp">
-					</File>
-					<File
 						RelativePath="..\..\..\mednafen\ngp\rom.cpp">
 					</File>
 					<File

@@ -34,7 +34,6 @@
     <ClCompile Include="..\..\..\mednafen\ngp\gfx_scanline_mono.cpp" />
     <ClCompile Include="..\..\..\mednafen\ngp\interrupt.cpp" />
     <ClCompile Include="..\..\..\mednafen\ngp\mem.cpp" />
-    <ClCompile Include="..\..\..\mednafen\ngp\neopop.cpp" />
     <ClCompile Include="..\..\..\mednafen\ngp\rom.cpp" />
     <ClCompile Include="..\..\..\mednafen\ngp\rtc.cpp" />
     <ClCompile Include="..\..\..\mednafen\ngp\sound.cpp" />

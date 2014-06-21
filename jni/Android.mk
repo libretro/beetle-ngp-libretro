@@ -48,7 +48,6 @@ CORE_SOURCES := $(CORE_DIR)/bios.cpp \
 	$(CORE_DIR)/gfx_scanline_mono.cpp \
 	$(CORE_DIR)/interrupt.cpp \
 	$(CORE_DIR)/mem.cpp \
-	$(CORE_DIR)/neopop.cpp \
 	$(CORE_DIR)/rom.cpp \
 	$(CORE_DIR)/rtc.cpp \
 	$(CORE_DIR)/sound.cpp \

@@ -173,9 +173,6 @@
     <ClCompile Include="..\..\..\mednafen\ngp\mem.cpp">
       <Filter>Source Files\mednafen\ngp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\neopop.cpp">
-      <Filter>Source Files\mednafen\ngp</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\mednafen\ngp\rom.cpp">
       <Filter>Source Files\mednafen\ngp</Filter>
     </ClCompile>
