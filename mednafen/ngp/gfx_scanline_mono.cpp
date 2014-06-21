@@ -129,7 +129,7 @@ void NGPGFX_CLASS::draw_scanline_mono(int layer_enable, int ngpc_scanline)
 	int spr;
 	uint16 data16;
 
-	memset(cfb_scanline, 0, SCREEN_WIDTH * sizeof(uint16));
+	//memset(cfb_scanline, 0, SCREEN_WIDTH * sizeof(uint16));
 	memset(zbuffer, 0, SCREEN_WIDTH);
 
 	//Window colour
