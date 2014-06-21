@@ -161,7 +161,7 @@ void NGPGFX_CLASS::draw_scanline_colour(uint16_t *cfb_scanline, int layer_enable
 	if (negative) data16 = ~data16;
 
    uint16_t *scan = &cfb_scanline[0];
-   int x;
+   int x = 0;
    //Middle
    if (!(ngpc_scanline < winy) && ngpc_scanline < winy + winh)
    {
@@ -170,14 +170,11 @@ void NGPGFX_CLASS::draw_scanline_colour(uint16_t *cfb_scanline, int layer_enable
 
       x = min(winx + winw, SCREEN_WIDTH);
       scan = &cfb_scanline[x];
+   }
+
+   //Bottom and Top
       for (; x < SCREEN_WIDTH; x++)
          *scan++ = MAKECOLOR_NGP(data16);
-   }
-   else	//Bottom and Top
-   {
-      for (x = 0; x < SCREEN_WIDTH; x++)
-         *scan++ = MAKECOLOR_NGP(data16);
-   }
 
 	//Ignore above and below the window's top and bottom
 	if (ngpc_scanline >= winy && ngpc_scanline < winy + winh)
