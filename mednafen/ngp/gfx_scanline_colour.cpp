@@ -100,11 +100,10 @@ void NGPGFX_CLASS::drawColourPattern(uint16_t *cfb_scanline, uint8_t *zbuffer, u
 
 		//Get the colour of the pixel
 		data16 = LoadU16_LE(&palette_ptr[index&3]);
-		
 		if (negative)
-			*scan = MAKECOLOR_NGP(~data16);
-		else
-			*scan = MAKECOLOR_NGP(data16);
+         data16 = ~data16;
+
+      *scan = MAKECOLOR_NGP(data16);
 	}
 }
 
