@@ -129,14 +129,11 @@ bool NGPGFX_CLASS::draw(MDFN_Surface *surface, bool skip)
         //Draw the scanline
         if (raster_line < SCREEN_HEIGHT && !skip)
         {
-           uint16_t cfb_scanline[256];
-           if (!K2GE_MODE)
-              draw_scanline_colour(cfb_scanline, layer_enable, raster_line);
-           else
-              draw_scanline_mono(cfb_scanline, layer_enable, raster_line);
-
            uint16 *dest = surface->pixels16 + surface->pitchinpix * raster_line;
-           memcpy(dest, cfb_scanline, SCREEN_WIDTH * sizeof(uint16));
+           if (!K2GE_MODE)
+              draw_scanline_colour(dest, layer_enable, raster_line);
+           else
+              draw_scanline_mono(dest, layer_enable, raster_line);
         }
 	raster_line++;
 
