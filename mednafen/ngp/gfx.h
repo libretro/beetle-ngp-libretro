@@ -96,6 +96,8 @@ class NGPGFX_CLASS
  uint8 SCREEN_PERIOD;
  uint8 K2GE_MODE;
 
+ uint16 ColorMap[4096];
+
  int layer_enable;
 };
 

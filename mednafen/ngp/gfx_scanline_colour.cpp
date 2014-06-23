@@ -16,10 +16,6 @@
 #include "mem.h"
 #include "gfx.h"
 
-#ifndef MAKECOLOR_NGP
-#define MAKECOLOR_NGP(col) MAKECOLOR((((col) & 0xF) * 17), ((((col) >> 4) & 0xF) * 17), ((((col) >> 8) & 0xF) * 17), 0)
-#endif
-
 //=============================================================================
 
 static const unsigned char mirrored[] = {
@@ -103,7 +99,7 @@ void NGPGFX_CLASS::drawColourPattern(uint16_t *cfb_scanline, uint8_t *zbuffer, u
 		if (negative)
          data16 = ~data16;
 
-      *scan = MAKECOLOR_NGP(data16);
+      *scan = data16;
 	}
 }
 
@@ -159,8 +155,6 @@ void NGPGFX_CLASS::draw_scanline_colour(uint16_t *cfb_scanline, int layer_enable
 	data16 = LoadU16_LE((uint16*)(ColorPaletteRAM + 0x01F0 + (oowc << 1)));
 	if (negative) data16 = ~data16;
 
-   data16 = MAKECOLOR_NGP(data16);
-
    uint16_t *scan = &cfb_scanline[0];
    int x = 0;
    //Middle
@@ -189,7 +183,7 @@ void NGPGFX_CLASS::draw_scanline_colour(uint16_t *cfb_scanline, int layer_enable
 
 		if (negative) data16 = ~data16;
 
-      data16 = MAKECOLOR_NGP(data16);
+      data16 = data16;
 		
       int x = winx;
       uint16_t *scan = &cfb_scanline[x];
