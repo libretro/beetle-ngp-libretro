@@ -16,10 +16,6 @@
 #include "mem.h"
 #include "gfx.h"
 
-#ifndef MAKECOLOR_NGP
-#define MAKECOLOR_NGP(col) MAKECOLOR((((col) & 0xF) * 17), ((((col) >> 4) & 0xF) * 17), ((((col) >> 8) & 0xF) * 17), 0)
-#endif
-
 //=============================================================================
 
 void NGPGFX_CLASS::MonoPlot(uint16_t *cfb_scanline, uint8_t *zbuffer, uint8 x, uint8* palette_ptr, uint16 pal_hi, uint8 index, uint8 depth)
@@ -51,7 +47,7 @@ void NGPGFX_CLASS::MonoPlot(uint16_t *cfb_scanline, uint8_t *zbuffer, uint8 x, u
 	if (negative)
       data16 = ~(data16);
 
-   *scan++ = MAKECOLOR_NGP(data16);
+   *scan++ = data16;
 }
 
 void NGPGFX_CLASS::drawMonoPattern(uint16_t *cfb_scanline, uint8_t *zbuffer, uint8 screenx, uint16 tile, uint8 tiley, uint16 mirror, 
@@ -150,13 +146,13 @@ void NGPGFX_CLASS::draw_scanline_mono(uint16_t *cfb_scanline, int layer_enable, 
    if (!(ngpc_scanline < winy) && ngpc_scanline < winy + winh)
    {
       for (; x < min(winx, SCREEN_WIDTH); x++)
-         *scan++ = MAKECOLOR_NGP(data16);
+         *scan++ = data16;
 
       x = min(winx + winw, SCREEN_WIDTH);
    }
    // Bottom and Top
    for (; x < SCREEN_WIDTH; x++)
-      *scan++ = MAKECOLOR_NGP(data16);
+      *scan++ = data16;
 
 	//Ignore above and below the window's top and bottom
 	if (ngpc_scanline >= winy && ngpc_scanline < winy + winh)
@@ -177,7 +173,7 @@ void NGPGFX_CLASS::draw_scanline_mono(uint16_t *cfb_scanline, int layer_enable, 
       uint16_t *scan = &cfb_scanline[x];
 		//Draw background!
 		for (; x < min(winx + winw, SCREEN_WIDTH); x++)	
-			*scan++ = MAKECOLOR_NGP(data16);
+			*scan++ = data16;
 
 		//Swap Front/Back scroll planes?
 		if (planeSwap)
