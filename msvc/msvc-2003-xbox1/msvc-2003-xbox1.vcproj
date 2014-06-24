@@ -194,189 +194,153 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath="..\..\..\libretro.cpp">
+				RelativePath="..\..\libretro.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\scrc32.cpp">
+				RelativePath="..\..\scrc32.cpp">
 			</File>
 			<Filter
 				Name="mednafen"
 				Filter="">
 				<File
-					RelativePath="..\..\..\mednafen\endian.cpp">
+					RelativePath="..\..\mednafen\endian.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\mednafen\error.cpp">
+					RelativePath="..\..\mednafen\error.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\mednafen\file.cpp">
+					RelativePath="..\..\mednafen\file.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\mednafen\FileStream.cpp">
+					RelativePath="..\..\mednafen\FileStream.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\mednafen\FileWrapper.cpp">
+					RelativePath="..\..\mednafen\FileWrapper.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\mednafen\general.cpp">
+					RelativePath="..\..\mednafen\general.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\mednafen\math_ops.cpp">
+					RelativePath="..\..\mednafen\math_ops.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\mednafen\md5.cpp">
+					RelativePath="..\..\mednafen\md5.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\mednafen\mednafen.cpp">
+					RelativePath="..\..\mednafen\mednafen.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\mednafen\MemoryStream.cpp">
+					RelativePath="..\..\mednafen\MemoryStream.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\mednafen\mempatcher.cpp">
+					RelativePath="..\..\mednafen\mempatcher.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\mednafen\okiadpcm.cpp">
+					RelativePath="..\..\mednafen\settings.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\mednafen\settings.cpp">
+					RelativePath="..\..\mednafen\state.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\mednafen\state.cpp">
-				</File>
-				<File
-					RelativePath="..\..\..\mednafen\Stream.cpp">
+					RelativePath="..\..\mednafen\Stream.cpp">
 				</File>
 				<Filter
 					Name="trio"
 					Filter="">
 					<File
-						RelativePath="..\..\..\mednafen\trio\trio.c">
-						<FileConfiguration
-							Name="Debug|Xbox">
-							<Tool
-								Name="VCCLCompilerTool"
-								CompileAs="1"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Profile|Xbox">
-							<Tool
-								Name="VCCLCompilerTool"
-								CompileAs="1"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Profile_FastCap|Xbox">
-							<Tool
-								Name="VCCLCompilerTool"
-								CompileAs="1"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Xbox">
-							<Tool
-								Name="VCCLCompilerTool"
-								CompileAs="1"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release_LTCG|Xbox">
-							<Tool
-								Name="VCCLCompilerTool"
-								CompileAs="1"/>
-						</FileConfiguration>
+						RelativePath="..\..\mednafen\trio\trio.c">
 					</File>
 					<File
-						RelativePath="..\..\..\mednafen\trio\triostr.c">
+						RelativePath="..\..\mednafen\trio\triostr.c">
 					</File>
 				</Filter>
 				<Filter
 					Name="sound"
 					Filter="">
 					<File
-						RelativePath="..\..\..\mednafen\sound\Blip_Buffer.cpp">
+						RelativePath="..\..\mednafen\sound\Blip_Buffer.cpp">
 					</File>
 					<File
-						RelativePath="..\..\..\mednafen\sound\Stereo_Buffer.cpp">
+						RelativePath="..\..\mednafen\sound\Stereo_Buffer.cpp">
 					</File>
 				</Filter>
 				<Filter
 					Name="ngp"
 					Filter="">
 					<File
-						RelativePath="..\..\..\mednafen\ngp\bios.cpp">
+						RelativePath="..\..\mednafen\ngp\bios.cpp">
 					</File>
 					<File
-						RelativePath="..\..\..\mednafen\ngp\biosHLE.cpp">
+						RelativePath="..\..\mednafen\ngp\biosHLE.cpp">
 					</File>
 					<File
-						RelativePath="..\..\..\mednafen\ngp\dma.cpp">
+						RelativePath="..\..\mednafen\ngp\dma.cpp">
 					</File>
 					<File
-						RelativePath="..\..\..\mednafen\ngp\flash.cpp">
+						RelativePath="..\..\mednafen\ngp\flash.cpp">
 					</File>
 					<File
-						RelativePath="..\..\..\mednafen\ngp\gfx.cpp">
+						RelativePath="..\..\mednafen\ngp\gfx.cpp">
 					</File>
 					<File
-						RelativePath="..\..\..\mednafen\ngp\gfx_scanline_colour.cpp">
+						RelativePath="..\..\mednafen\ngp\gfx_scanline_colour.cpp">
 					</File>
 					<File
-						RelativePath="..\..\..\mednafen\ngp\gfx_scanline_mono.cpp">
+						RelativePath="..\..\mednafen\ngp\gfx_scanline_mono.cpp">
 					</File>
 					<File
-						RelativePath="..\..\..\mednafen\ngp\interrupt.cpp">
+						RelativePath="..\..\mednafen\ngp\interrupt.cpp">
 					</File>
 					<File
-						RelativePath="..\..\..\mednafen\ngp\mem.cpp">
+						RelativePath="..\..\mednafen\ngp\mem.cpp">
 					</File>
 					<File
-						RelativePath="..\..\..\mednafen\ngp\rom.cpp">
+						RelativePath="..\..\mednafen\ngp\rom.cpp">
 					</File>
 					<File
-						RelativePath="..\..\..\mednafen\ngp\rtc.cpp">
+						RelativePath="..\..\mednafen\ngp\rtc.cpp">
 					</File>
 					<File
-						RelativePath="..\..\..\mednafen\ngp\sound.cpp">
+						RelativePath="..\..\mednafen\ngp\sound.cpp">
 					</File>
 					<File
-						RelativePath="..\..\..\mednafen\ngp\T6W28_Apu.cpp">
-					</File>
-					<File
-						RelativePath="..\..\..\mednafen\ngp\Z80_interface.cpp">
+						RelativePath="..\..\mednafen\ngp\T6W28_Apu.cpp">
 					</File>
 					<Filter
 						Name="TLCS-900h"
 						Filter="">
 						<File
-							RelativePath="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble.cpp">
 						</File>
 						<File
-							RelativePath="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_dst.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_dst.cpp">
 						</File>
 						<File
-							RelativePath="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_extra.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_extra.cpp">
 						</File>
 						<File
-							RelativePath="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_reg.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_reg.cpp">
 						</File>
 						<File
-							RelativePath="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_src.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_src.cpp">
 						</File>
 						<File
-							RelativePath="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret.cpp">
 						</File>
 						<File
-							RelativePath="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_dst.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_dst.cpp">
 						</File>
 						<File
-							RelativePath="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_reg.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_reg.cpp">
 						</File>
 						<File
-							RelativePath="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_single.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_single.cpp">
 						</File>
 						<File
-							RelativePath="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_src.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_src.cpp">
 						</File>
 						<File
-							RelativePath="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_registers.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_registers.cpp">
 						</File>
 					</Filter>
 				</Filter>
@@ -384,7 +348,7 @@
 					Name="video"
 					Filter="">
 					<File
-						RelativePath="..\..\..\mednafen\video\surface.cpp">
+						RelativePath="..\..\mednafen\video\surface.cpp">
 					</File>
 				</Filter>
 				<Filter
@@ -393,12 +357,6 @@
 					<Filter
 						Name="z80-fuse"
 						Filter="">
-						<File
-							RelativePath="..\..\..\mednafen\hw_cpu\z80-fuse\z80.cpp">
-						</File>
-						<File
-							RelativePath="..\..\..\mednafen\hw_cpu\z80-fuse\z80_ops.cpp">
-						</File>
 					</Filter>
 				</Filter>
 			</Filter>
