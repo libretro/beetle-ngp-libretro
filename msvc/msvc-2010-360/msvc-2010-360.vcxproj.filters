@@ -35,155 +35,149 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\mednafen\Stream.cpp">
-      <Filter>Source Files\mednafen</Filter>
+    <ClCompile Include="..\..\libretro.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\endian.cpp">
-      <Filter>Source Files\mednafen</Filter>
+    <ClCompile Include="..\..\scrc32.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\error.cpp">
-      <Filter>Source Files\mednafen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\file.cpp">
-      <Filter>Source Files\mednafen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\FileStream.cpp">
-      <Filter>Source Files\mednafen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\FileWrapper.cpp">
-      <Filter>Source Files\mednafen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\general.cpp">
-      <Filter>Source Files\mednafen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\math_ops.cpp">
-      <Filter>Source Files\mednafen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\md5.cpp">
-      <Filter>Source Files\mednafen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\mednafen.cpp">
-      <Filter>Source Files\mednafen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\MemoryStream.cpp">
-      <Filter>Source Files\mednafen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\mempatcher.cpp">
-      <Filter>Source Files\mednafen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\okiadpcm.cpp">
-      <Filter>Source Files\mednafen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\settings.cpp">
-      <Filter>Source Files\mednafen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\state.cpp">
-      <Filter>Source Files\mednafen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\hw_cpu\z80-fuse\z80_ops.cpp">
+    <ClCompile Include="..\..\mednafen\hw_cpu\z80-fuse\z80.cpp">
       <Filter>Source Files\mednafen\hw_cpu\z80-fuse</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\hw_cpu\z80-fuse\z80.cpp">
+    <ClCompile Include="..\..\mednafen\hw_cpu\z80-fuse\z80_ops.cpp">
       <Filter>Source Files\mednafen\hw_cpu\z80-fuse</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\sound\Blip_Buffer.cpp">
+    <ClCompile Include="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble.cpp">
+      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_dst.cpp">
+      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_extra.cpp">
+      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_reg.cpp">
+      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_src.cpp">
+      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret.cpp">
+      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_dst.cpp">
+      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_reg.cpp">
+      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_single.cpp">
+      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_src.cpp">
+      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\TLCS-900h\TLCS900h_registers.cpp">
+      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\bios.cpp">
+      <Filter>Source Files\mednafen\ngp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\biosHLE.cpp">
+      <Filter>Source Files\mednafen\ngp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\dma.cpp">
+      <Filter>Source Files\mednafen\ngp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\flash.cpp">
+      <Filter>Source Files\mednafen\ngp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\gfx.cpp">
+      <Filter>Source Files\mednafen\ngp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\gfx_scanline_colour.cpp">
+      <Filter>Source Files\mednafen\ngp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\gfx_scanline_mono.cpp">
+      <Filter>Source Files\mednafen\ngp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\interrupt.cpp">
+      <Filter>Source Files\mednafen\ngp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\mem.cpp">
+      <Filter>Source Files\mednafen\ngp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\rom.cpp">
+      <Filter>Source Files\mednafen\ngp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\rtc.cpp">
+      <Filter>Source Files\mednafen\ngp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\sound.cpp">
+      <Filter>Source Files\mednafen\ngp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\T6W28_Apu.cpp">
+      <Filter>Source Files\mednafen\ngp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\ngp\Z80_interface.cpp">
+      <Filter>Source Files\mednafen\ngp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mednafen\sound\Blip_Buffer.cpp">
       <Filter>Source Files\mednafen\sound</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\stubs.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\mednafen\sound\Stereo_Buffer.cpp">
+      <Filter>Source Files\mednafen\sound</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\libretro.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\mednafen\trio\trio.c">
+      <Filter>Source Files\mednafen\trio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\scrc32.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\mednafen\trio\triostr.c">
+      <Filter>Source Files\mednafen\trio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\video\surface.cpp">
+    <ClCompile Include="..\..\mednafen\video\surface.cpp">
       <Filter>Source Files\mednafen\video</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\trio\triostr.c">
-      <Filter>Source Files\mednafen\trio</Filter>
+    <ClCompile Include="..\..\mednafen\endian.cpp">
+      <Filter>Source Files\mednafen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\trio\trio.c">
-      <Filter>Source Files\mednafen\trio</Filter>
+    <ClCompile Include="..\..\mednafen\error.cpp">
+      <Filter>Source Files\mednafen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\sound\Stereo_Buffer.cpp">
-      <Filter>Source Files\mednafen\sound</Filter>
+    <ClCompile Include="..\..\mednafen\file.cpp">
+      <Filter>Source Files\mednafen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble.cpp">
-      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    <ClCompile Include="..\..\mednafen\FileStream.cpp">
+      <Filter>Source Files\mednafen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_dst.cpp">
-      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    <ClCompile Include="..\..\mednafen\FileWrapper.cpp">
+      <Filter>Source Files\mednafen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_extra.cpp">
-      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    <ClCompile Include="..\..\mednafen\general.cpp">
+      <Filter>Source Files\mednafen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_reg.cpp">
-      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    <ClCompile Include="..\..\mednafen\math_ops.cpp">
+      <Filter>Source Files\mednafen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_src.cpp">
-      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    <ClCompile Include="..\..\mednafen\md5.cpp">
+      <Filter>Source Files\mednafen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret.cpp">
-      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    <ClCompile Include="..\..\mednafen\mednafen.cpp">
+      <Filter>Source Files\mednafen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_dst.cpp">
-      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    <ClCompile Include="..\..\mednafen\MemoryStream.cpp">
+      <Filter>Source Files\mednafen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_reg.cpp">
-      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    <ClCompile Include="..\..\mednafen\mempatcher.cpp">
+      <Filter>Source Files\mednafen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_single.cpp">
-      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    <ClCompile Include="..\..\mednafen\settings.cpp">
+      <Filter>Source Files\mednafen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_src.cpp">
-      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
+    <ClCompile Include="..\..\mednafen\state.cpp">
+      <Filter>Source Files\mednafen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\TLCS-900h\TLCS900h_registers.cpp">
-      <Filter>Source Files\mednafen\ngp\TLCS-900h</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\bios.cpp">
-      <Filter>Source Files\mednafen\ngp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\biosHLE.cpp">
-      <Filter>Source Files\mednafen\ngp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\dma.cpp">
-      <Filter>Source Files\mednafen\ngp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\flash.cpp">
-      <Filter>Source Files\mednafen\ngp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\gfx.cpp">
-      <Filter>Source Files\mednafen\ngp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\gfx_scanline_colour.cpp">
-      <Filter>Source Files\mednafen\ngp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\gfx_scanline_mono.cpp">
-      <Filter>Source Files\mednafen\ngp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\interrupt.cpp">
-      <Filter>Source Files\mednafen\ngp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\mem.cpp">
-      <Filter>Source Files\mednafen\ngp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\rom.cpp">
-      <Filter>Source Files\mednafen\ngp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\rtc.cpp">
-      <Filter>Source Files\mednafen\ngp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\sound.cpp">
-      <Filter>Source Files\mednafen\ngp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\T6W28_Apu.cpp">
-      <Filter>Source Files\mednafen\ngp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\mednafen\ngp\Z80_interface.cpp">
-      <Filter>Source Files\mednafen\ngp</Filter>
+    <ClCompile Include="..\..\mednafen\Stream.cpp">
+      <Filter>Source Files\mednafen</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

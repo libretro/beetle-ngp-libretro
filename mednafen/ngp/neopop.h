@@ -19,7 +19,7 @@
 #include "../mednafen.h"
 #include "../mednafen-endian.h"
 #include "../mempatcher.h"
-#include <mednafen/masmem.h>
+#include "../masmem.h"
 
 #include <stdio.h>
 #include <stdlib.h>

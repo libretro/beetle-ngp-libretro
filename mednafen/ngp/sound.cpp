@@ -1,9 +1,9 @@
 #include "neopop.h"
 #include "sound.h"
 
-#include <blip/Blip_Buffer.h>
+#include "../include/blip/Blip_Buffer.h"
+#include "../include/blip/Stereo_Buffer.h"
 #include "T6W28_Apu.h"
-#include <blip/Stereo_Buffer.h>
 
 static T6W28_Apu apu;
 
