@@ -796,7 +796,7 @@ void retro_set_environment(retro_environment_t cb)
    environ_cb = cb;
 
    static const struct retro_variable vars[] = {
-      { "ngp_language", "Language; japanese|english" },
+      { "ngp_language", "Language (restart); english|japanese" },
       { NULL, NULL },
    };
    cb(RETRO_ENVIRONMENT_SET_VARIABLES, (void*)vars);
