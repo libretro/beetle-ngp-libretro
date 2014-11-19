@@ -49,75 +49,74 @@ uint8 COMMStatus;
 static uint8 *FastReadMap[256], *FastReadMapReal[256];
 
 
-void SetFRM(void) // Call this function after rom is loaded
+void SetFRM(void) /* Call this function after ROM is loaded */
 {
- for(unsigned int x = 0; x < 256; x++)
-  FastReadMapReal[x] = NULL;
+   unsigned int x;
 
- for(unsigned int x = 0x20; x <= 0x3f; x++)
- {
-  if(ngpc_rom.length > (x * 65536 + 65535 - 0x20000))
-   FastReadMapReal[x] = &ngpc_rom.data[x * 65536 - 0x200000] - x * 65536;
- }
+   for(x = 0; x < 256; x++)
+      FastReadMapReal[x] = NULL;
 
- for(unsigned int x = 0x80; x <= 0x9f; x++)
- {
-  if(ngpc_rom.length > (x * 65536 + 65535 - 0x80000))
-   FastReadMapReal[x] = &ngpc_rom.data[x * 65536 - 0x800000] - x * 65536;
- }
+   for(x = 0x20; x <= 0x3f; x++)
+   {
+      if(ngpc_rom.length > (x * 65536 + 65535 - 0x20000))
+         FastReadMapReal[x] = &ngpc_rom.data[x * 65536 - 0x200000] - x * 65536;
+   }
 
+   for(x = 0x80; x <= 0x9f; x++)
+   {
+      if(ngpc_rom.length > (x * 65536 + 65535 - 0x80000))
+         FastReadMapReal[x] = &ngpc_rom.data[x * 65536 - 0x800000] - x * 65536;
+   }
 }
 
 void RecacheFRM(void)
 {
- for(int x = 0; x < 256; x++)
-  FastReadMap[x] = FlashStatusEnable ? NULL : FastReadMapReal[x];
+   int x;
+   for (x = 0; x < 256; x++)
+      FastReadMap[x] = FlashStatusEnable ? NULL : FastReadMapReal[x];
 }
 
 static void* translate_address_read(uint32 address)
 {
 	address &= 0xFFFFFF;
 
-	//Get Flash status?
+	/*Get Flash status? */
+
 	if (FlashStatusEnable)
 	{
-		if ((address >= ROM_START && address <= ROM_END) || (address >= HIROM_START && address <= HIROM_END))
-		{
-			FlashStatusEnable = FALSE;
-			RecacheFRM();
-			if (address == 0x220000 || address == 0x230000)
-			{
-				FlashStatus = 0xFFFFFFFF;
-				return &FlashStatus;
-			}
-		}
+		if (
+            (address >= ROM_START && address <= ROM_END) || 
+            (address >= HIROM_START && address <= HIROM_END))
+      {
+         FlashStatusEnable = FALSE;
+         RecacheFRM();
+         if (address == 0x220000 || address == 0x230000)
+         {
+            FlashStatus = 0xFFFFFFFF;
+            return &FlashStatus;
+         }
+      }
 	}
 
-	//ROM (LOW)
+	/* ROM (LOW) */
 	if (address >= ROM_START && address <= ROM_END)
 	{
 		if (address <= ROM_START + ngpc_rom.length)
 			return ngpc_rom.data + (address - ROM_START);
-		else
-			return NULL;
+      return NULL;
 	}
 
-	//ROM (HIGH)
+	/* ROM (HIGH) */
 	if (address >= HIROM_START && address <= HIROM_END)
 	{
 		if (address <= HIROM_START + (ngpc_rom.length - 0x200000))
 			return ngpc_rom.data + 0x200000 + (address - HIROM_START);
-		else
-			return NULL;
+      return NULL;
 	}
 
-	// ===================================
-
-	//BIOS Access?
+	/*BIOS Access? */
 	if ((address & 0xFF0000) == 0xFF0000)
-	{
-		return ngpc_bios + (address & 0xFFFF); // BIOS ROM
-	}
+		return ngpc_bios + (address & 0xFFFF); /* BIOS ROM */
 	return NULL;
 }
 
@@ -125,70 +124,69 @@ static void* translate_address_read(uint32 address)
 
 static void* translate_address_write(uint32 address)
 {	
-	address &= 0xFFFFFF;
+   address &= 0xFFFFFF;
 
-	if (memory_unlock_flash_write)
-	{
-		//ROM (LOW)
-		if (address >= ROM_START && address <= ROM_END)
-		{
-			if (address <= ROM_START + ngpc_rom.length)
-				return ngpc_rom.data + (address - ROM_START);
-			else
-				return NULL;
-		}
+   if (memory_unlock_flash_write)
+   {
+      /* ROM (LOW) */
+      if (address >= ROM_START && address <= ROM_END)
+      {
+         if (address <= ROM_START + ngpc_rom.length)
+            return ngpc_rom.data + (address - ROM_START);
+         return NULL;
+      }
 
-		//ROM (HIGH)
-		if (address >= HIROM_START && address <= HIROM_END)
-		{
-			if (address <= HIROM_START + (ngpc_rom.length - 0x200000))
-				return ngpc_rom.data + 0x200000 + (address - HIROM_START);
-			else
-				return NULL;
-		}
-	}
-	else
-	{
-		//ROM (LOW)
-		if (address >= ROM_START && address <= ROM_END)
-		{
-			//Ignore Flash commands
-			if (address == 0x202AAA || address == 0x205555)
-			{
-	//			system_debug_message("%06X: Enable Flash command from %06X", pc, address);
-				memory_flash_command = TRUE;
-				return NULL;
-			}
+      /* ROM (HIGH) */
+      if (address >= HIROM_START && address <= HIROM_END)
+      {
+         if (address <= HIROM_START + (ngpc_rom.length - 0x200000))
+            return ngpc_rom.data + 0x200000 + (address - HIROM_START);
+         return NULL;
+      }
+   }
+   else
+   {
+      /*ROM (LOW) */
 
-			//Set Flash status reading?
-			if (address == 0x220000 || address == 0x230000)
-			{
-	//			system_debug_message("%06X: Flash status read from %06X", pc, address);
-				FlashStatusEnable = TRUE;
-				RecacheFRM();
-				return NULL;
-			}
+      if (address >= ROM_START && address <= ROM_END)
+      {
+         //Ignore Flash commands
+         if (address == 0x202AAA || address == 0x205555)
+         {
+            //			system_debug_message("%06X: Enable Flash command from %06X", pc, address);
+            memory_flash_command = TRUE;
+            return NULL;
+         }
 
-			if (memory_flash_command)
-			{
-				//Write the 256byte block around the flash data
-				flash_write(address & 0xFFFF00, 256);
-				
-				//Need to issue a new command before writing will work again.
-				memory_flash_command = FALSE;
-		
-	//			system_debug_message("%06X: Direct Flash write to %06X", pc, address & 0xFFFF00);
-	//			system_debug_stop();
+         //Set Flash status reading?
+         if (address == 0x220000 || address == 0x230000)
+         {
+            //			system_debug_message("%06X: Flash status read from %06X", pc, address);
+            FlashStatusEnable = TRUE;
+            RecacheFRM();
+            return NULL;
+         }
 
-				//Write to the rom itself.
-				if (address <= ROM_START + ngpc_rom.length)
-					return ngpc_rom.data + (address - ROM_START);
-			}
-		}
-	}
+         if (memory_flash_command)
+         {
+            //Write the 256byte block around the flash data
+            flash_write(address & 0xFFFF00, 256);
 
-	// ===================================
-	return NULL;
+            //Need to issue a new command before writing will work again.
+            memory_flash_command = FALSE;
+
+            //			system_debug_message("%06X: Direct Flash write to %06X", pc, address & 0xFFFF00);
+            //			system_debug_stop();
+
+            //Write to the rom itself.
+            if (address <= ROM_START + ngpc_rom.length)
+               return ngpc_rom.data + (address - ROM_START);
+         }
+      }
+   }
+
+   // ===================================
+   return NULL;
 }
 
 /* WARNING:  32-bit loads and stores apparently DON'T have to be 4-byte-aligned(so we must +2 instead of |2). */
@@ -199,89 +197,81 @@ uint8 lastpoof = 0;
 
 uint8 loadB(uint32 address)
 {
-        address &= 0xFFFFFF;
+   address &= 0xFFFFFF;
 
-        if(FastReadMap[address >> 16])
-         return(FastReadMap[address >> 16][address]);
+   if(FastReadMap[address >> 16])
+      return(FastReadMap[address >> 16][address]);
 
 
-        uint8* ptr = (uint8*)translate_address_read(address);
+   uint8* ptr = (uint8*)translate_address_read(address);
 
-        if (ptr)
-                return *ptr;
+   if (ptr)
+      return *ptr;
 
-	if(address >= 0x8000 && address <= 0xbfff)
-	 return(NGPGfx->read8(address));
-	if(address >= 0x4000 && address <= 0x7fff)
-	{
-	 return(*(uint8 *)(CPUExRAM + address - 0x4000));
-	}
+   if(address >= 0x8000 && address <= 0xbfff)
+      return(NGPGfx->read8(address));
 
-	if(address >= 0x70 && address <= 0x7F)
-	{
-	 return(int_read8(address));
-	}
+   if(address >= 0x4000 && address <= 0x7fff)
+      return(*(uint8 *)(CPUExRAM + address - 0x4000));
 
-        if(address >= 0x90 && address <= 0x97)
-        {
-         return(rtc_read8(address));
-        }
+   if(address >= 0x70 && address <= 0x7F)
+      return(int_read8(address));
 
-	if(address >= 0x20 && address <= 0x29)
-	{
-	 return(timer_read8(address));
-	}
+   if(address >= 0x90 && address <= 0x97)
+      return(rtc_read8(address));
 
-	if(address == 0x50)
-	 return(SC0BUF);
+   if(address >= 0x20 && address <= 0x29)
+      return(timer_read8(address));
 
-        if(address == 0xBC)
-         return Z80_ReadComm();
+   if(address == 0x50)
+      return(SC0BUF);
 
-	//printf("UNK B R: %08x\n", address);
+   if(address == 0xBC)
+      return Z80_ReadComm();
 
-	return(0);
+   //printf("UNK B R: %08x\n", address);
+
+   return(0);
 }
 
 uint16 loadW(uint32 address)
 {
-        address &= 0xFFFFFF;
+   address &= 0xFFFFFF;
 
-	if(address & 1)
-	 return(loadB(address) | (loadB(address + 1) << 8));
+   if(address & 1)
+      return(loadB(address) | (loadB(address + 1) << 8));
 
-	if(FastReadMap[address >> 16])
-	 return(LoadU16_LE((uint16*)&FastReadMap[address >> 16][address]));
+   if(FastReadMap[address >> 16])
+      return(LoadU16_LE((uint16*)&FastReadMap[address >> 16][address]));
 
-        uint16* ptr = (uint16*)translate_address_read(address);
-	if(ptr)
-                return LoadU16_LE(ptr);
+   uint16* ptr = (uint16*)translate_address_read(address);
+   if(ptr)
+      return LoadU16_LE(ptr);
 
-        if(address >= 0x8000 && address <= 0xbfff)
-         return(NGPGfx->read16(address));
+   if(address >= 0x8000 && address <= 0xbfff)
+      return(NGPGfx->read16(address));
 
-        if(address >= 0x4000 && address <= 0x7fff)
-	{
-         return(LoadU16_LE((uint16 *)(CPUExRAM + address - 0x4000)));
-	}
-	if(address == 0x50)
-	 return(SC0BUF);
+   if(address >= 0x4000 && address <= 0x7fff)
+      return(LoadU16_LE((uint16 *)(CPUExRAM + address - 0x4000)));
 
-        if(address >= 0x70 && address <= 0x7F)
-         return(int_read8(address) | (int_read8(address + 1) << 8));
+   if(address == 0x50)
+      return(SC0BUF);
 
-	if(address >= 0x90 && address <= 0x97)
-	 return(rtc_read8(address) | (rtc_read8(address + 1) << 8));
+   if(address >= 0x70 && address <= 0x7F)
+      return(int_read8(address) | (int_read8(address + 1) << 8));
 
-        if(address >= 0x20 && address <= 0x29)
-         return(timer_read8(address) | (timer_read8(address + 1) << 8));
+   if(address >= 0x90 && address <= 0x97)
+      return(rtc_read8(address) | (rtc_read8(address + 1) << 8));
 
-	if(address == 0xBC)
-	 return Z80_ReadComm();
+   if(address >= 0x20 && address <= 0x29)
+      return(timer_read8(address) | (timer_read8(address + 1) << 8));
 
-	//printf("UNK W R: %08x\n", address);
+   if(address == 0xBC)
+      return Z80_ReadComm();
 
-	return(0);
+   //printf("UNK W R: %08x\n", address);
+
+   return(0);
 }
 
 uint32 loadL(uint32 address)
@@ -298,219 +288,207 @@ uint32 loadL(uint32 address)
 
 void storeB(uint32 address, uint8 data)
 {
-        address &= 0xFFFFFF;
+   address &= 0xFFFFFF;
 
+   if(address < 0x80)
+      lastpoof = data;
 
-	if(address < 0x80)
-	{
-	 lastpoof = data;
-	}
+   if(address >= 0x8000 && address <= 0xbfff)
+   {
+      NGPGfx->write8(address, data);
+      return;
+   }
 
-        if(address >= 0x8000 && address <= 0xbfff)
-	{
-         NGPGfx->write8(address, data);
-	 return;
-	}
-        if(address >= 0x4000 && address <= 0x7fff)
-        {
-         *(uint8 *)(CPUExRAM + address - 0x4000) = data;
-         return;
-        }
-	if(address >= 0x70 && address <= 0x7F)
-	{
-	 int_write8(address, data);
-	 return;
-	}
-        if(address >= 0x20 && address <= 0x29)
-	{
-	 timer_write8(address, data);
-	 return;
-	}
+   if(address >= 0x4000 && address <= 0x7fff)
+   {
+      *(uint8 *)(CPUExRAM + address - 0x4000) = data;
+      return;
+   }
+   if(address >= 0x70 && address <= 0x7F)
+   {
+      int_write8(address, data);
+      return;
+   }
+   if(address >= 0x20 && address <= 0x29)
+   {
+      timer_write8(address, data);
+      return;
+   }
 
-	if(address == 0x50)
-	{
-	 SC0BUF = data;
-	 return;
-	}
+   if(address == 0x50)
+   {
+      SC0BUF = data;
+      return;
+   }
 
-	if(address == 0x6f) // Watchdog timer
-	{
-	 return;
-	}
+   if(address == 0x6f) // Watchdog timer
+      return;
 
-	if(address == 0xb2) // Comm?
-	{
-	 COMMStatus = data & 1;
-	 return;
-	}
+   if(address == 0xb2) // Comm?
+   {
+      COMMStatus = data & 1;
+      return;
+   }
 
-	if(address == 0xb9) 
-	{
-         if(data == 0x55)
-          Z80_SetEnable(1);
-         else if(data == 0xAA)
-          Z80_SetEnable(0);
-         return;
-	}
+   if(address == 0xb9) 
+   {
+      if(data == 0x55)
+         Z80_SetEnable(1);
+      else if(data == 0xAA)
+         Z80_SetEnable(0);
+      return;
+   }
 
-        if(address == 0xb8)
-        {
-	 if(data == 0x55)
-	  MDFNNGPCSOUND_SetEnable(1);
-	 else if(data == 0xAA)
-	  MDFNNGPCSOUND_SetEnable(0);
-	 return;
-        }
+   if(address == 0xb8)
+   {
+      if(data == 0x55)
+         MDFNNGPCSOUND_SetEnable(1);
+      else if(data == 0xAA)
+         MDFNNGPCSOUND_SetEnable(0);
+      return;
+   }
 
-	if (address == 0xBA)
-	{
-                Z80_nmi();
-		return;
-	}
+   if (address == 0xBA)
+   {
+      Z80_nmi();
+      return;
+   }
 
-	if(address == 0xBC)
-	{
-		Z80_WriteComm(data);
-		return;
-	}
+   if(address == 0xBC)
+   {
+      Z80_WriteComm(data);
+      return;
+   }
 
-	if(address >= 0xa0 && address <= 0xA3)
-	{
-         if(!Z80_IsEnabled())
-         {
-          if (address == 0xA1)   Write_SoundChipLeft(data);
-          else if (address == 0xA0)      Write_SoundChipRight(data);
-         } 
-         //DAC Write
-         if (address == 0xA2)
-         {
-          dac_write_left(data);
-         }
-         else if (address == 0xA3)
-         {
-          dac_write_right(data);
-         }
-	 return;
-	}
+   if(address >= 0xa0 && address <= 0xA3)
+   {
+      if(!Z80_IsEnabled())
+      {
+         if (address == 0xA1)
+            Write_SoundChipLeft(data);
+         else if (address == 0xA0)
+            Write_SoundChipRight(data);
+      } 
+      //DAC Write
+      if (address == 0xA2)
+         dac_write_left(data);
+      else if (address == 0xA3)
+         dac_write_right(data);
+      return;
+   }
 
-	//printf("%08x %02x\n", address, data);
-	uint8* ptr = (uint8*)translate_address_write(address);
+   //printf("%08x %02x\n", address, data);
+   uint8* ptr = (uint8*)translate_address_write(address);
 
-	//Write
-	if (ptr)
-	{
-		*ptr = data;
-	}
-	//else
-        //        printf("ACK: %08x %02x\n", address, data);
+   //Write
+   if (ptr)
+      *ptr = data;
+   //else
+   //        printf("ACK: %08x %02x\n", address, data);
 
 }
 
 void storeW(uint32 address, uint16 data)
 {
-        address &= 0xFFFFFF;
+   address &= 0xFFFFFF;
 
-	if(address & 1)
-	{
-	 storeB(address + 0, data & 0xFF);
-	 storeB(address + 1, data >> 8);
-	 return;
-	}
+   if(address & 1)
+   {
+      storeB(address + 0, data & 0xFF);
+      storeB(address + 1, data >> 8);
+      return;
+   }
 
-        if(address < 0x80)
-        {
-         lastpoof = data >> 8;
-        }
+   if(address < 0x80)
+   {
+      lastpoof = data >> 8;
+   }
 
-        if(address >= 0x8000 && address <= 0xbfff)
-        {
-         NGPGfx->write16(address, data);
-	 return;
-        }
-        if(address >= 0x4000 && address <= 0x7fff)
-        {
-         StoreU16_LE((uint16 *)(CPUExRAM + address - 0x4000), data);
-         return;
-        }
-        if(address >= 0x70 && address <= 0x7F)
-        {
-         int_write8(address, data & 0xFF);
-	 int_write8(address + 1, data >> 8);
-         return;
-        }
+   if(address >= 0x8000 && address <= 0xbfff)
+   {
+      NGPGfx->write16(address, data);
+      return;
+   }
+   if(address >= 0x4000 && address <= 0x7fff)
+   {
+      StoreU16_LE((uint16 *)(CPUExRAM + address - 0x4000), data);
+      return;
+   }
+   if(address >= 0x70 && address <= 0x7F)
+   {
+      int_write8(address, data & 0xFF);
+      int_write8(address + 1, data >> 8);
+      return;
+   }
 
-        if(address >= 0x20 && address <= 0x29)
-	{
-	 timer_write8(address, data & 0xFF);
-	 timer_write8(address + 1, data >> 8);
-	}
+   if(address >= 0x20 && address <= 0x29)
+   {
+      timer_write8(address, data & 0xFF);
+      timer_write8(address + 1, data >> 8);
+   }
 
-	if(address == 0x50)
-	{ 
-	 SC0BUF = data & 0xFF;
-	 return;
-	}
+   if(address == 0x50)
+   { 
+      SC0BUF = data & 0xFF;
+      return;
+   }
 
-        if(address == 0x6e) // Watchdog timer(technically 0x6f)
-        {
-	 return;
-        }
+   if(address == 0x6e) // Watchdog timer(technically 0x6f)
+      return;
 
-        if(address == 0xb2) // Comm?
-        {
- 	 COMMStatus = data & 1;
-         return;
-        }
+   if(address == 0xb2) // Comm?
+   {
+      COMMStatus = data & 1;
+      return;
+   }
 
-	if(address == 0xb8)
-	{
-         if((data & 0xFF00) == 0x5500)
-          Z80_SetEnable(1);
-         else if((data & 0xFF00) == 0xAA00)
-          Z80_SetEnable(0);
+   if(address == 0xb8)
+   {
+      if((data & 0xFF00) == 0x5500)
+         Z80_SetEnable(1);
+      else if((data & 0xFF00) == 0xAA00)
+         Z80_SetEnable(0);
 
-         if((data & 0xFF) == 0x55)
-          MDFNNGPCSOUND_SetEnable(1);
-         else if((data & 0xFF) == 0xAA)
-          MDFNNGPCSOUND_SetEnable(0);
-	 return;
-        }
+      if((data & 0xFF) == 0x55)
+         MDFNNGPCSOUND_SetEnable(1);
+      else if((data & 0xFF) == 0xAA)
+         MDFNNGPCSOUND_SetEnable(0);
+      return;
+   }
 
-        if (address == 0xBA)
-        {
-                Z80_nmi();
-                return;
-        }
+   if (address == 0xBA)
+   {
+      Z80_nmi();
+      return;
+   }
 
-        if(address == 0xBC)
-        {
-                Z80_WriteComm(data);
-                return;
-        }
+   if(address == 0xBC)
+   {
+      Z80_WriteComm(data);
+      return;
+   }
 
-	if(address >= 0xa0 && address <= 0xA3)
-	{
-	 storeB(address, data & 0xFF);
-	 storeB(address + 1, data >> 8);
-	 return;
-	}
+   if(address >= 0xa0 && address <= 0xA3)
+   {
+      storeB(address, data & 0xFF);
+      storeB(address + 1, data >> 8);
+      return;
+   }
 
-	uint16* ptr = (uint16*)translate_address_write(address);
+   uint16* ptr = (uint16*)translate_address_write(address);
 
-	//Write
-	if (ptr)
-	{
-		StoreU16_LE(ptr, data);
-	}
-        //else
-        //        printf("ACK16: %08x %04x\n", address, data);
+   //Write
+   if (ptr)
+      StoreU16_LE(ptr, data);
+   //else
+   //        printf("ACK16: %08x %04x\n", address, data);
 
 }
 
 void storeL(uint32 address, uint32 data)
 {
-	storeW(address, data & 0xFFFF);
-        storeW(address + 2, data >> 16);
+   storeW(address, data & 0xFFFF);
+   storeW(address + 2, data >> 16);
 }
 
 //=============================================================================

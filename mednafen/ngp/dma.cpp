@@ -88,100 +88,106 @@ void DMA_update(int channel)
 		return;
 
 	switch (mode)
-	{
-	case 0:	// Destination INC mode, I/O to Memory transfer
-		switch(size)
-		{
-		case 0:	storeB(dmaD[channel], loadB(dmaS[channel]));
-				dmaD[channel] += 1; //Byte increment
-				break;
+   {
+      case 0:	/* Destination INC mode, I/O to Memory transfer */
+         switch(size)
+         {
+            case 0:
+               storeB(dmaD[channel], loadB(dmaS[channel]));
+               dmaD[channel] += 1; //Byte increment
+               break;
+            case 1:
+               storeW(dmaD[channel], loadW(dmaS[channel]));
+               dmaD[channel] += 2; //Word increment
+               break;
+            case 2:
+               storeL(dmaD[channel], loadL(dmaS[channel]));
+               dmaD[channel] += 4; //Long increment
+               break;
+         }
+         break;
 
-		case 1:	storeW(dmaD[channel], loadW(dmaS[channel]));
-				dmaD[channel] += 2; //Word increment
-				break;
+      case 1:	/* Destination DEC mode, I/O to Memory transfer */
+         switch(size)
+         {
+            case 0:
+               storeB(dmaD[channel], loadB(dmaS[channel]));
+               dmaD[channel] -= 1; //Byte decrement
+               break;
+            case 1:
+               storeW(dmaD[channel], loadW(dmaS[channel]));
+               dmaD[channel] -= 2; //Word decrement
+               break;
+            case 2:
+               storeL(dmaD[channel], loadL(dmaS[channel]));
+               dmaD[channel] -= 4; //Long decrement
+               break;
+         }
+         break;
 
-		case 2:	storeL(dmaD[channel], loadL(dmaS[channel]));
-				dmaD[channel] += 4; //Long increment
-				break;
-		}
-		break;
+      case 2:	/* Source INC mode, Memory to I/O transfer */
+         switch(size)
+         {
+            case 0:
+               storeB(dmaD[channel], loadB(dmaS[channel]));
+               dmaS[channel] += 1; //Byte increment
+               break;
+            case 1:
+               storeW(dmaD[channel], loadW(dmaS[channel]));
+               dmaS[channel] += 2; //Word increment
+               break;
+            case 2:
+               storeL(dmaD[channel], loadL(dmaS[channel]));
+               dmaS[channel] += 4; //Long increment
+               break;
+         }
+         break;
 
-	case 1:	// Destination DEC mode, I/O to Memory transfer
-		switch(size)
-		{
-		case 0:	storeB(dmaD[channel], loadB(dmaS[channel]));
-				dmaD[channel] -= 1; //Byte decrement
-				break;
+      case 3:	// Source DEC mode, Memory to I/O transfer
+         switch(size)
+         {
+            case 0:
+               storeB(dmaD[channel], loadB(dmaS[channel]));
+               dmaS[channel] -= 1; //Byte decrement
+               break;
+            case 1:
+               storeW(dmaD[channel], loadW(dmaS[channel]));
+               dmaS[channel] -= 2; //Word decrement
+               break;
+            case 2:
+               storeL(dmaD[channel], loadL(dmaS[channel]));
+               dmaS[channel] -= 4; //Long decrement
+               break;
+         }
+         break;
 
-		case 1:	storeW(dmaD[channel], loadW(dmaS[channel]));
-				dmaD[channel] -= 2; //Word decrement
-				break;
+      case 4:	// Fixed Address Mode
+         switch(size)
+         {
+            case 0:
+               storeB(dmaD[channel], loadB(dmaS[channel]));
+               break;
+            case 1:
+               storeW(dmaD[channel], loadW(dmaS[channel]));
+               break;
+            case 2:
+               storeL(dmaD[channel], loadL(dmaS[channel]));
+               break;
+         }
+         break;
 
-		case 2:	storeL(dmaD[channel], loadL(dmaS[channel]));
-				dmaD[channel] -= 4; //Long decrement
-				break;
-		}
-		break;
+      case 5: // Counter Mode
+         dmaS[channel] ++;
+         break;
 
-	case 2:	// Source INC mode, Memory to I/O transfer
-		switch(size)
-		{
-		case 0:	storeB(dmaD[channel], loadB(dmaS[channel]));
-				dmaS[channel] += 1; //Byte increment
-				break;
+      default:
+         MDFN_printf("Bad DMA mode %d\nPlease report this to the author.", dmaM[channel]);
+         return;
+   }
 
-		case 1:	storeW(dmaD[channel], loadW(dmaS[channel]));
-				dmaS[channel] += 2; //Word increment
-				break;
-
-		case 2:	storeL(dmaD[channel], loadL(dmaS[channel]));
-				dmaS[channel] += 4; //Long increment
-				break;
-		}
-		break;
-
-	case 3:	// Source DEC mode, Memory to I/O transfer
-		switch(size)
-		{
-		case 0:	storeB(dmaD[channel], loadB(dmaS[channel]));
-				dmaS[channel] -= 1; //Byte decrement
-				break;
-
-		case 1:	storeW(dmaD[channel], loadW(dmaS[channel]));
-				dmaS[channel] -= 2; //Word decrement
-				break;
-
-		case 2:	storeL(dmaD[channel], loadL(dmaS[channel]));
-				dmaS[channel] -= 4; //Long decrement
-				break;
-		}
-		break;
-
-	case 4:	// Fixed Address Mode
-		switch(size)
-		{
-		case 0:	storeB(dmaD[channel], loadB(dmaS[channel]));
-				break;
-
-		case 1:	storeW(dmaD[channel], loadW(dmaS[channel]));
-				break;
-
-		case 2:	storeL(dmaD[channel], loadL(dmaS[channel]));
-				break;
-		}
-		break;
-
-	case 5: // Counter Mode
-		dmaS[channel] ++;
-		break;
-
-	default:
-		MDFN_printf("Bad DMA mode %d\nPlease report this to the author.", dmaM[channel]);
-		return;
-	}
-
-	// Perform common counter decrement,
-	// vector clearing, and interrupt handling.
+	/* Perform common counter decrement,
+    * vector clearing, and interrupt handling.
+    */
 
 	dmaC[channel] --;
 	if (dmaC[channel] == 0)
@@ -196,51 +202,81 @@ void DMA_update(int channel)
 void dmaStoreB(uint8 cr, uint8 data)
 {
 	switch(cr)
-	{
-	case 0x22:	dmaM[0] = data;	break;
-	case 0x26:	dmaM[1] = data;	break;
-	case 0x2A:	dmaM[2] = data;	break;
-	case 0x2E:	dmaM[3] = data;	break;
-
-	default: 
-		MDFN_printf("dmaStoreB: Unknown register 0x%02X <- %02X\nPlease report this to the author.\n", cr, data);
-		break;
-	}
+   {
+      case 0x22:
+         dmaM[0] = data;
+         break;
+      case 0x26:
+         dmaM[1] = data;
+         break;
+      case 0x2A:
+         dmaM[2] = data;
+         break;
+      case 0x2E:
+         dmaM[3] = data;
+         break;
+      default: 
+         MDFN_printf("dmaStoreB: Unknown register 0x%02X <- %02X\nPlease report this to the author.\n", cr, data);
+         break;
+   }
 }
 
 void dmaStoreW(uint8 cr, uint16 data)
 {
-	switch(cr)
-	{
-	case 0x20:	dmaC[0] = data;	break;
-	case 0x24:	dmaC[1] = data;	break;
-	case 0x28:	dmaC[2] = data;	break;
-	case 0x2C:	dmaC[3] = data;	break;
+   switch(cr)
+   {
+      case 0x20:
+         dmaC[0] = data;
+         break;
+      case 0x24:
+         dmaC[1] = data;
+         break;
+      case 0x28:
+         dmaC[2] = data;
+         break;
+      case 0x2C:
+         dmaC[3] = data;
+         break;
 
-	default: 
-		MDFN_printf("dmaStoreW: Unknown register 0x%02X <- %04X\nPlease report this to the author.\n", cr, data);
-		break;
-	}
+      default: 
+         MDFN_printf("dmaStoreW: Unknown register 0x%02X <- %04X\nPlease report this to the author.\n", cr, data);
+         break;
+   }
 }
 
 void dmaStoreL(uint8 cr, uint32 data)
 {
-	switch(cr)
-	{
-	case 0x00: dmaS[0] = data; break;	
-	case 0x04: dmaS[1] = data; break;	
-	case 0x08: dmaS[2] = data; break;	
-	case 0x0C: dmaS[3] = data; break;	
+   switch(cr)
+   {
+      case 0x00:
+         dmaS[0] = data;
+         break;	
+      case 0x04:
+         dmaS[1] = data;
+         break;	
+      case 0x08:
+         dmaS[2] = data;
+         break;	
+      case 0x0C:
+         dmaS[3] = data;
+         break;	
+      case 0x10:
+         dmaD[0] = data;
+         break;	
+      case 0x14:
+         dmaD[1] = data;
+         break;	
+      case 0x18:
+         dmaD[2] = data;
+         break;	
+      case 0x1C:
+         dmaD[3] = data;
+         break;
 
-	case 0x10: dmaD[0] = data; break;	
-	case 0x14: dmaD[1] = data; break;	
-	case 0x18: dmaD[2] = data; break;	
-	case 0x1C: dmaD[3] = data; break;
-
-	default: 
-		MDFN_printf("dmaStoreL: Unknown register 0x%02X <- %08X\nPlease report this to the author.\n", cr, data);
-		break;
-	}
+      default: 
+         MDFN_printf("dmaStoreL: Unknown register 0x%02X <- %08X\nPlease report this to the author.\n", cr, data);
+         break;
+   }
 }
 
 //=============================================================================
@@ -248,67 +284,98 @@ void dmaStoreL(uint8 cr, uint32 data)
 uint8 dmaLoadB(uint8 cr)
 {
 
-	switch(cr)
-	{
-	case 0x22:	return dmaM[0];	break;
-	case 0x26:	return dmaM[1];	break;
-	case 0x2A:	return dmaM[2];	break;
-	case 0x2E:	return dmaM[3];	break;
+   switch(cr)
+   {
+      case 0x22:
+         return dmaM[0];
+         break;
+      case 0x26:
+         return dmaM[1];
+         break;
+      case 0x2A:
+         return dmaM[2];
+         break;
+      case 0x2E:
+         return dmaM[3];
+         break;
 
-	default: 
-		MDFN_printf("dmaLoadB: Unknown register 0x%02X\nPlease report this to the author.", cr);
-		return 0;
-	}
+      default: 
+         MDFN_printf("dmaLoadB: Unknown register 0x%02X\nPlease report this to the author.", cr);
+         return 0;
+   }
 }
 
 uint16 dmaLoadW(uint8 cr)
 {
-	switch(cr)
-	{
-	case 0x20:	return dmaC[0];	break;
-	case 0x24:	return dmaC[1];	break;
-	case 0x28:	return dmaC[2];	break;
-	case 0x2C:	return dmaC[3];	break;
+   switch(cr)
+   {
+      case 0x20:
+         return dmaC[0];
+         break;
+      case 0x24:
+         return dmaC[1];
+         break;
+      case 0x28:
+         return dmaC[2];
+         break;
+      case 0x2C:
+         return dmaC[3];
+         break;
 
-	default: 
-		MDFN_printf("dmaLoadW: Unknown register 0x%02X\nPlease report this to the author.", cr);
-		return 0;
-	}
+      default: 
+         MDFN_printf("dmaLoadW: Unknown register 0x%02X\nPlease report this to the author.", cr);
+         return 0;
+   }
 }
 
 uint32 dmaLoadL(uint8 cr)
 {
-	switch(cr)
-	{
-	case 0x00: return dmaS[0]; break;	
-	case 0x04: return dmaS[1]; break;	
-	case 0x08: return dmaS[2]; break;	
-	case 0x0C: return dmaS[3]; break;	
+   switch(cr)
+   {
+      case 0x00:
+         return dmaS[0];
+         break;	
+      case 0x04:
+         return dmaS[1];
+         break;
+      case 0x08:
+         return dmaS[2];
+         break;	
+      case 0x0C:
+         return dmaS[3];
+         break;	
+      case 0x10:
+         return dmaD[0];
+         break;
+      case 0x14:
+         return dmaD[1];
+         break;
+      case 0x18:
+         return dmaD[2];
+         break;
+      case 0x1C:
+         return dmaD[3];
+         break;
 
-	case 0x10: return dmaD[0]; break;	
-	case 0x14: return dmaD[1]; break;	
-	case 0x18: return dmaD[2]; break;	
-	case 0x1C: return dmaD[3]; break;
-
-	default: 
-		MDFN_printf("dmaLoadL: Unknown register 0x%02X\nPlease report this to the author.", cr);
-		return 0;
-	}
+      default: 
+         MDFN_printf("dmaLoadL: Unknown register 0x%02X\nPlease report this to the author.", cr);
+         return 0;
+   }
 }
 
 int MDFNNGPCDMA_StateAction(StateMem *sm, int load, int data_only)
 {
- SFORMAT StateRegs[] =
- {
-  SFARRAY32N(dmaS, 4, "DMAS"),
-  SFARRAY32N(dmaD, 4, "DMAD"),
-  SFARRAY16N(dmaC, 4, "DMAC"),
-  SFARRAYN(dmaM, 4, "DMAM"),
-  SFEND
- };
+   SFORMAT StateRegs[] =
+   {
+      SFARRAY32N(dmaS, 4, "DMAS"),
+      SFARRAY32N(dmaD, 4, "DMAD"),
+      SFARRAY16N(dmaC, 4, "DMAC"),
+      SFARRAYN(dmaM, 4, "DMAM"),
+      SFEND
+   };
 
- if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "DMA"))
-  return(0);
+   if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "DMA"))
+      return(0);
 
- return(1); 
+   return(1); 
 }

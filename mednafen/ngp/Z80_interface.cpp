@@ -25,52 +25,52 @@ static bool Z80Enabled;
 
 uint8 Z80_ReadComm(void)
 {
- return(CommByte);
+   return(CommByte);
 }
 
 void Z80_WriteComm(uint8 data)
 {
- CommByte = data;
+   CommByte = data;
 }
 
 static uint8 NGP_z80_readbyte(uint16 address)
 {
-	if (address <= 0xFFF)
-		return loadB(0x7000 + address);
+   if (address <= 0xFFF)
+      return loadB(0x7000 + address);
 
-	if (address == 0x8000)
-	{
-		return CommByte;
-	}
-	return 0;
+   if (address == 0x8000)
+      return CommByte;
+   return 0;
 }
-
-//=============================================================================
 
 static void NGP_z80_writebyte(uint16 address, uint8 value)
 {
-	if (address <= 0x0FFF)
-	{
-		storeB(0x7000 + address, value);
-		return;
-	}
+   if (address <= 0x0FFF)
+   {
+      storeB(0x7000 + address, value);
+      return;
+   }
 
-	if (address == 0x8000)
-	{
-		CommByte = value;
-		return;
-	}
+   if (address == 0x8000)
+   {
+      CommByte = value;
+      return;
+   }
 
-	if (address == 0x4001)	{	Write_SoundChipLeft(value); return; }
-	if (address == 0x4000)	{	Write_SoundChipRight(value); return; }
+   if (address == 0x4001)
+   {
+      Write_SoundChipLeft(value);
+      return; 
+   }
+   if (address == 0x4000)
+   {
+      Write_SoundChipRight(value);
+      return;
+   }
 
-	if (address == 0xC000)
-	{
-		TestIntHDMA(6, 0x0C);
-	}
+   if (address == 0xC000)
+      TestIntHDMA(6, 0x0C);
 }
-
-//=============================================================================
 
 static void NGP_z80_writeport(uint16 port, uint8 value)
 {
@@ -109,40 +109,38 @@ void Z80_reset(void)
 
 void Z80_SetEnable(bool set)
 {
- Z80Enabled = set;
- if(!set)
-  z80_reset();
+   Z80Enabled = set;
+   if(!set)
+      z80_reset();
 }
 
 bool Z80_IsEnabled(void)
 {
- return(Z80Enabled);
+   return(Z80Enabled);
 }
 
 int Z80_RunOP(void)
 {
- if(!Z80Enabled)
-  return(-1);
+   if(!Z80Enabled)
+      return(-1);
 
- return(z80_do_opcode());
+   return(z80_do_opcode());
 }
 
 int MDFNNGPCZ80_StateAction(StateMem *sm, int load, int data_only)
 {
- SFORMAT StateRegs[] =
- {
-  SFVAR(CommByte),
-  SFVAR(Z80Enabled),
-  SFEND
- };
+   SFORMAT StateRegs[] =
+   {
+      SFVAR(CommByte),
+      SFVAR(Z80Enabled),
+      SFEND
+   };
 
- if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "Z80X"))
- {
-  return(0);
- }
+   if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "Z80X"))
+      return(0);
 
- if(!z80_state_action(sm, load, data_only, "Z80"))
-  return(0);
+   if(!z80_state_action(sm, load, data_only, "Z80"))
+      return(0);
 
- return(1);
+   return(1);
 }

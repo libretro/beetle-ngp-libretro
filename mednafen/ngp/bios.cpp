@@ -30,15 +30,15 @@ uint8 ngpc_bios[0x10000];		//Holds bios program data
 
 void reset(void)
 {
-        NGPGfx->power();
-	Z80_reset();
-	reset_int();
-	reset_timers();
+   NGPGfx->power();
+   Z80_reset();
+   reset_int();
+   reset_timers();
 
-	reset_memory();
-	BIOSHLE_Reset();
-	reset_registers();	// TLCS900H registers
-	reset_dma();
+   reset_memory();
+   BIOSHLE_Reset();
+   reset_registers();	// TLCS900H registers
+   reset_dma();
 }
 
 //=============================================================================
@@ -177,61 +177,61 @@ static const uint8 font[0x800] = {
 
 bool bios_install(void)
 {
-	//=== Install the reverse engineered bios
-	int i;
+   //=== Install the reverse engineered bios
+   int i;
 
-	uint32 vectable[] =
-	{
-		0xFF27A2,		//0			VECT_SHUTDOWN
-		0xFF1030,		//1			VECT_CLOCKGEARSET
-		0xFF1440,		//2			VECT_RTCGET
-		0xFF12B4,		//3			?
-		0xFF1222,		//4			VECT_INTLVSET
-		0xFF8D8A,		//5			VECT_SYSFONTSET
-		0xFF6FD8,		//6			VECT_FLASHWRITE
-		0xFF7042,		//7			VECT_FLASHALLERS
-		0xFF7082,		//8			VECT_FLASHERS
-		0xFF149B,		//9			VECT_ALARMSET
-		0xFF1033,		//10		?			
-		0xFF1487,		//11		VECT_ALARMDOWNSET
-		0xFF731F,		//12		?
-		0xFF70CA,		//13		VECT_FLASHPROTECT
-		0xFF17C4,		//14		VECT_GEMODESET	
-		0xFF1032,		//15		?
+   uint32 vectable[] =
+   {
+      0xFF27A2,		//0			VECT_SHUTDOWN
+      0xFF1030,		//1			VECT_CLOCKGEARSET
+      0xFF1440,		//2			VECT_RTCGET
+      0xFF12B4,		//3			?
+      0xFF1222,		//4			VECT_INTLVSET
+      0xFF8D8A,		//5			VECT_SYSFONTSET
+      0xFF6FD8,		//6			VECT_FLASHWRITE
+      0xFF7042,		//7			VECT_FLASHALLERS
+      0xFF7082,		//8			VECT_FLASHERS
+      0xFF149B,		//9			VECT_ALARMSET
+      0xFF1033,		//10		?			
+      0xFF1487,		//11		VECT_ALARMDOWNSET
+      0xFF731F,		//12		?
+      0xFF70CA,		//13		VECT_FLASHPROTECT
+      0xFF17C4,		//14		VECT_GEMODESET	
+      0xFF1032,		//15		?
 
-		0xFF2BBD,		//0x10		VECT_COMINIT	
-		0xFF2C0C,		//0x11		VECT_COMSENDSTART
-		0xFF2C44,		//0x12		VECT_COMRECIVESTART
-		0xFF2C86,		//0x13		VECT_COMCREATEDATA
-		0xFF2CB4,		//0x14		VECT_COMGETDATA
-		0xFF2D27,		//0x15		VECT_COMONRTS
-		0xFF2D33,		//0x16		VECT_COMOFFRTS
-		0xFF2D3A,		//0x17		VECT_COMSENDSTATUS	
-		0xFF2D4E,		//0x18		VECT_COMRECIVESTATUS
-		0xFF2D6C,		//0x19		VECT_COMCREATEBUFDATA
-		0xFF2D85,		//0x1a		VECT_COMGETBUFDATA
-	};
+      0xFF2BBD,		//0x10		VECT_COMINIT	
+      0xFF2C0C,		//0x11		VECT_COMSENDSTART
+      0xFF2C44,		//0x12		VECT_COMRECIVESTART
+      0xFF2C86,		//0x13		VECT_COMCREATEDATA
+      0xFF2CB4,		//0x14		VECT_COMGETDATA
+      0xFF2D27,		//0x15		VECT_COMONRTS
+      0xFF2D33,		//0x16		VECT_COMOFFRTS
+      0xFF2D3A,		//0x17		VECT_COMSENDSTATUS	
+      0xFF2D4E,		//0x18		VECT_COMRECIVESTATUS
+      0xFF2D6C,		//0x19		VECT_COMCREATEBUFDATA
+      0xFF2D85,		//0x1a		VECT_COMGETBUFDATA
+   };
 
-	//System Call Table, install iBIOSHLE instructions
-	for (i = 0; i <= 0x1A; i++)
-	{
-		*(uint32*)(ngpc_bios + 0xFE00 + (i * 4)) = htole32(vectable[i]);
-		ngpc_bios[vectable[i] & 0xFFFF] = 0x1F;	//iBIOSHLE
-	}
+   //System Call Table, install iBIOSHLE instructions
+   for (i = 0; i <= 0x1A; i++)
+   {
+      *(uint32*)(ngpc_bios + 0xFE00 + (i * 4)) = htole32(vectable[i]);
+      ngpc_bios[vectable[i] & 0xFFFF] = 0x1F;	//iBIOSHLE
+   }
 
-	//System Font
-	memcpy(ngpc_bios + 0x8DCF, font, 0x800);
+   //System Font
+   memcpy(ngpc_bios + 0x8DCF, font, 0x800);
 
-	//Default Interrupt handler
-	ngpc_bios[0x23DF] = 0x07;  //RETI
+   //Default Interrupt handler
+   ngpc_bios[0x23DF] = 0x07;  //RETI
 
-	// ==========
-		
-	//Install a Quick and Dirty Bios
-	ngpc_bios[0xFFFE] = 0x68; // - JR 0xFFFFFE (Infinite loop!)
-	ngpc_bios[0xFFFF] = 0xFE;
+   // ==========
 
-	return TRUE;	//Success
+   //Install a Quick and Dirty Bios
+   ngpc_bios[0xFFFE] = 0x68; // - JR 0xFFFFFE (Infinite loop!)
+   ngpc_bios[0xFFFF] = 0xFE;
+
+   return TRUE;	//Success
 }
 
 //=============================================================================
