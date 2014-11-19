@@ -37,19 +37,21 @@
 
 #ifndef __DMA__
 #define __DMA__
+
+#include <stdint.h>
 //=============================================================================
 
 void reset_dma(void);
 
 void DMA_update(int channel);
 
-uint8  dmaLoadB(uint8 cr);
-uint16 dmaLoadW(uint8 cr);
-uint32 dmaLoadL(uint8 cr);
+uint8_t  dmaLoadB(uint8_t cr);
+uint16_t dmaLoadW(uint8_t cr);
+uint32_t dmaLoadL(uint8_t cr);
 
-void dmaStoreB(uint8 cr, uint8 data);
-void dmaStoreW(uint8 cr, uint16 data);
-void dmaStoreL(uint8 cr, uint32 data);
+void dmaStoreB(uint8_t cr, uint8_t data);
+void dmaStoreW(uint8_t cr, uint16_t data);
+void dmaStoreL(uint8_t cr, uint32_t data);
 
 int MDFNNGPCDMA_StateAction(StateMem *sm, int load, int data_only);
 

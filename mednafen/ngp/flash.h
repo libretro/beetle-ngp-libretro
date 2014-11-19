@@ -14,12 +14,13 @@
 
 #ifndef __FLASH__
 #define __FLASH__
-//=============================================================================
+
+#include <stdint.h>
 
 void flash_read(void);
 
 //Marks flash blocks for saving.
-void flash_write(uint32 start_address, uint16 length);
+void flash_write(uint32 start_address, uint16_t length);
 
 //Stores the flash data
 void flash_commit(void);

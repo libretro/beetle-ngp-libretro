@@ -62,9 +62,9 @@
 
 //=============================================================================
 
-static uint32 dmaS[4], dmaD[4];
-static uint16 dmaC[4];
-static uint8 dmaM[4];
+static uint32_t dmaS[4], dmaD[4];
+static uint16_t dmaC[4];
+static uint8_t dmaM[4];
 
 //=============================================================================
 
@@ -80,8 +80,8 @@ void reset_dma(void)
 
 void DMA_update(int channel)
 {
-	uint8 mode = (dmaM[channel] & 0x1C) >> 2;
-	uint8 size = (dmaM[channel] & 0x03);			//byte, word or long
+	uint8_t mode = (dmaM[channel] & 0x1C) >> 2;
+	uint8_t size = (dmaM[channel] & 0x03);			//byte, word or long
 
 	// Correct?
 	if (dmaC[channel] == 0)
@@ -199,7 +199,7 @@ void DMA_update(int channel)
 
 //=============================================================================
 
-void dmaStoreB(uint8 cr, uint8 data)
+void dmaStoreB(uint8_t cr, uint8_t data)
 {
 	switch(cr)
    {
@@ -221,7 +221,7 @@ void dmaStoreB(uint8 cr, uint8 data)
    }
 }
 
-void dmaStoreW(uint8 cr, uint16 data)
+void dmaStoreW(uint8_t cr, uint16_t data)
 {
    switch(cr)
    {
@@ -244,7 +244,7 @@ void dmaStoreW(uint8 cr, uint16 data)
    }
 }
 
-void dmaStoreL(uint8 cr, uint32 data)
+void dmaStoreL(uint8_t cr, uint32_t data)
 {
    switch(cr)
    {
@@ -281,7 +281,7 @@ void dmaStoreL(uint8 cr, uint32 data)
 
 //=============================================================================
 
-uint8 dmaLoadB(uint8 cr)
+uint8_t dmaLoadB(uint8_t cr)
 {
 
    switch(cr)
@@ -305,7 +305,7 @@ uint8 dmaLoadB(uint8 cr)
    }
 }
 
-uint16 dmaLoadW(uint8 cr)
+uint16_t dmaLoadW(uint8_t cr)
 {
    switch(cr)
    {
@@ -328,7 +328,7 @@ uint16 dmaLoadW(uint8 cr)
    }
 }
 
-uint32 dmaLoadL(uint8 cr)
+uint32_t dmaLoadL(uint8_t cr)
 {
    switch(cr)
    {

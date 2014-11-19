@@ -31,18 +31,18 @@
 typedef struct
 {
    //Flash Id
-   uint16 valid_flash_id;		// = FLASH_VALID_ID
+   uint16_t valid_flash_id;		// = FLASH_VALID_ID
 
-   uint16 block_count;			//Number of flash data blocks
+   uint16_t block_count;			//Number of flash data blocks
 
-   uint32 total_file_length;		// header + block[0 - block_count]
+   uint32_t total_file_length;		// header + block[0 - block_count]
 
 } FlashFileHeader;
 
 typedef struct
 {
-	uint32 start_address;		// 24 bit address
-	uint16 data_length;		// length of following data
+	uint32_t start_address;		// 24 bit address
+	uint16_t data_length;		// length of following data
 
 	//Followed by data_length bytes of the actual data.
 
@@ -52,7 +52,7 @@ typedef struct
 // Local Data
 //-----------------------------------------------------------------------------
 static FlashFileBlockHeader	blocks[256];
-static uint16 block_count;
+static uint16_t block_count;
 
 //=============================================================================
 
@@ -71,8 +71,8 @@ static void optimise_blocks(void)
          //Swap?
          if (blocks[i].start_address > blocks[j].start_address)
          {
-            uint32 temp32;
-            uint16 temp16;
+            uint32_t temp32;
+            uint16_t temp16;
 
             temp32 = blocks[i].start_address;
             blocks[i].start_address = blocks[j].start_address;
@@ -96,7 +96,7 @@ static void optimise_blocks(void)
       {
          //Extend the first block
          blocks[i].data_length = 
-            (uint16)((blocks[i+1].start_address + blocks[i+1].data_length) - 
+            (uint16_t)((blocks[i+1].start_address + blocks[i+1].data_length) - 
                   blocks[i].start_address);
 
          //Remove the next one.
@@ -114,46 +114,46 @@ static void optimise_blocks(void)
    }
 }
 
-void do_flash_read(uint8 *flashdata)
+void do_flash_read(uint8_t *flashdata)
 {
-	FlashFileHeader header;
-	uint8 *fileptr;
-        uint16 i;
-        uint32 j;
-	bool PREV_memory_unlock_flash_write = memory_unlock_flash_write; // kludge, hack, FIXME
+   FlashFileHeader header;
+   uint8_t *fileptr;
+   uint16_t i;
+   uint32_t j;
+   bool PREV_memory_unlock_flash_write = memory_unlock_flash_write; // kludge, hack, FIXME
 
-	memcpy(&header, flashdata, sizeof(header));
+   memcpy(&header, flashdata, sizeof(header));
 
-	//Read header
-	block_count = header.block_count;
-	fileptr = flashdata + sizeof(FlashFileHeader);
+   //Read header
+   block_count = header.block_count;
+   fileptr = flashdata + sizeof(FlashFileHeader);
 
-	//Copy blocks
-	memory_unlock_flash_write = TRUE;
-	for (i = 0; i < block_count; i++)
-	{
-		FlashFileBlockHeader* current = (FlashFileBlockHeader*)fileptr;
-		fileptr += sizeof(FlashFileBlockHeader);
-		
-		blocks[i].start_address = current->start_address;
-		blocks[i].data_length = current->data_length;
+   //Copy blocks
+   memory_unlock_flash_write = TRUE;
+   for (i = 0; i < block_count; i++)
+   {
+      FlashFileBlockHeader* current = (FlashFileBlockHeader*)fileptr;
+      fileptr += sizeof(FlashFileBlockHeader);
 
-		//Copy data
-		for (j = 0; j < blocks[i].data_length; j++)
-		{
-			storeB(blocks[i].start_address + j, *fileptr);
-			fileptr++;
-		}
-	}
-	memory_unlock_flash_write = PREV_memory_unlock_flash_write;
+      blocks[i].start_address = current->start_address;
+      blocks[i].data_length = current->data_length;
 
-	optimise_blocks();		//Optimise
+      //Copy data
+      for (j = 0; j < blocks[i].data_length; j++)
+      {
+         storeB(blocks[i].start_address + j, *fileptr);
+         fileptr++;
+      }
+   }
+   memory_unlock_flash_write = PREV_memory_unlock_flash_write;
+
+   optimise_blocks();		//Optimise
 
 
-	//Output block list...
-/*	for (i = 0; i < block_count; i++)
-		system_debug_message("flash block: %06X, %d bytes", 
-			blocks[i].start_address, blocks[i].data_length);*/
+   //Output block list...
+   /*	for (i = 0; i < block_count; i++)
+      system_debug_message("flash block: %06X, %d bytes", 
+      blocks[i].start_address, blocks[i].data_length);*/
 }
 
 
@@ -163,13 +163,13 @@ void do_flash_read(uint8 *flashdata)
 void flash_read(void)
 {
    FlashFileHeader header;
-   uint8* flashdata;
+   uint8_t* flashdata;
 
    //Initialise the internal flash configuration
    block_count = 0;
 
    //Read flash buffer header
-   if (system_io_flash_read((uint8*)&header, sizeof(FlashFileHeader)) == FALSE)
+   if (system_io_flash_read((uint8_t*)&header, sizeof(FlashFileHeader)) == FALSE)
       return; //Silent failure - no flash data yet.
 
    //Verify correct flash id
@@ -180,7 +180,7 @@ void flash_read(void)
    }
 
    //Read the flash data
-   flashdata = (uint8*)malloc(header.total_file_length * sizeof(uint8));
+   flashdata = (uint8_t*)malloc(header.total_file_length * sizeof(uint8_t));
    system_io_flash_read(flashdata, header.total_file_length);
 
    do_flash_read(flashdata);
@@ -192,9 +192,9 @@ void flash_read(void)
 //-----------------------------------------------------------------------------
 // flash_write()
 //-----------------------------------------------------------------------------
-void flash_write(uint32 start_address, uint16 length)
+void flash_write(uint32_t start_address, uint16_t length)
 {
-   uint16 i;
+   uint16_t i;
 
    //Now we need a new flash command before the next flash write will work!
    memory_flash_command = FALSE;
@@ -223,11 +223,11 @@ void flash_write(uint32 start_address, uint16 length)
    block_count++;
 }
 
-static uint8 *make_flash_commit(int32 *length)
+static uint8_t *make_flash_commit(int32_t *length)
 {
    int i;
    FlashFileHeader header;
-   uint8 *flashdata, *fileptr;
+   uint8_t *flashdata, *fileptr;
 
    //No flash data?
    if (block_count == 0)
@@ -247,7 +247,7 @@ static uint8 *make_flash_commit(int32 *length)
    }
 
    //Write the flash data
-   flashdata = (uint8*)malloc(header.total_file_length * sizeof(uint8));
+   flashdata = (uint8_t*)malloc(header.total_file_length * sizeof(uint8_t));
 
    //Copy header
    memcpy(flashdata, &header, sizeof(FlashFileHeader));
@@ -256,7 +256,7 @@ static uint8 *make_flash_commit(int32 *length)
    //Copy blocks
    for (i = 0; i < block_count; i++)
    {
-      uint32 j;
+      uint32_t j;
 
       memcpy(fileptr, &blocks[i], sizeof(FlashFileBlockHeader));
       fileptr += sizeof(FlashFileBlockHeader);
@@ -275,8 +275,8 @@ static uint8 *make_flash_commit(int32 *length)
 
 void flash_commit(void)
 {
-   int32 length = 0;
-   uint8 *flashdata = make_flash_commit(&length);
+   int32_t length = 0;
+   uint8_t *flashdata = make_flash_commit(&length);
 
    if(flashdata)
    {
@@ -287,8 +287,8 @@ void flash_commit(void)
 
 int FLASH_StateAction(StateMem *sm, int load, int data_only)
 {
-   int32 FlashLength = 0;
-   uint8 *flashdata = NULL;
+   int32_t FlashLength = 0;
+   uint8_t *flashdata = NULL;
 
    if(!load)
    {
@@ -311,7 +311,7 @@ int FLASH_StateAction(StateMem *sm, int load, int data_only)
    }
 
    if(load)
-      flashdata = (uint8 *)malloc(FlashLength);
+      flashdata = (uint8_t *)malloc(FlashLength);
 
    SFORMAT FLSH_StateRegs[] =
    {
