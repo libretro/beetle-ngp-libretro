@@ -92,24 +92,32 @@ static void MULi()
 
 static void MULSi()
 {
-	get_rr_Name();
+   get_rr_Name();
 
-	switch(size)
-	{
-	case 0:	sprintf(instr, "MULS.b %s,0x%02X", str_r, get8_dis());	break;
-	case 1: sprintf(instr, "MULS.w %s,0x%04X", str_r, get16_dis());	break;
-	}
+   switch(size)
+   {
+      case 0:
+         sprintf(instr, "MULS.b %s,0x%02X", str_r, get8_dis());
+         break;
+      case 1:
+         sprintf(instr, "MULS.w %s,0x%04X", str_r, get16_dis());
+         break;
+   }
 }
 
-static void DIVi()
+static void DIVi(void)
 {
-	get_rr_Name();
+   get_rr_Name();
 
-	switch(size)
-	{
-	case 0:	sprintf(instr, "DIV.b %s,0x%02X", str_r, get8_dis());	break;
-	case 1: sprintf(instr, "DIV.w %s,0x%04X", str_r, get16_dis());	break;
-	}
+   switch(size)
+   {
+      case 0:
+         sprintf(instr, "DIV.b %s,0x%02X", str_r, get8_dis());
+         break;
+      case 1:
+         sprintf(instr, "DIV.w %s,0x%04X", str_r, get16_dis());
+         break;
+   }
 }
 
 static void DIVSi()

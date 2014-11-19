@@ -124,17 +124,23 @@ static void ExDec()
 	}
 }
 
-static void ExInc()
+static void ExInc(void)
 {
-	uint8 data = get8_dis();
-	uint8 r32 = data & 0xFC;
+   uint8 data = get8_dis();
+   uint8 r32 = data & 0xFC;
 
-	switch(data & 3)
-	{
-	case 0:	sprintf(extra, "%s++1", RCN_fetch(2, r32 >> 2));	break;
-	case 1:	sprintf(extra, "%s++2", RCN_fetch(2, r32 >> 2));	break;
-	case 2:	sprintf(extra, "%s++4", RCN_fetch(2, r32 >> 2));	break;
-	}
+   switch(data & 3)
+   {
+      case 0:
+         sprintf(extra, "%s++1", RCN_fetch(2, r32 >> 2));
+         break;
+      case 1:
+         sprintf(extra, "%s++2", RCN_fetch(2, r32 >> 2));
+         break;
+      case 2:
+         sprintf(extra, "%s++4", RCN_fetch(2, r32 >> 2));
+         break;
+   }
 }
 
 static void ExRCB()

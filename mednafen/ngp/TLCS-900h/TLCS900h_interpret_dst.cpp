@@ -60,7 +60,7 @@ namespace TLCS900H
 //=========================================================================
 
 //===== LD (mem),#
-void dstLDBi()
+void dstLDBi(void)
 {
 	storeB(mem, FETCH8);
 	cycles = 5;
@@ -240,76 +240,68 @@ void dstTSET()
 }
 
 //===== RES #3,(mem)
-void dstRES()
+void dstRES(void)
 {
 	storeB(mem, loadB(mem) & (~(1 << R)));
 	cycles = 8;
 }
 
 //===== SET #3,(mem)
-void dstSET()
+void dstSET(void)
 {
 	storeB(mem, loadB(mem) | (1 << R));
 	cycles = 8;
 }
 
 //===== CHG #3,(mem)
-void dstCHG()
+void dstCHG(void)
 {
 	storeB(mem, loadB(mem) ^ (1 << R));
 	cycles = 8;
 }
 
 //===== BIT #3,(mem)
-void dstBIT()
+void dstBIT(void)
 {
-	SETFLAG_Z(! (loadB(mem) & (1 << R)) );
-	SETFLAG_H1;
-	SETFLAG_N0;
-	cycles = 8;
+   SETFLAG_Z(! (loadB(mem) & (1 << R)) );
+   SETFLAG_H1;
+   SETFLAG_N0;
+   cycles = 8;
 }
 
 //===== JP cc,mem
-void dstJP()
+void dstJP(void)
 {
-	if (conditionCode(second & 0xF))
-	{
-		pc = mem;
-		cycles = 9;
-	}
-	else
-	{
-		cycles = 6;
-	}
+   cycles = 6;
+   if (conditionCode(second & 0xF))
+   {
+      pc = mem;
+      cycles += 3;
+   }
 }
 
 //===== CALL cc,mem
-void dstCALL()
+void dstCALL(void)
 {
-	if (conditionCode(second & 0xF))
-	{
-		push32(pc);
-		pc = mem;
-		cycles = 12;
-	}
-	else
-	{
-		cycles = 6;
-	}
+   cycles = 6;
+   if (conditionCode(second & 0xF))
+   {
+      push32(pc);
+      pc = mem;
+      cycles += 6;
+   }
 }
 
 //===== RET cc
-void dstRET()
+void dstRET(void)
 {
-	if (conditionCode(second & 0xF))
-	{
-		pc = pop32();
-		cycles = 12;
-	}
-	else
-	{
-		cycles = 6;
-	}
+   cycles = 6;
+   if (conditionCode(second & 0xF))
+   {
+      pc = pop32();
+      cycles += 6;
+   }
 }
+
 };
 //=============================================================================

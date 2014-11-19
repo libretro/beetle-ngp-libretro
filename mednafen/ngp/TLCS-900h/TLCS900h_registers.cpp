@@ -151,8 +151,7 @@ uint8 statusIFF(void)
 
 	if (iff == 1)
 		return 0;
-	else
-		return iff;
+   return iff;
 }
 
 void setStatusIFF(uint8 iff)

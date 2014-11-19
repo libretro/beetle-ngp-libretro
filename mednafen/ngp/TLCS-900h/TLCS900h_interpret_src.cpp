@@ -76,18 +76,22 @@ namespace TLCS900H
 //=========================================================================
 
 //===== PUSH (mem)
-void srcPUSH()
+void srcPUSH(void)
 {
-	switch(size)
-	{
-	case 0:	push8(loadB(mem));	break;
-	case 1: push16(loadW(mem)); break;
-	}
-	cycles = 7;
+   switch(size)
+   {
+      case 0:
+         push8(loadB(mem));
+         break;
+      case 1:
+         push16(loadW(mem));
+         break;
+   }
+   cycles = 7;
 }
 
 //===== RLD A,(mem)
-void srcRLD()
+void srcRLD(void)
 {
 	uint8 al = REGA & 0xF, m, mh, ml;
 
@@ -131,66 +135,75 @@ void srcRRD()
 //===== LDI
 void srcLDI()
 {
-	uint8 dst = 2/*XDE*/, src = 3/*XHL*/;
-	if ((first & 0xF) == 5) { dst = 4/*XIX*/; src = 5/*XIY*/; }
+   uint8 dst = 2/*XDE*/, src = 3/*XHL*/;
+   if ((first & 0xF) == 5)
+   {
+      dst = 4/*XIX*/;
+      src = 5/*XIY*/;
+   }
 
-	switch(size)
-	{
-	case 0:
-		storeB(regL(dst), loadB(regL(src)));
-		regL(dst) += 1;
-		regL(src) += 1;
-		break;
+   switch(size)
+   {
+      case 0:
+         storeB(regL(dst), loadB(regL(src)));
+         regL(dst) += 1;
+         regL(src) += 1;
+         break;
 
-	case 1:
-		storeW(regL(dst), loadW(regL(src)));
-		regL(dst) += 2;
-		regL(src) += 2;
-		break;
-	}
+      case 1:
+         storeW(regL(dst), loadW(regL(src)));
+         regL(dst) += 2;
+         regL(src) += 2;
+         break;
+   }
 
-	REGBC --;
-	SETFLAG_V(REGBC);
+   REGBC --;
+   SETFLAG_V(REGBC);
 
-	SETFLAG_H0;
-	SETFLAG_N0;
-	cycles = 10;
+   SETFLAG_H0;
+   SETFLAG_N0;
+   cycles = 10;
 }
 
 //===== LDIR
 void srcLDIR()
 {
-	uint8 dst = 2/*XDE*/, src = 3/*XHL*/;
-	if ((first & 0xF) == 5) { dst = 4/*XIX*/; src = 5/*XIY*/; }
+   uint8 dst = 2/*XDE*/, src = 3/*XHL*/;
+   if ((first & 0xF) == 5)
+   {
+      dst = 4/*XIX*/;
+      src = 5/*XIY*/;
+   }
 
-	cycles = 10;
+   cycles = 10;
 
-	do
-	{
-		switch(size)
-		{
-		case 0:	if (debug_abort_memory == FALSE)
-					storeB(regL(dst), loadB(regL(src)));
-			regL(dst) += 1;
-			regL(src) += 1;
-			break;
+   do
+   {
+      switch(size)
+      {
+         case 0:
+            if (debug_abort_memory == FALSE)
+               storeB(regL(dst), loadB(regL(src)));
+            regL(dst) += 1;
+            regL(src) += 1;
+            break;
+         case 1:
+            if (debug_abort_memory == FALSE)
+               storeW(regL(dst), loadW(regL(src)));
+            regL(dst) += 2;
+            regL(src) += 2;
+            break;
+      }
 
-		case 1:	if (debug_abort_memory == FALSE)
-					storeW(regL(dst), loadW(regL(src)));
-			regL(dst) += 2;
-			regL(src) += 2;
-			break;
-		}
+      REGBC --;
+      SETFLAG_V(REGBC);
 
-		REGBC --;
-		SETFLAG_V(REGBC);
+      cycles += 14;
+   }
+   while (FLAG_V);
 
-		cycles += 14;
-	}
-	while (FLAG_V);
-
-	SETFLAG_H0;
-	SETFLAG_N0;
+   SETFLAG_H0;
+   SETFLAG_N0;
 }
 
 //===== LDD
@@ -1240,27 +1253,43 @@ void srcORmR()
 }
 
 //===== CP R,(mem)
-void srcCPRm()
+void srcCPRm(void)
 {
-	switch(size)
-	{
-	case 0: generic_SUB_B(regB(R), loadB(mem)); cycles = 4; break;
-	case 1: generic_SUB_W(regW(R), loadW(mem)); cycles = 4; break;
-	case 2: generic_SUB_L(regL(R), loadL(mem)); cycles = 6; break;
-	}
+   switch(size)
+   {
+      case 0:
+         generic_SUB_B(regB(R), loadB(mem));
+         cycles = 4;
+         break;
+      case 1:
+         generic_SUB_W(regW(R), loadW(mem));
+         cycles = 4;
+         break;
+      case 2:
+         generic_SUB_L(regL(R), loadL(mem));
+         cycles = 6;
+         break;
+   }
 }
 
 //===== CP (mem),R
-void srcCPmR()
+void srcCPmR(void)
 {
-	switch(size)
-	{
-	case 0: generic_SUB_B(loadB(mem), regB(R));		break;
-	case 1: generic_SUB_W(loadW(mem), regW(R));		break;
-	case 2: generic_SUB_L(loadL(mem), regL(R));		break;
-	}
-	
-	cycles = 6;
+   switch(size)
+   {
+      case 0:
+         generic_SUB_B(loadB(mem), regB(R));
+         break;
+      case 1:
+         generic_SUB_W(loadW(mem), regW(R));
+         break;
+      case 2:
+         generic_SUB_L(loadL(mem), regL(R));
+         break;
+   }
+
+   cycles = 6;
 }
+
 };
 //=============================================================================

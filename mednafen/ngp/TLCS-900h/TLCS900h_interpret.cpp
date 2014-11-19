@@ -145,13 +145,44 @@ void parityW(uint16 value)
 
 //=========================================================================
 
-void push8(uint8 data)	{ REGXSP -= 1;	storeB(REGXSP, data);}
-void push16(uint16 data)	{ REGXSP -= 2;	storeW(REGXSP, data);}
-void push32(uint32 data)	{ REGXSP -= 4;	storeL(REGXSP, data);}
+void push8(uint8 data)
+{
+   REGXSP -= 1;
+   storeB(REGXSP, data);
+}
 
-uint8 pop8(void)	 {  uint8 temp = loadB(REGXSP); REGXSP += 1; return temp;}
-uint16 pop16(void) { uint16 temp = loadW(REGXSP); REGXSP += 2; return temp;}
-uint32 pop32(void) { uint32 temp = loadL(REGXSP); REGXSP += 4; return temp;}
+void push16(uint16 data)
+{
+   REGXSP -= 2;
+   storeW(REGXSP, data);
+}
+
+void push32(uint32 data)
+{
+   REGXSP -= 4;
+   storeL(REGXSP, data);
+}
+
+uint8 pop8(void)
+{
+   uint8 temp = loadB(REGXSP);
+   REGXSP += 1;
+   return temp;
+}
+
+uint16 pop16(void)
+{
+   uint16 temp = loadW(REGXSP);
+   REGXSP += 2;
+   return temp;
+}
+
+uint32 pop32(void)
+{
+   uint32 temp = loadL(REGXSP);
+   REGXSP += 4;
+   return temp;
+}
 
 //=============================================================================
 
@@ -355,7 +386,13 @@ uint8 generic_SUB_B(uint8 dst, uint8 src)
 
 	if ((((int8)dst >= 0) && ((int8)src < 0) && ((int8)result < 0)) ||
 		(((int8)dst < 0) && ((int8)src >= 0) && ((int8)result >= 0)))
-	{SETFLAG_V1} else {SETFLAG_V0}
+	{
+      SETFLAG_V1
+   }
+   else
+   {
+      SETFLAG_V0
+   }
 
 	SETFLAG_N1;
 	SETFLAG_C(resultC > 0xFF);
@@ -465,30 +502,74 @@ uint32 generic_SBC_L(uint32 dst, uint32 src)
 
 bool conditionCode(int cc)
 {
-	switch(cc)
-	{
-	case 0:	return 0;	//(F)
-	case 1:	if (FLAG_S ^ FLAG_V) return 1; else return 0;	//(LT)
-	case 2:	if (FLAG_Z | (FLAG_S ^ FLAG_V)) return 1; else return 0;	//(LE)
-	case 3:	if (FLAG_C | FLAG_Z) return 1; else return 0;	//(ULE)
-	case 4: if (FLAG_V) return 1; else return 0;	//(OV)
-	case 5:	if (FLAG_S) return 1; else return 0;	//(MI)
-	case 6:	if (FLAG_Z) return 1; else return 0;	//(Z)
-	case 7:	if (FLAG_C) return 1; else return 0;	//(C)
-	case 8:	return 1;	//always True														
-	case 9:	if (FLAG_S ^ FLAG_V) return 0; else return 1;	//(GE)
-	case 10:if (FLAG_Z | (FLAG_S ^ FLAG_V)) return 0; else return 1;	//(GT)
-	case 11:if (FLAG_C | FLAG_Z) return 0; else return 1;	//(UGT)
-	case 12:if (FLAG_V) return 0; else return 1;	//(NOV)
-	case 13:if (FLAG_S) return 0; else return 1;	//(PL)
-	case 14:if (FLAG_Z) return 0; else return 1;	//(NZ)
-	case 15:if (FLAG_C) return 0; else return 1;	//(NC)
-	}
+   switch(cc)
+   {
+      case 0:
+         return 0;	//(F)
+      case 1:
+         if (FLAG_S ^ FLAG_V)
+            return 1;
+         return 0;	//(LT)
+      case 2:
+         if (FLAG_Z | (FLAG_S ^ FLAG_V))
+            return 1;
+         return 0;	//(LE)
+      case 3:
+         if (FLAG_C | FLAG_Z)
+            return 1;
+         return 0;	//(ULE)
+      case 4:
+         if (FLAG_V)
+            return 1;
+         return 0;	//(OV)
+      case 5:
+         if (FLAG_S)
+            return 1;
+         return 0;	//(MI)
+      case 6:
+         if (FLAG_Z)
+            return 1;
+         return 0;	//(Z)
+      case 7:
+         if (FLAG_C)
+            return 1;
+         return 0;	//(C)
+      case 8:
+         return 1;	//always True														
+      case 9:
+         if (FLAG_S ^ FLAG_V)
+            return 0;
+         return 1;	//(GE)
+      case 10:
+         if (FLAG_Z | (FLAG_S ^ FLAG_V))
+            return 0;
+         return 1;	//(GT)
+      case 11:
+         if (FLAG_C | FLAG_Z)
+            return 0;
+         return 1;	//(UGT)
+      case 12:
+         if (FLAG_V)
+            return 0;
+         return 1;	//(NOV)
+      case 13:
+         if (FLAG_S)
+            return 0;
+         return 1;	//(PL)
+      case 14:
+         if (FLAG_Z)
+            return 0;
+         return 1;	//(NZ)
+      case 15:
+         if (FLAG_C)
+            return 0;
+         return 1;	//(NC)
+   }
 
 #ifdef NEOPOP_DEBUG
-	system_debug_message("Unknown Condition Code %d", cc);
+   system_debug_message("Unknown Condition Code %d", cc);
 #endif
-	return FALSE;
+   return FALSE;
 }
 
 //=============================================================================
@@ -530,34 +611,54 @@ uint8 get_rr_Target(void)
 
 uint8 get_RR_Target(void)
 {
-	uint8 target = 0x80;
+   uint8 target = 0x80;
 
-	//Create a regCode
-	switch(second & 7)
-	{
-	case 0: if (size == 1)	target = 0xE0;	break;
-	case 1:	
-		if (size == 0)	target = 0xE0;
-		if (size == 1)	target = 0xE4;
-		break;
-	case 2: if (size == 1)	target = 0xE8;	break;
-	case 3:
-		if (size == 0)	target = 0xE4;
-		if (size == 1)	target = 0xEC;
-		break;
-	case 4: if (size == 1)	target = 0xF0;	break;
-	case 5:	
-		if (size == 0)	target = 0xE8;
-		if (size == 1)	target = 0xF4;
-		break;
-	case 6: if (size == 1)	target = 0xF8;	break;
-	case 7:
-		if (size == 0)	target = 0xEC;
-		if (size == 1)	target = 0xFC;
-		break;
-	}
+   //Create a regCode
+   switch(second & 7)
+   {
+      case 0:
+         if (size == 1)
+            target = 0xE0;
+         break;
+      case 1:	
+         if (size == 0)
+            target = 0xE0;
+         if (size == 1)
+            target = 0xE4;
+         break;
+      case 2:
+         if (size == 1)
+            target = 0xE8;
+         break;
+      case 3:
+         if (size == 0)
+            target = 0xE4;
+         if (size == 1)
+            target = 0xEC;
+         break;
+      case 4:
+         if (size == 1)
+            target = 0xF0;
+         break;
+      case 5:	
+         if (size == 0)
+            target = 0xE8;
+         if (size == 1)
+            target = 0xF4;
+         break;
+      case 6:
+         if (size == 1)
+            target = 0xF8;
+         break;
+      case 7:
+         if (size == 0)
+            target = 0xEC;
+         if (size == 1)
+            target = 0xFC;
+         break;
+   }
 
-	return target;
+   return target;
 }
 
 //=========================================================================
@@ -580,11 +681,25 @@ static void ExXIYd()	{mem = regL(5) + (int8)FETCH8; cycles_extra = 2;}
 static void ExXIZd()	{mem = regL(6) + (int8)FETCH8; cycles_extra = 2;}
 static void ExXSPd()	{mem = regL(7) + (int8)FETCH8; cycles_extra = 2;}
 
-static void Ex8()		{mem = FETCH8;		cycles_extra = 2;}
-static void Ex16()		{mem = fetch16();	cycles_extra = 2;}
-static void Ex24()		{mem = fetch24();	cycles_extra = 3;}
+static void Ex8(void)
+{
+   mem = FETCH8;
+   cycles_extra = 2;
+}
 
-static void ExR32()
+static void Ex16(void)
+{
+   mem = fetch16();
+   cycles_extra = 2;
+}
+
+static void Ex24(void)
+{
+   mem = fetch24();
+   cycles_extra = 3;
+}
+
+static void ExR32(void)
 {
 	uint8 data = FETCH8;
 
@@ -618,10 +733,9 @@ static void ExR32()
 
 	cycles_extra = 5;
 
+   mem = rCodeL(data);
 	if ((data & 3) == 1)
-		mem = rCodeL(data) + (int16)fetch16();
-	else
-		mem = rCodeL(data);
+		mem += (int16)fetch16();
 }
 
 static void ExDec()
@@ -641,17 +755,26 @@ static void ExDec()
 
 static void ExInc()
 {
-	uint8 data = FETCH8;
-	uint8 r32 = data & 0xFC;
+   uint8 data = FETCH8;
+   uint8 r32 = data & 0xFC;
 
-	cycles_extra = 3;
+   cycles_extra = 3;
 
-	switch(data & 3)
-	{
-	case 0:	mem = rCodeL(r32);	rCodeL(r32) += 1;		break;
-	case 1:	mem = rCodeL(r32);	rCodeL(r32) += 2;		break;
-	case 2:	mem = rCodeL(r32);	rCodeL(r32) += 4;		break;
-	}
+   switch(data & 3)
+   {
+      case 0:
+         mem = rCodeL(r32);
+         rCodeL(r32) += 1;
+         break;
+      case 1:
+         mem = rCodeL(r32);
+         rCodeL(r32) += 2;
+         break;
+      case 2:
+         mem = rCodeL(r32);
+         rCodeL(r32) += 4;
+         break;
+   }
 }
 
 static void ExRC()
@@ -868,7 +991,7 @@ static uint8 rCodeConversionB[8] = { 0xE1, 0xE0, 0xE5, 0xE4, 0xE9, 0xE8, 0xED, 0
 static uint8 rCodeConversionW[8] = { 0xE0, 0xE4, 0xE8, 0xEC, 0xF0, 0xF4, 0xF8, 0xFC };
 static uint8 rCodeConversionL[8] = { 0xE0, 0xE4, 0xE8, 0xEC, 0xF0, 0xF4, 0xF8, 0xFC };
 
-static void reg_B()
+static void reg_B(void)
 {
 	second = FETCH8;			//Get the second opcode
 	R = second & 7;
@@ -883,7 +1006,7 @@ static void reg_B()
 	(*regDecode[second])();		//Call
 }
 
-static void reg_W()
+static void reg_W(void)
 {
 	second = FETCH8;			//Get the second opcode
 	R = second & 7;
@@ -898,7 +1021,7 @@ static void reg_W()
 	(*regDecode[second])();		//Call
 }
 
-static void reg_L()
+static void reg_L(void)
 {
 	second = FETCH8;			//Get the second opcode
 	R = second & 7;
