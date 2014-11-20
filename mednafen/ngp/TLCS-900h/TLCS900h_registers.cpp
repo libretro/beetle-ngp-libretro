@@ -69,17 +69,155 @@ uint8 f_dash;
 //Bank Data
 uint8* gprMapB[4][8] =
 {
-	#include "TLCS900h_registers_mapB.h"
+   //Bank 0
+   {
+      (uint8*)&(gprBank[0][0]) + BYTE1,
+      (uint8*)&(gprBank[0][0]) + BYTE0,
+      (uint8*)&(gprBank[0][1]) + BYTE1,
+      (uint8*)&(gprBank[0][1]) + BYTE0,
+      (uint8*)&(gprBank[0][2]) + BYTE1,
+      (uint8*)&(gprBank[0][2]) + BYTE0,
+      (uint8*)&(gprBank[0][3]) + BYTE1,
+      (uint8*)&(gprBank[0][3]) + BYTE0,
+   },
+
+   //Bank 1
+   {
+      (uint8*)&(gprBank[1][0]) + BYTE1,
+      (uint8*)&(gprBank[1][0]) + BYTE0,
+      (uint8*)&(gprBank[1][1]) + BYTE1,
+      (uint8*)&(gprBank[1][1]) + BYTE0,
+      (uint8*)&(gprBank[1][2]) + BYTE1,
+      (uint8*)&(gprBank[1][2]) + BYTE0,
+      (uint8*)&(gprBank[1][3]) + BYTE1,
+      (uint8*)&(gprBank[1][3]) + BYTE0,
+   },
+
+   //Bank 2
+   {
+      (uint8*)&(gprBank[2][0]) + BYTE1,
+      (uint8*)&(gprBank[2][0]) + BYTE0,
+      (uint8*)&(gprBank[2][1]) + BYTE1,
+      (uint8*)&(gprBank[2][1]) + BYTE0,
+      (uint8*)&(gprBank[2][2]) + BYTE1,
+      (uint8*)&(gprBank[2][2]) + BYTE0,
+      (uint8*)&(gprBank[2][3]) + BYTE1,
+      (uint8*)&(gprBank[2][3]) + BYTE0,
+   },
+
+   //Bank 3
+   {
+      (uint8*)&(gprBank[3][0]) + BYTE1,
+      (uint8*)&(gprBank[3][0]) + BYTE0,
+      (uint8*)&(gprBank[3][1]) + BYTE1,
+      (uint8*)&(gprBank[3][1]) + BYTE0,
+      (uint8*)&(gprBank[3][2]) + BYTE1,
+      (uint8*)&(gprBank[3][2]) + BYTE0,
+      (uint8*)&(gprBank[3][3]) + BYTE1,
+      (uint8*)&(gprBank[3][3]) + BYTE0,
+   }
 };
 
 uint16* gprMapW[4][8] =
 {
-	#include "TLCS900h_registers_mapW.h"
+   //Bank 0
+   {
+      (uint16*)(((uint8*)&gprBank[0][0]) + WORD0),
+      (uint16*)(((uint8*)&gprBank[0][1]) + WORD0),
+      (uint16*)(((uint8*)&gprBank[0][2]) + WORD0),
+      (uint16*)(((uint8*)&gprBank[0][3]) + WORD0),
+      (uint16*)(((uint8*)&gpr[0]) + WORD0),
+      (uint16*)(((uint8*)&gpr[1]) + WORD0),
+      (uint16*)(((uint8*)&gpr[2]) + WORD0),
+      (uint16*)(((uint8*)&gpr[3]) + WORD0),
+   },
+
+   //Bank 1
+   {
+      (uint16*)(((uint8*)&gprBank[1][0]) + WORD0),
+      (uint16*)(((uint8*)&gprBank[1][1]) + WORD0),
+      (uint16*)(((uint8*)&gprBank[1][2]) + WORD0),
+      (uint16*)(((uint8*)&gprBank[1][3]) + WORD0),
+      (uint16*)(((uint8*)&gpr[0]) + WORD0),
+      (uint16*)(((uint8*)&gpr[1]) + WORD0),
+      (uint16*)(((uint8*)&gpr[2]) + WORD0),
+      (uint16*)(((uint8*)&gpr[3]) + WORD0),
+   },
+
+   //Bank 2
+   {
+      (uint16*)(((uint8*)&gprBank[2][0]) + WORD0),
+      (uint16*)(((uint8*)&gprBank[2][1]) + WORD0),
+      (uint16*)(((uint8*)&gprBank[2][2]) + WORD0),
+      (uint16*)(((uint8*)&gprBank[2][3]) + WORD0),
+      (uint16*)(((uint8*)&gpr[0]) + WORD0),
+      (uint16*)(((uint8*)&gpr[1]) + WORD0),
+      (uint16*)(((uint8*)&gpr[2]) + WORD0),
+      (uint16*)(((uint8*)&gpr[3]) + WORD0),
+   },
+
+   //Bank 3
+   {
+      (uint16*)(((uint8*)&gprBank[3][0]) + WORD0),
+      (uint16*)(((uint8*)&gprBank[3][1]) + WORD0),
+      (uint16*)(((uint8*)&gprBank[3][2]) + WORD0),
+      (uint16*)(((uint8*)&gprBank[3][3]) + WORD0),
+      (uint16*)(((uint8*)&gpr[0]) + WORD0),
+      (uint16*)(((uint8*)&gpr[1]) + WORD0),
+      (uint16*)(((uint8*)&gpr[2]) + WORD0),
+      (uint16*)(((uint8*)&gpr[3]) + WORD0),
+   },
 };
 
 uint32* gprMapL[4][8] =
 {
-	#include "TLCS900h_registers_mapL.h"
+   //Bank 0
+   {
+      (uint32*)&(gprBank[0][0]),
+      (uint32*)&(gprBank[0][1]),
+      (uint32*)&(gprBank[0][2]),
+      (uint32*)&(gprBank[0][3]),
+      (uint32*)&(gpr[0]),
+      (uint32*)&(gpr[1]),
+      (uint32*)&(gpr[2]),
+      (uint32*)&(gpr[3]),
+   },
+
+   //Bank 1
+   {
+      (uint32*)&(gprBank[1][0]),
+      (uint32*)&(gprBank[1][1]),
+      (uint32*)&(gprBank[1][2]),
+      (uint32*)&(gprBank[1][3]),
+      (uint32*)&(gpr[0]),
+      (uint32*)&(gpr[1]),
+      (uint32*)&(gpr[2]),
+      (uint32*)&(gpr[3]),
+   },
+
+   //Bank 2
+   {
+      (uint32*)&(gprBank[2][0]),
+      (uint32*)&(gprBank[2][1]),
+      (uint32*)&(gprBank[2][2]),
+      (uint32*)&(gprBank[2][3]),
+      (uint32*)&(gpr[0]),
+      (uint32*)&(gpr[1]),
+      (uint32*)&(gpr[2]),
+      (uint32*)&(gpr[3]),
+   },
+
+   //Bank 3
+   {
+      (uint32*)&(gprBank[3][0]),
+      (uint32*)&(gprBank[3][1]),
+      (uint32*)&(gprBank[3][2]),
+      (uint32*)&(gprBank[3][3]),
+      (uint32*)&(gpr[0]),
+      (uint32*)&(gpr[1]),
+      (uint32*)&(gpr[2]),
+      (uint32*)&(gpr[3]),
+   },
 };
 
 //=============================================================================
@@ -88,59 +226,682 @@ uint32 rErr;
 
 uint8* regCodeMapB[4][256] =
 {
-	{
-		#include "TLCS900h_registers_mapCodeB0.h"
-	},
+   {
 
-	{
-		#include "TLCS900h_registers_mapCodeB1.h"
-	},
+      ((uint8*)&gprBank[0][0]) + BYTE0,((uint8*)&gprBank[0][0]) + BYTE1,			//BANK 0
+      ((uint8*)&gprBank[0][0]) + BYTE2, ((uint8*)&gprBank[0][0]) + BYTE3,
+      ((uint8*)&gprBank[0][1]) + BYTE0,((uint8*)&gprBank[0][1]) + BYTE1,
+      ((uint8*)&gprBank[0][1]) + BYTE2, ((uint8*)&gprBank[0][1]) + BYTE3,
+      ((uint8*)&gprBank[0][2]) + BYTE0,((uint8*)&gprBank[0][2]) + BYTE1,
+      ((uint8*)&gprBank[0][2]) + BYTE2, ((uint8*)&gprBank[0][2]) + BYTE3,
+      ((uint8*)&gprBank[0][3]) + BYTE0,((uint8*)&gprBank[0][3]) + BYTE1,
+      ((uint8*)&gprBank[0][3]) + BYTE2, ((uint8*)&gprBank[0][3]) + BYTE3,
 
-	{
-		#include "TLCS900h_registers_mapCodeB2.h"
-	},
+      ((uint8*)&gprBank[1][0]) + BYTE0,((uint8*)&gprBank[1][0]) + BYTE1,			//BANK 1
+      ((uint8*)&gprBank[1][0]) + BYTE2, ((uint8*)&gprBank[1][0]) + BYTE3,
+      ((uint8*)&gprBank[1][1]) + BYTE0,((uint8*)&gprBank[1][1]) + BYTE1,
+      ((uint8*)&gprBank[1][1]) + BYTE2, ((uint8*)&gprBank[1][1]) + BYTE3,
+      ((uint8*)&gprBank[1][2]) + BYTE0,((uint8*)&gprBank[1][2]) + BYTE1,
+      ((uint8*)&gprBank[1][2]) + BYTE2, ((uint8*)&gprBank[1][2]) + BYTE3,
+      ((uint8*)&gprBank[1][3]) + BYTE0,((uint8*)&gprBank[1][3]) + BYTE1,
+      ((uint8*)&gprBank[1][3]) + BYTE2, ((uint8*)&gprBank[1][3]) + BYTE3,
 
-	{
-		#include "TLCS900h_registers_mapCodeB3.h"
-	}
+      ((uint8*)&gprBank[2][0]) + BYTE0,((uint8*)&gprBank[2][0]) + BYTE1,			//BANK 2
+      ((uint8*)&gprBank[2][0]) + BYTE2, ((uint8*)&gprBank[2][0]) + BYTE3,
+      ((uint8*)&gprBank[2][1]) + BYTE0,((uint8*)&gprBank[2][1]) + BYTE1,
+      ((uint8*)&gprBank[2][1]) + BYTE2, ((uint8*)&gprBank[2][1]) + BYTE3,
+      ((uint8*)&gprBank[2][2]) + BYTE0,((uint8*)&gprBank[2][2]) + BYTE1,
+      ((uint8*)&gprBank[2][2]) + BYTE2, ((uint8*)&gprBank[2][2]) + BYTE3,
+      ((uint8*)&gprBank[2][3]) + BYTE0,((uint8*)&gprBank[2][3]) + BYTE1,
+      ((uint8*)&gprBank[2][3]) + BYTE2, ((uint8*)&gprBank[2][3]) + BYTE3,
+
+      ((uint8*)&gprBank[3][0]) + BYTE0,((uint8*)&gprBank[3][0]) + BYTE1,			//BANK 3
+      ((uint8*)&gprBank[3][0]) + BYTE2, ((uint8*)&gprBank[3][0]) + BYTE3,
+      ((uint8*)&gprBank[3][1]) + BYTE0,((uint8*)&gprBank[3][1]) + BYTE1,
+      ((uint8*)&gprBank[3][1]) + BYTE2, ((uint8*)&gprBank[3][1]) + BYTE3,
+      ((uint8*)&gprBank[3][2]) + BYTE0,((uint8*)&gprBank[3][2]) + BYTE1,
+      ((uint8*)&gprBank[3][2]) + BYTE2, ((uint8*)&gprBank[3][2]) + BYTE3,
+      ((uint8*)&gprBank[3][3]) + BYTE0,((uint8*)&gprBank[3][3]) + BYTE1,
+      ((uint8*)&gprBank[3][3]) + BYTE2, ((uint8*)&gprBank[3][3]) + BYTE3,
+
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+
+      //Previous Bank
+      (uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,
+
+      //Current Bank
+      ((uint8*)&gprBank[0][0]) + BYTE0,((uint8*)&gprBank[0][0]) + BYTE1,
+      ((uint8*)&gprBank[0][0]) + BYTE2, ((uint8*)&gprBank[0][0]) + BYTE3,
+      ((uint8*)&gprBank[0][1]) + BYTE0,((uint8*)&gprBank[0][1]) + BYTE1,
+      ((uint8*)&gprBank[0][1]) + BYTE2, ((uint8*)&gprBank[0][1]) + BYTE3,
+      ((uint8*)&gprBank[0][2]) + BYTE0,((uint8*)&gprBank[0][2]) + BYTE1,
+      ((uint8*)&gprBank[0][2]) + BYTE2, ((uint8*)&gprBank[0][2]) + BYTE3,
+      ((uint8*)&gprBank[0][3]) + BYTE0,((uint8*)&gprBank[0][3]) + BYTE1,
+      ((uint8*)&gprBank[0][3]) + BYTE2, ((uint8*)&gprBank[0][3]) + BYTE3,
+
+      ((uint8*)&gpr[0]) + BYTE0, ((uint8*)&gpr[0]) + BYTE1, 
+      ((uint8*)&gpr[0]) + BYTE2, ((uint8*)&gpr[0]) + BYTE3,
+      ((uint8*)&gpr[1]) + BYTE0, ((uint8*)&gpr[1]) + BYTE1, 
+      ((uint8*)&gpr[1]) + BYTE2, ((uint8*)&gpr[1]) + BYTE3,
+      ((uint8*)&gpr[2]) + BYTE0, ((uint8*)&gpr[2]) + BYTE1, 
+      ((uint8*)&gpr[2]) + BYTE2, ((uint8*)&gpr[2]) + BYTE3,
+      ((uint8*)&gpr[3]) + BYTE0, ((uint8*)&gpr[3]) + BYTE1,
+      ((uint8*)&gpr[3]) + BYTE2, ((uint8*)&gpr[3]) + BYTE3
+   },
+
+   {
+
+      ((uint8*)&gprBank[0][0]) + BYTE0,((uint8*)&gprBank[0][0]) + BYTE1,			//BANK 0
+      ((uint8*)&gprBank[0][0]) + BYTE2, ((uint8*)&gprBank[0][0]) + BYTE3,
+      ((uint8*)&gprBank[0][1]) + BYTE0,((uint8*)&gprBank[0][1]) + BYTE1,
+      ((uint8*)&gprBank[0][1]) + BYTE2, ((uint8*)&gprBank[0][1]) + BYTE3,
+      ((uint8*)&gprBank[0][2]) + BYTE0,((uint8*)&gprBank[0][2]) + BYTE1,
+      ((uint8*)&gprBank[0][2]) + BYTE2, ((uint8*)&gprBank[0][2]) + BYTE3,
+      ((uint8*)&gprBank[0][3]) + BYTE0,((uint8*)&gprBank[0][3]) + BYTE1,
+      ((uint8*)&gprBank[0][3]) + BYTE2, ((uint8*)&gprBank[0][3]) + BYTE3,
+
+      ((uint8*)&gprBank[1][0]) + BYTE0,((uint8*)&gprBank[1][0]) + BYTE1,			//BANK 1
+      ((uint8*)&gprBank[1][0]) + BYTE2, ((uint8*)&gprBank[1][0]) + BYTE3,
+      ((uint8*)&gprBank[1][1]) + BYTE0,((uint8*)&gprBank[1][1]) + BYTE1,
+      ((uint8*)&gprBank[1][1]) + BYTE2, ((uint8*)&gprBank[1][1]) + BYTE3,
+      ((uint8*)&gprBank[1][2]) + BYTE0,((uint8*)&gprBank[1][2]) + BYTE1,
+      ((uint8*)&gprBank[1][2]) + BYTE2, ((uint8*)&gprBank[1][2]) + BYTE3,
+      ((uint8*)&gprBank[1][3]) + BYTE0,((uint8*)&gprBank[1][3]) + BYTE1,
+      ((uint8*)&gprBank[1][3]) + BYTE2, ((uint8*)&gprBank[1][3]) + BYTE3,
+
+      ((uint8*)&gprBank[2][0]) + BYTE0,((uint8*)&gprBank[2][0]) + BYTE1,			//BANK 2
+      ((uint8*)&gprBank[2][0]) + BYTE2, ((uint8*)&gprBank[2][0]) + BYTE3,
+      ((uint8*)&gprBank[2][1]) + BYTE0,((uint8*)&gprBank[2][1]) + BYTE1,
+      ((uint8*)&gprBank[2][1]) + BYTE2, ((uint8*)&gprBank[2][1]) + BYTE3,
+      ((uint8*)&gprBank[2][2]) + BYTE0,((uint8*)&gprBank[2][2]) + BYTE1,
+      ((uint8*)&gprBank[2][2]) + BYTE2, ((uint8*)&gprBank[2][2]) + BYTE3,
+      ((uint8*)&gprBank[2][3]) + BYTE0,((uint8*)&gprBank[2][3]) + BYTE1,
+      ((uint8*)&gprBank[2][3]) + BYTE2, ((uint8*)&gprBank[2][3]) + BYTE3,
+
+      ((uint8*)&gprBank[3][0]) + BYTE0,((uint8*)&gprBank[3][0]) + BYTE1,			//BANK 3
+      ((uint8*)&gprBank[3][0]) + BYTE2, ((uint8*)&gprBank[3][0]) + BYTE3,
+      ((uint8*)&gprBank[3][1]) + BYTE0,((uint8*)&gprBank[3][1]) + BYTE1,
+      ((uint8*)&gprBank[3][1]) + BYTE2, ((uint8*)&gprBank[3][1]) + BYTE3,
+      ((uint8*)&gprBank[3][2]) + BYTE0,((uint8*)&gprBank[3][2]) + BYTE1,
+      ((uint8*)&gprBank[3][2]) + BYTE2, ((uint8*)&gprBank[3][2]) + BYTE3,
+      ((uint8*)&gprBank[3][3]) + BYTE0,((uint8*)&gprBank[3][3]) + BYTE1,
+      ((uint8*)&gprBank[3][3]) + BYTE2, ((uint8*)&gprBank[3][3]) + BYTE3,
+
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+
+      //Previous Bank
+      ((uint8*)&gprBank[0][0]) + BYTE0,((uint8*)&gprBank[0][0]) + BYTE1,
+      ((uint8*)&gprBank[0][0]) + BYTE2, ((uint8*)&gprBank[0][0]) + BYTE3,
+      ((uint8*)&gprBank[0][1]) + BYTE0,((uint8*)&gprBank[0][1]) + BYTE1,
+      ((uint8*)&gprBank[0][1]) + BYTE2, ((uint8*)&gprBank[0][1]) + BYTE3,
+      ((uint8*)&gprBank[0][2]) + BYTE0,((uint8*)&gprBank[0][2]) + BYTE1,
+      ((uint8*)&gprBank[0][2]) + BYTE2, ((uint8*)&gprBank[0][2]) + BYTE3,
+      ((uint8*)&gprBank[0][3]) + BYTE0,((uint8*)&gprBank[0][3]) + BYTE1,
+      ((uint8*)&gprBank[0][3]) + BYTE2, ((uint8*)&gprBank[0][3]) + BYTE3,
+
+      //Current Bank
+      ((uint8*)&gprBank[1][0]) + BYTE0,((uint8*)&gprBank[1][0]) + BYTE1,
+      ((uint8*)&gprBank[1][0]) + BYTE2, ((uint8*)&gprBank[1][0]) + BYTE3,
+      ((uint8*)&gprBank[1][1]) + BYTE0,((uint8*)&gprBank[1][1]) + BYTE1,
+      ((uint8*)&gprBank[1][1]) + BYTE2, ((uint8*)&gprBank[1][1]) + BYTE3,
+      ((uint8*)&gprBank[1][2]) + BYTE0,((uint8*)&gprBank[1][2]) + BYTE1,
+      ((uint8*)&gprBank[1][2]) + BYTE2, ((uint8*)&gprBank[1][2]) + BYTE3,
+      ((uint8*)&gprBank[1][3]) + BYTE0,((uint8*)&gprBank[1][3]) + BYTE1,
+      ((uint8*)&gprBank[1][3]) + BYTE2, ((uint8*)&gprBank[1][3]) + BYTE3,
+
+      ((uint8*)&gpr[0]) + BYTE0, ((uint8*)&gpr[0]) + BYTE1, 
+      ((uint8*)&gpr[0]) + BYTE2, ((uint8*)&gpr[0]) + BYTE3,
+      ((uint8*)&gpr[1]) + BYTE0, ((uint8*)&gpr[1]) + BYTE1, 
+      ((uint8*)&gpr[1]) + BYTE2, ((uint8*)&gpr[1]) + BYTE3,
+      ((uint8*)&gpr[2]) + BYTE0, ((uint8*)&gpr[2]) + BYTE1, 
+      ((uint8*)&gpr[2]) + BYTE2, ((uint8*)&gpr[2]) + BYTE3,
+      ((uint8*)&gpr[3]) + BYTE0, ((uint8*)&gpr[3]) + BYTE1,
+      ((uint8*)&gpr[3]) + BYTE2, ((uint8*)&gpr[3]) + BYTE3
+   },
+
+   {
+
+      ((uint8*)&gprBank[0][0]) + BYTE0,((uint8*)&gprBank[0][0]) + BYTE1,			//BANK 0
+      ((uint8*)&gprBank[0][0]) + BYTE2, ((uint8*)&gprBank[0][0]) + BYTE3,
+      ((uint8*)&gprBank[0][1]) + BYTE0,((uint8*)&gprBank[0][1]) + BYTE1,
+      ((uint8*)&gprBank[0][1]) + BYTE2, ((uint8*)&gprBank[0][1]) + BYTE3,
+      ((uint8*)&gprBank[0][2]) + BYTE0,((uint8*)&gprBank[0][2]) + BYTE1,
+      ((uint8*)&gprBank[0][2]) + BYTE2, ((uint8*)&gprBank[0][2]) + BYTE3,
+      ((uint8*)&gprBank[0][3]) + BYTE0,((uint8*)&gprBank[0][3]) + BYTE1,
+      ((uint8*)&gprBank[0][3]) + BYTE2, ((uint8*)&gprBank[0][3]) + BYTE3,
+
+      ((uint8*)&gprBank[1][0]) + BYTE0,((uint8*)&gprBank[1][0]) + BYTE1,			//BANK 1
+      ((uint8*)&gprBank[1][0]) + BYTE2, ((uint8*)&gprBank[1][0]) + BYTE3,
+      ((uint8*)&gprBank[1][1]) + BYTE0,((uint8*)&gprBank[1][1]) + BYTE1,
+      ((uint8*)&gprBank[1][1]) + BYTE2, ((uint8*)&gprBank[1][1]) + BYTE3,
+      ((uint8*)&gprBank[1][2]) + BYTE0,((uint8*)&gprBank[1][2]) + BYTE1,
+      ((uint8*)&gprBank[1][2]) + BYTE2, ((uint8*)&gprBank[1][2]) + BYTE3,
+      ((uint8*)&gprBank[1][3]) + BYTE0,((uint8*)&gprBank[1][3]) + BYTE1,
+      ((uint8*)&gprBank[1][3]) + BYTE2, ((uint8*)&gprBank[1][3]) + BYTE3,
+
+      ((uint8*)&gprBank[2][0]) + BYTE0,((uint8*)&gprBank[2][0]) + BYTE1,			//BANK 2
+      ((uint8*)&gprBank[2][0]) + BYTE2, ((uint8*)&gprBank[2][0]) + BYTE3,
+      ((uint8*)&gprBank[2][1]) + BYTE0,((uint8*)&gprBank[2][1]) + BYTE1,
+      ((uint8*)&gprBank[2][1]) + BYTE2, ((uint8*)&gprBank[2][1]) + BYTE3,
+      ((uint8*)&gprBank[2][2]) + BYTE0,((uint8*)&gprBank[2][2]) + BYTE1,
+      ((uint8*)&gprBank[2][2]) + BYTE2, ((uint8*)&gprBank[2][2]) + BYTE3,
+      ((uint8*)&gprBank[2][3]) + BYTE0,((uint8*)&gprBank[2][3]) + BYTE1,
+      ((uint8*)&gprBank[2][3]) + BYTE2, ((uint8*)&gprBank[2][3]) + BYTE3,
+
+      ((uint8*)&gprBank[3][0]) + BYTE0,((uint8*)&gprBank[3][0]) + BYTE1,			//BANK 3
+      ((uint8*)&gprBank[3][0]) + BYTE2, ((uint8*)&gprBank[3][0]) + BYTE3,
+      ((uint8*)&gprBank[3][1]) + BYTE0,((uint8*)&gprBank[3][1]) + BYTE1,
+      ((uint8*)&gprBank[3][1]) + BYTE2, ((uint8*)&gprBank[3][1]) + BYTE3,
+      ((uint8*)&gprBank[3][2]) + BYTE0,((uint8*)&gprBank[3][2]) + BYTE1,
+      ((uint8*)&gprBank[3][2]) + BYTE2, ((uint8*)&gprBank[3][2]) + BYTE3,
+      ((uint8*)&gprBank[3][3]) + BYTE0,((uint8*)&gprBank[3][3]) + BYTE1,
+      ((uint8*)&gprBank[3][3]) + BYTE2, ((uint8*)&gprBank[3][3]) + BYTE3,
+
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+
+      //Previous Bank
+      ((uint8*)&gprBank[1][0]) + BYTE0,((uint8*)&gprBank[1][0]) + BYTE1,
+      ((uint8*)&gprBank[1][0]) + BYTE2, ((uint8*)&gprBank[1][0]) + BYTE3,
+      ((uint8*)&gprBank[1][1]) + BYTE0,((uint8*)&gprBank[1][1]) + BYTE1,
+      ((uint8*)&gprBank[1][1]) + BYTE2, ((uint8*)&gprBank[1][1]) + BYTE3,
+      ((uint8*)&gprBank[1][2]) + BYTE0,((uint8*)&gprBank[1][2]) + BYTE1,
+      ((uint8*)&gprBank[1][2]) + BYTE2, ((uint8*)&gprBank[1][2]) + BYTE3,
+      ((uint8*)&gprBank[1][3]) + BYTE0,((uint8*)&gprBank[1][3]) + BYTE1,
+      ((uint8*)&gprBank[1][3]) + BYTE2, ((uint8*)&gprBank[1][3]) + BYTE3,
+
+      //Current Bank
+      ((uint8*)&gprBank[2][0]) + BYTE0,((uint8*)&gprBank[2][0]) + BYTE1,
+      ((uint8*)&gprBank[2][0]) + BYTE2, ((uint8*)&gprBank[2][0]) + BYTE3,
+      ((uint8*)&gprBank[2][1]) + BYTE0,((uint8*)&gprBank[2][1]) + BYTE1,
+      ((uint8*)&gprBank[2][1]) + BYTE2, ((uint8*)&gprBank[2][1]) + BYTE3,
+      ((uint8*)&gprBank[2][2]) + BYTE0,((uint8*)&gprBank[2][2]) + BYTE1,
+      ((uint8*)&gprBank[2][2]) + BYTE2, ((uint8*)&gprBank[2][2]) + BYTE3,
+      ((uint8*)&gprBank[2][3]) + BYTE0,((uint8*)&gprBank[2][3]) + BYTE1,
+      ((uint8*)&gprBank[2][3]) + BYTE2, ((uint8*)&gprBank[2][3]) + BYTE3,
+
+      ((uint8*)&gpr[0]) + BYTE0, ((uint8*)&gpr[0]) + BYTE1, 
+      ((uint8*)&gpr[0]) + BYTE2, ((uint8*)&gpr[0]) + BYTE3,
+      ((uint8*)&gpr[1]) + BYTE0, ((uint8*)&gpr[1]) + BYTE1, 
+      ((uint8*)&gpr[1]) + BYTE2, ((uint8*)&gpr[1]) + BYTE3,
+      ((uint8*)&gpr[2]) + BYTE0, ((uint8*)&gpr[2]) + BYTE1, 
+      ((uint8*)&gpr[2]) + BYTE2, ((uint8*)&gpr[2]) + BYTE3,
+      ((uint8*)&gpr[3]) + BYTE0, ((uint8*)&gpr[3]) + BYTE1,
+      ((uint8*)&gpr[3]) + BYTE2, ((uint8*)&gpr[3]) + BYTE3
+   },
+
+   {
+
+      ((uint8*)&gprBank[0][0]) + BYTE0,((uint8*)&gprBank[0][0]) + BYTE1,			//BANK 0
+      ((uint8*)&gprBank[0][0]) + BYTE2, ((uint8*)&gprBank[0][0]) + BYTE3,
+      ((uint8*)&gprBank[0][1]) + BYTE0,((uint8*)&gprBank[0][1]) + BYTE1,
+      ((uint8*)&gprBank[0][1]) + BYTE2, ((uint8*)&gprBank[0][1]) + BYTE3,
+      ((uint8*)&gprBank[0][2]) + BYTE0,((uint8*)&gprBank[0][2]) + BYTE1,
+      ((uint8*)&gprBank[0][2]) + BYTE2, ((uint8*)&gprBank[0][2]) + BYTE3,
+      ((uint8*)&gprBank[0][3]) + BYTE0,((uint8*)&gprBank[0][3]) + BYTE1,
+      ((uint8*)&gprBank[0][3]) + BYTE2, ((uint8*)&gprBank[0][3]) + BYTE3,
+
+      ((uint8*)&gprBank[1][0]) + BYTE0,((uint8*)&gprBank[1][0]) + BYTE1,			//BANK 1
+      ((uint8*)&gprBank[1][0]) + BYTE2, ((uint8*)&gprBank[1][0]) + BYTE3,
+      ((uint8*)&gprBank[1][1]) + BYTE0,((uint8*)&gprBank[1][1]) + BYTE1,
+      ((uint8*)&gprBank[1][1]) + BYTE2, ((uint8*)&gprBank[1][1]) + BYTE3,
+      ((uint8*)&gprBank[1][2]) + BYTE0,((uint8*)&gprBank[1][2]) + BYTE1,
+      ((uint8*)&gprBank[1][2]) + BYTE2, ((uint8*)&gprBank[1][2]) + BYTE3,
+      ((uint8*)&gprBank[1][3]) + BYTE0,((uint8*)&gprBank[1][3]) + BYTE1,
+      ((uint8*)&gprBank[1][3]) + BYTE2, ((uint8*)&gprBank[1][3]) + BYTE3,
+
+      ((uint8*)&gprBank[2][0]) + BYTE0,((uint8*)&gprBank[2][0]) + BYTE1,			//BANK 2
+      ((uint8*)&gprBank[2][0]) + BYTE2, ((uint8*)&gprBank[2][0]) + BYTE3,
+      ((uint8*)&gprBank[2][1]) + BYTE0,((uint8*)&gprBank[2][1]) + BYTE1,
+      ((uint8*)&gprBank[2][1]) + BYTE2, ((uint8*)&gprBank[2][1]) + BYTE3,
+      ((uint8*)&gprBank[2][2]) + BYTE0,((uint8*)&gprBank[2][2]) + BYTE1,
+      ((uint8*)&gprBank[2][2]) + BYTE2, ((uint8*)&gprBank[2][2]) + BYTE3,
+      ((uint8*)&gprBank[2][3]) + BYTE0,((uint8*)&gprBank[2][3]) + BYTE1,
+      ((uint8*)&gprBank[2][3]) + BYTE2, ((uint8*)&gprBank[2][3]) + BYTE3,
+
+      ((uint8*)&gprBank[3][0]) + BYTE0,((uint8*)&gprBank[3][0]) + BYTE1,			//BANK 3
+      ((uint8*)&gprBank[3][0]) + BYTE2, ((uint8*)&gprBank[3][0]) + BYTE3,
+      ((uint8*)&gprBank[3][1]) + BYTE0,((uint8*)&gprBank[3][1]) + BYTE1,
+      ((uint8*)&gprBank[3][1]) + BYTE2, ((uint8*)&gprBank[3][1]) + BYTE3,
+      ((uint8*)&gprBank[3][2]) + BYTE0,((uint8*)&gprBank[3][2]) + BYTE1,
+      ((uint8*)&gprBank[3][2]) + BYTE2, ((uint8*)&gprBank[3][2]) + BYTE3,
+      ((uint8*)&gprBank[3][3]) + BYTE0,((uint8*)&gprBank[3][3]) + BYTE1,
+      ((uint8*)&gprBank[3][3]) + BYTE2, ((uint8*)&gprBank[3][3]) + BYTE3,
+
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+      (uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,(uint8*)&rErr,
+
+      //Previous Bank
+      ((uint8*)&gprBank[2][0]) + BYTE0,((uint8*)&gprBank[2][0]) + BYTE1,
+      ((uint8*)&gprBank[2][0]) + BYTE2, ((uint8*)&gprBank[2][0]) + BYTE3,
+      ((uint8*)&gprBank[2][1]) + BYTE0,((uint8*)&gprBank[2][1]) + BYTE1,
+      ((uint8*)&gprBank[2][1]) + BYTE2, ((uint8*)&gprBank[2][1]) + BYTE3,
+      ((uint8*)&gprBank[2][2]) + BYTE0,((uint8*)&gprBank[2][2]) + BYTE1,
+      ((uint8*)&gprBank[2][2]) + BYTE2, ((uint8*)&gprBank[2][2]) + BYTE3,
+      ((uint8*)&gprBank[2][3]) + BYTE0,((uint8*)&gprBank[2][3]) + BYTE1,
+      ((uint8*)&gprBank[2][3]) + BYTE2, ((uint8*)&gprBank[2][3]) + BYTE3,
+
+      //Current Bank
+      ((uint8*)&gprBank[3][0]) + BYTE0,((uint8*)&gprBank[3][0]) + BYTE1,
+      ((uint8*)&gprBank[3][0]) + BYTE2, ((uint8*)&gprBank[3][0]) + BYTE3,
+      ((uint8*)&gprBank[3][1]) + BYTE0,((uint8*)&gprBank[3][1]) + BYTE1,
+      ((uint8*)&gprBank[3][1]) + BYTE2, ((uint8*)&gprBank[3][1]) + BYTE3,
+      ((uint8*)&gprBank[3][2]) + BYTE0,((uint8*)&gprBank[3][2]) + BYTE1,
+      ((uint8*)&gprBank[3][2]) + BYTE2, ((uint8*)&gprBank[3][2]) + BYTE3,
+      ((uint8*)&gprBank[3][3]) + BYTE0,((uint8*)&gprBank[3][3]) + BYTE1,
+      ((uint8*)&gprBank[3][3]) + BYTE2, ((uint8*)&gprBank[3][3]) + BYTE3,
+
+      ((uint8*)&gpr[0]) + BYTE0, ((uint8*)&gpr[0]) + BYTE1, 
+      ((uint8*)&gpr[0]) + BYTE2, ((uint8*)&gpr[0]) + BYTE3,
+      ((uint8*)&gpr[1]) + BYTE0, ((uint8*)&gpr[1]) + BYTE1, 
+      ((uint8*)&gpr[1]) + BYTE2, ((uint8*)&gpr[1]) + BYTE3,
+      ((uint8*)&gpr[2]) + BYTE0, ((uint8*)&gpr[2]) + BYTE1, 
+      ((uint8*)&gpr[2]) + BYTE2, ((uint8*)&gpr[2]) + BYTE3,
+      ((uint8*)&gpr[3]) + BYTE0, ((uint8*)&gpr[3]) + BYTE1,
+      ((uint8*)&gpr[3]) + BYTE2, ((uint8*)&gpr[3]) + BYTE3
+   }
 };
 
 uint16* regCodeMapW[4][128] =
 {
-	{
-		#include "TLCS900h_registers_mapCodeW0.h"
-	},
+   {
+      /* MAP CODE W0 */
 
-	{
-		#include "TLCS900h_registers_mapCodeW1.h"
-	},
+      //BANK 0
+      (uint16*)(((uint8*)&gprBank[0][0]) + WORD0), (uint16*)(((uint8*)&gprBank[0][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][1]) + WORD0), (uint16*)(((uint8*)&gprBank[0][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][2]) + WORD0), (uint16*)(((uint8*)&gprBank[0][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][3]) + WORD0), (uint16*)(((uint8*)&gprBank[0][3]) + WORD1),
 
-	{
-		#include "TLCS900h_registers_mapCodeW2.h"
-	},
+      //BANK 1
+      (uint16*)(((uint8*)&gprBank[1][0]) + WORD0), (uint16*)(((uint8*)&gprBank[1][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][1]) + WORD0), (uint16*)(((uint8*)&gprBank[1][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][2]) + WORD0), (uint16*)(((uint8*)&gprBank[1][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][3]) + WORD0), (uint16*)(((uint8*)&gprBank[1][3]) + WORD1),
 
-	{
-		#include "TLCS900h_registers_mapCodeW3.h"
-	}
+      //BANK 2
+      (uint16*)(((uint8*)&gprBank[2][0]) + WORD0), (uint16*)(((uint8*)&gprBank[2][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][1]) + WORD0), (uint16*)(((uint8*)&gprBank[2][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][2]) + WORD0), (uint16*)(((uint8*)&gprBank[2][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][3]) + WORD0), (uint16*)(((uint8*)&gprBank[2][3]) + WORD1),
+
+      //BANK 3
+      (uint16*)(((uint8*)&gprBank[3][0]) + WORD0), (uint16*)(((uint8*)&gprBank[3][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[3][1]) + WORD0), (uint16*)(((uint8*)&gprBank[3][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[3][2]) + WORD0), (uint16*)(((uint8*)&gprBank[3][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[3][3]) + WORD0), (uint16*)(((uint8*)&gprBank[3][3]) + WORD1),
+
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+
+      //Previous Bank
+      (uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,
+
+      //Current Bank
+      (uint16*)(((uint8*)&gprBank[0][0]) + WORD0), (uint16*)(((uint8*)&gprBank[0][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][1]) + WORD0), (uint16*)(((uint8*)&gprBank[0][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][2]) + WORD0), (uint16*)(((uint8*)&gprBank[0][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][3]) + WORD0), (uint16*)(((uint8*)&gprBank[0][3]) + WORD1),
+
+      (uint16*)((uint8*)&(gpr[0]) + WORD0),	(uint16*)((uint8*)&(gpr[0]) + WORD1),
+      (uint16*)((uint8*)&(gpr[1]) + WORD0),	(uint16*)((uint8*)&(gpr[1]) + WORD1),
+      (uint16*)((uint8*)&(gpr[2]) + WORD0),	(uint16*)((uint8*)&(gpr[2]) + WORD1),
+      (uint16*)((uint8*)&(gpr[3]) + WORD0),	(uint16*)((uint8*)&(gpr[3]) + WORD1),
+   },
+
+   {
+      /* MAP CODE W1 */
+
+      //BANK 0
+      (uint16*)(((uint8*)&gprBank[0][0]) + WORD0), (uint16*)(((uint8*)&gprBank[0][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][1]) + WORD0), (uint16*)(((uint8*)&gprBank[0][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][2]) + WORD0), (uint16*)(((uint8*)&gprBank[0][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][3]) + WORD0), (uint16*)(((uint8*)&gprBank[0][3]) + WORD1),
+
+      //BANK 1
+      (uint16*)(((uint8*)&gprBank[1][0]) + WORD0), (uint16*)(((uint8*)&gprBank[1][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][1]) + WORD0), (uint16*)(((uint8*)&gprBank[1][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][2]) + WORD0), (uint16*)(((uint8*)&gprBank[1][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][3]) + WORD0), (uint16*)(((uint8*)&gprBank[1][3]) + WORD1),
+
+      //BANK 2
+      (uint16*)(((uint8*)&gprBank[2][0]) + WORD0), (uint16*)(((uint8*)&gprBank[2][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][1]) + WORD0), (uint16*)(((uint8*)&gprBank[2][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][2]) + WORD0), (uint16*)(((uint8*)&gprBank[2][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][3]) + WORD0), (uint16*)(((uint8*)&gprBank[2][3]) + WORD1),
+
+      //BANK 3
+      (uint16*)(((uint8*)&gprBank[3][0]) + WORD0), (uint16*)(((uint8*)&gprBank[3][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[3][1]) + WORD0), (uint16*)(((uint8*)&gprBank[3][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[3][2]) + WORD0), (uint16*)(((uint8*)&gprBank[3][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[3][3]) + WORD0), (uint16*)(((uint8*)&gprBank[3][3]) + WORD1),
+
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+
+      //Previous Bank
+      (uint16*)(((uint8*)&gprBank[0][0]) + WORD0), (uint16*)(((uint8*)&gprBank[0][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][1]) + WORD0), (uint16*)(((uint8*)&gprBank[0][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][2]) + WORD0), (uint16*)(((uint8*)&gprBank[0][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][3]) + WORD0), (uint16*)(((uint8*)&gprBank[0][3]) + WORD1),
+
+      //Current Bank
+      (uint16*)(((uint8*)&gprBank[1][0]) + WORD0), (uint16*)(((uint8*)&gprBank[1][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][1]) + WORD0), (uint16*)(((uint8*)&gprBank[1][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][2]) + WORD0), (uint16*)(((uint8*)&gprBank[1][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][3]) + WORD0), (uint16*)(((uint8*)&gprBank[1][3]) + WORD1),
+
+      (uint16*)((uint8*)&(gpr[0]) + WORD0),	(uint16*)((uint8*)&(gpr[0]) + WORD1),
+      (uint16*)((uint8*)&(gpr[1]) + WORD0),	(uint16*)((uint8*)&(gpr[1]) + WORD1),
+      (uint16*)((uint8*)&(gpr[2]) + WORD0),	(uint16*)((uint8*)&(gpr[2]) + WORD1),
+      (uint16*)((uint8*)&(gpr[3]) + WORD0),	(uint16*)((uint8*)&(gpr[3]) + WORD1),
+   },
+
+   {
+      /* MAP CODE W2 */
+      //BANK 0
+      (uint16*)(((uint8*)&gprBank[0][0]) + WORD0), (uint16*)(((uint8*)&gprBank[0][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][1]) + WORD0), (uint16*)(((uint8*)&gprBank[0][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][2]) + WORD0), (uint16*)(((uint8*)&gprBank[0][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][3]) + WORD0), (uint16*)(((uint8*)&gprBank[0][3]) + WORD1),
+
+      //BANK 1
+      (uint16*)(((uint8*)&gprBank[1][0]) + WORD0), (uint16*)(((uint8*)&gprBank[1][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][1]) + WORD0), (uint16*)(((uint8*)&gprBank[1][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][2]) + WORD0), (uint16*)(((uint8*)&gprBank[1][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][3]) + WORD0), (uint16*)(((uint8*)&gprBank[1][3]) + WORD1),
+
+      //BANK 2
+      (uint16*)(((uint8*)&gprBank[2][0]) + WORD0), (uint16*)(((uint8*)&gprBank[2][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][1]) + WORD0), (uint16*)(((uint8*)&gprBank[2][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][2]) + WORD0), (uint16*)(((uint8*)&gprBank[2][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][3]) + WORD0), (uint16*)(((uint8*)&gprBank[2][3]) + WORD1),
+
+      //BANK 3
+      (uint16*)(((uint8*)&gprBank[3][0]) + WORD0), (uint16*)(((uint8*)&gprBank[3][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[3][1]) + WORD0), (uint16*)(((uint8*)&gprBank[3][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[3][2]) + WORD0), (uint16*)(((uint8*)&gprBank[3][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[3][3]) + WORD0), (uint16*)(((uint8*)&gprBank[3][3]) + WORD1),
+
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+
+      //Previous Bank
+      (uint16*)(((uint8*)&gprBank[1][0]) + WORD0), (uint16*)(((uint8*)&gprBank[1][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][1]) + WORD0), (uint16*)(((uint8*)&gprBank[1][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][2]) + WORD0), (uint16*)(((uint8*)&gprBank[1][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][3]) + WORD0), (uint16*)(((uint8*)&gprBank[1][3]) + WORD1),
+
+      //Current Bank
+      (uint16*)(((uint8*)&gprBank[2][0]) + WORD0), (uint16*)(((uint8*)&gprBank[2][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][1]) + WORD0), (uint16*)(((uint8*)&gprBank[2][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][2]) + WORD0), (uint16*)(((uint8*)&gprBank[2][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][3]) + WORD0), (uint16*)(((uint8*)&gprBank[2][3]) + WORD1),
+
+      (uint16*)((uint8*)&(gpr[0]) + WORD0),	(uint16*)((uint8*)&(gpr[0]) + WORD1),
+      (uint16*)((uint8*)&(gpr[1]) + WORD0),	(uint16*)((uint8*)&(gpr[1]) + WORD1),
+      (uint16*)((uint8*)&(gpr[2]) + WORD0),	(uint16*)((uint8*)&(gpr[2]) + WORD1),
+      (uint16*)((uint8*)&(gpr[3]) + WORD0),	(uint16*)((uint8*)&(gpr[3]) + WORD1),
+   },
+
+   {
+      /* MAP CODE W3 */
+
+      //BANK 0
+      (uint16*)(((uint8*)&gprBank[0][0]) + WORD0), (uint16*)(((uint8*)&gprBank[0][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][1]) + WORD0), (uint16*)(((uint8*)&gprBank[0][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][2]) + WORD0), (uint16*)(((uint8*)&gprBank[0][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[0][3]) + WORD0), (uint16*)(((uint8*)&gprBank[0][3]) + WORD1),
+
+      //BANK 1
+      (uint16*)(((uint8*)&gprBank[1][0]) + WORD0), (uint16*)(((uint8*)&gprBank[1][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][1]) + WORD0), (uint16*)(((uint8*)&gprBank[1][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][2]) + WORD0), (uint16*)(((uint8*)&gprBank[1][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[1][3]) + WORD0), (uint16*)(((uint8*)&gprBank[1][3]) + WORD1),
+
+      //BANK 2
+      (uint16*)(((uint8*)&gprBank[2][0]) + WORD0), (uint16*)(((uint8*)&gprBank[2][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][1]) + WORD0), (uint16*)(((uint8*)&gprBank[2][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][2]) + WORD0), (uint16*)(((uint8*)&gprBank[2][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][3]) + WORD0), (uint16*)(((uint8*)&gprBank[2][3]) + WORD1),
+
+      //BANK 3
+      (uint16*)(((uint8*)&gprBank[3][0]) + WORD0), (uint16*)(((uint8*)&gprBank[3][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[3][1]) + WORD0), (uint16*)(((uint8*)&gprBank[3][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[3][2]) + WORD0), (uint16*)(((uint8*)&gprBank[3][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[3][3]) + WORD0), (uint16*)(((uint8*)&gprBank[3][3]) + WORD1),
+
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+      (uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,(uint16*)&rErr,
+
+      //Previous Bank
+      (uint16*)(((uint8*)&gprBank[2][0]) + WORD0), (uint16*)(((uint8*)&gprBank[2][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][1]) + WORD0), (uint16*)(((uint8*)&gprBank[2][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][2]) + WORD0), (uint16*)(((uint8*)&gprBank[2][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[2][3]) + WORD0), (uint16*)(((uint8*)&gprBank[2][3]) + WORD1),
+
+      //Current Bank
+      (uint16*)(((uint8*)&gprBank[3][0]) + WORD0), (uint16*)(((uint8*)&gprBank[3][0]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[3][1]) + WORD0), (uint16*)(((uint8*)&gprBank[3][1]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[3][2]) + WORD0), (uint16*)(((uint8*)&gprBank[3][2]) + WORD1),
+      (uint16*)(((uint8*)&gprBank[3][3]) + WORD0), (uint16*)(((uint8*)&gprBank[3][3]) + WORD1),
+
+      (uint16*)((uint8*)&(gpr[0]) + WORD0),	(uint16*)((uint8*)&(gpr[0]) + WORD1),
+      (uint16*)((uint8*)&(gpr[1]) + WORD0),	(uint16*)((uint8*)&(gpr[1]) + WORD1),
+      (uint16*)((uint8*)&(gpr[2]) + WORD0),	(uint16*)((uint8*)&(gpr[2]) + WORD1),
+      (uint16*)((uint8*)&(gpr[3]) + WORD0),	(uint16*)((uint8*)&(gpr[3]) + WORD1),
+   }
 };
 
 uint32* regCodeMapL[4][64] =
 {
-	{
-		#include "TLCS900h_registers_mapCodeL0.h"
-	},
+   {
+      /* MAP CODE L0 */
 
-	{
-		#include "TLCS900h_registers_mapCodeL1.h"
-	},
+      //BANK 0
+      &(gprBank[0][0]), &(gprBank[0][1]),	&(gprBank[0][2]), &(gprBank[0][3]),
 
-	{
-		#include "TLCS900h_registers_mapCodeL2.h"
-	},
+      //BANK 1
+      &(gprBank[1][0]), &(gprBank[1][1]), &(gprBank[1][2]), &(gprBank[1][3]),
 
-	{
-		#include "TLCS900h_registers_mapCodeL3.h"
-	}
+      //BANK 2
+      &(gprBank[2][0]), &(gprBank[2][1]),	&(gprBank[2][2]), &(gprBank[2][3]),
+
+      //BANK 3
+      &(gprBank[3][0]), &(gprBank[3][1]),	&(gprBank[3][2]), &(gprBank[3][3]),
+
+      &rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,
+      &rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,
+      &rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,
+      &rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,
+      &rErr,&rErr,&rErr,&rErr,
+
+      //Previous Bank
+      &rErr,&rErr,&rErr,&rErr,
+
+      //Current Bank
+      &(gprBank[0][0]), &(gprBank[0][1]),	&(gprBank[0][2]), &(gprBank[0][3]),
+
+      &(gpr[0]), &(gpr[1]), &(gpr[2]), &(gpr[3])
+   },
+
+   {
+      /* MAP CODE L1 */
+
+      //BANK 0
+      &(gprBank[0][0]), &(gprBank[0][1]),	&(gprBank[0][2]), &(gprBank[0][3]),
+
+      //BANK 1
+      &(gprBank[1][0]), &(gprBank[1][1]),	&(gprBank[1][2]), &(gprBank[1][3]),
+
+      //BANK 2
+      &(gprBank[2][0]), &(gprBank[2][1]),	&(gprBank[2][2]), &(gprBank[2][3]),
+
+      //BANK 3
+      &(gprBank[3][0]), &(gprBank[3][1]),	&(gprBank[3][2]), &(gprBank[3][3]),
+
+      &rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,
+      &rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,
+      &rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,
+      &rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,
+      &rErr,&rErr,&rErr,&rErr,
+
+      //Previous Bank
+      &(gprBank[0][0]), &(gprBank[0][1]),	&(gprBank[0][2]), &(gprBank[0][3]),
+
+      //Current Bank
+      &(gprBank[1][0]), &(gprBank[1][1]), &(gprBank[1][2]), &(gprBank[1][3]),
+
+      &(gpr[0]), &(gpr[1]), &(gpr[2]), &(gpr[3])
+   },
+
+   {
+      /* MAP CODE L2 */
+
+      //BANK 0
+      &(gprBank[0][0]), &(gprBank[0][1]),	&(gprBank[0][2]), &(gprBank[0][3]),
+
+      //BANK 1
+      &(gprBank[1][0]), &(gprBank[1][1]),	&(gprBank[1][2]), &(gprBank[1][3]),
+
+      //BANK 2
+      &(gprBank[2][0]), &(gprBank[2][1]),	&(gprBank[2][2]), &(gprBank[2][3]),
+
+      //BANK 3
+      &(gprBank[3][0]), &(gprBank[3][1]),	&(gprBank[3][2]), &(gprBank[3][3]),
+
+      &rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,
+      &rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,
+      &rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,
+      &rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,
+      &rErr,&rErr,&rErr,&rErr,
+
+      //Previous Bank
+      &(gprBank[1][0]), &(gprBank[1][1]),	&(gprBank[1][2]), &(gprBank[1][3]),
+
+      //Current Bank
+      &(gprBank[2][0]), &(gprBank[2][1]), &(gprBank[2][2]), &(gprBank[2][3]),
+
+      &(gpr[0]), &(gpr[1]), &(gpr[2]), &(gpr[3])
+   },
+
+   {
+      /* MAP CODE L3 */
+
+      //BANK 0
+      &(gprBank[0][0]), &(gprBank[0][1]),	&(gprBank[0][2]), &(gprBank[0][3]),
+
+      //BANK 1
+      &(gprBank[1][0]), &(gprBank[1][1]),	&(gprBank[1][2]), &(gprBank[1][3]),
+
+      //BANK 2
+      &(gprBank[2][0]), &(gprBank[2][1]),	&(gprBank[2][2]), &(gprBank[2][3]),
+
+      //BANK 3
+      &(gprBank[3][0]), &(gprBank[3][1]),	&(gprBank[3][2]), &(gprBank[3][3]),
+
+      &rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,
+      &rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,
+      &rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,
+      &rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,&rErr,
+      &rErr,&rErr,&rErr,&rErr,
+
+      //Previous Bank
+      &(gprBank[2][0]), &(gprBank[2][1]), &(gprBank[2][2]), &(gprBank[2][3]),
+
+      //Current Bank
+      &(gprBank[3][0]), &(gprBank[3][1]), &(gprBank[3][2]), &(gprBank[3][3]),
+
+      &(gpr[0]), &(gpr[1]), &(gpr[2]), &(gpr[3])
+   }
 };
 
 //=============================================================================
