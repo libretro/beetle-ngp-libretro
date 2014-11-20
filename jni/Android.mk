@@ -49,7 +49,6 @@ CORE_SOURCES := $(CORE_DIR)/bios.cpp \
 		$(CORE_DIR)/interrupt.cpp \
 		$(CORE_DIR)/mem.cpp \
 		$(CORE_DIR)/rom.cpp \
-		$(CORE_DIR)/rtc.cpp \
 		$(CORE_DIR)/sound.cpp \
 		$(CORE_DIR)/T6W28_Apu.cpp \
 		$(CORE_DIR)/Z80_interface.cpp
@@ -64,7 +63,8 @@ CORE_SOURCES_C := $(CORE_DIR)/TLCS-900h/TLCS900h_disassemble.c \
 		$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_reg.c \
 		$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_single.c \
 		$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_src.c \
-		$(CORE_DIR)/TLCS-900h/TLCS900h_registers.c
+		$(CORE_DIR)/TLCS-900h/TLCS900h_registers.c \
+		$(CORE_DIR)/rtc.c
 
 	HW_CPU_SOURCES := $(MEDNAFEN_DIR)/hw_cpu/z80-fuse/z80.cpp \
 							$(MEDNAFEN_DIR)/hw_cpu/z80-fuse/z80_ops.cpp

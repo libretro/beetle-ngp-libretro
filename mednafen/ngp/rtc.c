@@ -12,7 +12,7 @@
 //      additional informations.
 //---------------------------------------------------------------------------
 
-#include "neopop.h"
+#include "../mednafen-types.h"
 #include <time.h>
 
 static uint8 rtc_latch[7];
