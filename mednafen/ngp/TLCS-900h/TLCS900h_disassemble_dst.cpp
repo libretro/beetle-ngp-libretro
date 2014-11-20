@@ -39,150 +39,148 @@
 #include "TLCS900h_interpret.h"
 
 //=========================================================================
-namespace TLCS900H
-{
 
-static void LDBi()
+static void DST_LDBi(void)
 {
 	sprintf(instr, "LD (%s),0x%02X", extra, get8_dis());
 }
 
-static void LDWi()
+static void DST_LDWi(void)
 {
 	sprintf(instr, "LD (%s),0x%04X", extra, get16_dis());
 }
 
-static void POPB()
+static void DST_POPB(void)
 {
 	sprintf(instr, "POP.b (%s)", extra);
 }
 
-static void POPW()
+static void DST_POPW(void)
 {
 	sprintf(instr, "POP.w (%s)", extra);
 }
 
-static void LDBm16()
+static void DST_LDBm16(void)
 {
 	sprintf(instr, "LD.b (%s),(0x%04X)", extra, get16_dis());
 }
 
-static void LDWm16()
+static void DST_LDWm16(void)
 {
 	sprintf(instr, "LD.w (%s),(0x%04X)", extra, get16_dis());
 }
 
-static void LDAW()
+static void DST_LDAW(void)
 {
 	sprintf(instr, "LDA %s,%s", gprName[second & 7][1], extra);
 }
 
-static void LDAL()
+static void DST_LDAL(void)
 {
 	sprintf(instr, "LDA %s,%s", gprName[second & 7][2], extra);
 }
 
-static void ANDCFA()
+static void DST_ANDCFA(void)
 {
 	sprintf(instr, "ANDCF A,(%s)", extra);
 }
 
-static void ORCFA()
+static void DST_ORCFA(void)
 {
 	sprintf(instr, "ORCF A,(%s)", extra);
 }
 
-static void XORCFA()
+static void DST_XORCFA(void)
 {
 	sprintf(instr, "XORCF A,(%s)", extra);
 }
 
-static void LDCFA()
+static void DST_LDCFA(void)
 {
 	sprintf(instr, "LDCF A,(%s)", extra);
 }
 
-static void STCFA()
+static void DST_STCFA(void)
 {
 	sprintf(instr, "STCF A,(%s)", extra);
 }
 
-static void LDBR()
+static void DST_LDBR(void)
 {
 	sprintf(instr, "LD (%s),%s", extra, gprName[second&7][0]);
 }
 
-static void LDWR()
+static void DST_LDWR(void)
 {
 	sprintf(instr, "LD (%s),%s", extra, gprName[second&7][1]);
 }
 
-static void LDLR()
+static void DST_LDLR(void)
 {
 	sprintf(instr, "LD (%s),%s", extra, gprName[second&7][2]);
 }
 
-static void ANDCF()
+static void DST_ANDCF(void)
 {
 	sprintf(instr, "ANDCF %d,(%s)", second & 7, extra);
 }
 
-static void ORCF()
+static void DST_ORCF(void)
 {
 	sprintf(instr, "ORCF %d,(%s)", second & 7, extra);
 }
 
-static void XORCF()
+static void DST_XORCF(void)
 {
 	sprintf(instr, "XORCF %d,(%s)", second & 7, extra);
 }
 
-static void LDCF()
+static void DST_LDCF(void)
 {
 	sprintf(instr, "LDCF %d,(%s)", second & 7, extra);
 }
 
-static void STCF()
+static void DST_STCF(void)
 {
 	sprintf(instr, "STCF %d,(%s)", second & 7, extra);
 }
 
-static void TSET()
+static void DST_TSET(void)
 {
 	sprintf(instr, "TSET %d,(%s)", second & 7, extra);
 }
 
-static void RES()
+static void DST_RES(void)
 {
 	sprintf(instr, "RES %d,(%s)", second & 7, extra);
 }
 
-static void SET()
+static void DST_SET(void)
 {
 	sprintf(instr, "SET %d,(%s)", second & 7, extra);
 }
 
-static void CHG()
+static void DST_CHG(void)
 {
 	sprintf(instr, "CHG %d,(%s)", second & 7, extra);
 }
 
-static void BIT()
+static void DST_BIT(void)
 {
 	sprintf(instr, "BIT %d,(%s)", second & 7, extra);
 }
 
-static void JP()
+static void DST_JP(void)
 {
 	sprintf(instr, "JP %s,%s", ccName[second & 0xF], extra);
 }
 
-static void CALL()
+static void DST_CALL(void)
 {
 	sprintf(instr, "CALL %s,%s", ccName[second & 0xF], extra);
 }
 
-static void RET()
+static void DST_RET(void)
 {
 	sprintf(instr, "RET %s", ccName[second & 0xF]);
 }
@@ -192,38 +190,38 @@ static void RET()
 //Secondary (DST) Instruction decode
 static void (*decode[256])() = 
 {
-/*0*/	LDBi,	0,		LDWi,	0,		POPB,	0,		POPW,	0,
+/*0*/	DST_LDBi,	0,		DST_LDWi,	0,		DST_POPB,	0,		DST_POPW,	0,
 		0,		0,		0,		0,		0,		0,		0,		0,
-/*1*/	0,		0,		0,		0,		LDBm16,	0,		LDWm16,	0,
+/*1*/	0,		0,		0,		0,		DST_LDBm16,	0,		DST_LDWm16,	0,
 		0,		0,		0,		0,		0,		0,		0,		0,
-/*2*/	LDAW,	LDAW,	LDAW,	LDAW,	LDAW,	LDAW,	LDAW,	LDAW,
-		ANDCFA,	ORCFA,	XORCFA,	LDCFA,	STCFA,	0,		0,		0,
-/*3*/	LDAL,	LDAL,	LDAL,	LDAL,	LDAL,	LDAL,	LDAL,	LDAL,
+/*2*/	DST_LDAW,	DST_LDAW,	DST_LDAW,	DST_LDAW,	DST_LDAW,	DST_LDAW,	DST_LDAW,	DST_LDAW,
+		DST_ANDCFA,	DST_ORCFA,	DST_XORCFA,	DST_LDCFA,	DST_STCFA,	0,		0,		0,
+/*3*/	DST_LDAL,	DST_LDAL,	DST_LDAL,	DST_LDAL,	DST_LDAL,	DST_LDAL,	DST_LDAL,	DST_LDAL,
 		0,		0,		0,		0,		0,		0,		0,		0,
-/*4*/	LDBR,	LDBR,	LDBR,	LDBR,	LDBR,	LDBR,	LDBR,	LDBR,
+/*4*/	DST_LDBR,	DST_LDBR,	DST_LDBR,	DST_LDBR,	DST_LDBR,	DST_LDBR,	DST_LDBR,	DST_LDBR,
 		0,		0,		0,		0,		0,		0,		0,		0,
-/*5*/	LDWR,	LDWR,	LDWR,	LDWR,	LDWR,	LDWR,	LDWR,	LDWR,
+/*5*/	DST_LDWR,	DST_LDWR,	DST_LDWR,	DST_LDWR,	DST_LDWR,	DST_LDWR,	DST_LDWR,	DST_LDWR,
 		0,		0,		0,		0,		0,		0,		0,		0,
-/*6*/	LDLR,	LDLR,	LDLR,	LDLR,	LDLR,	LDLR,	LDLR,	LDLR,
+/*6*/	DST_LDLR,	DST_LDLR,	DST_LDLR,	DST_LDLR,	DST_LDLR,	DST_LDLR,	DST_LDLR,	DST_LDLR,
 		0,		0,		0,		0,		0,		0,		0,		0,
 /*7*/	0,		0,		0,		0,		0,		0,		0,		0,
 		0,		0,		0,		0,		0,		0,		0,		0,
-/*8*/	ANDCF,	ANDCF,	ANDCF,	ANDCF,	ANDCF,	ANDCF,	ANDCF,	ANDCF,
-		ORCF,	ORCF,	ORCF,	ORCF,	ORCF,	ORCF,	ORCF,	ORCF,
-/*9*/	XORCF,	XORCF,	XORCF,	XORCF,	XORCF,	XORCF,	XORCF,	XORCF,
-		LDCF,	LDCF,	LDCF,	LDCF,	LDCF,	LDCF,	LDCF,	LDCF,
-/*A*/	STCF,	STCF,	STCF,	STCF,	STCF,	STCF,	STCF,	STCF,	
-		TSET,	TSET,	TSET,	TSET,	TSET,	TSET,	TSET,	TSET,
-/*B*/	RES,	RES,	RES,	RES,	RES,	RES,	RES,	RES,
-		SET,	SET,	SET,	SET,	SET,	SET,	SET,	SET,
-/*C*/	CHG,	CHG,	CHG,	CHG,	CHG,	CHG,	CHG,	CHG,
-		BIT,	BIT,	BIT,	BIT,	BIT,	BIT,	BIT,	BIT,
-/*D*/	JP,		JP,		JP,		JP,		JP,		JP,		JP,		JP,
-		JP,		JP,		JP,		JP,		JP,		JP,		JP,		JP,
-/*E*/	CALL,	CALL,	CALL,	CALL,	CALL,	CALL,	CALL,	CALL,
-		CALL,	CALL,	CALL,	CALL,	CALL,	CALL,	CALL,	CALL,
-/*F*/	RET,	RET,	RET,	RET,	RET,	RET,	RET,	RET,
-		RET,	RET,	RET,	RET,	RET,	RET,	RET,	RET
+/*8*/	DST_ANDCF,	DST_ANDCF,	DST_ANDCF,	DST_ANDCF,	DST_ANDCF,	DST_ANDCF,	DST_ANDCF,	DST_ANDCF,
+		DST_ORCF,	DST_ORCF,	DST_ORCF,	DST_ORCF,	DST_ORCF,	DST_ORCF,	DST_ORCF,	DST_ORCF,
+/*9*/	DST_XORCF,	DST_XORCF,	DST_XORCF,	DST_XORCF,	DST_XORCF,	DST_XORCF,	DST_XORCF,	DST_XORCF,
+		DST_LDCF,	DST_LDCF,	DST_LDCF,	DST_LDCF,	DST_LDCF,	DST_LDCF,	DST_LDCF,	DST_LDCF,
+/*A*/	DST_STCF,	DST_STCF,	DST_STCF,	DST_STCF,	DST_STCF,	DST_STCF,	DST_STCF,	DST_STCF,	
+		DST_TSET,	DST_TSET,	DST_TSET,	DST_TSET,	DST_TSET,	DST_TSET,	DST_TSET,	DST_TSET,
+/*B*/	DST_RES,    DST_RES,    DST_RES,    DST_RES,    DST_RES,    DST_RES,    DST_RES,    DST_RES,
+		DST_SET,    DST_SET,    DST_SET,    DST_SET,    DST_SET,    DST_SET,    DST_SET,    DST_SET,
+/*C*/	DST_CHG,    DST_CHG,    DST_CHG,    DST_CHG,    DST_CHG,    DST_CHG,    DST_CHG,    DST_CHG,
+		DST_BIT,    DST_BIT,    DST_BIT,    DST_BIT,    DST_BIT,    DST_BIT,    DST_BIT,    DST_BIT,
+/*D*/	DST_JP,		DST_JP,		DST_JP,		DST_JP,		DST_JP,		DST_JP,		DST_JP,		DST_JP,
+		DST_JP,		DST_JP,		DST_JP,		DST_JP,		DST_JP,		DST_JP,		DST_JP,		DST_JP,
+/*E*/	DST_CALL,	DST_CALL,	DST_CALL,	DST_CALL,	DST_CALL,	DST_CALL,	DST_CALL,	DST_CALL,
+		DST_CALL,	DST_CALL,	DST_CALL,	DST_CALL,	DST_CALL,	DST_CALL,	DST_CALL,	DST_CALL,
+/*F*/	DST_RET,    DST_RET,    DST_RET,    DST_RET,    DST_RET,    DST_RET,    DST_RET,    DST_RET,
+		DST_RET,    DST_RET,    DST_RET,    DST_RET,    DST_RET,    DST_RET,    DST_RET,    DST_RET
 };
 
 //=============================================================================
@@ -237,4 +235,3 @@ void TLCS900h_disassemble_dst(void)
 	else
 		sprintf(instr, "unknown dst instr. %02X", second);
 }
-};

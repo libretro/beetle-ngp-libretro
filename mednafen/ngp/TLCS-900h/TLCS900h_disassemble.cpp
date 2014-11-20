@@ -43,12 +43,13 @@
 #include "TLCS900h_interpret.h"
 #include "../mem.h"
 
+void TLCS900h_disassemble_dst(void);
+void TLCS900h_disassemble_extra(void);
+
 namespace TLCS900H
 {
 
-void TLCS900h_disassemble_extra(void);
 void TLCS900h_disassemble_src(int size);
-void TLCS900h_disassemble_dst(void);
 void TLCS900h_disassemble_reg(int size);
 
 //=========================================================================

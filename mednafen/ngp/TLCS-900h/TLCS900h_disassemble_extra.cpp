@@ -43,38 +43,36 @@
 
 #define RCN_fetch(_a, _b) (regCodeName[(_a)][(_b)] ? regCodeName[(_a)][(_b)] : "-UNK-")
 
-namespace TLCS900H
-{
-
 //=========================================================================
 
 char extra[256];	//Print the mnemonic for the addressing mode here.
 
 //=========================================================================
 
-static void ExXWA()	{sprintf(extra, "XWA");}
-static void ExXBC()	{sprintf(extra, "XBC");}
-static void ExXDE()	{sprintf(extra, "XDE");}
-static void ExXHL()	{sprintf(extra, "XHL");}
-static void ExXIX()	{sprintf(extra, "XIX");}
-static void ExXIY()	{sprintf(extra, "XIY");}
-static void ExXIZ()	{sprintf(extra, "XIZ");}
-static void ExXSP()	{sprintf(extra, "XSP");}
+static void EXTRA_ExXWA(void) { sprintf(extra, "XWA"); }
 
-static void ExXWAd()	{sprintf(extra, "XWA %+d", (int8)get8_dis());}
-static void ExXBCd()	{sprintf(extra, "XBC %+d", (int8)get8_dis());}
-static void ExXDEd()	{sprintf(extra, "XDE %+d", (int8)get8_dis());}
-static void ExXHLd()	{sprintf(extra, "XHL %+d", (int8)get8_dis());}
-static void ExXIXd()	{sprintf(extra, "XIX %+d", (int8)get8_dis());}
-static void ExXIYd()	{sprintf(extra, "XIY %+d", (int8)get8_dis());}
-static void ExXIZd()	{sprintf(extra, "XIZ %+d", (int8)get8_dis());}
-static void ExXSPd()	{sprintf(extra, "XSP %+d", (int8)get8_dis());}
+static void EXTRA_ExXBC(void)	{sprintf(extra, "XBC");}
+static void EXTRA_ExXDE(void)	{sprintf(extra, "XDE");}
+static void EXTRA_ExXHL(void)	{sprintf(extra, "XHL");}
+static void EXTRA_ExXIX(void)	{sprintf(extra, "XIX");}
+static void EXTRA_ExXIY(void)	{sprintf(extra, "XIY");}
+static void EXTRA_ExXIZ(void)	{sprintf(extra, "XIZ");}
+static void EXTRA_ExXSP(void)	{sprintf(extra, "XSP");}
 
-static void Ex8()		{sprintf(extra, "0x%02X", get8_dis());}
-static void Ex16()		{sprintf(extra, "0x%04X", get16_dis());}
-static void Ex24()		{sprintf(extra, "0x%06X", get24_dis());}
+static void EXTRA_ExXWAd(void)	{sprintf(extra, "XWA %+d", (int8)get8_dis());}
+static void EXTRA_ExXBCd(void)	{sprintf(extra, "XBC %+d", (int8)get8_dis());}
+static void EXTRA_ExXDEd(void)	{sprintf(extra, "XDE %+d", (int8)get8_dis());}
+static void EXTRA_ExXHLd(void)	{sprintf(extra, "XHL %+d", (int8)get8_dis());}
+static void EXTRA_ExXIXd(void)	{sprintf(extra, "XIX %+d", (int8)get8_dis());}
+static void EXTRA_ExXIYd(void)	{sprintf(extra, "XIY %+d", (int8)get8_dis());}
+static void EXTRA_ExXIZd(void)	{sprintf(extra, "XIZ %+d", (int8)get8_dis());}
+static void EXTRA_ExXSPd(void)	{sprintf(extra, "XSP %+d", (int8)get8_dis());}
 
-static void ExR32()
+static void EXTRA_Ex8(void)		{sprintf(extra, "0x%02X", get8_dis());}
+static void EXTRA_Ex16(void)		{sprintf(extra, "0x%04X", get16_dis());}
+static void EXTRA_Ex24(void)		{sprintf(extra, "0x%06X", get24_dis());}
+
+static void EXTRA_ExR32(void)
 {
 	uint8 data = get8_dis();
 
@@ -111,7 +109,7 @@ static void ExR32()
 		sprintf(extra, "%s", RCN_fetch(2, data >> 2)); 
 }
 
-static void ExDec()
+static void EXTRA_ExDec(void)
 {
 	uint8 data = get8_dis();
 	uint8 r32 = data & 0xFC;
@@ -124,7 +122,7 @@ static void ExDec()
 	}
 }
 
-static void ExInc(void)
+static void EXTRA_ExInc(void)
 {
    uint8 data = get8_dis();
    uint8 r32 = data & 0xFC;
@@ -143,21 +141,21 @@ static void ExInc(void)
    }
 }
 
-static void ExRCB()
+static void EXTRA_ExRCB(void)
 {
 	uint8 data = get8_dis();
 	sprintf(extra, "%s", RCN_fetch(0, data >> 0));
 	brCode = TRUE;
 }
 
-static void ExRCW()
+static void EXTRA_ExRCW(void)
 {
 	uint8 data = get8_dis();
 	sprintf(extra, "%s", RCN_fetch(1, data >> 1));
 	brCode = TRUE;
 }
 
-static void ExRCL()
+static void EXTRA_ExRCL(void)
 {
 	uint8 data = get8_dis();
 	sprintf(extra, "%s", RCN_fetch(2, data >> 2));
@@ -177,21 +175,21 @@ static void (*decodeExtra[256])() =
 /*5*/	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 /*6*/	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 /*7*/	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-/*8*/	ExXWA,	ExXBC,	ExXDE,	ExXHL,	ExXIX,	ExXIY,	ExXIZ,	ExXSP,
-		ExXWAd,	ExXBCd,	ExXDEd,	ExXHLd,	ExXIXd,	ExXIYd,	ExXIZd,	ExXSPd,
-/*9*/	ExXWA,	ExXBC,	ExXDE,	ExXHL,	ExXIX,	ExXIY,	ExXIZ,	ExXSP,
-		ExXWAd,	ExXBCd,	ExXDEd,	ExXHLd,	ExXIXd,	ExXIYd,	ExXIZd,	ExXSPd,
-/*A*/	ExXWA,	ExXBC,	ExXDE,	ExXHL,	ExXIX,	ExXIY,	ExXIZ,	ExXSP,
-		ExXWAd,	ExXBCd,	ExXDEd,	ExXHLd,	ExXIXd,	ExXIYd,	ExXIZd,	ExXSPd,
-/*B*/	ExXWA,	ExXBC,	ExXDE,	ExXHL,	ExXIX,	ExXIY,	ExXIZ,	ExXSP,
-		ExXWAd,	ExXBCd,	ExXDEd,	ExXHLd,	ExXIXd,	ExXIYd,	ExXIZd,	ExXSPd,
-/*C*/	Ex8,	Ex16,	Ex24,	ExR32,	ExDec,	ExInc,	0,		ExRCB,
+/*8*/	EXTRA_ExXWA,	EXTRA_ExXBC,	EXTRA_ExXDE,	EXTRA_ExXHL,	EXTRA_ExXIX,	EXTRA_ExXIY,	EXTRA_ExXIZ,	EXTRA_ExXSP,
+		EXTRA_ExXWAd,	EXTRA_ExXBCd,	EXTRA_ExXDEd,	EXTRA_ExXHLd,	EXTRA_ExXIXd,	EXTRA_ExXIYd,	EXTRA_ExXIZd,	EXTRA_ExXSPd,
+/*9*/	EXTRA_ExXWA,	EXTRA_ExXBC,	EXTRA_ExXDE,	EXTRA_ExXHL,	EXTRA_ExXIX,	EXTRA_ExXIY,	EXTRA_ExXIZ,	EXTRA_ExXSP,
+		EXTRA_ExXWAd,	EXTRA_ExXBCd,	EXTRA_ExXDEd,	EXTRA_ExXHLd,	EXTRA_ExXIXd,	EXTRA_ExXIYd,	EXTRA_ExXIZd,	EXTRA_ExXSPd,
+/*A*/	EXTRA_ExXWA,	EXTRA_ExXBC,	EXTRA_ExXDE,	EXTRA_ExXHL,	EXTRA_ExXIX,	EXTRA_ExXIY,	EXTRA_ExXIZ,	EXTRA_ExXSP,
+		EXTRA_ExXWAd,	EXTRA_ExXBCd,	EXTRA_ExXDEd,	EXTRA_ExXHLd,	EXTRA_ExXIXd,	EXTRA_ExXIYd,	EXTRA_ExXIZd,	EXTRA_ExXSPd,
+/*B*/	EXTRA_ExXWA,	EXTRA_ExXBC,	EXTRA_ExXDE,	EXTRA_ExXHL,	EXTRA_ExXIX,	EXTRA_ExXIY,	EXTRA_ExXIZ,	EXTRA_ExXSP,
+		EXTRA_ExXWAd,	EXTRA_ExXBCd,	EXTRA_ExXDEd,	EXTRA_ExXHLd,	EXTRA_ExXIXd,	EXTRA_ExXIYd,	EXTRA_ExXIZd,	EXTRA_ExXSPd,
+/*C*/	EXTRA_Ex8,	EXTRA_Ex16,	EXTRA_Ex24,	EXTRA_ExR32,	EXTRA_ExDec,	EXTRA_ExInc,	0,		EXTRA_ExRCB,
 		0,		0,		0,		0,		0,		0,		0,		0,
-/*D*/	Ex8,	Ex16,	Ex24,	ExR32,	ExDec,	ExInc,	0,		ExRCW,
+/*D*/	EXTRA_Ex8,	EXTRA_Ex16,	EXTRA_Ex24,	EXTRA_ExR32,	EXTRA_ExDec,	EXTRA_ExInc,	0,		EXTRA_ExRCW,
 		0,		0,		0,		0,		0,		0,		0,		0,
-/*E*/	Ex8,	Ex16,	Ex24,	ExR32,	ExDec,	ExInc,	0,		ExRCL,
+/*E*/	EXTRA_Ex8,	EXTRA_Ex16,	EXTRA_Ex24,	EXTRA_ExR32,	EXTRA_ExDec,	EXTRA_ExInc,	0,		EXTRA_ExRCL,
 		0,		0,		0,		0,		0,		0,		0,		0,
-/*F*/	Ex8,	Ex16,	Ex24,	ExR32,	ExDec,	ExInc,	0,		0,
+/*F*/	EXTRA_Ex8,	EXTRA_Ex16,	EXTRA_Ex24,	EXTRA_ExR32,	EXTRA_ExDec,	EXTRA_ExInc,	0,		0,
 		0,		0,		0,		0,		0,		0,		0,		0
 };
 
@@ -201,5 +199,3 @@ void TLCS900h_disassemble_extra(void)
 	if (decodeExtra[first])
 		(*decodeExtra[first])();
 }
-
-};

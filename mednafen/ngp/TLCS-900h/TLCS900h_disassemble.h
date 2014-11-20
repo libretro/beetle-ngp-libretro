@@ -34,6 +34,9 @@
 #ifndef __TLCS900H_DISASSEMBLE__
 #define __TLCS900H_DISASSEMBLE__
 
+//Print the mnemonic for the addressing mode / reg code.
+extern char extra[256];
+
 namespace TLCS900H
 {
 //=============================================================================
@@ -45,8 +48,6 @@ char* TLCS900h_disassemble(void);
 //Print to this string the disassembled instruction
 extern char instr[128];
 
-//Print the mnemonic for the addressing mode / reg code.
-extern char extra[256];
 
 //=============================================================================
 
