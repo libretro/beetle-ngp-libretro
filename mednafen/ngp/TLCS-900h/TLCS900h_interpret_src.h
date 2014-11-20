@@ -34,9 +34,6 @@
 #ifndef __TLCS900H_SRC__
 #define __TLCS900H_SRC__
 //=========================================================================
-namespace TLCS900H
-{
-
 
 //===== PUSH (mem)
 void srcPUSH(void);
@@ -193,8 +190,6 @@ void srcCPRm(void);
 
 //===== CP (mem),R
 void srcCPmR(void);
-
-};
 
 //=============================================================================
 #endif
