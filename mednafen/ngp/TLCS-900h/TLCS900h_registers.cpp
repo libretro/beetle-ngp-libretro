@@ -39,9 +39,6 @@
 #include "../interrupt.h"
 #include "TLCS900h_registers.h"
 
-namespace TLCS900H
-{
-
 #ifdef MSB_FIRST
 #define BYTE0	3
 #define BYTE1	2
@@ -959,7 +956,5 @@ void reset_registers(void)
 	REGXSP = 0x00006C00; //Confirmed from BIOS, 
 						//immediately changes value from default of 0x100
 }
-
-};
 
 //=============================================================================

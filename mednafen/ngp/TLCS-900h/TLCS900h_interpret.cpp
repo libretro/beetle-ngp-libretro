@@ -63,14 +63,7 @@
 #include "TLCS900h_interpret_dst.h"
 #include "TLCS900h_interpret_reg.h"
 
-namespace TLCS900H
-{
-
-static void DUMMY_instruction_error(const char* vaMessage,...)
-{
-
-
-}
+static void DUMMY_instruction_error(const char* vaMessage,...) { }
 
 void (*instruction_error)(const char* vaMessage,...) = DUMMY_instruction_error;
 
@@ -1092,7 +1085,5 @@ int32 TLCS900h_interpret(void)
 
 	return cycles + cycles_extra;
 }
-
-};
 
 //=============================================================================

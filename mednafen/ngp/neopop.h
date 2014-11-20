@@ -34,14 +34,6 @@
 #include "TLCS-900h/TLCS900h_interpret_src.h"
 #include "TLCS-900h/TLCS900h_registers.h"
 
-// I put the TLCS900h code in its own namespace, so it doesn't
-// pollute the global namespace with all of its CARAZZZY short-named global variables.
-// (I'm too lazy to clean up and turn it into an object :b)
-using namespace TLCS900H;
-
-//=============================================================================
-
-
 //===========================
 // GCC specific 
 //===========================

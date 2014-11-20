@@ -86,18 +86,6 @@ void system_comms_write(uint8 data)
  return;
 }
 
-void  instruction_error(char* vaMessage,...)
-{
-	char message[1000];
-	va_list vl;
-
-	va_start(vl, vaMessage);
-	vsprintf(message, vaMessage, vl);
-	va_end(vl);
-
-	MDFN_printf("[PC %06X] %s\n", pc, message);
-}
-
 static uint8 *chee;
 
 bool NGPFrameSkip;

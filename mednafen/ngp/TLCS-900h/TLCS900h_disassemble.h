@@ -37,8 +37,6 @@
 //Print the mnemonic for the addressing mode / reg code.
 extern char extra[256];
 
-namespace TLCS900H
-{
 //=============================================================================
 
 //Disassembles a single instruction from 'pc', 
@@ -71,8 +69,6 @@ uint8 get8_dis(void);
 uint16 get16_dis(void);
 uint32 get24_dis(void);
 uint32 get32_dis(void);
-
-};
 
 //=============================================================================
 #endif

@@ -46,9 +46,6 @@
 void TLCS900h_disassemble_dst(void);
 void TLCS900h_disassemble_extra(void);
 
-namespace TLCS900H
-{
-
 void TLCS900h_disassemble_src(int size);
 void TLCS900h_disassemble_reg(int size);
 
@@ -638,5 +635,4 @@ char* TLCS900h_disassemble(void)
 
 	return strdup(str);
 }
-};
 //=============================================================================

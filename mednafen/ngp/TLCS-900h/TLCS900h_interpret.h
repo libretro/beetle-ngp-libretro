@@ -42,8 +42,6 @@
 
 #ifndef __TLCS900H_INTERPRET__
 #define __TLCS900H_INTERPRET__
-namespace TLCS900H
-{
 
 //=============================================================================
 
@@ -130,8 +128,6 @@ bool conditionCode(int cc);
 //Translate an rr or RR value for MUL/MULS/DIV/DIVS
 uint8 get_rr_Target(void);
 uint8 get_RR_Target(void);
-
-};
 
 //=============================================================================
 #endif

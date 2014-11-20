@@ -44,9 +44,6 @@
 
 //=========================================================================
 
-namespace TLCS900H
-{
-
 static void PUSH()
 {
 	sprintf(instr, "PUSH (%s)", extra);
@@ -502,6 +499,5 @@ void TLCS900h_disassemble_src(int opsize)
 	else
 		sprintf(instr, "unknown src instr. %02X", second);
 }
-};
 
 //=============================================================================

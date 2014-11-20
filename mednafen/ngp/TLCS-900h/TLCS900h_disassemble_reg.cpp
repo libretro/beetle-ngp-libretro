@@ -46,9 +46,6 @@
 
 //=========================================================================
 
-namespace TLCS900H
-{
-
 static void LDi()
 {
 	switch(size)
@@ -667,4 +664,3 @@ void TLCS900h_disassemble_reg(int opsize)
 	else
 		sprintf(instr, "unknown reg instr. %02X", second);
 }
-};
