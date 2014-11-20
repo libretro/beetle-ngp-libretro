@@ -54,69 +54,66 @@
 #include "TLCS900h_registers.h"
 #include "../mem.h"
 
-namespace TLCS900H
-{
-
 //=========================================================================
 
 //===== LD (mem),#
-void dstLDBi(void)
+void DST_dstLDBi(void)
 {
 	storeB(mem, FETCH8);
 	cycles = 5;
 }
 
 //===== LD (mem),#
-void dstLDWi()
+void DST_dstLDWi(void)
 {
 	storeW(mem, fetch16());
 	cycles = 6;
 }
 
 //===== POP (mem)
-void dstPOPB()
+void DST_dstPOPB(void)
 {
 	storeB(mem, pop8());
 	cycles = 6;
 }
 
 //===== POP (mem)
-void dstPOPW()
+void DST_dstPOPW(void)
 {
 	storeW(mem, pop16());
 	cycles = 6;
 }
 
 //===== LD (mem),(nn)
-void dstLDBm16()
+void DST_dstLDBm16(void)
 {
 	storeB(mem, loadB(fetch16()));
 	cycles = 8;
 }
 
 //===== LD (mem),(nn)
-void dstLDWm16()
+void DST_dstLDWm16(void)
 {
 	storeW(mem, loadW(fetch16()));
 	cycles = 8;
 }
 
 //===== LDA R,mem
-void dstLDAW()
+void DST_dstLDAW(void)
 {
 	regW(R) = (uint16)mem;
 	cycles = 4;
 }
 
 //===== LDA R,mem
-void dstLDAL()
+void DST_dstLDAL(void)
 {
 	regL(R) = (uint32)mem;
 	cycles = 4;
 }
 
 //===== ANDCF A,(mem)
-void dstANDCFA()
+void DST_dstANDCFA(void)
 {
 	uint8 bit = REGA & 0xF;
 	uint8 mbit = (loadB(mem) >> bit) & 1;
@@ -125,7 +122,7 @@ void dstANDCFA()
 }
 
 //===== ORCF A,(mem)
-void dstORCFA()
+void DST_dstORCFA(void)
 {
 	uint8 bit = REGA & 0xF;
 	uint8 mbit = (loadB(mem) >> bit) & 1;
@@ -134,7 +131,7 @@ void dstORCFA()
 }
 
 //===== XORCF A,(mem)
-void dstXORCFA()
+void DST_dstXORCFA(void)
 {
 	uint8 bit = REGA & 0xF;
 	uint8 mbit = (loadB(mem) >> bit) & 1;
@@ -143,7 +140,7 @@ void dstXORCFA()
 }
 
 //===== LDCF A,(mem)
-void dstLDCFA()
+void DST_dstLDCFA(void)
 {
 	uint8 bit = REGA & 0xF;
 	uint8 mask = (1 << bit);
@@ -152,7 +149,7 @@ void dstLDCFA()
 }
 
 //===== STCF A,(mem)
-void dstSTCFA()
+void DST_dstSTCFA(void)
 {
 	uint8 bit = REGA & 0xF;
 	uint8 cmask = ~(1 << bit);
@@ -162,28 +159,28 @@ void dstSTCFA()
 }
 
 //===== LD (mem),R
-void dstLDBR()
+void DST_dstLDBR(void)
 {
 	storeB(mem, regB(R));
 	cycles = 4;
 }
 
 //===== LD (mem),R
-void dstLDWR()
+void DST_dstLDWR(void)
 {
 	storeW(mem, regW(R));
 	cycles = 4;
 }
 
 //===== LD (mem),R
-void dstLDLR()
+void DST_dstLDLR(void)
 {
 	storeL(mem, regL(R));
 	cycles = 6;
 }
 
 //===== ANDCF #3,(mem)
-void dstANDCF()
+void DST_dstANDCF(void)
 {
 	uint8 bit = R;
 	uint8 mbit = (loadB(mem) >> bit) & 1;
@@ -192,7 +189,7 @@ void dstANDCF()
 }
 
 //===== ORCF #3,(mem)
-void dstORCF()
+void DST_dstORCF(void)
 {
 	uint8 bit = R;
 	uint8 mbit = (loadB(mem) >> bit) & 1;
@@ -201,7 +198,7 @@ void dstORCF()
 }
 
 //===== XORCF #3,(mem)
-void dstXORCF()
+void DST_dstXORCF(void)
 {
 	uint8 bit = R;
 	uint8 mbit = (loadB(mem) >> bit) & 1;
@@ -210,7 +207,7 @@ void dstXORCF()
 }
 
 //===== LDCF #3,(mem)
-void dstLDCF()
+void DST_dstLDCF(void)
 {
 	uint8 bit = R;
 	uint32 mask = (1 << bit);
@@ -219,7 +216,7 @@ void dstLDCF()
 }
 
 //===== STCF #3,(mem)
-void dstSTCF()
+void DST_dstSTCF(void)
 {
 	uint8 bit = R;
 	uint8 cmask = ~(1 << bit);
@@ -229,7 +226,7 @@ void dstSTCF()
 }
 
 //===== TSET #3,(mem)
-void dstTSET()
+void DST_dstTSET(void)
 {
 	SETFLAG_Z(! (loadB(mem) & (1 << R)) );
 	storeB(mem, loadB(mem) | (1 << R));
@@ -240,28 +237,28 @@ void dstTSET()
 }
 
 //===== RES #3,(mem)
-void dstRES(void)
+void DST_dstRES(void)
 {
 	storeB(mem, loadB(mem) & (~(1 << R)));
 	cycles = 8;
 }
 
 //===== SET #3,(mem)
-void dstSET(void)
+void DST_dstSET(void)
 {
 	storeB(mem, loadB(mem) | (1 << R));
 	cycles = 8;
 }
 
 //===== CHG #3,(mem)
-void dstCHG(void)
+void DST_dstCHG(void)
 {
 	storeB(mem, loadB(mem) ^ (1 << R));
 	cycles = 8;
 }
 
 //===== BIT #3,(mem)
-void dstBIT(void)
+void DST_dstBIT(void)
 {
    SETFLAG_Z(! (loadB(mem) & (1 << R)) );
    SETFLAG_H1;
@@ -270,7 +267,7 @@ void dstBIT(void)
 }
 
 //===== JP cc,mem
-void dstJP(void)
+void DST_dstJP(void)
 {
    cycles = 6;
    if (conditionCode(second & 0xF))
@@ -281,7 +278,7 @@ void dstJP(void)
 }
 
 //===== CALL cc,mem
-void dstCALL(void)
+void DST_dstCALL(void)
 {
    cycles = 6;
    if (conditionCode(second & 0xF))
@@ -293,7 +290,7 @@ void dstCALL(void)
 }
 
 //===== RET cc
-void dstRET(void)
+void DST_dstRET(void)
 {
    cycles = 6;
    if (conditionCode(second & 0xF))
@@ -303,5 +300,4 @@ void dstRET(void)
    }
 }
 
-};
 //=============================================================================

@@ -34,99 +34,94 @@
 #ifndef __TLCS900H_DST__
 #define __TLCS900H_DST__
 
-namespace TLCS900H
-{
-
 //=========================================================================
 
 //===== LD (mem),#
-void dstLDBi(void);
+void DST_dstLDBi(void);
 
 //===== LD (mem),#
-void dstLDWi(void);
+void DST_dstLDWi(void);
 
 //===== POP (mem)
-void dstPOPB(void);
+void DST_dstPOPB(void);
 
 //===== POP (mem)
-void dstPOPW(void);
+void DST_dstPOPW(void);
 
 //===== LD (mem),(nn)
-void dstLDBm16(void);
+void DST_dstLDBm16(void);
 
 //===== LD (mem),(nn)
-void dstLDWm16(void);
+void DST_dstLDWm16(void);
 
 //===== LDA R,mem
-void dstLDAW(void);
+void DST_dstLDAW(void);
 
 //===== LDA R,mem
-void dstLDAL(void);
+void DST_dstLDAL(void);
 
 //===== ANDCF A,(mem)
-void dstANDCFA(void);
+void DST_dstANDCFA(void);
 
 //===== ORCF A,(mem)
-void dstORCFA(void);
+void DST_dstORCFA(void);
 
 //===== XORCF A,(mem)
-void dstXORCFA(void);
+void DST_dstXORCFA(void);
 
 //===== LDCF A,(mem)
-void dstLDCFA(void);
+void DST_dstLDCFA(void);
 
 //===== STCF A,(mem)
-void dstSTCFA(void);
+void DST_dstSTCFA(void);
 
 //===== LD (mem),R
-void dstLDBR(void);
+void DST_dstLDBR(void);
 
 //===== LD (mem),R
-void dstLDWR(void);
+void DST_dstLDWR(void);
 
 //===== LD (mem),R
-void dstLDLR(void);
+void DST_dstLDLR(void);
 
 //===== ANDCF #3,(mem)
-void dstANDCF(void);
+void DST_dstANDCF(void);
 
 //===== ORCF #3,(mem)
-void dstORCF(void);
+void DST_dstORCF(void);
 
 //===== XORCF #3,(mem)
-void dstXORCF(void);
+void DST_dstXORCF(void);
 
 //===== LDCF #3,(mem)
-void dstLDCF(void);
+void DST_dstLDCF(void);
 
 //===== STCF #3,(mem)
-void dstSTCF(void);
+void DST_dstSTCF(void);
 
 //===== TSET #3,(mem)
-void dstTSET(void);
+void DST_dstTSET(void);
 
 //===== RES #3,(mem)
-void dstRES(void);
+void DST_dstRES(void);
 
 //===== SET #3,(mem)
-void dstSET(void);
+void DST_dstSET(void);
 
 //===== CHG #3,(mem)
-void dstCHG(void);
+void DST_dstCHG(void);
 
 //===== BIT #3,(mem)
-void dstBIT(void);
+void DST_dstBIT(void);
 
 //===== JP cc,mem
-void dstJP(void);
+void DST_dstJP(void);
 
 //===== CALL cc,mem
-void dstCALL(void);
+void DST_dstCALL(void);
 
 //===== RET cc
-void dstRET(void);
-
-};
+void DST_dstRET(void);
 
 //=========================================================================
 #endif
