@@ -50,6 +50,8 @@ enum
  MDFN_COLORSPACE_YUV = 2, // TODO, maybe.
 };
 
+#ifdef __cplusplus
+
 class MDFN_PixelFormat
 {
  public:
@@ -116,5 +118,6 @@ class MDFN_Surface //typedef struct
  private:
  void Init(void *const p_pixels, const uint32 p_width, const uint32 p_height, const uint32 p_pitchinpix, const MDFN_PixelFormat &nf);
 };
+#endif
 
 #endif

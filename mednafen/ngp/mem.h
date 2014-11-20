@@ -15,6 +15,9 @@
 #ifndef __MEM__
 #define __MEM__
 //=============================================================================
+#include <stdint.h>
+#include <boolean.h>
+#include "../mednafen-types.h"
 
 #define ROM_START	0x200000
 #define ROM_END		0x3FFFFF
@@ -39,6 +42,10 @@ extern bool memory_flash_command;
 extern bool FlashStatusEnable;
 extern uint8 COMMStatus;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //=============================================================================
 
 uint8  loadB(uint32 address);
@@ -48,6 +55,10 @@ uint32 loadL(uint32 address);
 void storeB(uint32 address, uint8 data);
 void storeW(uint32 address, uint16 data);
 void storeL(uint32 address, uint32 data);
+
+#ifdef __cplusplus
+}
+#endif
 
 void SetFRM(void);
 void RecacheFRM(void);

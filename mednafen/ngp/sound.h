@@ -24,7 +24,7 @@ void dac_write_right(uint8);
 int32 MDFNNGPCSOUND_Flush(int16 *SoundBuf, const int32 MaxSoundFrames);
 void MDFNNGPCSOUND_Init(void);
 bool MDFNNGPC_SetSoundRate(uint32 rate);
-int MDFNNGPCSOUND_StateAction(StateMem *sm, int load, int data_only);
+int MDFNNGPCSOUND_StateAction(void *data, int load, int data_only);
 void MDFNNGPCSOUND_SetEnable(bool set);
 
 #endif

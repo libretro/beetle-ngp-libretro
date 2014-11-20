@@ -13,6 +13,7 @@
 //---------------------------------------------------------------------------
 
 #include "neopop.h"
+#include "../mednafen.h"
 #include "bios.h"
 #include "TLCS-900h/TLCS900h_registers.h"
 #include "TLCS-900h/TLCS900h_interpret.h"
@@ -21,6 +22,9 @@
 #include "dma.h"
 #include "interrupt.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 static uint8 CacheIntPrio[0xB]; // Iinterrupt prio registers at 0x0070-0x007a don't have priority readable.
 	 		       // This should probably be stored in BIOS work RAM somewhere instead of a separate array, but I don't know where!
@@ -614,8 +618,13 @@ void iBIOSHLE(void)
    pc = pop32();
 }
 
-int BIOSHLE_StateAction(StateMem *sm, int load, int data_only)
+#ifdef __cplusplus
+}
+#endif
+
+int BIOSHLE_StateAction(void *data, int load, int data_only)
 {
+   StateMem *sm = (StateMem*)data;
    SFORMAT StateRegs[] =
    {
       SFARRAY(CacheIntPrio, 0xB),

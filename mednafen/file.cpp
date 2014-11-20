@@ -23,6 +23,7 @@
 
 #include "file.h"
 #include "general.h"
+#include "error.h"
 
 bool MDFNFILE::ApplyIPS(void *unused)
 {

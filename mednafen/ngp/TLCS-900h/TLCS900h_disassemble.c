@@ -37,7 +37,8 @@
 
 //=========================================================================
 
-#include "../neopop.h"
+#include <stdio.h>
+#include <string.h>
 #include "TLCS900h_disassemble.h"
 #include "TLCS900h_registers.h"
 #include "TLCS900h_interpret.h"

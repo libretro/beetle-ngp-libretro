@@ -13,6 +13,7 @@
 //---------------------------------------------------------------------------
 
 #include "neopop.h"
+#include "../mednafen.h"
 #include "flash.h"
 #include "mem.h"
 
@@ -285,8 +286,9 @@ void flash_commit(void)
    }
 }
 
-int FLASH_StateAction(StateMem *sm, int load, int data_only)
+int FLASH_StateAction(void *data, int load, int data_only)
 {
+   StateMem *sm = (StateMem*)data;
    int32_t FlashLength = 0;
    uint8_t *flashdata = NULL;
 

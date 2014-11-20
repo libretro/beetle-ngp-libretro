@@ -16,10 +16,7 @@
 #define __NEOPOP__
 //=============================================================================
 
-#include "../mednafen.h"
-#include "../mednafen-endian.h"
-#include "../mempatcher.h"
-#include "../masmem.h"
+#include "../mednafen-types.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -213,8 +210,5 @@ typedef struct
 
 void int_redo_icache(void);
 
-#include "gfx.h"
-
-extern NGPGFX_CLASS *NGPGfx;
 extern uint8 NGPJoyLatch;
 #endif

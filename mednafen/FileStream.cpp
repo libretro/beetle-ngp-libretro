@@ -32,6 +32,8 @@
 #include <unistd.h>
 #endif
 
+#include "error.h"
+
 #define fseeko fseek
 #define ftello ftell
 

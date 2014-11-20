@@ -40,43 +40,44 @@ CORE_DEFINE := -DWANT_NGP_EMU
 CORE_DIR := $(MEDNAFEN_DIR)/ngp
 
 CORE_SOURCES := $(CORE_DIR)/bios.cpp \
-	$(CORE_DIR)/biosHLE.cpp \
-	$(CORE_DIR)/dma.cpp \
-	$(CORE_DIR)/flash.cpp \
-	$(CORE_DIR)/gfx.cpp \
-	$(CORE_DIR)/gfx_scanline_colour.cpp \
-	$(CORE_DIR)/gfx_scanline_mono.cpp \
-	$(CORE_DIR)/interrupt.cpp \
-	$(CORE_DIR)/mem.cpp \
-	$(CORE_DIR)/rom.cpp \
-	$(CORE_DIR)/rtc.cpp \
-	$(CORE_DIR)/sound.cpp \
-	$(CORE_DIR)/T6W28_Apu.cpp \
-	$(CORE_DIR)/Z80_interface.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_extra.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_reg.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_dst.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_src.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_dst.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_reg.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_single.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_src.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_registers.cpp
+		$(CORE_DIR)/biosHLE.cpp \
+		$(CORE_DIR)/dma.cpp \
+		$(CORE_DIR)/flash.cpp \
+		$(CORE_DIR)/gfx.cpp \
+		$(CORE_DIR)/gfx_scanline_colour.cpp \
+		$(CORE_DIR)/gfx_scanline_mono.cpp \
+		$(CORE_DIR)/interrupt.cpp \
+		$(CORE_DIR)/mem.cpp \
+		$(CORE_DIR)/rom.cpp \
+		$(CORE_DIR)/rtc.cpp \
+		$(CORE_DIR)/sound.cpp \
+		$(CORE_DIR)/T6W28_Apu.cpp \
+		$(CORE_DIR)/Z80_interface.cpp
 
-HW_CPU_SOURCES := $(MEDNAFEN_DIR)/hw_cpu/z80-fuse/z80.cpp \
-						$(MEDNAFEN_DIR)/hw_cpu/z80-fuse/z80_ops.cpp
-TARGET_NAME := mednafen_ngp_libretro
+CORE_SOURCES_C := $(CORE_DIR)/TLCS-900h/TLCS900h_disassemble.c \
+		$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_extra.c \
+		$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_reg.c \
+		$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_dst.c \
+		$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_src.c \
+		$(CORE_DIR)/TLCS-900h/TLCS900h_interpret.c \
+		$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_dst.c \
+		$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_reg.c \
+		$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_single.c \
+		$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_src.c \
+		$(CORE_DIR)/TLCS-900h/TLCS900h_registers.c
 
-ifeq ($(NEED_STEREO_SOUND), 1)
-SOUND_DEFINE := -DWANT_STEREO_SOUND
-endif
+	HW_CPU_SOURCES := $(MEDNAFEN_DIR)/hw_cpu/z80-fuse/z80.cpp \
+							$(MEDNAFEN_DIR)/hw_cpu/z80-fuse/z80_ops.cpp
+	TARGET_NAME := mednafen_ngp_libretro
 
-CORE_INCDIR := $(CORE_DIR)
+	ifeq ($(NEED_STEREO_SOUND), 1)
+	SOUND_DEFINE := -DWANT_STEREO_SOUND
+	endif
 
-ifeq ($(NEED_CRC32), 1)
-FLAGS += -DWANT_CRC32
+	CORE_INCDIR := $(CORE_DIR)
+
+	ifeq ($(NEED_CRC32), 1)
+	FLAGS += -DWANT_CRC32
 CORE_SOURCES += $(MEDNAFEN_LIBRETRO_DIR)/scrc32.cpp
 endif
 
@@ -108,7 +109,7 @@ LIBRETRO_SOURCES := $(MEDNAFEN_LIBRETRO_DIR)/libretro.cpp $(THREAD_STUBS)
 
 SOURCES_C := 	$(TREMOR_SRC) $(LIBRETRO_SOURCES_C) $(MEDNAFEN_DIR)/trio/trio.c $(MEDNAFEN_DIR)/trio/triostr.c $(THREAD_SOURCES)
 
-LOCAL_SRC_FILES += $(LIBRETRO_SOURCES) $(CORE_SOURCES) $(MEDNAFEN_SOURCES) $(CDROM_SOURCES) $(SCSI_CD_SOURCES) $(HW_CPU_SOURCES) $(HW_MISC_SOURCES) $(HW_SOUND_SOURCES) $(HW_VIDEO_SOURCES) $(SOURCES_C) $(CORE_CD_SOURCES)
+LOCAL_SRC_FILES += $(LIBRETRO_SOURCES) $(CORE_SOURCES) $(CORE_SOURCES_C) $(MEDNAFEN_SOURCES) $(CDROM_SOURCES) $(SCSI_CD_SOURCES) $(HW_CPU_SOURCES) $(HW_MISC_SOURCES) $(HW_SOUND_SOURCES) $(HW_VIDEO_SOURCES) $(SOURCES_C) $(CORE_CD_SOURCES)
 
 WARNINGS := -Wall \
 	-Wno-sign-compare \

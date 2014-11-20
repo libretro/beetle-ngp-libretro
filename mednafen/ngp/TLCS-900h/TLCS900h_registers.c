@@ -35,9 +35,10 @@
 //---------------------------------------------------------------------------
 */
 
+#include <string.h>
+#include "TLCS900h_registers.h"
 #include "../neopop.h"
 #include "../interrupt.h"
-#include "TLCS900h_registers.h"
 
 #ifdef MSB_FIRST
 #define BYTE0	3

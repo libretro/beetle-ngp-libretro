@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "MemoryStream.h"
+#include "error.h"
 
 #ifdef _XBOX
 #ifndef SIZE_MAX

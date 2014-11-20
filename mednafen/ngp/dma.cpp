@@ -55,10 +55,15 @@
 */
 
 #include "neopop.h"
+#include "mednafen.h"
 #include "TLCS-900h/TLCS900h_disassemble.h"
 #include "dma.h"
 #include "mem.h"
 #include "interrupt.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 //=============================================================================
 
@@ -363,8 +368,13 @@ uint32_t dmaLoadL(uint8_t cr)
    }
 }
 
-int MDFNNGPCDMA_StateAction(StateMem *sm, int load, int data_only)
+#ifdef __cplusplus
+}
+#endif
+
+int MDFNNGPCDMA_StateAction(void *data, int load, int data_only)
 {
+   StateMem *sm = (StateMem*)data;
    SFORMAT StateRegs[] =
    {
       SFARRAY32N(dmaS, 4, "DMAS"),

@@ -168,8 +168,9 @@ bool NGPGFX_CLASS::draw(MDFN_Surface *surface, bool skip)
 	return(ret);
 }
 
-int NGPGFX_CLASS::StateAction(StateMem *sm, int load, int data_only)
+int NGPGFX_CLASS::StateAction(void *data, int load, int data_only)
 {
+   StateMem *sm = (StateMem*)data;
  SFORMAT StateRegs[] =
  {
   SFVAR(raster_line),

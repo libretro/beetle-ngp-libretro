@@ -16,6 +16,8 @@
 #define __GFX__
 //=============================================================================
 
+#include "../mednafen.h"
+
 #define ZDEPTH_BACK_SPRITE			2
 #define ZDEPTH_BACKGROUND_SCROLL	3
 #define ZDEPTH_MIDDLE_SPRITE		4
@@ -37,7 +39,7 @@ class NGPGFX_CLASS
  uint8 read8(uint32 address);
  uint16 read16(uint32 address);
 
- int StateAction(StateMem *sm, int load, int data_only);
+ int StateAction(void *data, int load, int data_only);
  void SetLayerEnableMask(uint64 mask);
  void set_pixel_format(const MDFN_PixelFormat &format);
 
@@ -100,6 +102,8 @@ class NGPGFX_CLASS
 
  int layer_enable;
 };
+
+extern NGPGFX_CLASS *NGPGfx;
 
 #endif
 

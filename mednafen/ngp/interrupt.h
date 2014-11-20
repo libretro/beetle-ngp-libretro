@@ -16,7 +16,15 @@
 #define __INTERRUPT__
 //=============================================================================
 
+#include <boolean.h>
+#include "mednafen-types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void interrupt(uint8 index);
+
 
 #define TIMER_HINT_RATE		515		//CPU Ticks between horizontal interrupts
 
@@ -31,7 +39,7 @@ void reset_timers(void);
 void reset_int(void);
 
 //Call this after each instruction
-bool updateTimers(MDFN_Surface *surface, int cputicks);
+bool updateTimers(void *data, int cputicks);
 
 //H-INT Timer
 extern uint32 timer_hint;
@@ -49,7 +57,11 @@ uint8 int_read8(uint32 address);
 void int_check_pending(void);
 void TestIntHDMA(int bios_num, int vec_num);
 
-int int_timer_StateAction(StateMem *sm, int load, int data_only);
+#ifdef __cplusplus
+}
+#endif
+
+int int_timer_StateAction(void *data, int load, int data_only);
 
 //=============================================================================
 #endif

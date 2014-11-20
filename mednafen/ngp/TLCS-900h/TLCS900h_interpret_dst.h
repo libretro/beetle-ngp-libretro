@@ -36,6 +36,10 @@
 
 //=========================================================================
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //===== LD (mem),#
 void DST_dstLDBi(void);
 
@@ -122,6 +126,10 @@ void DST_dstCALL(void);
 
 //===== RET cc
 void DST_dstRET(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 //=========================================================================
 #endif

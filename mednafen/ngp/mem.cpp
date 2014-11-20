@@ -22,6 +22,7 @@
 #include "sound.h"
 #include "flash.h"
 #include "rtc.h"
+#include "../masmem.h"
 
 //=============================================================================
 
@@ -188,6 +189,10 @@ static void* translate_address_write(uint32 address)
    // ===================================
    return NULL;
 }
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* WARNING:  32-bit loads and stores apparently DON'T have to be 4-byte-aligned(so we must +2 instead of |2). */
 /* Treat all 32-bit operations as two 16-bit operations */
@@ -490,6 +495,10 @@ void storeL(uint32 address, uint32 data)
    storeW(address, data & 0xFFFF);
    storeW(address + 2, data >> 16);
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 //=============================================================================
 

@@ -15,6 +15,7 @@
 #include "neopop.h"
 #include "mem.h"
 #include "gfx.h"
+#include "../masmem.h"
 
 //=============================================================================
 
@@ -55,6 +56,13 @@ static const unsigned char mirrored[] = {
 
 //=============================================================================
 
+#ifndef max
+#define max(a,b) ((a)>(b)?(a):(b))
+#endif
+
+#ifndef min
+#define min(a,b) ((a)<(b)?(a):(b))
+#endif
 
 void NGPGFX_CLASS::drawColourPattern(uint16_t *cfb_scanline, uint8_t *zbuffer, uint8 screenx, uint16 tile, uint8 tiley, uint16 mirror, 
 				 uint16* palette_ptr, uint8 pal, uint8 depth)

@@ -1,7 +1,8 @@
 #ifndef _GIT_H
 #define _GIT_H
 
-#include <string>
+#include <string.h>
+#include <boolean.h>
 
 #include "video.h"
 
@@ -276,7 +277,9 @@ typedef enum
  MODPRIO_EXTERNAL_HIGH = 40
 } ModPrio;
 
+#ifdef __cplusplus
 class CDIF;
+#endif
 
 typedef struct
 {

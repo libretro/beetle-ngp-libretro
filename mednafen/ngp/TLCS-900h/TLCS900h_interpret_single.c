@@ -46,7 +46,7 @@
 //---------------------------------------------------------------------------
 */
 
-#include "../neopop.h"
+#include <stdio.h>
 #include "TLCS900h_interpret.h"
 #include "TLCS900h_registers.h"
 #include "../mem.h"
@@ -91,7 +91,7 @@ void sngMAX()
 //===== HALT
 void sngHALT()
 {
-	MDFN_printf("CPU halt requested and ignored.\nPlease send me a saved state.");
+	//MDFN_printf("CPU halt requested and ignored.\nPlease send me a saved state.");
 	cycles = 8;
 }
 

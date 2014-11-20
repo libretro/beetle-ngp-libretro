@@ -4,6 +4,7 @@
 #include "../include/blip/Blip_Buffer.h"
 #include "../include/blip/Stereo_Buffer.h"
 #include "T6W28_Apu.h"
+#include "../mednafen.h"
 
 static T6W28_Apu apu;
 
@@ -92,9 +93,10 @@ bool MDFNNGPC_SetSoundRate(uint32 rate)
    return(TRUE);
 }
 
-int MDFNNGPCSOUND_StateAction(StateMem *sm, int load, int data_only)
+int MDFNNGPCSOUND_StateAction(void *data, int load, int data_only)
 {
    T6W28_ApuState *sn_state;
+   StateMem *sm = (StateMem*)data;
 
    if(!load)
       sn_state = apu.save_state();

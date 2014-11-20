@@ -39,13 +39,23 @@
 #define __BIOS__
 //=============================================================================
 
+#include "../mednafen-types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern uint8 ngpc_bios[0x10000];
 
 void iBIOSHLE(void);
 
 void biosDecode(int function);
 void BIOSHLE_Reset(void);
-int BIOSHLE_StateAction(StateMem *sm, int load, int data_only);
+int BIOSHLE_StateAction(void *data, int load, int data_only);
+
+#ifdef __cplusplus
+}
+#endif
 
 //=============================================================================
 #endif

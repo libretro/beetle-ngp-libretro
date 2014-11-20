@@ -22,6 +22,9 @@
 #include "dma.h"
 
 //=============================================================================
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 uint32 timer_hint;
 static uint32 timer_clock[4];
@@ -47,6 +50,8 @@ static bool h_int, timer0, timer2;
 // a device sets the virual interrupt latch register, signaling it wants an interrupt.
 
 // FIXME in the future if we ever add real bios support?
+
+
 void interrupt(uint8 index)
 {
    //printf("INT: %d\n", index);
@@ -257,8 +262,9 @@ void TestIntHDMA(int bios_num, int vec_num)
 extern int32 ngpc_soundTS;
 extern bool NGPFrameSkip;
 
-bool updateTimers(MDFN_Surface *surface, int cputicks)
+bool updateTimers(void *data, int cputicks)
 {
+   MDFN_Surface *surface = (MDFN_Surface*)data;
    bool ret = 0;
 
    ngpc_soundTS += cputicks;
@@ -589,8 +595,13 @@ uint8 timer_read8(uint32 address)
    return(ret);
 }
 
-int int_timer_StateAction(StateMem *sm, int load, int data_only)
+#ifdef __cplusplus
+}
+#endif
+
+int int_timer_StateAction(void *data, int load, int data_only)
 {
+   StateMem *sm = (StateMem*)data;
    SFORMAT StateRegs[] =
    {
       SFVAR(timer_hint),

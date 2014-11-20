@@ -46,18 +46,19 @@ CORE_SOURCES := $(CORE_DIR)/bios.cpp \
 	$(CORE_DIR)/rtc.cpp \
 	$(CORE_DIR)/sound.cpp \
 	$(CORE_DIR)/T6W28_Apu.cpp \
-	$(CORE_DIR)/Z80_interface.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_extra.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_reg.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_dst.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_src.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_dst.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_reg.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_single.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_src.cpp \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_registers.cpp
+	$(CORE_DIR)/Z80_interface.cpp
+
+CORE_SOURCES_C := $(CORE_DIR)/TLCS-900h/TLCS900h_disassemble.c \
+	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_extra.c \
+	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_reg.c \
+	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_dst.c \
+	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_src.c \
+	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret.c \
+	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_dst.c \
+	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_reg.c \
+	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_single.c \
+	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_src.c \
+	$(CORE_DIR)/TLCS-900h/TLCS900h_registers.c
 
 HW_CPU_SOURCES += $(MEDNAFEN_DIR)/hw_cpu/z80-fuse/z80.cpp \
 						$(MEDNAFEN_DIR)/hw_cpu/z80-fuse/z80_ops.cpp
@@ -305,7 +306,7 @@ LIBRETRO_SOURCES += libretro.cpp
 
 TRIO_SOURCES += $(MEDNAFEN_DIR)/trio/trio.c $(MEDNAFEN_DIR)/trio/triostr.c 
 
-SOURCES_C := 	$(TREMOR_SRC) $(LIBRETRO_SOURCES_C) $(TRIO_SOURCES) $(THREAD_SOURCES)
+SOURCES_C := 	$(TREMOR_SRC) $(LIBRETRO_SOURCES_C) $(TRIO_SOURCES) $(THREAD_SOURCES) $(CORE_SOURCES_C)
 
 SOURCES := $(LIBRETRO_SOURCES) $(CORE_SOURCES) $(MEDNAFEN_SOURCES) $(HW_CPU_SOURCES) $(HW_MISC_SOURCES) $(HW_SOUND_SOURCES) $(HW_VIDEO_SOURCES)
 

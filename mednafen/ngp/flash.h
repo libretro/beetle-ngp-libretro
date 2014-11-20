@@ -16,6 +16,7 @@
 #define __FLASH__
 
 #include <stdint.h>
+#include "../mednafen-types.h"
 
 void flash_read(void);
 
@@ -26,7 +27,7 @@ void flash_write(uint32 start_address, uint16_t length);
 void flash_commit(void);
 
 
-int FLASH_StateAction(StateMem *sm, int load, int data_only);
+int FLASH_StateAction(void *data, int load, int data_only);
 
 //=============================================================================
 #endif

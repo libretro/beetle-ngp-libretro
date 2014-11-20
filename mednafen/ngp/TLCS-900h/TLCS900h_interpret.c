@@ -52,9 +52,7 @@
 //---------------------------------------------------------------------------
 */
 
-#include "../neopop.h"
 #include "TLCS900h_registers.h"
-#include "../interrupt.h"
 #include "../mem.h"
 #include "../bios.h"
 #include "TLCS900h_interpret.h"
