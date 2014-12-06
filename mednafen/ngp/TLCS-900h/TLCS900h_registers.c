@@ -936,6 +936,9 @@ void changedSP(void)
 }
 
 //=============================================================================
+#ifndef le32toh
+#define le32toh(x) (x)
+#endif
 
 void reset_registers(void)
 {
