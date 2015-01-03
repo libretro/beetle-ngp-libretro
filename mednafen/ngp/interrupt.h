@@ -17,7 +17,7 @@
 //=============================================================================
 
 #include <boolean.h>
-#include "mednafen-types.h"
+#include <mednafen/mednafen-types.h>
 
 #ifdef __cplusplus
 extern "C" {
