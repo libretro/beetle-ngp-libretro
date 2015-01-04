@@ -258,9 +258,16 @@ void TestIntHDMA(int bios_num, int vec_num)
       set_interrupt(bios_num, TRUE);
 }
 
+#ifdef _MSC_VER
+extern "C++" {
+#endif
 
 extern int32 ngpc_soundTS;
 extern bool NGPFrameSkip;
+
+#ifdef _MSC_VER
+}
+#endif
 
 bool updateTimers(void *data, int cputicks)
 {
