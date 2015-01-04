@@ -259,8 +259,13 @@ void TestIntHDMA(int bios_num, int vec_num)
 }
 
 
-extern int32 ngpc_soundTS;
-extern bool NGPFrameSkip;
+#ifdef __cplusplus
+extern "C" int32 ngpc_soundTS;
+extern "C" bool NGPFrameSkip;
+#else
+extern "C" int32 ngpc_soundTS;
+extern "C" bool NGPFrameSkip;
+#endif
 
 bool updateTimers(void *data, int cputicks)
 {
