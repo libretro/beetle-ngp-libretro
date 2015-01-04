@@ -310,37 +310,37 @@
 						Name="TLCS-900h"
 						Filter="">
 						<File
-							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble.c">
 						</File>
 						<File
-							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_dst.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_dst.c">
 						</File>
 						<File
-							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_extra.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_extra.c">
 						</File>
 						<File
-							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_reg.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_reg.c">
 						</File>
 						<File
-							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_src.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble_src.c">
 						</File>
 						<File
-							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret.c">
 						</File>
 						<File
-							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_dst.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_dst.c">
 						</File>
 						<File
-							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_reg.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_reg.c">
 						</File>
 						<File
-							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_single.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_single.c">
 						</File>
 						<File
-							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_src.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_interpret_src.c">
 						</File>
 						<File
-							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_registers.cpp">
+							RelativePath="..\..\mednafen\ngp\TLCS-900h\TLCS900h_registers.c">
 						</File>
 					</Filter>
 				</Filter>
