@@ -51,7 +51,7 @@
     <ClCompile Include="..\..\mednafen\ngp\interrupt.cpp" />
     <ClCompile Include="..\..\mednafen\ngp\mem.cpp" />
     <ClCompile Include="..\..\mednafen\ngp\rom.cpp" />
-    <ClCompile Include="..\..\mednafen\ngp\rtc.cpp" />
+    <ClCompile Include="..\..\mednafen\ngp\rtc.c" />
     <ClCompile Include="..\..\mednafen\ngp\sound.cpp" />
     <ClCompile Include="..\..\mednafen\ngp\T6W28_Apu.cpp" />
     <ClCompile Include="..\..\mednafen\ngp\TLCS-900h\TLCS900h_disassemble.c" />
