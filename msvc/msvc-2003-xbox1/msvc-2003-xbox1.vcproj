@@ -298,7 +298,7 @@
 						RelativePath="..\..\mednafen\ngp\rom.cpp">
 					</File>
 					<File
-						RelativePath="..\..\mednafen\ngp\rtc.cpp">
+						RelativePath="..\..\mednafen\ngp\rtc.c">
 					</File>
 					<File
 						RelativePath="..\..\mednafen\ngp\sound.cpp">
