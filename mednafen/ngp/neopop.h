@@ -98,10 +98,15 @@ typedef struct
 
 /* Fill the bios rom area with a bios. call once at program start */
 	bool bios_install(void);
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 	extern RomInfo ngpc_rom;
 
 	extern RomHeader* rom_header;
+	#ifdef __cplusplus
+}
+#endif
 
 /*!	Emulate a single instruction with correct TLCS900h:Z80 timing */
 
