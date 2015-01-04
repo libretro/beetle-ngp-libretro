@@ -31,8 +31,13 @@
 void reset_memory(void);
 
 void dump_memory(uint32 start, uint32 length);
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 extern bool debug_abort_memory;
+#ifdef __cplusplus
+}
+#endif
 extern bool debug_mask_memory_error_messages;
 
 extern bool memory_unlock_flash_write;
