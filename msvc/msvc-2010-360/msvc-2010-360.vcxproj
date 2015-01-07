@@ -142,8 +142,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug
-  |Xbox 360'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Xbox 360'">
     <OutputFile>$(OutDir)msvc-2010-360$(TargetExt)</OutputFile>
     <IncludePath>$(ProjectDir)\..\..\;$(IncludePath)</IncludePath>
   </PropertyGroup>
