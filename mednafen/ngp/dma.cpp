@@ -293,21 +293,17 @@ uint8_t dmaLoadB(uint8_t cr)
    {
       case 0x22:
          return dmaM[0];
-         break;
       case 0x26:
          return dmaM[1];
-         break;
       case 0x2A:
          return dmaM[2];
-         break;
       case 0x2E:
          return dmaM[3];
-         break;
-
       default: 
          MDFN_printf("dmaLoadB: Unknown register 0x%02X\nPlease report this to the author.", cr);
-         return 0;
    }
+
+   return 0;
 }
 
 uint16_t dmaLoadW(uint8_t cr)
@@ -316,21 +312,17 @@ uint16_t dmaLoadW(uint8_t cr)
    {
       case 0x20:
          return dmaC[0];
-         break;
       case 0x24:
          return dmaC[1];
-         break;
       case 0x28:
          return dmaC[2];
-         break;
       case 0x2C:
          return dmaC[3];
-         break;
-
       default: 
          MDFN_printf("dmaLoadW: Unknown register 0x%02X\nPlease report this to the author.", cr);
-         return 0;
    }
+
+   return 0;
 }
 
 uint32_t dmaLoadL(uint8_t cr)
@@ -339,33 +331,25 @@ uint32_t dmaLoadL(uint8_t cr)
    {
       case 0x00:
          return dmaS[0];
-         break;	
       case 0x04:
          return dmaS[1];
-         break;
       case 0x08:
          return dmaS[2];
-         break;	
       case 0x0C:
          return dmaS[3];
-         break;	
       case 0x10:
          return dmaD[0];
-         break;
       case 0x14:
          return dmaD[1];
-         break;
       case 0x18:
          return dmaD[2];
-         break;
       case 0x1C:
          return dmaD[3];
-         break;
-
       default: 
          MDFN_printf("dmaLoadL: Unknown register 0x%02X\nPlease report this to the author.", cr);
-         return 0;
    }
+
+   return 0;
 }
 
 #ifdef __cplusplus

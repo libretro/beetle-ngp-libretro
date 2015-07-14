@@ -330,29 +330,29 @@ uint8 NGPGFX_CLASS::read8(uint32 address)
   case 0x8034: return(S2SO_H);
   case 0x8035: return(S2SO_V);
 
-  case 0x8101: return(SPPLT[0]); break;
-  case 0x8102: return(SPPLT[1]); break;
-  case 0x8103: return(SPPLT[2]); break;
+  case 0x8101: return(SPPLT[0]);
+  case 0x8102: return(SPPLT[1]);
+  case 0x8103: return(SPPLT[2]);
 
-  case 0x8105: return(SPPLT[3]); break;
-  case 0x8106: return(SPPLT[4]); break;
-  case 0x8107: return(SPPLT[5]); break;
+  case 0x8105: return(SPPLT[3]);
+  case 0x8106: return(SPPLT[4]);
+  case 0x8107: return(SPPLT[5]);
 
-  case 0x8108: return(SCRP1PLT[0]); break;
-  case 0x8109: return(SCRP1PLT[1]); break;
-  case 0x810a: return(SCRP1PLT[2]); break;
+  case 0x8108: return(SCRP1PLT[0]);
+  case 0x8109: return(SCRP1PLT[1]);
+  case 0x810a: return(SCRP1PLT[2]);
 
-  case 0x810d: return(SCRP1PLT[3]); break;
-  case 0x810e: return(SCRP1PLT[4]); break;
-  case 0x810f: return(SCRP1PLT[5]); break;
+  case 0x810d: return(SCRP1PLT[3]);
+  case 0x810e: return(SCRP1PLT[4]);
+  case 0x810f: return(SCRP1PLT[5]);
 
-  case 0x8111: return(SCRP2PLT[0]); break;
-  case 0x8112: return(SCRP2PLT[1]); break;
-  case 0x8113: return(SCRP2PLT[2]); break;
+  case 0x8111: return(SCRP2PLT[0]);
+  case 0x8112: return(SCRP2PLT[1]);
+  case 0x8113: return(SCRP2PLT[2]);
 
-  case 0x8115: return(SCRP2PLT[3]); break;
-  case 0x8116: return(SCRP2PLT[4]); break;
-  case 0x8117: return(SCRP2PLT[5]); break;
+  case 0x8115: return(SCRP2PLT[3]);
+  case 0x8116: return(SCRP2PLT[4]);
+  case 0x8117: return(SCRP2PLT[5]); 
 
   case 0x8118: return(BG_COL);
 
