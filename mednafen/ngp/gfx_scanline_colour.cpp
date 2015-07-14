@@ -56,14 +56,6 @@ static const unsigned char mirrored[] = {
 
 //=============================================================================
 
-#ifndef max
-#define max(a,b) ((a)>(b)?(a):(b))
-#endif
-
-#ifndef min
-#define min(a,b) ((a)<(b)?(a):(b))
-#endif
-
 void NGPGFX_CLASS::drawColourPattern(uint16_t *cfb_scanline, uint8_t *zbuffer, uint8 screenx, uint16 tile, uint8 tiley, uint16 mirror, 
 				 uint16* palette_ptr, uint8 pal, uint8 depth)
 {
@@ -84,10 +76,10 @@ void NGPGFX_CLASS::drawColourPattern(uint16_t *cfb_scanline, uint8_t *zbuffer, u
 		index = mirrored[(index & 0xff00)>>8] | (mirrored[(index & 0xff)] << 8);
 
 	palette_ptr += pal << 2;
-	left = max(max(x, winx), 0);
+	left = MAX(MAX(x, winx), 0);
 	right = x+7;
 
-	highmark = min(winw+winx, SCREEN_WIDTH)-1;
+	highmark = MIN(winw+winx, SCREEN_WIDTH)-1;
 
 	if (right > highmark) {
 		index >>= (right - highmark)*2;
@@ -168,10 +160,10 @@ void NGPGFX_CLASS::draw_scanline_colour(uint16_t *cfb_scanline, int layer_enable
    //Middle
    if (!(ngpc_scanline < winy) && ngpc_scanline < winy + winh)
    {
-      for (x = 0; x < min(winx, SCREEN_WIDTH); x++)
+      for (x = 0; x < MIN(winx, SCREEN_WIDTH); x++)
          *scan++ = data16;
 
-      x = min(winx + winw, SCREEN_WIDTH);
+      x = MIN(winx + winw, SCREEN_WIDTH);
       scan = &cfb_scanline[x];
    }
 
@@ -196,7 +188,7 @@ void NGPGFX_CLASS::draw_scanline_colour(uint16_t *cfb_scanline, int layer_enable
       int x = winx;
       uint16_t *scan = &cfb_scanline[x];
 		//Draw background!
-		for (; x < min(winx + winw, SCREEN_WIDTH); x++)	
+		for (; x < MIN(winx + winw, SCREEN_WIDTH); x++)	
 			*scan++ = data16;
 
 		//Swap Front/Back scroll planes?
