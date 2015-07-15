@@ -835,9 +835,9 @@ int MDFNI_DecodeGG(const char *str, uint32 *a, uint8 *v, uint8 *c, char *type)
   *v=V;
   *c=C;
   *type = 'C';
-  return(1);
  }
- return(0);
+
+ return(1);
 }
 
 int MDFNI_DecodePAR(const char *str, uint32 *a, uint8 *v, uint8 *c, char *type)

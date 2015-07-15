@@ -42,7 +42,6 @@
       break;
     case 0x43:		/* LD (nnnn),BC */
       LD16_NNRR(C,B);
-      break;
     case 0x44:
     case 0x4c:
     case 0x54:
@@ -96,7 +95,6 @@
       break;
     case 0x4b:		/* LD BC,(nnnn) */
       LD16_RRNN(C,B);
-      break;
     case 0x4f:		/* LD R,A */
       contend_read_no_mreq( IR, 1 );
       R=R7=A;
@@ -119,7 +117,6 @@
       break;
     case 0x53:		/* LD (nnnn),DE */
       LD16_NNRR(E,D);
-      break;
     case 0x56:
     case 0x76:		/* IM 1 */
       IM=1;
@@ -147,7 +144,6 @@
       break;
     case 0x5b:		/* LD DE,(nnnn) */
       LD16_RRNN(E,D);
-      break;
     case 0x5e:
     case 0x7e:		/* IM 2 */
       IM=2;
@@ -175,7 +171,6 @@
       break;
     case 0x63:		/* LD (nnnn),HL */
       LD16_NNRR(L,H);
-      break;
     case 0x67:		/* RRD */
       {
 	uint8 bytetemp = Z80_RB_MACRO( HL );
@@ -204,7 +199,6 @@
       break;
     case 0x6b:		/* LD HL,(nnnn) */
       LD16_RRNN(L,H);
-      break;
     case 0x6f:		/* RLD */
       {
 	uint8 bytetemp = Z80_RB_MACRO( HL );
@@ -236,7 +230,6 @@
       break;
     case 0x73:		/* LD (nnnn),SP */
       LD16_NNRR(SPL,SPH);
-      break;
     case 0x78:		/* IN A,(C) */
       Z80_IN( A, BC );
       break;
@@ -255,7 +248,6 @@
       break;
     case 0x7b:		/* LD SP,(nnnn) */
       LD16_RRNN(SPL,SPH);
-      break;
     case 0xa0:		/* LDI */
       {
 	uint8 bytetemp=Z80_RB_MACRO( HL );

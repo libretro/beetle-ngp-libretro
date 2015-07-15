@@ -50,7 +50,6 @@
       break;
     case 0x22:		/* LD (nnnn),REGISTER */
       LD16_NNRR(REGISTERL,REGISTERH);
-      break;
     case 0x23:		/* INC REGISTER */
 	contend_read_no_mreq( IR, 1 );
 	contend_read_no_mreq( IR, 1 );
@@ -77,7 +76,6 @@
       break;
     case 0x2a:		/* LD REGISTER,(nnnn) */
       LD16_RRNN(REGISTERL,REGISTERH);
-      break;
     case 0x2b:		/* DEC REGISTER */
 	contend_read_no_mreq( IR, 1 );
 	contend_read_no_mreq( IR, 1 );

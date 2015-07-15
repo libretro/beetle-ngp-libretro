@@ -181,7 +181,6 @@
       break;
     case 0x22:		/* LD (nnnn),HL */
       LD16_NNRR(L,H);
-      break;
     case 0x23:		/* INC HL */
 	contend_read_no_mreq( IR, 1 );
 	contend_read_no_mreq( IR, 1 );
@@ -230,7 +229,6 @@
       break;
     case 0x2a:		/* LD HL,(nnnn) */
       LD16_RRNN(L,H);
-      break;
     case 0x2b:		/* DEC HL */
 	contend_read_no_mreq( IR, 1 );
 	contend_read_no_mreq( IR, 1 );
