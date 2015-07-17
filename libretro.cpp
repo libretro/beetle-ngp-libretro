@@ -11,7 +11,6 @@ struct retro_perf_callback perf_cb;
 retro_get_cpu_features_t perf_get_cpu_features_cb = NULL;
 retro_log_printf_t log_cb;
 static retro_video_refresh_t video_cb;
-static retro_audio_sample_t audio_cb;
 static retro_audio_sample_batch_t audio_batch_cb;
 static retro_environment_t environ_cb;
 static retro_input_poll_t input_poll_cb;
@@ -556,6 +555,7 @@ static void set_volume (uint32_t *ptr, unsigned number)
 {
    switch(number)
    {
+      case 0:
       default:
          *ptr = number;
          break;
@@ -680,17 +680,23 @@ static uint64_t video_frames, audio_frames;
 
 void retro_run()
 {
+   int32 SoundBufMaxSize;
+   int32 SoundBufSize;
+   unsigned width, height;
+   const int16 *SoundBuf;
+   static int16_t sound_buf[0x10000];
+   static MDFN_Rect rects[FB_MAX_HEIGHT];
+   const uint16_t *pix;
+   bool updated = false;
    MDFNGI *curgame = game;
+   EmulateSpecStruct spec = {0};
 
    input_poll_cb();
 
    update_input();
 
-   static int16_t sound_buf[0x10000];
-   static MDFN_Rect rects[FB_MAX_HEIGHT];
    rects[0].w = ~0;
 
-   EmulateSpecStruct spec = {0};
    spec.surface = surf;
    spec.SoundRate = 44100;
    spec.SoundBuf = sound_buf;
@@ -717,16 +723,16 @@ void retro_run()
 
    curgame->Emulate(&spec);
 
-   int16 *const SoundBuf = spec.SoundBuf + spec.SoundBufSizeALMS * curgame->soundchan;
-   int32 SoundBufSize = spec.SoundBufSize - spec.SoundBufSizeALMS;
-   const int32 SoundBufMaxSize = spec.SoundBufMaxSize - spec.SoundBufSizeALMS;
+   SoundBuf = spec.SoundBuf + spec.SoundBufSizeALMS * curgame->soundchan;
+   SoundBufSize = spec.SoundBufSize - spec.SoundBufSizeALMS;
+   SoundBufMaxSize = spec.SoundBufMaxSize - spec.SoundBufSizeALMS;
 
    spec.SoundBufSize = spec.SoundBufSizeALMS + SoundBufSize;
 
-   unsigned width  = spec.DisplayRect.w;
-   unsigned height = spec.DisplayRect.h;
+   width  = spec.DisplayRect.w;
+   height = spec.DisplayRect.h;
 
-   const uint16_t *pix = surf->pixels16;
+   pix = surf->pixels16;
    video_cb(pix, width, height, FB_WIDTH << 1);
 
    video_frames++;
@@ -734,7 +740,6 @@ void retro_run()
 
    audio_batch_cb(spec.SoundBuf, spec.SoundBufSize);
 
-   bool updated = false;
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
       check_variables();
 }
@@ -806,7 +811,6 @@ void retro_set_environment(retro_environment_t cb)
 
 void retro_set_audio_sample(retro_audio_sample_t cb)
 {
-   audio_cb = cb;
 }
 
 void retro_set_audio_sample_batch(retro_audio_sample_batch_t cb)

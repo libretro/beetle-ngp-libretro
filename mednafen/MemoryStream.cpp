@@ -159,21 +159,19 @@ void MemoryStream::seek(int64 offset, int whence)
 
  switch(whence)
  {
-  default:
-	throw MDFN_Error(ErrnoHolder(EINVAL));
-	break;
+    case SEEK_SET:
+       new_position = offset;
+       break;
 
-  case SEEK_SET:
-	new_position = offset;
-	break;
+    case SEEK_CUR:
+       new_position = position + offset;
+       break;
 
-  case SEEK_CUR:
-	new_position = position + offset;
-	break;
-
-  case SEEK_END:
-	new_position = data_buffer_size + offset;
-	break;
+    case SEEK_END:
+       new_position = data_buffer_size + offset;
+       break;
+    default:
+       throw MDFN_Error(ErrnoHolder(EINVAL));
  }
 
  if(new_position < 0)
