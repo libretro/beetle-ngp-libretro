@@ -214,7 +214,7 @@ uint8 loadB(uint32 address)
       return *ptr;
 
    if(address >= 0x8000 && address <= 0xbfff)
-      return(NGPGfx->read8(address));
+      return(ngpgfx_read8(NGPGfx, address));
 
    if(address >= 0x4000 && address <= 0x7fff)
       return(*(uint8 *)(CPUExRAM + address - 0x4000));
@@ -254,7 +254,7 @@ uint16 loadW(uint32 address)
       return LoadU16_LE(ptr);
 
    if(address >= 0x8000 && address <= 0xbfff)
-      return(NGPGfx->read16(address));
+      return(ngpgfx_read16(NGPGfx, address));
 
    if(address >= 0x4000 && address <= 0x7fff)
       return(LoadU16_LE((uint16 *)(CPUExRAM + address - 0x4000)));
@@ -300,7 +300,7 @@ void storeB(uint32 address, uint8 data)
 
    if(address >= 0x8000 && address <= 0xbfff)
    {
-      NGPGfx->write8(address, data);
+      ngpgfx_write8(NGPGfx, address, data);
       return;
    }
 
@@ -411,7 +411,7 @@ void storeW(uint32 address, uint16 data)
 
    if(address >= 0x8000 && address <= 0xbfff)
    {
-      NGPGfx->write16(address, data);
+      ngpgfx_write16(NGPGfx, address, data);
       return;
    }
    if(address >= 0x4000 && address <= 0x7fff)

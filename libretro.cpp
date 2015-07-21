@@ -64,7 +64,7 @@ std::string retro_save_directory;
 
 extern uint8 CPUExRAM[16384];
 
-NGPGFX_CLASS *NGPGfx;
+ngpgfx_t *NGPGfx;
 
 COLOURMODE system_colour = COLOURMODE_AUTO;
 
@@ -102,7 +102,7 @@ static void Emulate(EmulateSpecStruct *espec)
 	espec->DisplayRect.h = 152;
 
    if(espec->VideoFormatChanged)
-      NGPGfx->set_pixel_format(espec->surface->format);
+      ngpgfx_set_pixel_format(NGPGfx);
 
 	if(espec->SoundFormatChanged)
 	 MDFNNGPC_SetSoundRate(espec->SoundRate);
@@ -196,7 +196,8 @@ static int Load(const char *name, MDFNFILE *fp)
 
  MDFNMP_Init(1024, 1024 * 1024 * 16 / 1024);
 
- NGPGfx = new NGPGFX_CLASS();
+ NGPGfx = (ngpgfx_t*)calloc(1, sizeof(*NGPGfx));
+ NGPGfx->layer_enable = 1 | 2 | 4;
 
  MDFNGameInfo->fps = (uint32)((uint64)6144000 * 65536 * 256 / 515 / 198); // 3072000 * 2 * 10000 / 515 / 198
  MDFNGameInfo->GameSetMD5Valid = FALSE;
@@ -220,6 +221,9 @@ static int Load(const char *name, MDFNFILE *fp)
 static void CloseGame(void)
 {
  rom_unload();
+ if (NGPGfx)
+    free(NGPGfx);
+ NGPGfx = NULL;
 }
 
 static void SetInput(int port, const char *type, void *ptr)
@@ -262,7 +266,7 @@ static int StateAction(StateMem *sm, int load, int data_only)
  if(!MDFNNGPCSOUND_StateAction(sm, load, data_only))
   return(0);
 
- if(!NGPGfx->StateAction(sm, load, data_only))
+ if(!ngpgfx_StateAction(NGPGfx, sm, load, data_only))
   return(0);
 
  if(!MDFNNGPCZ80_StateAction(sm, load, data_only))
@@ -348,7 +352,7 @@ bool system_io_flash_write(uint8* buffer, uint32 bufferLength)
 
 static void SetLayerEnableMask(uint64 mask)
 {
- NGPGfx->SetLayerEnableMask(mask);
+ ngpgfx_SetLayerEnableMask(NGPGfx, mask);
 }
 
 static const InputDeviceInputInfoStruct IDII[] =

@@ -52,7 +52,7 @@ static const unsigned char mirrored[] = {
     0x2f, 0x6f, 0xaf, 0xef, 0x3f, 0x7f, 0xbf, 0xff
 };
 
-void NGPGFX_CLASS::drawColourPattern(uint16_t *cfb_scanline, uint8_t *zbuffer,
+static void drawColourPattern(ngpgfx_t *gfx, uint16_t *cfb_scanline, uint8_t *zbuffer,
       uint8 screenx, uint16 tile, uint8 tiley, uint16 mirror, 
       uint16* palette_ptr, uint8 pal, uint8 depth)
 {
@@ -64,17 +64,17 @@ void NGPGFX_CLASS::drawColourPattern(uint16_t *cfb_scanline, uint8_t *zbuffer,
 		return;
 
 	/* Get the data for the "tiley'th" line of "tile". */
-	index = LoadU16_LE((uint16*)(CharacterRAM + (tile * 16) + (tiley * 2)));
+	index = LoadU16_LE((uint16*)(gfx->CharacterRAM + (tile * 16) + (tiley * 2)));
 
 	/* Horizontal Flip */
 	if (mirror)
 		index = mirrored[(index & 0xff00)>>8] | (mirrored[(index & 0xff)] << 8);
 
 	palette_ptr += pal << 2;
-	left = MAX(MAX(x, winx), 0);
+	left = MAX(MAX(x, gfx->winx), 0);
 	right = x+7;
 
-	highmark = MIN(winw+winx, SCREEN_WIDTH)-1;
+	highmark = MIN(gfx->winw + gfx->winx, SCREEN_WIDTH)-1;
 
 	if (right > highmark)
    {
@@ -93,52 +93,53 @@ void NGPGFX_CLASS::drawColourPattern(uint16_t *cfb_scanline, uint8_t *zbuffer,
 
 		/* Get the colour of the pixel */
 		data16 = LoadU16_LE(&palette_ptr[index&3]);
-		if (negative)
+		if (gfx->negative)
          data16 = ~data16;
 
       *scan = data16;
 	}
 }
 
-void NGPGFX_CLASS::draw_colour_scroll1(uint16_t *cfb_scanline,
+static void draw_colour_scroll1(ngpgfx_t *gfx,
+      uint16_t *cfb_scanline,
       uint8_t *zbuffer, uint8 depth, int ngpc_scanline)
 {
 	unsigned i;
-	uint8_t line = ngpc_scanline + scroll1y;
+	uint8_t line = ngpc_scanline + gfx->scroll1y;
 	uint8_t row = line & 7;	/* Which row? */
 
 	/* Draw Foreground scroll plane (Scroll 1) */
 	for (i = 0; i < 32; i++)
 	{
-		uint16_t data16 = LoadU16_LE((uint16*)(ScrollVRAM + ((i + ((line >> 3) << 5)) << 1)));
+		uint16_t data16 = LoadU16_LE((uint16*)(gfx->ScrollVRAM + ((i + ((line >> 3) << 5)) << 1)));
 		
 		/* Draw the line of the tile */
-		drawColourPattern(cfb_scanline, zbuffer, (i << 3) - scroll1x, data16 & 0x01FF, 
-			(data16 & 0x4000) ? (7 - row) : row, data16 & 0x8000, (uint16*)(ColorPaletteRAM + 0x0080),
+		drawColourPattern(gfx, cfb_scanline, zbuffer, (i << 3) - gfx->scroll1x, data16 & 0x01FF, 
+			(data16 & 0x4000) ? (7 - row) : row, data16 & 0x8000, (uint16*)(gfx->ColorPaletteRAM + 0x0080),
 			(data16 & 0x1E00) >> 9, depth);
 	}
 }
 
-void NGPGFX_CLASS::draw_colour_scroll2(uint16_t *cfb_scanline,
+static void draw_colour_scroll2(ngpgfx_t *gfx, uint16_t *cfb_scanline,
       uint8_t *zbuffer, uint8 depth, int ngpc_scanline)
 {
    unsigned i;
-	uint8_t line = ngpc_scanline + scroll2y;
+	uint8_t line = ngpc_scanline + gfx->scroll2y;
 	uint8_t row = line & 7;	/* Which row? */
 
 	/* Draw Background scroll plane (Scroll 2) */
 	for (i = 0; i < 32; i++)
 	{
-		uint16_t data16 = LoadU16_LE((uint16*)(ScrollVRAM + 0x0800 + ((i + ((line >> 3) << 5)) << 1)));
+		uint16_t data16 = LoadU16_LE((uint16*)(gfx->ScrollVRAM + 0x0800 + ((i + ((line >> 3) << 5)) << 1)));
 		
 		/* Draw the line of the tile */
-		drawColourPattern(cfb_scanline, zbuffer, (i << 3) - scroll2x, data16 & 0x01FF, 
-			(data16 & 0x4000) ? (7 - row) : row, data16 & 0x8000, (uint16*)(ColorPaletteRAM + 0x0100),
+		drawColourPattern(gfx, cfb_scanline, zbuffer, (i << 3) - gfx->scroll2x, data16 & 0x01FF, 
+			(data16 & 0x4000) ? (7 - row) : row, data16 & 0x8000, (uint16*)(gfx->ColorPaletteRAM + 0x0100),
 			(data16 & 0x1E00) >> 9, depth);
 	}
 }
 
-void NGPGFX_CLASS::draw_scanline_colour(uint16_t *cfb_scanline, int layer_enable, int ngpc_scanline)
+void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline, int layer_enable, int ngpc_scanline)
 {
 	int16 lastSpriteX;
 	int16 lastSpriteY;
@@ -148,18 +149,19 @@ void NGPGFX_CLASS::draw_scanline_colour(uint16_t *cfb_scanline, int layer_enable
    uint8_t zbuffer[256] = {0};
 
 	/* Window colour */
-	uint16_t data16 = LoadU16_LE((uint16*)(ColorPaletteRAM + 0x01F0 + (oowc << 1)));
-	if (negative) data16 = ~data16;
+	uint16_t data16 = LoadU16_LE((uint16*)(gfx->ColorPaletteRAM + 0x01F0 + (gfx->oowc << 1)));
+	if (gfx->negative)
+      data16 = ~data16;
 
    scan = &cfb_scanline[0];
 
    /* Middle */
-   if (!(ngpc_scanline < winy) && ngpc_scanline < winy + winh)
+   if (!(ngpc_scanline < gfx->winy) && ngpc_scanline < gfx->winy + gfx->winh)
    {
-      for (x = 0; x < MIN(winx, SCREEN_WIDTH); x++)
+      for (x = 0; x < MIN(gfx->winx, SCREEN_WIDTH); x++)
          *scan++ = data16;
 
-      x = MIN(winx + winw, SCREEN_WIDTH);
+      x = MIN(gfx->winx + gfx->winw, SCREEN_WIDTH);
       scan = &cfb_scanline[x];
    }
 
@@ -169,7 +171,7 @@ void NGPGFX_CLASS::draw_scanline_colour(uint16_t *cfb_scanline, int layer_enable
 
 	/* Ignore above and below the window's top and bottom */
 
-	if (ngpc_scanline >= winy && ngpc_scanline < winy + winh)
+	if (ngpc_scanline >= gfx->winy && ngpc_scanline < gfx->winy + gfx->winh)
 	{
       int x;
       uint16_t *scan;
@@ -178,37 +180,38 @@ void NGPGFX_CLASS::draw_scanline_colour(uint16_t *cfb_scanline, int layer_enable
       if ((bgc & 0xC0) == 0x80)
 #endif
 		{
-			data16 = LoadU16_LE((uint16*)(uint8*)(ColorPaletteRAM + 0x01E0 + ((bgc & 7) << 1)));
+			data16 = LoadU16_LE((uint16*)(uint8*)(gfx->ColorPaletteRAM + 0x01E0 + ((gfx->bgc & 7) << 1)));
 		}
 #if 0
       else data16 = 0;
 #endif
 
-		if (negative) data16 = ~data16;
+		if (gfx->negative)
+         data16 = ~data16;
 
       data16 = data16;
 		
-      x = winx;
+      x    = gfx->winx;
       scan = &cfb_scanline[x];
 
 		/*Draw background */
-		for (; x < MIN(winx + winw, SCREEN_WIDTH); x++)	
+		for (; x < MIN(gfx->winx + gfx->winw, SCREEN_WIDTH); x++)	
 			*scan++ = data16;
 
 		/*Swap Front/Back scroll planes? */
-		if (planeSwap)
+		if (gfx->planeSwap)
 		{
 			if(layer_enable & 1)
-			 draw_colour_scroll1(cfb_scanline, zbuffer, ZDEPTH_BACKGROUND_SCROLL, ngpc_scanline);		/* Swap */
+			 draw_colour_scroll1(gfx, cfb_scanline, zbuffer, ZDEPTH_BACKGROUND_SCROLL, ngpc_scanline);		/* Swap */
 			if(layer_enable & 2)
-			 draw_colour_scroll2(cfb_scanline, zbuffer, ZDEPTH_FOREGROUND_SCROLL, ngpc_scanline);
+			 draw_colour_scroll2(gfx, cfb_scanline, zbuffer, ZDEPTH_FOREGROUND_SCROLL, ngpc_scanline);
 		}
 		else
 		{
 			if(layer_enable & 1)
-			 draw_colour_scroll2(cfb_scanline, zbuffer, ZDEPTH_BACKGROUND_SCROLL, ngpc_scanline);		/* Normal */
+			 draw_colour_scroll2(gfx, cfb_scanline, zbuffer, ZDEPTH_BACKGROUND_SCROLL, ngpc_scanline);		/* Normal */
 			if(layer_enable & 2)
-			 draw_colour_scroll1(cfb_scanline, zbuffer, ZDEPTH_FOREGROUND_SCROLL, ngpc_scanline);
+			 draw_colour_scroll1(gfx, cfb_scanline, zbuffer, ZDEPTH_FOREGROUND_SCROLL, ngpc_scanline);
 		}
 
 		/* Draw Sprites */
@@ -219,11 +222,11 @@ void NGPGFX_CLASS::draw_scanline_colour(uint16_t *cfb_scanline, int layer_enable
 		if(layer_enable & 4)
 		for (spr = 0; spr < 64; spr++)
 		{
-			uint8_t sx = SpriteVRAM[(spr * 4) + 2];	/* X position */
-			uint8_t sy = SpriteVRAM[(spr * 4) + 3];	/* Y position */
-			int16_t x = sx;
-			int16_t y = sy;
-			uint16_t data16 = LoadU16_LE((uint16*)(SpriteVRAM + (spr * 4)));
+			uint8_t sx       = gfx->SpriteVRAM[(spr * 4) + 2];	/* X position */
+			uint8_t sy       = gfx->SpriteVRAM[(spr * 4) + 3];	/* Y position */
+			int16_t x        = sx;
+			int16_t y        = sy;
+			uint16_t data16  = LoadU16_LE((uint16*)(gfx->SpriteVRAM + (spr * 4)));
 			uint8_t priority = (data16 & 0x1800) >> 11;
 
 			if (data16 & 0x0400)
@@ -240,8 +243,8 @@ void NGPGFX_CLASS::draw_scanline_colour(uint16_t *cfb_scanline, int layer_enable
             continue;
 
 			/* Scroll the sprite */
-			x += scrollsprx; 
-			y += scrollspry;
+			x += gfx->scrollsprx; 
+			y += gfx->scrollspry;
 
 			/* Off-screen? */
 			if (x > 248 && x < 256)
@@ -257,9 +260,9 @@ void NGPGFX_CLASS::draw_scanline_colour(uint16_t *cfb_scanline, int layer_enable
 			if (ngpc_scanline >= y && ngpc_scanline <= y + 7)
 			{
 				uint8_t row = (ngpc_scanline - y) & 7;	/* Which row? */
-				drawColourPattern(cfb_scanline, zbuffer, (uint8)x, data16 & 0x01FF, 
+				drawColourPattern(gfx, cfb_scanline, zbuffer, (uint8)x, data16 & 0x01FF, 
 					(data16 & 0x4000) ? 7 - row : row, data16 & 0x8000,
-					(uint16*)ColorPaletteRAM, SpriteVRAMColor[spr] & 0xF, priority << 1); 
+					(uint16*)gfx->ColorPaletteRAM, gfx->SpriteVRAMColor[spr] & 0xF, priority << 1); 
 			}
 		}
 	}

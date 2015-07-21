@@ -26,84 +26,69 @@
 
 extern uint16_t cfb_scanline[256];	// __attribute__ ((aligned (8)));
 
-class NGPGFX_CLASS
+typedef struct ngpgfx
 {
- public:
+   uint8 winx, winw;
+   uint8 winy, winh;
+   uint8 scroll1x, scroll1y;
+   uint8 scroll2x, scroll2y;
+   uint8 scrollsprx, scrollspry;
+   uint8 planeSwap;
+   uint8 bgc, oowc, negative;
 
- NGPGFX_CLASS();
- ~NGPGFX_CLASS();
+   uint8 ScrollVRAM[4096];  // 9000-9fff
+   uint8 CharacterRAM[8192]; // a000-bfff
+   uint8 SpriteVRAM[256]; // 8800-88ff
+   uint8 SpriteVRAMColor[0x40]; // 8C00-8C3F
+   uint8 ColorPaletteRAM[0x200]; // 8200-83ff
 
- void write8(uint32 address, uint8 data);
- void write16(uint32 address, uint16 data);
+   uint8 SPPLT[6];
+   uint8 SCRP1PLT[6];
+   uint8 SCRP2PLT[6];
 
- uint8 read8(uint32 address);
- uint16 read16(uint32 address);
+   uint8 raster_line;
+   uint8 S1SO_H, S1SO_V, S2SO_H, S2SO_V;
+   uint8 WBA_H, WBA_V, WSI_H, WSI_V;
+   bool C_OVR, BLNK;
+   uint8 PO_H, PO_V;
+   uint8 P_F;
+   uint8 BG_COL;
+   uint8 CONTROL_2D;
+   uint8 CONTROL_INT;
+   uint8 SCREEN_PERIOD;
+   uint8 K2GE_MODE;
 
- int StateAction(void *data, int load, int data_only);
- void SetLayerEnableMask(uint64 mask);
- void set_pixel_format(const MDFN_PixelFormat &format);
+   uint16 ColorMap[4096];
 
- bool draw(MDFN_Surface *surface, bool skip);
- bool hint(void);
+   int layer_enable;
+} ngpgfx_t;
 
- void power(void);
+void ngpgfx_set_pixel_format(ngpgfx_t *fx);
 
- private:
+void ngpgfx_SetLayerEnableMask(ngpgfx_t *gfx, uint64_t mask);
 
- uint8 winx, winw;
- uint8 winy, winh;
- uint8 scroll1x, scroll1y;
- uint8 scroll2x, scroll2y;
- uint8 scrollsprx, scrollspry;
- uint8 planeSwap;
- uint8 bgc, oowc, negative;
+int ngpgfx_StateAction(ngpgfx_t *gfx, void *data, int load, int data_only);
 
- void reset(void);
- void delayed_settings(void);
+void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline, int layer_enable, int ngpc_scanline);
 
- void draw_scanline_colour(uint16_t *, int, int);
- void drawColourPattern(uint16_t *cfb_scanline, uint8_t *zbuf, uint8 screenx, uint16 tile, uint8 tiley, uint16 mirror,
-                                 uint16* palette_ptr, uint8 pal, uint8 depth);
- void draw_colour_scroll1(uint16_t *cfb_scanline, uint8_t *zbuf, uint8 depth, int ngpc_scanline);
- void draw_colour_scroll2(uint16_t *cfb_scanline, uint8_t *zbuf, uint8 depth, int ngpc_scanline);
+void draw_scanline_mono(ngpgfx_t *gfx,
+      uint16_t *cfb_scanline, int layer_enable, int ngpc_scanline);
 
- void draw_scanline_mono(uint16_t*, int, int);
- void MonoPlot(uint16_t *cfb_scanline, uint8_t *zbuf, uint8 x, uint8* palette_ptr, uint16 pal_hi, uint8 index, uint8 depth);
- void drawMonoPattern(uint16_t *cfb_scanline, uint8_t *zbuf, uint8 screenx, uint16 tile, uint8 tiley, uint16 mirror,
-                                 uint8* palette_ptr, uint16 pal, uint8 depth);
- void draw_mono_scroll1(uint16_t *cfb_scanline, uint8_t *zbuf, uint8 depth, int ngpc_scanline);
- void draw_mono_scroll2(uint16_t *cfb_scanline, uint8_t *zbuf, uint8 depth, int ngpc_scanline);
+void ngpgfx_power(ngpgfx_t *gfx);
 
+bool ngpgfx_hint(ngpgfx_t *gfx);
 
+bool ngpgfx_draw(ngpgfx_t *gfx, MDFN_Surface *surface, bool skip);
 
- uint8 ScrollVRAM[4096];  // 9000-9fff
- uint8 CharacterRAM[8192]; // a000-bfff
- uint8 SpriteVRAM[256]; // 8800-88ff
- uint8 SpriteVRAMColor[0x40]; // 8C00-8C3F
- uint8 ColorPaletteRAM[0x200]; // 8200-83ff
+uint8_t ngpgfx_read8(ngpgfx_t *gfx, uint32_t address);
 
- uint8 SPPLT[6];
- uint8 SCRP1PLT[6];
- uint8 SCRP2PLT[6];
+uint16_t ngpgfx_read16(ngpgfx_t *gfx, uint32_t address);
 
- uint8 raster_line;
- uint8 S1SO_H, S1SO_V, S2SO_H, S2SO_V;
- uint8 WBA_H, WBA_V, WSI_H, WSI_V;
- bool C_OVR, BLNK;
- uint8 PO_H, PO_V;
- uint8 P_F;
- uint8 BG_COL;
- uint8 CONTROL_2D;
- uint8 CONTROL_INT;
- uint8 SCREEN_PERIOD;
- uint8 K2GE_MODE;
+void ngpgfx_write16(ngpgfx_t *gfx, uint32 address, uint16 data);
 
- uint16 ColorMap[4096];
+void ngpgfx_write8(ngpgfx_t *gfx, uint32 address, uint8 data);
 
- int layer_enable;
-};
-
-extern NGPGFX_CLASS *NGPGfx;
+extern ngpgfx_t *NGPGfx;
 
 #endif
 

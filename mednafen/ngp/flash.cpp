@@ -72,10 +72,9 @@ static void optimise_blocks(void)
          //Swap?
          if (blocks[i].start_address > blocks[j].start_address)
          {
-            uint32_t temp32;
             uint16_t temp16;
+            uint32_t temp32 = blocks[i].start_address;
 
-            temp32 = blocks[i].start_address;
             blocks[i].start_address = blocks[j].start_address;
             blocks[j].start_address = temp32;
 

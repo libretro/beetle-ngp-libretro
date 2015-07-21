@@ -287,8 +287,8 @@ bool updateTimers(void *data, int cputicks)
 
       // ============= END OF CURRENT SCANLINE =============
 
-      h_int = NGPGfx->hint();	
-      ret = NGPGfx->draw(surface, NGPFrameSkip);
+      h_int = ngpgfx_hint(NGPGfx);	
+      ret   = ngpgfx_draw(NGPGfx, surface, NGPFrameSkip);
 
       // ============= START OF NEXT SCANLINE =============
 
