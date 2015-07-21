@@ -20,14 +20,6 @@
 #include "TLCS-900h/TLCS900h_registers.h"
 #include "../masmem.h"
 
-#ifndef max
-#define max(a,b) ((a)>(b)?(a):(b))
-#endif
-
-#ifndef min
-#define min(a,b) ((a)<(b)?(a):(b))
-#endif
-
 static const unsigned char mirrored[] = {
     0x00, 0x40, 0x80, 0xc0, 0x10, 0x50, 0x90, 0xd0,
     0x20, 0x60, 0xa0, 0xe0, 0x30, 0x70, 0xb0, 0xf0,
@@ -407,10 +399,10 @@ void draw_scanline_mono(ngpgfx_t *gfx,
    /* Middle */
    if (!(ngpc_scanline < gfx->winy) && ngpc_scanline < gfx->winy + gfx->winh)
    {
-      for (; x < min(gfx->winx, SCREEN_WIDTH); x++)
+      for (; x < MIN(gfx->winx, SCREEN_WIDTH); x++)
          *scan++ = data16;
 
-      x = min(gfx->winx + gfx->winw, SCREEN_WIDTH);
+      x = MIN(gfx->winx + gfx->winw, SCREEN_WIDTH);
    }
 
    /* Bottom and Top */
@@ -441,7 +433,7 @@ void draw_scanline_mono(ngpgfx_t *gfx,
       scan = &cfb_scanline[x];
 
 		/* Draw background */
-		for (; x < min(gfx->winx + gfx->winw, SCREEN_WIDTH); x++)	
+		for (; x < MIN(gfx->winx + gfx->winw, SCREEN_WIDTH); x++)	
 			*scan++ = data16;
 
 		/* Swap Front/Back scroll planes? */
