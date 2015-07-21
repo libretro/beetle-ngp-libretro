@@ -161,46 +161,49 @@ void iBIOSHLE(void)
 
             switch(interrupt)
             {
-               case 0x00:	CacheIntPrio[0x0] = (CacheIntPrio[0x0] & 0xf0) |  (level & 0x07);
-                           storeB(0x70, CacheIntPrio[0x0]);
-                           break;
-
-               case 0x01:	CacheIntPrio[0x1] = (CacheIntPrio[0x1] & 0x0f) | ((level & 0x07)<<4);
-                           storeB(0x71, CacheIntPrio[0x1]);
-                           break;
-
-               case 0x02:	CacheIntPrio[0x3] = (CacheIntPrio[0x3] & 0xf0) |  (level & 0x07);
-                           storeB(0x73, CacheIntPrio[0x3]);
-                           break;
-
-               case 0x03:	CacheIntPrio[0x3] = (CacheIntPrio[0x3] & 0x0f) | ((level & 0x07)<<4);
-                           storeB(0x73, CacheIntPrio[0x3]);
-                           break;
-
-               case 0x04:	CacheIntPrio[0x4] = (CacheIntPrio[0x4] & 0xf0) |  (level & 0x07);
-                           storeB(0x74, CacheIntPrio[0x4]);
-                           break;
-
-               case 0x05:	CacheIntPrio[0x4] = (CacheIntPrio[0x4] & 0x0f) | ((level & 0x07)<<4);
-                           storeB(0x74, CacheIntPrio[0x4]);
-                           break;
-
-               case 0x06:	CacheIntPrio[0x9] = (CacheIntPrio[0x9] & 0xf0) |  (level & 0x07);
-                           storeB(0x79, CacheIntPrio[0x9]);
-                           break;
-
-               case 0x07:	CacheIntPrio[0x9] = (CacheIntPrio[0x9] & 0x0f) | ((level & 0x07)<<4);
-                           storeB(0x79, CacheIntPrio[0x9]);
-                           break;
-
-               case 0x08:	CacheIntPrio[0xa] = (CacheIntPrio[0xa] & 0xf0) |  (level & 0x07);
-                           storeB(0x7a, CacheIntPrio[0xa]);
-                           break;
-
-               case 0x09:	CacheIntPrio[0xa] = (CacheIntPrio[0xa] & 0x0f) | ((level & 0x07)<<4);
-                           storeB(0x7a, CacheIntPrio[0xa]);
-                           break;
-               default: puts("DOH"); break;
+               case 0x00:
+                  CacheIntPrio[0x0] = (CacheIntPrio[0x0] & 0xf0) |  (level & 0x07);
+                  storeB(0x70, CacheIntPrio[0x0]);
+                  break;
+               case 0x01:
+                  CacheIntPrio[0x1] = (CacheIntPrio[0x1] & 0x0f) | ((level & 0x07)<<4);
+                  storeB(0x71, CacheIntPrio[0x1]);
+                  break;
+               case 0x02:
+                  CacheIntPrio[0x3] = (CacheIntPrio[0x3] & 0xf0) |  (level & 0x07);
+                  storeB(0x73, CacheIntPrio[0x3]);
+                  break;
+               case 0x03:
+                  CacheIntPrio[0x3] = (CacheIntPrio[0x3] & 0x0f) | ((level & 0x07)<<4);
+                  storeB(0x73, CacheIntPrio[0x3]);
+                  break;
+               case 0x04:
+                  CacheIntPrio[0x4] = (CacheIntPrio[0x4] & 0xf0) |  (level & 0x07);
+                  storeB(0x74, CacheIntPrio[0x4]);
+                  break;
+               case 0x05:
+                  CacheIntPrio[0x4] = (CacheIntPrio[0x4] & 0x0f) | ((level & 0x07)<<4);
+                  storeB(0x74, CacheIntPrio[0x4]);
+                  break;
+               case 0x06:
+                  CacheIntPrio[0x9] = (CacheIntPrio[0x9] & 0xf0) |  (level & 0x07);
+                  storeB(0x79, CacheIntPrio[0x9]);
+                  break;
+               case 0x07:
+                  CacheIntPrio[0x9] = (CacheIntPrio[0x9] & 0x0f) | ((level & 0x07)<<4);
+                  storeB(0x79, CacheIntPrio[0x9]);
+                  break;
+               case 0x08:
+                  CacheIntPrio[0xa] = (CacheIntPrio[0xa] & 0xf0) |  (level & 0x07);
+                  storeB(0x7a, CacheIntPrio[0xa]);
+                  break;
+               case 0x09:
+                  CacheIntPrio[0xa] = (CacheIntPrio[0xa] & 0x0f) | ((level & 0x07)<<4);
+                  storeB(0x7a, CacheIntPrio[0xa]);
+                  break;
+               default: 
+                  puts("DOH");
+                  break;
             }
          }
          break;	
@@ -216,11 +219,11 @@ void iBIOSHLE(void)
          }
 #endif
          {
-            uint8 a,b,c, j;
+            uint8 c, j;
             uint16 i, dst = 0xA000;
 
-            b = rCodeB(0x30) >> 4;
-            a = rCodeB(0x30) & 3;
+            uint8 b = rCodeB(0x30) >> 4;
+            uint8 a = rCodeB(0x30) & 3;
 
             for (i = 0; i < 0x800; i++)
             {
