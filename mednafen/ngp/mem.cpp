@@ -281,12 +281,8 @@ uint16 loadW(uint32 address)
 
 uint32 loadL(uint32 address)
 {
-	uint32 ret;
-
-	ret = loadW(address);
-	ret |= loadW(address + 2) << 16;
-
-	return(ret);
+	uint32 ret = loadW(address);
+	return (ret | loadW(address + 2) << 16);
 }
 
 //=============================================================================
