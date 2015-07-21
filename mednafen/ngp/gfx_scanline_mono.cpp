@@ -25,34 +25,32 @@
 #define min(a,b) ((a)<(b)?(a):(b))
 #endif
 
-//=============================================================================
-
-void NGPGFX_CLASS::MonoPlot(uint16_t *cfb_scanline, uint8_t *zbuffer, uint8 x, uint8* palette_ptr, uint16 pal_hi, uint8 index, uint8 depth)
+void NGPGFX_CLASS::MonoPlot(uint16_t *cfb_scanline, uint8_t *zbuffer,
+      uint8 x, uint8* palette_ptr, uint16 pal_hi, uint8 index, uint8 depth)
 {
-	uint8 data8;
+	uint8_t data8, *zbuf;
+   uint16_t *scan, data16;
 
-	//Clip
+	/* Clip */
 	if (index == 0 || x < winx || x >= (winw + winx) || x >= SCREEN_WIDTH)
 		return;
 
-   uint8_t *zbuf = &zbuffer[x];
-	//Depth check, <= to stop later sprites overwriting pixels!
+   zbuf = &zbuffer[x];
+
+	/*Depth check, <= to stop later sprites overwriting pixels! */
 	if (depth <= *zbuf)
       return;
 	*zbuf = depth;
 
-	//Get the colour of the pixel
-	if (pal_hi)
-		data8 = palette_ptr[3 + index - 1];
-	else
-		data8 = palette_ptr[0 + index - 1];
+	/*Get the colour of the pixel */
+   data8 = palette_ptr[(pal_hi ? 3 : 0) + index - 1];
 
 	uint16 r = (data8 & 7) << 1;
 	uint16 g = (data8 & 7) << 5;
 	uint16 b = (data8 & 7) << 9;
 
-   uint16_t *scan = &cfb_scanline[x];
-   uint16_t data16 = ~(r | g | b);
+   scan = &cfb_scanline[x];
+   data16 = ~(r | g | b);
 	if (negative)
       data16 = ~(data16);
 
@@ -62,12 +60,12 @@ void NGPGFX_CLASS::MonoPlot(uint16_t *cfb_scanline, uint8_t *zbuffer, uint8 x, u
 void NGPGFX_CLASS::drawMonoPattern(uint16_t *cfb_scanline, uint8_t *zbuffer, uint8 screenx, uint16 tile, uint8 tiley, uint16 mirror, 
 				 uint8* palette_ptr, uint16 pal, uint8 depth)
 {
-	//Get the data for th e "tiley'th" line of "tile".
-	uint16 data = LoadU16_LE((uint16*)(CharacterRAM + (tile * 16) + (tiley * 2)));
+	/* Get the data for th e "tiley'th" line of "tile". */
+	uint16_t data = LoadU16_LE((uint16*)(CharacterRAM + (tile * 16) + (tiley * 2)));
 
-	//Horizontal Flip
 	if (mirror)
 	{
+      /* Horizontal Flip */
 		MonoPlot(cfb_scanline, zbuffer, screenx + 7, palette_ptr, pal, (data & 0xC000) >> 0xE, depth);
 		MonoPlot(cfb_scanline, zbuffer, screenx + 6, palette_ptr, pal, (data & 0x3000) >> 0xC, depth);
 		MonoPlot(cfb_scanline, zbuffer, screenx + 5, palette_ptr, pal, (data & 0x0C00) >> 0xA, depth);
@@ -78,8 +76,8 @@ void NGPGFX_CLASS::drawMonoPattern(uint16_t *cfb_scanline, uint8_t *zbuffer, uin
 		MonoPlot(cfb_scanline, zbuffer, screenx + 0, palette_ptr, pal, (data & 0x0003) >> 0x0, depth);
 	}
 	else
-	//Normal
 	{
+      /*Normal */
 		MonoPlot(cfb_scanline, zbuffer, screenx + 0, palette_ptr, pal, (data & 0xC000) >> 0xE, depth);
 		MonoPlot(cfb_scanline, zbuffer, screenx + 1, palette_ptr, pal, (data & 0x3000) >> 0xC, depth);
 		MonoPlot(cfb_scanline, zbuffer, screenx + 2, palette_ptr, pal, (data & 0x0C00) >> 0xA, depth);
@@ -91,21 +89,20 @@ void NGPGFX_CLASS::drawMonoPattern(uint16_t *cfb_scanline, uint8_t *zbuffer, uin
 	}
 }
 
-void NGPGFX_CLASS::draw_mono_scroll1(uint16_t *cfb_scanline, uint8_t *zbuffer, uint8 depth, int ngpc_scanline)
+void NGPGFX_CLASS::draw_mono_scroll1(uint16_t *cfb_scanline,
+      uint8_t *zbuffer, uint8 depth, int ngpc_scanline)
 {
-	uint8 tx, row, line;
-	uint16 data16;
+	unsigned i;
+	uint8_t line = ngpc_scanline + scroll1y;
+	uint8_t row = line & 7;	/* Which row? */
 
-	line = ngpc_scanline + scroll1y;
-	row = line & 7;	//Which row?
-
-	//Draw Foreground scroll plane (Scroll 1)
-	for (tx = 0; tx < 32; tx++)
+	/* Draw Foreground scroll plane (Scroll 1) */
+	for (i = 0; i < 32; i++)
 	{
-		data16 = LoadU16_LE((uint16*)(ScrollVRAM + ((tx + ((line >> 3) << 5)) << 1)));
+		uint16_t data16 = LoadU16_LE((uint16*)(ScrollVRAM + ((i + ((line >> 3) << 5)) << 1)));
 		
 		//Draw the line of the tile
-		drawMonoPattern(cfb_scanline, zbuffer, (tx << 3) - scroll1x, data16 & 0x01FF, 
+		drawMonoPattern(cfb_scanline, zbuffer, (i << 3) - scroll1x, data16 & 0x01FF, 
 			(data16 & 0x4000) ? 7 - row : row, data16 & 0x8000, SCRP1PLT,
 			data16 & 0x2000, depth);
 	}
@@ -133,25 +130,26 @@ void NGPGFX_CLASS::draw_mono_scroll2(uint16_t *cfb_scanline, uint8_t *zbuffer, u
 
 void NGPGFX_CLASS::draw_scanline_mono(uint16_t *cfb_scanline, int layer_enable, int ngpc_scanline)
 {
-	int16 lastSpriteX;
-	int16 lastSpriteY;
+   int x;
+   uint16_t *scan;
+	int16_t lastSpriteX;
+	int16_t lastSpriteY;
 	int spr;
-	uint16 data16;
    uint8_t zbuffer[256] = {0};
 
-	//Window colour
-	uint16 r = (uint16)oowc << 1;
-	uint16 g = (uint16)oowc << 5;
-	uint16 b = (uint16)oowc << 9;
-	
-   data16 = ~(r | g | b);
+	/* Window colour */
+	uint16_t r = (uint16)oowc << 1;
+	uint16_t g = (uint16)oowc << 5;
+	uint16_t b = (uint16)oowc << 9;
+   uint16_t data16 = ~(r | g | b);
+
 	if (negative)
 		data16 = ~data16;
 
-   int x = 0;
-   uint16_t *scan = &cfb_scanline[x];
+   x = 0;
+   scan = &cfb_scanline[x];
 
-   //Middle
+   /* Middle */
    if (!(ngpc_scanline < winy) && ngpc_scanline < winy + winh)
    {
       for (; x < min(winx, SCREEN_WIDTH); x++)
@@ -159,15 +157,20 @@ void NGPGFX_CLASS::draw_scanline_mono(uint16_t *cfb_scanline, int layer_enable, 
 
       x = min(winx + winw, SCREEN_WIDTH);
    }
-   // Bottom and Top
+
+   /* Bottom and Top */
    for (; x < SCREEN_WIDTH; x++)
       *scan++ = data16;
 
-	//Ignore above and below the window's top and bottom
+	/* Ignore above and below the window's top and bottom */
 	if (ngpc_scanline >= winy && ngpc_scanline < winy + winh)
 	{
+      int x;
+      uint16_t *scan;
+
       data16 = 0x0FFF;
-		//Background colour Enabled?
+
+		/* Background colour Enabled? */
 		if ((bgc & 0xC0) == 0x80)
 		{
 			r = (uint16)(bgc & 7) << 1;
@@ -178,13 +181,14 @@ void NGPGFX_CLASS::draw_scanline_mono(uint16_t *cfb_scanline, int layer_enable, 
 
 		if (negative) data16 = ~data16;
 
-      int x = winx;
-      uint16_t *scan = &cfb_scanline[x];
-		//Draw background!
+      x = winx;
+      scan = &cfb_scanline[x];
+
+		/* Draw background */
 		for (; x < min(winx + winw, SCREEN_WIDTH); x++)	
 			*scan++ = data16;
 
-		//Swap Front/Back scroll planes?
+		/* Swap Front/Back scroll planes? */
 		if (planeSwap)
 		{
 			if(layer_enable & 1)
@@ -245,8 +249,4 @@ void NGPGFX_CLASS::draw_scanline_mono(uint16_t *cfb_scanline, int layer_enable, 
 		}
 
 	}
-
-	//==========
 }
-
-//=============================================================================
