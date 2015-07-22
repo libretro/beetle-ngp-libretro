@@ -48,6 +48,7 @@ CORE_SOURCES := \
 		$(CORE_DIR)/gfx_scanline_mono.cpp \
 		$(CORE_DIR)/interrupt.cpp \
 		$(CORE_DIR)/mem.cpp \
+		$(CORE_DIR)/system.cpp \
 		$(CORE_DIR)/rom.cpp \
 		$(CORE_DIR)/sound.cpp \
 		$(CORE_DIR)/T6W28_Apu.cpp \
@@ -93,7 +94,6 @@ MEDNAFEN_SOURCES := $(MEDNAFEN_DIR)/mednafen.cpp \
 	$(MEDNAFEN_DIR)/settings.cpp \
 	$(MEDNAFEN_DIR)/general.cpp \
 	$(MEDNAFEN_DIR)/FileWrapper.cpp \
-	$(MEDNAFEN_DIR)/FileStream.cpp \
 	$(MEDNAFEN_DIR)/MemoryStream.cpp \
 	$(MEDNAFEN_DIR)/Stream.cpp \
 	$(MEDNAFEN_DIR)/state.cpp \

@@ -49,7 +49,6 @@ std::string retro_save_directory;
 #include "mednafen/ngp/neopop.h"
 #include "mednafen/general.h"
 #include "mednafen/md5.h"
-#include "mednafen/FileStream.h"
 
 #include "mednafen/ngp/TLCS-900h/TLCS900h_interpret.h"
 #include "mednafen/ngp/TLCS-900h/TLCS900h_registers.h"
