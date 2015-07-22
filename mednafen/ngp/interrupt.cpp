@@ -50,10 +50,8 @@ static bool h_int, timer0, timer2;
 
 // FIXME in the future if we ever add real bios support?
 
-
 void interrupt(uint8_t index)
 {
-   //printf("INT: %d\n", index);
    push32(pc);
    push16(sr);
 
@@ -77,13 +75,14 @@ void set_interrupt(uint8_t index, bool set)
 
 void int_check_pending(void)
 {
-   uint8_t prio;
    uint8_t curIFF = statusIFF();
 
-   // Technically, the BIOS should clear the interrupt pending flag by writing with IxxC set to "0", but
-   // we'll actually need to implement a BIOS to do that!
+   /* Technically, the BIOS should clear the interrupt 
+    * pending flag by writing with IxxC set to "0", but
+    * we'll actually need to implement a BIOS to do that! */
 
-   prio = IntPrio[0x1] & 0x07;     // INT4
+   uint8_t prio = IntPrio[0x1] & 0x07;     // INT4
+
    if(ipending[5] && curIFF <= prio && prio && prio != 7)
    {
       ipending[5] = 0;

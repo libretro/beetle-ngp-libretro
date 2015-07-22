@@ -12,48 +12,6 @@
 //	additional informations.
 //---------------------------------------------------------------------------
 
-/*
-//---------------------------------------------------------------------------
-//=========================================================================
-
-	dma.c
-
-//=========================================================================
-//---------------------------------------------------------------------------
-
-  History of changes:
-  ===================
-
-20 JUL 2002 - neopop_uk
-=======================================
-- Cleaned and tidied up for the source release
-
-25 JUL 2002 - neopop_uk
-=======================================
-- Removed incorrect quick-fix code and added new DMA_update functions
-	to process the dma values.
-- Fixed setting of C and M registers
-- Added source copy byte and word mode DMA, seems to be only ones used.
-
-26 JUL 2002 - neopop_uk
-=======================================
-- Added more DMA modes - "Kikouseki Unitron (J)" uses counter mode
-	and 4 byte memory to I/O transfer.
-- Added load *from* dma control register.
-
-30 JUL 2002 - neopop_uk
-=======================================
-- Made DMA_update more secure in it's ability to detect unknown DMA modes.
-- DMA mode and count are printed in decimal, for internal consistancy.
-
-01 AUG 2002 - neopop_uk
-=======================================
-- Re-written DMA_update for clarity, and added missing modes,
-	fixes "Super Real Mahjong"
-
-//---------------------------------------------------------------------------
-*/
-
 #include "neopop.h"
 #include "dma.h"
 #include "mem.h"

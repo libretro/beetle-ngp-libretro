@@ -176,6 +176,19 @@ static bool TestMagic(const char *name, MDFNFILE *fp)
  return(TRUE);
 }
 
+void reset(void)
+{
+   ngpgfx_power(NGPGfx);
+   Z80_reset();
+   reset_int();
+   reset_timers();
+
+   reset_memory();
+   BIOSHLE_Reset();
+   reset_registers();	/* TLCS900H registers */
+   reset_dma();
+}
+
 static int Load(const char *name, MDFNFILE *fp)
 {
    if(!(ngpc_rom.data = (uint8 *)MDFN_malloc(GET_FSIZE_PTR(fp), _("Cart ROM"))))

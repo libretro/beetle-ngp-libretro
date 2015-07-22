@@ -13,30 +13,9 @@
 //---------------------------------------------------------------------------
 
 #include "neopop.h"
-#include "gfx.h"
-#include "TLCS-900h/TLCS900h_registers.h"
-#include "Z80_interface.h"
-#include "gfx.h"
-#include "mem.h"
-#include "interrupt.h"
-#include "sound.h"
-#include "dma.h"
 #include "bios.h"
 
 uint8_t ngpc_bios[0x10000];		/* Holds BIOS program data */
-
-void reset(void)
-{
-   ngpgfx_power(NGPGfx);
-   Z80_reset();
-   reset_int();
-   reset_timers();
-
-   reset_memory();
-   BIOSHLE_Reset();
-   reset_registers();	/* TLCS900H registers */
-   reset_dma();
-}
 
 static const uint8_t font[0x800] = { 
 	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,

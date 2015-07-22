@@ -26,9 +26,10 @@
 extern "C" {
 #endif
 
-static uint8 CacheIntPrio[0xB]; // Iinterrupt prio registers at 0x0070-0x007a don't have priority readable.
-	 		       // This should probably be stored in BIOS work RAM somewhere instead of a separate array, but I don't know where!
-
+/* Interrupt prio registers at 0x0070-0x007a don't have priority readable. */
+/* This should probably be stored in BIOS work RAM somewhere instead of a 
+ * separate array, but I don't know where! */
+static uint8 CacheIntPrio[0xB]; 
 
 void BIOSHLE_Reset(void)
 {

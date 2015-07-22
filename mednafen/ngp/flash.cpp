@@ -49,9 +49,7 @@ typedef struct
 
 } FlashFileBlockHeader;
 
-//-----------------------------------------------------------------------------
-// Local Data
-//-----------------------------------------------------------------------------
+/* Local Data */
 static FlashFileBlockHeader	blocks[256];
 static uint16_t block_count;
 
@@ -216,31 +214,32 @@ static uint8_t *make_flash_commit(int32_t *length)
    FlashFileHeader header;
    uint8_t *flashdata, *fileptr;
 
-   //No flash data?
+   /* No flash data? */
    if (block_count == 0)
       return NULL;
 
-   //Optimise before writing
+   /* Optimize before writing */
    optimise_blocks();
 
-   //Build a header;
-   header.valid_flash_id = FLASH_VALID_ID;
-   header.block_count = block_count;
+   /* Build a header */
+   header.valid_flash_id    = FLASH_VALID_ID;
+   header.block_count       = block_count;
    header.total_file_length = sizeof(FlashFileHeader);
+
    for (i = 0; i < block_count; i++)
    {
       header.total_file_length += sizeof(FlashFileBlockHeader);
       header.total_file_length += blocks[i].data_length;
    }
 
-   //Write the flash data
+   /* Write the flash data */
    flashdata = (uint8_t*)malloc(header.total_file_length * sizeof(uint8_t));
 
-   //Copy header
+   /* Copy header */
    memcpy(flashdata, &header, sizeof(FlashFileHeader));
    fileptr = flashdata + sizeof(FlashFileHeader);
 
-   //Copy blocks
+   /* Copy blocks */
    for (i = 0; i < block_count; i++)
    {
       uint32_t j;
@@ -248,7 +247,7 @@ static uint8_t *make_flash_commit(int32_t *length)
       memcpy(fileptr, &blocks[i], sizeof(FlashFileBlockHeader));
       fileptr += sizeof(FlashFileBlockHeader);
 
-      //Copy data
+      /* Copy data */
       for (j = 0; j < blocks[i].data_length; j++)
       {
          *fileptr = loadB(blocks[i].start_address + j);
@@ -265,11 +264,11 @@ void flash_commit(void)
    int32_t length = 0;
    uint8_t *flashdata = make_flash_commit(&length);
 
-   if(flashdata)
-   {
-      system_io_flash_write(flashdata, length);
-      free(flashdata);
-   }
+   if (!flashdata)
+      return;
+
+   system_io_flash_write(flashdata, length);
+   free(flashdata);
 }
 
 int FLASH_StateAction(void *data, int load, int data_only)
