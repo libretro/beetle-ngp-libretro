@@ -278,14 +278,11 @@ void flash_commit(void)
 
 int FLASH_StateAction(void *data, int load, int data_only)
 {
-   StateMem *sm = (StateMem*)data;
    int32_t FlashLength = 0;
    uint8_t *flashdata = NULL;
 
    if(!load)
-   {
       flashdata = make_flash_commit(&FlashLength);
-   }
 
    SFORMAT FINF_StateRegs[] =
    {
@@ -293,7 +290,7 @@ int FLASH_StateAction(void *data, int load, int data_only)
       SFEND
    };
 
-   if(!MDFNSS_StateAction(sm, load, data_only, FINF_StateRegs, "FINF"))
+   if(!MDFNSS_StateAction(data, load, data_only, FINF_StateRegs, "FINF"))
       return 0;
 
    if(!FlashLength) // No flash data to save, OR no flash data to load.
@@ -311,7 +308,7 @@ int FLASH_StateAction(void *data, int load, int data_only)
       SFEND
    };
 
-   if(!MDFNSS_StateAction(sm, load, data_only, FLSH_StateRegs, "FLSH"))
+   if(!MDFNSS_StateAction(data, load, data_only, FLSH_StateRegs, "FLSH"))
    {
       free(flashdata);
       return 0;
