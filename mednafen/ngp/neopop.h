@@ -129,20 +129,12 @@ void system_VBL(void);
 
 extern COLOURMODE system_colour;
 
-	
 /* Core <--> System-Sound Interface */
 
 /* Speed of DAC playback (in Hz) */
 #define DAC_FREQUENCY		8000
 
 extern bool mute;
-
-/*!	Fills the given buffer with sound data */
-void sound_update(uint16_t *chip_buffer, int length_bytes);
-void dac_update(uint8_t* dac_buffer, int length_bytes);
-
-/* Initializes the sound chips using the given SampleRate */
-void sound_init(int SampleRate);
 
 void int_redo_icache(void);
 
