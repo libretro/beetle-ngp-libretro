@@ -1,15 +1,15 @@
 #ifndef __MDFN_ENDIAN_H
 #define __MDFN_ENDIAN_H
 
-
 #include <stdio.h>
-#include "mednafen-types.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "include/boolean.h"
+#ifndef INLINE
+#define INLINE inline
+#endif
 
 #ifdef MSB_FIRST
 

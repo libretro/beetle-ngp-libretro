@@ -25,6 +25,9 @@ extern uint8_t ngpc_bios[0x10000];
 
 void iBIOSHLE(void);
 
+/* Fill the bios rom area with a bios. call once at program start */
+int bios_install(void);
+
 void biosDecode(int function);
 void BIOSHLE_Reset(void);
 int BIOSHLE_StateAction(void *data, int load, int data_only);

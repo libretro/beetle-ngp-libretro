@@ -47,8 +47,7 @@ NEED_STEREO_SOUND = 1
 CORE_DEFINE := -DWANT_NGP_EMU
 CORE_DIR := $(MEDNAFEN_DIR)/ngp
 
-CORE_SOURCES := $(CORE_DIR)/bios.cpp \
-	$(CORE_DIR)/biosHLE.cpp \
+CORE_SOURCES := $(CORE_DIR)/biosHLE.cpp \
 	$(CORE_DIR)/dma.cpp \
 	$(CORE_DIR)/flash.cpp \
 	$(CORE_DIR)/gfx.cpp \
@@ -59,7 +58,8 @@ CORE_SOURCES := $(CORE_DIR)/bios.cpp \
 	$(CORE_DIR)/T6W28_Apu.cpp \
 	$(CORE_DIR)/Z80_interface.cpp
 
-CORE_SOURCES_C := $(CORE_DIR)/TLCS-900h/TLCS900h_disassemble.c \
+CORE_SOURCES_C := $(CORE_DIR)/bios.c \
+	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble.c \
 	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_extra.c \
 	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_reg.c \
 	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_dst.c \

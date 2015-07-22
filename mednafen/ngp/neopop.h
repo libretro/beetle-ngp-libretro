@@ -83,8 +83,6 @@ typedef struct
 
 void reset(void);
 
-/* Fill the bios rom area with a bios. call once at program start */
-bool bios_install(void);
 #ifdef __cplusplus
 extern "C" {
 #endif
