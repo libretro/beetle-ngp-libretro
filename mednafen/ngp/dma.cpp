@@ -55,11 +55,10 @@
 */
 
 #include "neopop.h"
-#include <mednafen/mednafen.h>
-#include "TLCS-900h/TLCS900h_disassemble.h"
 #include "dma.h"
 #include "mem.h"
 #include "interrupt.h"
+#include "../state.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -180,7 +179,7 @@ void DMA_update(int channel)
          break;
 
       default:
-         MDFN_printf("Bad DMA mode %d\nPlease report this to the author.", dmaM[channel]);
+         printf("Bad DMA mode %d\nPlease report this to the author.", dmaM[channel]);
          return;
    }
 
@@ -213,7 +212,7 @@ void dmaStoreB(uint8_t cr, uint8_t data)
          dmaM[3] = data;
          break;
       default: 
-         MDFN_printf("dmaStoreB: Unknown register 0x%02X <- %02X\nPlease report this to the author.\n", cr, data);
+         printf("dmaStoreB: Unknown register 0x%02X <- %02X\nPlease report this to the author.\n", cr, data);
          break;
    }
 }
@@ -236,7 +235,7 @@ void dmaStoreW(uint8_t cr, uint16_t data)
          break;
 
       default: 
-         MDFN_printf("dmaStoreW: Unknown register 0x%02X <- %04X\nPlease report this to the author.\n", cr, data);
+         printf("dmaStoreW: Unknown register 0x%02X <- %04X\nPlease report this to the author.\n", cr, data);
          break;
    }
 }
@@ -271,7 +270,7 @@ void dmaStoreL(uint8_t cr, uint32_t data)
          break;
 
       default: 
-         MDFN_printf("dmaStoreL: Unknown register 0x%02X <- %08X\nPlease report this to the author.\n", cr, data);
+         printf("dmaStoreL: Unknown register 0x%02X <- %08X\nPlease report this to the author.\n", cr, data);
          break;
    }
 }
@@ -290,7 +289,7 @@ uint8_t dmaLoadB(uint8_t cr)
       case 0x2E:
          return dmaM[3];
       default: 
-         MDFN_printf("dmaLoadB: Unknown register 0x%02X\nPlease report this to the author.", cr);
+         printf("dmaLoadB: Unknown register 0x%02X\nPlease report this to the author.", cr);
    }
 
    return 0;
@@ -309,7 +308,7 @@ uint16_t dmaLoadW(uint8_t cr)
       case 0x2C:
          return dmaC[3];
       default: 
-         MDFN_printf("dmaLoadW: Unknown register 0x%02X\nPlease report this to the author.", cr);
+         printf("dmaLoadW: Unknown register 0x%02X\nPlease report this to the author.", cr);
    }
 
    return 0;
@@ -336,15 +335,11 @@ uint32_t dmaLoadL(uint8_t cr)
       case 0x1C:
          return dmaD[3];
       default: 
-         MDFN_printf("dmaLoadL: Unknown register 0x%02X\nPlease report this to the author.", cr);
+         printf("dmaLoadL: Unknown register 0x%02X\nPlease report this to the author.", cr);
    }
 
    return 0;
 }
-
-#ifdef __cplusplus
-}
-#endif
 
 int MDFNNGPCDMA_StateAction(void *data, int load, int data_only)
 {
@@ -363,3 +358,8 @@ int MDFNNGPCDMA_StateAction(void *data, int load, int data_only)
 
    return 1; 
 }
+
+#ifdef __cplusplus
+}
+#endif
+
