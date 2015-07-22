@@ -301,7 +301,6 @@ uint32_t dmaLoadL(uint8_t cr)
 
 int MDFNNGPCDMA_StateAction(void *data, int load, int data_only)
 {
-   StateMem *sm = (StateMem*)data;
    SFORMAT StateRegs[] =
    {
       SFARRAY32N(dmaS, 4, "DMAS"),
@@ -311,7 +310,7 @@ int MDFNNGPCDMA_StateAction(void *data, int load, int data_only)
       SFEND
    };
 
-   if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "DMA"))
+   if(!MDFNSS_StateAction(data, load, data_only, StateRegs, "DMA"))
       return 0;
 
    return 1; 
