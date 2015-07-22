@@ -19,6 +19,8 @@
 #include "dma.h"
 #include "TLCS-900h/TLCS900h_registers.h"
 #include "../masmem.h"
+#include "../state.h"
+#include "../video/surface.h"
 
 static const unsigned char mirrored[] = {
     0x00, 0x40, 0x80, 0xc0, 0x10, 0x50, 0x90, 0xd0,
@@ -114,11 +116,11 @@ static void draw_colour_scroll1(ngpgfx_t *gfx,
 	/* Draw Foreground scroll plane (Scroll 1) */
 	for (i = 0; i < 32; i++)
 	{
-		uint16_t data16 = LoadU16_LE((uint16*)(gfx->ScrollVRAM + ((i + ((line >> 3) << 5)) << 1)));
+		uint16_t data16 = LoadU16_LE((uint16_t*)(gfx->ScrollVRAM + ((i + ((line >> 3) << 5)) << 1)));
 		
 		/* Draw the line of the tile */
 		drawColourPattern(gfx, cfb_scanline, zbuffer, (i << 3) - gfx->scroll1x, data16 & 0x01FF, 
-			(data16 & 0x4000) ? (7 - row) : row, data16 & 0x8000, (uint16*)(gfx->ColorPaletteRAM + 0x0080),
+			(data16 & 0x4000) ? (7 - row) : row, data16 & 0x8000, (uint16_t*)(gfx->ColorPaletteRAM + 0x0080),
 			(data16 & 0x1E00) >> 9, depth);
 	}
 }
@@ -133,11 +135,11 @@ static void draw_colour_scroll2(ngpgfx_t *gfx, uint16_t *cfb_scanline,
 	/* Draw Background scroll plane (Scroll 2) */
 	for (i = 0; i < 32; i++)
 	{
-		uint16_t data16 = LoadU16_LE((uint16*)(gfx->ScrollVRAM + 0x0800 + ((i + ((line >> 3) << 5)) << 1)));
+		uint16_t data16 = LoadU16_LE((uint16_t*)(gfx->ScrollVRAM + 0x0800 + ((i + ((line >> 3) << 5)) << 1)));
 		
 		/* Draw the line of the tile */
 		drawColourPattern(gfx, cfb_scanline, zbuffer, (i << 3) - gfx->scroll2x, data16 & 0x01FF, 
-			(data16 & 0x4000) ? (7 - row) : row, data16 & 0x8000, (uint16*)(gfx->ColorPaletteRAM + 0x0100),
+			(data16 & 0x4000) ? (7 - row) : row, data16 & 0x8000, (uint16_t*)(gfx->ColorPaletteRAM + 0x0100),
 			(data16 & 0x1E00) >> 9, depth);
 	}
 }
@@ -153,7 +155,7 @@ static void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline,
    uint8_t zbuffer[256] = {0};
 
 	/* Window colour */
-	uint16_t data16 = LoadU16_LE((uint16*)(gfx->ColorPaletteRAM + 0x01F0 + (gfx->oowc << 1)));
+	uint16_t data16 = LoadU16_LE((uint16_t*)(gfx->ColorPaletteRAM + 0x01F0 + (gfx->oowc << 1)));
 	if (gfx->negative)
       data16 = ~data16;
 
@@ -184,7 +186,7 @@ static void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline,
       if ((bgc & 0xC0) == 0x80)
 #endif
 		{
-			data16 = LoadU16_LE((uint16*)(uint8*)(gfx->ColorPaletteRAM + 0x01E0 + ((gfx->bgc & 7) << 1)));
+			data16 = LoadU16_LE((uint16_t*)(uint8*)(gfx->ColorPaletteRAM + 0x01E0 + ((gfx->bgc & 7) << 1)));
 		}
 #if 0
       else data16 = 0;
@@ -230,7 +232,7 @@ static void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline,
 			uint8_t sy       = gfx->SpriteVRAM[(spr * 4) + 3];	/* Y position */
 			int16_t x        = sx;
 			int16_t y        = sy;
-			uint16_t data16  = LoadU16_LE((uint16*)(gfx->SpriteVRAM + (spr * 4)));
+			uint16_t data16  = LoadU16_LE((uint16_t*)(gfx->SpriteVRAM + (spr * 4)));
 			uint8_t priority = (data16 & 0x1800) >> 11;
 
 			if (data16 & 0x0400)
@@ -266,7 +268,7 @@ static void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline,
 				uint8_t row = (ngpc_scanline - y) & 7;	/* Which row? */
 				drawColourPattern(gfx, cfb_scanline, zbuffer, (uint8)x, data16 & 0x01FF, 
 					(data16 & 0x4000) ? 7 - row : row, data16 & 0x8000,
-					(uint16*)gfx->ColorPaletteRAM, gfx->SpriteVRAMColor[spr] & 0xF, priority << 1); 
+					(uint16_t*)gfx->ColorPaletteRAM, gfx->SpriteVRAMColor[spr] & 0xF, priority << 1); 
 			}
 		}
 	}
@@ -605,10 +607,11 @@ void ngpgfx_set_pixel_format(ngpgfx_t *gfx)
    }
 }
 
-bool ngpgfx_draw(ngpgfx_t *gfx, MDFN_Surface *surface, bool skip)
+bool ngpgfx_draw(ngpgfx_t *gfx, void *data, bool skip)
 {
    unsigned x;
    bool ret = 0;
+   MDFN_Surface *surface = (MDFN_Surface*)data;
 
    /* Draw the scanline */
    if (gfx->raster_line < SCREEN_HEIGHT && !skip)
