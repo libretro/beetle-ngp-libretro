@@ -627,14 +627,13 @@ void iBIOSHLE(void)
 
 int BIOSHLE_StateAction(void *data, int load, int data_only)
 {
-   StateMem *sm = (StateMem*)data;
    SFORMAT StateRegs[] =
    {
       SFARRAY(CacheIntPrio, 0xB),
       SFEND
    };
 
-   if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "BHLE"))
+   if(!MDFNSS_StateAction(data, load, data_only, StateRegs, "BHLE"))
       return 0;
 
    return 1;
