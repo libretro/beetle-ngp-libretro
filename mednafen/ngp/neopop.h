@@ -79,11 +79,7 @@ typedef struct
 } __attribute__((__packed__)) RomHeader;
 #endif
 
-//=============================================================================
-
-//-----------------------------------------------------------------------------
-// Core <--> System-Main Interface
-//-----------------------------------------------------------------------------
+/* Core <--> System-Main Interface */
 
 void reset(void);
 
@@ -125,9 +121,7 @@ void system_message(char* vaMessage,...);
 void system_VBL(void);
 
 
-//-----------------------------------------------------------------------------
-// Core <--> System-Graphics Interface
-//-----------------------------------------------------------------------------
+/* Core <--> System-Graphics Interface */
 
 /* Physical screen dimensions */
 #define SCREEN_WIDTH    160
@@ -136,12 +130,10 @@ void system_VBL(void);
 extern COLOURMODE system_colour;
 
 	
-//-----------------------------------------------------------------------------
-// Core <--> System-Sound Interface
-//-----------------------------------------------------------------------------
+/* Core <--> System-Sound Interface */
 
-	// Speed of DAC playback
-#define DAC_FREQUENCY		8000 //hz
+/* Speed of DAC playback (in Hz) */
+#define DAC_FREQUENCY		8000
 
 extern bool mute;
 
