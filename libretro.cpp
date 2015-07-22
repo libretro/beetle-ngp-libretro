@@ -79,79 +79,79 @@ static int32 z80_runtime;
 
 static void Emulate(EmulateSpecStruct *espec)
 {
-	bool MeowMeow = 0;
+   bool MeowMeow = 0;
 
-	espec->DisplayRect.x = 0;
-	espec->DisplayRect.y = 0;
-	espec->DisplayRect.w = 160;
-	espec->DisplayRect.h = 152;
+   espec->DisplayRect.x = 0;
+   espec->DisplayRect.y = 0;
+   espec->DisplayRect.w = 160;
+   espec->DisplayRect.h = 152;
 
    if(espec->VideoFormatChanged)
       ngpgfx_set_pixel_format(NGPGfx);
 
-	if(espec->SoundFormatChanged)
-	 MDFNNGPC_SetSoundRate(espec->SoundRate);
+   if(espec->SoundFormatChanged)
+      MDFNNGPC_SetSoundRate(espec->SoundRate);
 
 
-	NGPJoyLatch = *chee;
-	storeB(0x6F82, *chee);
+   NGPJoyLatch = *chee;
+   storeB(0x6F82, *chee);
 
-	MDFNMP_ApplyPeriodicCheats();
+   MDFNMP_ApplyPeriodicCheats();
 
-	ngpc_soundTS = 0;
-	NGPFrameSkip = espec->skip;
+   ngpc_soundTS = 0;
+   NGPFrameSkip = espec->skip;
 
-	do
-	{
+   do
+   {
 #if 0
-         int32 timetime;
+      int32 timetime;
 
-	 if(main_timeaccum == 0)
-	 {
-	  main_timeaccum = TLCS900h_interpret();
-          if(main_timeaccum > 255)
-	  {
-	   main_timeaccum = 255;
-           printf("%d\n", main_timeaccum);
-	  }
-	 }
+      if(main_timeaccum == 0)
+      {
+         main_timeaccum = TLCS900h_interpret();
+         if(main_timeaccum > 255)
+         {
+            main_timeaccum = 255;
+            printf("%d\n", main_timeaccum);
+         }
+      }
 
-	 timetime = std::min<int32>(main_timeaccum, 24);
-	 main_timeaccum -= timetime;
+      timetime = std::min<int32>(main_timeaccum, 24);
+      main_timeaccum -= timetime;
 #else
-	 int32 timetime = (uint8)TLCS900h_interpret();	// This is sooo not right, but it's replicating the old behavior(which is necessary
-							// now since I've fixed the TLCS900h core and other places not to truncate cycle counts
-							// internally to 8-bits).  Switch to the #if 0'd block of code once we fix cycle counts in the
-							// TLCS900h core(they're all sorts of messed up), and investigate if certain long
-							// instructions are interruptable(by interrupts) and later resumable, RE Rockman Battle
-							// & Fighters voice sample playback.
+      int32 timetime = (uint8)TLCS900h_interpret();	// This is sooo not right, but it's replicating the old behavior(which is necessary
+      // now since I've fixed the TLCS900h core and other places not to truncate cycle counts
+      // internally to 8-bits).  Switch to the #if 0'd block of code once we fix cycle counts in the
+      // TLCS900h core(they're all sorts of messed up), and investigate if certain long
+      // instructions are interruptable(by interrupts) and later resumable, RE Rockman Battle
+      // & Fighters voice sample playback.
 #endif
-	 //if(timetime > 255)
-	 // printf("%d\n", timetime);
+      //if(timetime > 255)
+      // printf("%d\n", timetime);
 
-	 // Note: Don't call updateTimers with a time/tick/cycle/whatever count greater than 255.
-	 MeowMeow |= updateTimers(espec->surface, timetime);
+      // Note: Don't call updateTimers with a time/tick/cycle/whatever count greater than 255.
+      MeowMeow |= updateTimers(espec->surface, timetime);
 
-	 z80_runtime += timetime;
+      z80_runtime += timetime;
 
-         while(z80_runtime > 0)
-	 {
-	  int z80rantime = Z80_RunOP();
+      while(z80_runtime > 0)
+      {
+         int z80rantime = Z80_RunOP();
 
-	  if(z80rantime < 0) // Z80 inactive, so take up all run time!
-	  {
-	   z80_runtime = 0;
-	   break;
-	  }
+         if(z80rantime < 0) // Z80 inactive, so take up all run time!
+         {
+            z80_runtime = 0;
+            break;
+         }
 
-	  z80_runtime -= z80rantime << 1;
+         z80_runtime -= z80rantime << 1;
 
-	 }
-	} while(!MeowMeow);
+      }
+   } while(!MeowMeow);
 
 
-	espec->MasterCycles = ngpc_soundTS;
-	espec->SoundBufSize = MDFNNGPCSOUND_Flush(espec->SoundBuf, espec->SoundBufMaxSize);
+   espec->MasterCycles = ngpc_soundTS;
+   espec->SoundBufSize = MDFNNGPCSOUND_Flush(espec->SoundBuf, espec->SoundBufMaxSize);
 }
 
 static bool TestMagic(const char *name, MDFNFILE *fp)
@@ -293,8 +293,9 @@ static void DoSimpleCommand(int cmd)
    switch(cmd)
    {
       case MDFN_MSC_POWER:
-      case MDFN_MSC_RESET: reset();
-                           break;
+      case MDFN_MSC_RESET:
+         reset();
+         break;
    }
 }
 
