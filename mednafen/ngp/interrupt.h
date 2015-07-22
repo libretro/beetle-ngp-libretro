@@ -18,20 +18,23 @@
 #include <boolean.h>
 #include <stdint.h>
 
+#define TIMER_HINT_RATE		515		/* CPU Ticks between horizontal interrupts */
+
+#define TIMER_BASE_RATE		32 		/* ticks */
+
+#define TIMER_T1_RATE		(8    * TIMER_BASE_RATE)
+#define TIMER_T4_RATE		(32   * TIMER_BASE_RATE)
+#define TIMER_T16_RATE		(128  * TIMER_BASE_RATE)
+#define TIMER_T256_RATE		(2048 * TIMER_BASE_RATE)
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+/* Set this value to fix problems with glitching extra lines. */
+extern bool gfx_hack;
+
 void interrupt(uint8_t index);
-
-#define TIMER_HINT_RATE		515		//CPU Ticks between horizontal interrupts
-
-#define TIMER_BASE_RATE		32 //1		//ticks
-
-#define TIMER_T1_RATE		(8 * TIMER_BASE_RATE)
-#define TIMER_T4_RATE		(32 * TIMER_BASE_RATE)
-#define TIMER_T16_RATE		(128 * TIMER_BASE_RATE)
-#define TIMER_T256_RATE		(2048 * TIMER_BASE_RATE)
 
 void reset_timers(void);
 void reset_int(void);
@@ -45,9 +48,6 @@ extern uint32_t timer_hint;
 void timer_write8(uint32_t address, uint8_t data);
 uint8_t timer_read8(uint32_t address);
 
-/* Set this value to fix problems with glitching extra lines. */
-extern bool gfx_hack;
-
 void int_write8(uint32_t address, uint8_t data);
 uint8_t int_read8(uint32_t address);
 void int_check_pending(void);
@@ -60,7 +60,3 @@ int int_timer_StateAction(void *data, int load, int data_only);
 #endif
 
 #endif
-
-
-
-

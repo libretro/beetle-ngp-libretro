@@ -1,6 +1,8 @@
 #ifndef _STATE_H
 #define _STATE_H
 
+#include <stdint.h>
+
 #include "include/retro_inline.h"
 
 #include "state-common.h"

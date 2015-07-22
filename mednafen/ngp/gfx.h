@@ -17,10 +17,10 @@
 
 #include <stdint.h>
 
-#define ZDEPTH_BACK_SPRITE			2
-#define ZDEPTH_BACKGROUND_SCROLL	3
-#define ZDEPTH_MIDDLE_SPRITE		4
-#define ZDEPTH_FOREGROUND_SCROLL	5
+#define ZDEPTH_BACK_SPRITE          2
+#define ZDEPTH_BACKGROUND_SCROLL    3
+#define ZDEPTH_MIDDLE_SPRITE        4
+#define ZDEPTH_FOREGROUND_SCROLL    5
 #define ZDEPTH_FRONT_SPRITE			6
 
 extern uint16_t cfb_scanline[256];	// __attribute__ ((aligned (8)));
@@ -35,11 +35,11 @@ typedef struct ngpgfx
    uint8_t planeSwap;
    uint8_t bgc, oowc, negative;
 
-   uint8_t ScrollVRAM[4096];  // 9000-9fff
-   uint8_t CharacterRAM[8192]; // a000-bfff
-   uint8_t SpriteVRAM[256]; // 8800-88ff
-   uint8_t SpriteVRAMColor[0x40]; // 8C00-8C3F
-   uint8_t ColorPaletteRAM[0x200]; // 8200-83ff
+   uint8_t ScrollVRAM[4096];       /* 9000-9fff */
+   uint8_t CharacterRAM[8192];     /* a000-bfff */
+   uint8_t SpriteVRAM[256];        /* 8800-88ff */
+   uint8_t SpriteVRAMColor[0x40];  /* 8C00-8C3F */
+   uint8_t ColorPaletteRAM[0x200]; /* 8200-83ff */
 
    uint8_t SPPLT[6];
    uint8_t SCRP1PLT[6];
