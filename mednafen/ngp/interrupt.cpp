@@ -12,7 +12,6 @@
 //	additional informations.
 //---------------------------------------------------------------------------
 
-#include "neopop.h"
 #include "TLCS-900h/TLCS900h_registers.h"
 #include "mem.h"
 #include "gfx.h"
@@ -20,6 +19,7 @@
 #include "TLCS-900h/TLCS900h_interpret.h"
 #include "Z80_interface.h"
 #include "dma.h"
+#include "system.h"
 
 #ifdef __cplusplus
 extern "C" {
