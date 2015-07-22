@@ -253,16 +253,9 @@ void TestIntHDMA(int bios_num, int vec_num)
       set_interrupt(bios_num, TRUE);
 }
 
-#ifdef _MSC_VER
-extern "C++" {
-#endif
 
 extern int32_t ngpc_soundTS;
 extern bool NGPFrameSkip;
-
-#ifdef _MSC_VER
-}
-#endif
 
 bool updateTimers(void *data, int cputicks)
 {
@@ -581,7 +574,6 @@ uint8_t timer_read8(uint32_t address)
 
 int int_timer_StateAction(void *data, int load, int data_only)
 {
-   StateMem *sm = (StateMem*)data;
    SFORMAT StateRegs[] =
    {
       SFVAR(timer_hint),
@@ -600,7 +592,7 @@ int int_timer_StateAction(void *data, int load, int data_only)
       SFVAR(timer2),
       SFEND
    };
-   if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "INTT"))
+   if(!MDFNSS_StateAction(data, load, data_only, StateRegs, "INTT"))
       return 0;
 
    return 1;
