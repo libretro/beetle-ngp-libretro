@@ -16,18 +16,15 @@
 #define __FLASH__
 
 #include <stdint.h>
-#include "../mednafen-types.h"
 
 void flash_read(void);
 
-//Marks flash blocks for saving.
-void flash_write(uint32 start_address, uint16_t length);
+/* Marks flash blocks for saving. */
+void flash_write(uint32_t start_address, uint16_t length);
 
-//Stores the flash data
+/* Stores the flash data */
 void flash_commit(void);
-
 
 int FLASH_StateAction(void *data, int load, int data_only);
 
-//=============================================================================
 #endif

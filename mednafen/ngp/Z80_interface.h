@@ -14,12 +14,13 @@
 
 #ifndef __Z80_CONTROL__
 #define __Z80_CONTROL__
-//=============================================================================
+
+#include <stdint.h>
 
 #include "../hw_cpu/z80-fuse/z80.h"
 
-uint8 Z80_ReadComm(void);
-void Z80_WriteComm(uint8 data);
+uint8_t Z80_ReadComm(void);
+void Z80_WriteComm(uint8_t data);
 
 void Z80_reset(void);	// z80 reset
 

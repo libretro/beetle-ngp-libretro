@@ -25,19 +25,19 @@
 extern "C" {
 #endif
 
-uint32 timer_hint;
-static uint32 timer_clock[4];
-static uint8 timer[4];	//Up-counters
-static uint8 timer_threshold[4];
+uint32_t timer_hint;
+static uint32_t timer_clock[4];
+static uint8_t timer[4];	//Up-counters
+static uint8_t timer_threshold[4];
 
-static uint8 TRUN;
-static uint8 T01MOD, T23MOD;
-static uint8 TRDC;
-static uint8 TFFCR;
-static uint8 HDMAStartVector[4];
+static uint8_t TRUN;
+static uint8_t T01MOD, T23MOD;
+static uint8_t TRDC;
+static uint8_t TFFCR;
+static uint8_t HDMAStartVector[4];
 
-static int32 ipending[24];
-static int32 IntPrio[0xB]; // 0070-007a
+static int32_t ipending[24];
+static int32_t IntPrio[0xB]; // 0070-007a
 static bool h_int, timer0, timer2;
 
 // The way interrupt processing is set up is still written towards BIOS HLE emulation, which assumes
@@ -51,7 +51,7 @@ static bool h_int, timer0, timer2;
 // FIXME in the future if we ever add real bios support?
 
 
-void interrupt(uint8 index)
+void interrupt(uint8_t index)
 {
    //printf("INT: %d\n", index);
    push32(pc);
@@ -65,7 +65,7 @@ void interrupt(uint8 index)
    pc = loadL(0x6FB8 + index * 4);
 }
 
-void set_interrupt(uint8 index, bool set)
+void set_interrupt(uint8_t index, bool set)
 {
 #ifndef NDEBUG
    assert(index < 24);
@@ -77,8 +77,8 @@ void set_interrupt(uint8 index, bool set)
 
 void int_check_pending(void)
 {
-   uint8 prio;
-   uint8 curIFF = statusIFF();
+   uint8_t prio;
+   uint8_t curIFF = statusIFF();
 
    // Technically, the BIOS should clear the interrupt pending flag by writing with IxxC set to "0", but
    // we'll actually need to implement a BIOS to do that!
@@ -149,7 +149,7 @@ void int_check_pending(void)
 
 }
 
-void int_write8(uint32 address, uint8 data)
+void int_write8(uint32_t address, uint8_t data)
 {
    switch(address)
    {
@@ -198,7 +198,7 @@ void int_write8(uint32 address, uint8 data)
    }
 }
 
-uint8 int_read8(uint32 address)
+uint8_t int_read8(uint32_t address)
 {
    switch(address)
    {
@@ -258,7 +258,7 @@ void TestIntHDMA(int bios_num, int vec_num)
 extern "C++" {
 #endif
 
-extern int32 ngpc_soundTS;
+extern int32_t ngpc_soundTS;
 extern bool NGPFrameSkip;
 
 #ifdef _MSC_VER
@@ -278,7 +278,7 @@ bool updateTimers(void *data, int cputicks)
    /*End of scanline / Start of Next one */
    if (timer_hint >= TIMER_HINT_RATE)
    {
-      uint8 data;
+      uint8_t data;
 
       h_int = ngpgfx_hint(NGPGfx);	
       ret   = ngpgfx_draw(NGPGfx, surface, NGPFrameSkip);
@@ -519,7 +519,7 @@ void reset_int(void)
    h_int = FALSE;
 }
 
-void timer_write8(uint32 address, uint8 data)
+void timer_write8(uint32_t address, uint8_t data)
 {
    switch(address)
    {
@@ -561,7 +561,7 @@ void timer_write8(uint32 address, uint8 data)
    }
 }
 
-uint8 timer_read8(uint32 address)
+uint8_t timer_read8(uint32_t address)
 {
    switch(address)
    {
@@ -579,10 +579,6 @@ uint8 timer_read8(uint32 address)
    //printf("UNK B R: %08x\n", address);
    return 0x4;
 }
-
-#ifdef __cplusplus
-}
-#endif
 
 int int_timer_StateAction(void *data, int load, int data_only)
 {
@@ -610,3 +606,7 @@ int int_timer_StateAction(void *data, int load, int data_only)
 
    return 1;
 }
+
+#ifdef __cplusplus
+}
+#endif

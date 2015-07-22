@@ -22,8 +22,7 @@
 extern "C" {
 #endif
 
-void interrupt(uint8 index);
-
+void interrupt(uint8_t index);
 
 #define TIMER_HINT_RATE		515		//CPU Ticks between horizontal interrupts
 
@@ -41,25 +40,24 @@ void reset_int(void);
 bool updateTimers(void *data, int cputicks);
 
 /* H-INT Timer */
-extern uint32 timer_hint;
+extern uint32_t timer_hint;
 
-void timer_write8(uint32 address, uint8 data);
-uint8 timer_read8(uint32 address);
+void timer_write8(uint32_t address, uint8_t data);
+uint8_t timer_read8(uint32_t address);
 
 /* Set this value to fix problems with glitching extra lines. */
 extern bool gfx_hack;
 
-
-void int_write8(uint32 address, uint8 data);
-uint8 int_read8(uint32 address);
+void int_write8(uint32_t address, uint8_t data);
+uint8_t int_read8(uint32_t address);
 void int_check_pending(void);
 void TestIntHDMA(int bios_num, int vec_num);
+
+int int_timer_StateAction(void *data, int load, int data_only);
 
 #ifdef __cplusplus
 }
 #endif
-
-int int_timer_StateAction(void *data, int load, int data_only);
 
 #endif
 
