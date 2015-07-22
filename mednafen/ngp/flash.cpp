@@ -12,10 +12,15 @@
 //	additional informations.
 //---------------------------------------------------------------------------
 
-#include "neopop.h"
-#include "../mednafen.h"
+#include <stdlib.h>
+#include <string.h>
+
 #include "flash.h"
 #include "mem.h"
+#include "rom.h"
+#include "system.h"
+
+#include "../state.h"
 
 //-----------------------------------------------------------------------------
 // Local Definitions
@@ -122,7 +127,7 @@ void do_flash_read(uint8_t *flashdata)
    fileptr = flashdata + sizeof(FlashFileHeader);
 
    //Copy blocks
-   memory_unlock_flash_write = TRUE;
+   memory_unlock_flash_write = 1;
    for (i = 0; i < block_count; i++)
    {
       FlashFileBlockHeader* current = (FlashFileBlockHeader*)fileptr;
@@ -158,13 +163,13 @@ void flash_read(void)
    block_count = 0;
 
    //Read flash buffer header
-   if (system_io_flash_read((uint8_t*)&header, sizeof(FlashFileHeader)) == FALSE)
+   if (system_io_flash_read((uint8_t*)&header, sizeof(FlashFileHeader)) == 0)
       return; //Silent failure - no flash data yet.
 
    //Verify correct flash id
    if (header.valid_flash_id != FLASH_VALID_ID)
    {
-      MDFN_PrintError("IDS_BADFLASH");
+      //MDFN_PrintError("IDS_BADFLASH");
       return;
    }
 
@@ -182,7 +187,7 @@ void flash_write(uint32_t start_address, uint16_t length)
    uint16_t i;
 
    //Now we need a new flash command before the next flash write will work!
-   memory_flash_command = FALSE;
+   memory_flash_command = 0;
 
    //	system_debug_message("flash write: %06X, %d bytes", start_address, length);
 

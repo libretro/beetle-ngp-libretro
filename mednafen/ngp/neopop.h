@@ -30,6 +30,7 @@
 #include "TLCS-900h/TLCS900h_registers.h"
 
 #include "system.h"
+#include "rom.h"
 
 #ifndef MAX
 #define MAX(a,b) ((a)>(b)?(a):(b))
@@ -46,54 +47,11 @@ typedef enum
 	COLOURMODE_AUTO
 } COLOURMODE;
 
-typedef struct 
-{
-	uint8_t* data;		/* Pointer to the ROM data */
-	uint8_t *orig_data;	/* Original data (without flash writes 
-                        during emulation; necessary for save states) */
-
-	uint32_t length;    /* Length of the rom */
-
-	uint8_t name[16];	/* NULL-terminated string, holding the Game name */
-} RomInfo;
-
-//RomHeader
-typedef struct
-{
-#ifdef _WIN32
-#pragma pack(push, 1)
-#endif
-	uint8_t		licence[28];		// 0x00 - 0x1B
-	uint32_t	startPC;			// 0x1C - 0x1F
-	uint16_t	catalog;			// 0x20 - 0x21
-	uint8_t		subCatalog;			// 0x22
-	uint8_t		mode;				// 0x23
-	uint8_t		name[12];			// 0x24 - 0x2F
-
-	uint32_t	reserved1;			// 0x30 - 0x33
-	uint32_t	reserved2;			// 0x34 - 0x37
-	uint32_t	reserved3;			// 0x38 - 0x3B
-	uint32_t	reserved4;			// 0x3C - 0x3F
-#ifdef _WIN32
-#pragma pack(pop)
-} RomHeader;
-#else
-} __attribute__((__packed__)) RomHeader;
-#endif
 
 /* Core <--> System-Main Interface */
 
 void reset(void);
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-   extern RomInfo ngpc_rom;
-
-   extern RomHeader* rom_header;
-#ifdef __cplusplus
-}
-#endif
 
 /*!	Emulate a single instruction with correct TLCS900h:Z80 timing */
 void emulate(void);
