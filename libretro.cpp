@@ -559,7 +559,7 @@ static void hookup_ports(bool force)
    if (initial_ports_hookup && !force)
       return;
 
-   currgame->SetInput(0, "gamepad", &input_buf);
+   SetInput(0, "gamepad", &input_buf);
 
    initial_ports_hookup = true;
 }
@@ -604,15 +604,13 @@ bool retro_load_game(const struct retro_game_info *info)
    return game;
 }
 
-void retro_unload_game()
+void retro_unload_game(void)
 {
    if (!game)
       return;
 
    MDFNI_CloseGame();
 }
-
-
 
 static void update_input(void)
 {
@@ -657,7 +655,6 @@ void retro_run()
    static MDFN_Rect rects[FB_MAX_HEIGHT];
    const uint16_t *pix;
    bool updated = false;
-   MDFNGI *curgame = game;
    EmulateSpecStruct spec = {0};
 
    input_poll_cb();
@@ -690,9 +687,9 @@ void retro_run()
       last_sound_rate = spec.SoundRate;
    }
 
-   curgame->Emulate(&spec);
+   Emulate(&spec);
 
-   SoundBuf = spec.SoundBuf + spec.SoundBufSizeALMS * curgame->soundchan;
+   SoundBuf = spec.SoundBuf + spec.SoundBufSizeALMS * 2;
    SoundBufSize = spec.SoundBufSize - spec.SoundBufSizeALMS;
    SoundBufMaxSize = spec.SoundBufMaxSize - spec.SoundBufSizeALMS;
 
@@ -806,24 +803,13 @@ static size_t serialize_size;
 
 size_t retro_serialize_size(void)
 {
-   MDFNGI *curgame = (MDFNGI*)game;
-   //if (serialize_size)
-   //   return serialize_size;
-
-   if (!curgame->StateAction)
-   {
-      if (log_cb)
-         log_cb(RETRO_LOG_WARN, "[mednafen]: Module %s doesn't support save states.\n", curgame->shortname);
-      return 0;
-   }
-
    StateMem st;
    memset(&st, 0, sizeof(st));
 
    if (!MDFNSS_SaveSM(&st, 0, 0, NULL, NULL, NULL))
    {
       if (log_cb)
-         log_cb(RETRO_LOG_WARN, "[mednafen]: Module %s doesn't support save states.\n", curgame->shortname);
+         log_cb(RETRO_LOG_WARN, "[mednafen]: Module %s doesn't support save states.\n", "ngp");
       return 0;
    }
 
