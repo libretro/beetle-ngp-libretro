@@ -47,21 +47,12 @@ typedef enum
 	COLOURMODE_AUTO
 } COLOURMODE;
 
-
 /* Core <--> System-Main Interface */
 
 void reset(void);
 
-
 /*!	Emulate a single instruction with correct TLCS900h:Z80 timing */
 void emulate(void);
-
-/*! Call this function when a rom has just been loaded, it will perform
-	the system independent actions required. */
-void rom_loaded(void);
-
-/*!	Tidy up the rom and free the resources used. */
-void rom_unload(void);
 
 /*! Used to generate a critical message for the user. After the message
 	has been displayed, the function should return. The message is not
