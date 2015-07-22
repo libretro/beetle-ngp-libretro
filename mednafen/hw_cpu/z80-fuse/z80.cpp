@@ -214,7 +214,7 @@ z80_to_snapshot( libspectrum_snap *snap )
 
 
 
-int z80_state_action(StateMem *sm, int load, int data_only, const char *section_name)
+int z80_state_action(void *data, int load, int data_only, const char *section_name)
 {
  uint8 r_register;
 
@@ -250,7 +250,7 @@ int z80_state_action(StateMem *sm, int load, int data_only, const char *section_
  if(!load)
   r_register = (z80.r7 & 0x80) | (z80.r & 0x7f);
 
- if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, section_name))
+ if(!MDFNSS_StateAction(data, load, data_only, StateRegs, section_name))
  {
   return(0);
  }
