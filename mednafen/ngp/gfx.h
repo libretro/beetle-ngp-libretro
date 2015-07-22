@@ -69,11 +69,6 @@ void ngpgfx_SetLayerEnableMask(ngpgfx_t *gfx, uint64_t mask);
 
 int ngpgfx_StateAction(ngpgfx_t *gfx, void *data, int load, int data_only);
 
-void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline, int layer_enable, int ngpc_scanline);
-
-void draw_scanline_mono(ngpgfx_t *gfx,
-      uint16_t *cfb_scanline, int layer_enable, int ngpc_scanline);
-
 void ngpgfx_power(ngpgfx_t *gfx);
 
 bool ngpgfx_hint(ngpgfx_t *gfx);

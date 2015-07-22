@@ -142,7 +142,8 @@ static void draw_colour_scroll2(ngpgfx_t *gfx, uint16_t *cfb_scanline,
 	}
 }
 
-void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline, int layer_enable, int ngpc_scanline)
+static void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline,
+      int layer_enable, int ngpc_scanline)
 {
 	int16 lastSpriteX;
 	int16 lastSpriteY;
@@ -271,7 +272,6 @@ void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline, int layer_enabl
 	}
 }
 
-
 static void MonoPlot(ngpgfx_t *gfx, uint16_t *cfb_scanline, uint8_t *zbuffer,
       uint8 x, uint8* palette_ptr, uint16 pal_hi, uint8 index, uint8 depth)
 {
@@ -374,7 +374,7 @@ static void draw_mono_scroll2(ngpgfx_t *gfx, uint16_t *cfb_scanline, uint8_t *zb
 	}
 }
 
-void draw_scanline_mono(ngpgfx_t *gfx,
+static void draw_scanline_mono(ngpgfx_t *gfx,
       uint16_t *cfb_scanline, int layer_enable, int ngpc_scanline)
 {
    int x;
