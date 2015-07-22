@@ -310,49 +310,34 @@ void storeB(uint32 address, uint8_t data)
       return;
    }
 
-   if(address == 0x50)
+   switch (address)
    {
-      SC0BUF = data;
-      return;
-   }
-
-   if(address == 0x6f) // Watchdog timer
-      return;
-
-   if(address == 0xb2) // Comm?
-   {
-      COMMStatus = data & 1;
-      return;
-   }
-
-   if(address == 0xb9) 
-   {
-      if(data == 0x55)
-         Z80_SetEnable(1);
-      else if(data == 0xAA)
-         Z80_SetEnable(0);
-      return;
-   }
-
-   if(address == 0xb8)
-   {
-      if(data == 0x55)
-         MDFNNGPCSOUND_SetEnable(1);
-      else if(data == 0xAA)
-         MDFNNGPCSOUND_SetEnable(0);
-      return;
-   }
-
-   if (address == 0xBA)
-   {
-      Z80_nmi();
-      return;
-   }
-
-   if(address == 0xBC)
-   {
-      Z80_WriteComm(data);
-      return;
+      case 0x50:
+         SC0BUF = data;
+         return;
+      case 0x6f: /* Watchdog timer */
+         return;
+      case 0xb2: /* Comm */
+         COMMStatus = data & 1;
+         return;
+      case 0xb9:
+         if(data == 0x55)
+            Z80_SetEnable(1);
+         else if(data == 0xAA)
+            Z80_SetEnable(0);
+         return;
+      case 0xb8:
+         if(data == 0x55)
+            MDFNNGPCSOUND_SetEnable(1);
+         else if(data == 0xAA)
+            MDFNNGPCSOUND_SetEnable(0);
+         return;
+      case 0xBA:
+         Z80_nmi();
+         return;
+      case 0xBC:
+         Z80_WriteComm(data);
+         return;
    }
 
    if(address >= 0xa0 && address <= 0xA3)
@@ -374,12 +359,13 @@ void storeB(uint32 address, uint8_t data)
 
    uint8_t* ptr = (uint8_t*)translate_address_write(address);
 
-   //Write
+   /* Write */
    if (ptr)
       *ptr = data;
-   //else
-   //        printf("ACK: %08x %02x\n", address, data);
-
+#if 0
+   else
+      printf("ACK: %08x %02x\n", address, data);
+#endif
 }
 
 void storeW(uint32 address, uint16_t data)

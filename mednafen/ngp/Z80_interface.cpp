@@ -38,8 +38,14 @@ static uint8_t NGP_z80_readbyte(uint16_t address)
    if (address <= 0xFFF)
       return loadB(0x7000 + address);
 
-   if (address == 0x8000)
-      return CommByte;
+   switch (address)
+   {
+      case 0x8000:
+         return CommByte;
+      default:
+         break;
+   }
+
    return 0;
 }
 
