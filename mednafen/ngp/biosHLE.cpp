@@ -13,14 +13,13 @@
 //---------------------------------------------------------------------------
 
 #include "neopop.h"
-#include "../mednafen.h"
 #include "bios.h"
 #include "TLCS-900h/TLCS900h_registers.h"
 #include "TLCS-900h/TLCS900h_interpret.h"
 #include "mem.h"
 #include "flash.h"
-#include "dma.h"
 #include "interrupt.h"
+#include "../state.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -81,7 +80,7 @@ void iBIOSHLE(void)
             //Cheap bit of code to stop the message appearing repeatedly.
             uint32 a = pop32();
             if (a != 0xBAADC0DE)
-               MDFN_printf("IDS_POWER");
+               printf("IDS_POWER");
             push32(0xBAADC0DE); //Sure is!
          }
 
@@ -97,7 +96,7 @@ void iBIOSHLE(void)
             push32(a);
          }
 #endif
-         //MDFN_printf("%d\n", rCodeB(0x35));
+         //printf("%d\n", rCodeB(0x35));
          //TODO
          //	if (rCodeB(0x35) > 0)
          //		system_message("Unsupported clock gear %d set\nPlease inform the author", rCodeB(0x35));
