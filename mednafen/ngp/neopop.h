@@ -46,13 +46,13 @@ typedef enum
 
 typedef struct 
 {
-	uint8* data;		/* Pointer to the ROM data */
-	uint8 *orig_data;	/* Original data (without flash writes 
+	uint8_t* data;		/* Pointer to the ROM data */
+	uint8_t *orig_data;	/* Original data (without flash writes 
                         during emulation; necessary for save states) */
 
-	uint32 length;    /* Length of the rom */
+	uint32_t length;    /* Length of the rom */
 
-	uint8 name[16];	/* NULL-terminated string, holding the Game name */
+	uint8_t name[16];	/* NULL-terminated string, holding the Game name */
 } RomInfo;
 
 //RomHeader
@@ -61,17 +61,17 @@ typedef struct
 #ifdef _WIN32
 #pragma pack(push, 1)
 #endif
-	uint8		licence[28];		// 0x00 - 0x1B
-	uint32	startPC;			// 0x1C - 0x1F
-	uint16	catalog;			// 0x20 - 0x21
-	uint8		subCatalog;			// 0x22
-	uint8		mode;				// 0x23
-	uint8		name[12];			// 0x24 - 0x2F
+	uint8_t		licence[28];		// 0x00 - 0x1B
+	uint32_t	startPC;			// 0x1C - 0x1F
+	uint16_t	catalog;			// 0x20 - 0x21
+	uint8_t		subCatalog;			// 0x22
+	uint8_t		mode;				// 0x23
+	uint8_t		name[12];			// 0x24 - 0x2F
 
-	uint32	reserved1;			// 0x30 - 0x33
-	uint32	reserved2;			// 0x34 - 0x37
-	uint32	reserved3;			// 0x38 - 0x3B
-	uint32	reserved4;			// 0x3C - 0x3F
+	uint32_t	reserved1;			// 0x30 - 0x33
+	uint32_t	reserved2;			// 0x34 - 0x37
+	uint32_t	reserved3;			// 0x38 - 0x3B
+	uint32_t	reserved4;			// 0x3C - 0x3F
 #ifdef _WIN32
 #pragma pack(pop)
 } RomHeader;
@@ -146,8 +146,8 @@ extern COLOURMODE system_colour;
 extern bool mute;
 
 /*!	Fills the given buffer with sound data */
-void sound_update(uint16* chip_buffer, int length_bytes);
-void dac_update(uint8* dac_buffer, int length_bytes);
+void sound_update(uint16_t *chip_buffer, int length_bytes);
+void dac_update(uint8_t* dac_buffer, int length_bytes);
 
 /* Initializes the sound chips using the given SampleRate */
 void sound_init(int SampleRate);
@@ -159,35 +159,35 @@ void sound_init(int SampleRate);
 /*! Reads a byte from the other system. If no data is available or no
 	high-level communications have been established, then return FALSE.
 	If buffer is NULL, then no data is read, only status is returned */
-bool system_comms_read(uint8* buffer);
+bool system_comms_read(uint8_t* buffer);
 
 
 /*! Peeks at any data from the other system. If no data is available or
 	no high-level communications have been established, then return FALSE.
 	If buffer is NULL, then no data is read, only status is returned */
-bool system_comms_poll(uint8* buffer);
+bool system_comms_poll(uint8_t* buffer);
 
 
 /*! Writes a byte from the other system. This function should block until
 	the data is written. USE RELIABLE COMMS! Data cannot be re-requested. */
-void system_comms_write(uint8 data);
+void system_comms_write(uint8_t data);
 
 
 /*! Reads as much of the file specified by 'filename' into the given, 
 	preallocated buffer. This is rom data */
-bool system_io_rom_read(char* filename, uint8* buffer, uint32 bufferLength);
+bool system_io_rom_read(char* filename, uint8_t* buffer, uint32_t bufferLength);
 
 
 /*! Reads the "appropriate" (system specific) flash data into the given
 	preallocated buffer. The emulation core doesn't care where from. */
-bool system_io_flash_read(uint8* buffer, uint32 bufferLength);
+bool system_io_flash_read(uint8_t* buffer, uint32_t bufferLength);
 
 
 /*! Writes the given flash data into an "appropriate" (system specific)
 	place. The emulation core doesn't care where to. */
-bool system_io_flash_write(uint8* buffer, uint32 bufferLength);
+bool system_io_flash_write(uint8_t* buffer, uint32_t bufferLength);
 
 void int_redo_icache(void);
 
-extern uint8 NGPJoyLatch;
+extern uint8_t NGPJoyLatch;
 #endif
