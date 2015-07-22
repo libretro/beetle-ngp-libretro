@@ -225,15 +225,17 @@ uint8_t loadB(uint32 address)
    if(address >= 0x20 && address <= 0x29)
       return(timer_read8(address));
 
-   if(address == 0x50)
-      return(SC0BUF);
-
-   if(address == 0xBC)
-      return Z80_ReadComm();
+   switch (address)
+   {
+      case 0x50:
+         return(SC0BUF);
+      case 0xBC:
+         return Z80_ReadComm();
+   }
 
    //printf("UNK B R: %08x\n", address);
 
-   return(0);
+   return 0;
 }
 
 uint16_t loadW(uint32 address)
@@ -381,9 +383,7 @@ void storeW(uint32 address, uint16_t data)
    }
 
    if(address < 0x80)
-   {
       lastpoof = data >> 8;
-   }
 
    if(address >= 0x8000 && address <= 0xbfff)
    {
@@ -408,45 +408,33 @@ void storeW(uint32 address, uint16_t data)
       timer_write8(address + 1, data >> 8);
    }
 
-   if(address == 0x50)
-   { 
-      SC0BUF = data & 0xFF;
-      return;
-   }
-
-   if(address == 0x6e) // Watchdog timer(technically 0x6f)
-      return;
-
-   if(address == 0xb2) // Comm?
+   switch (address)
    {
-      COMMStatus = data & 1;
-      return;
-   }
+      case 0x50:
+         SC0BUF = data & 0xFF;
+         return;
+      case 0x6e: /* Watchdog timer(technically 0x6f) */
+         return;
+      case 0xB2: /* Comm */
+         COMMStatus = data & 1;
+         return;
+      case 0xb8:
+         if((data & 0xFF00) == 0x5500)
+            Z80_SetEnable(1);
+         else if((data & 0xFF00) == 0xAA00)
+            Z80_SetEnable(0);
 
-   if(address == 0xb8)
-   {
-      if((data & 0xFF00) == 0x5500)
-         Z80_SetEnable(1);
-      else if((data & 0xFF00) == 0xAA00)
-         Z80_SetEnable(0);
-
-      if((data & 0xFF) == 0x55)
-         MDFNNGPCSOUND_SetEnable(1);
-      else if((data & 0xFF) == 0xAA)
-         MDFNNGPCSOUND_SetEnable(0);
-      return;
-   }
-
-   if (address == 0xBA)
-   {
-      Z80_nmi();
-      return;
-   }
-
-   if(address == 0xBC)
-   {
-      Z80_WriteComm(data);
-      return;
+         if((data & 0xFF) == 0x55)
+            MDFNNGPCSOUND_SetEnable(1);
+         else if((data & 0xFF) == 0xAA)
+            MDFNNGPCSOUND_SetEnable(0);
+         return;
+      case 0xBA:
+         Z80_nmi();
+         return;
+      case 0xBC:
+         Z80_WriteComm(data);
+         return;
    }
 
    if(address >= 0xa0 && address <= 0xA3)
