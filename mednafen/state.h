@@ -1,6 +1,8 @@
 #ifndef _STATE_H
 #define _STATE_H
 
+#include "include/retro_inline.h"
+
 #include "state-common.h"
 
 typedef struct

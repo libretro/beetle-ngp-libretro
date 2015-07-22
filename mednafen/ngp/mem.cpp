@@ -199,13 +199,13 @@ uint8_t lastpoof = 0;
 
 uint8_t loadB(uint32 address)
 {
+   uint8_t *ptr;
    address &= 0xFFFFFF;
 
    if(FastReadMap[address >> 16])
       return(FastReadMap[address >> 16][address]);
 
-
-   uint8_t* ptr = (uint8_t*)translate_address_read(address);
+   ptr = (uint8_t*)translate_address_read(address);
 
    if (ptr)
       return *ptr;

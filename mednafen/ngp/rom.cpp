@@ -121,10 +121,10 @@ void rom_loaded(void)
    ngpc_rom.orig_data = (uint8 *)malloc(ngpc_rom.length);
    memcpy(ngpc_rom.orig_data, ngpc_rom.data, ngpc_rom.length);
 
-   //Extract the header
+   /* Extract the header */
    rom_header = (RomHeader*)(ngpc_rom.data);
 
-   //Rom Name
+   /* ROM Name */
    for(i = 0; i < 12; i++)
    {
       if (rom_header->name[i] >= 32 && rom_header->name[i] < 128)
@@ -134,7 +134,8 @@ void rom_loaded(void)
    }
    ngpc_rom.name[i] = 0;
 
-   rom_hack();	//Apply a hack if required!
+   /* Apply a hack if required! */
+   rom_hack();	
 
    rom_display_header();
 

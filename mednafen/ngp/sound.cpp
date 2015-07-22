@@ -4,18 +4,18 @@
 #include "../include/blip/Blip_Buffer.h"
 #include "../include/blip/Stereo_Buffer.h"
 #include "T6W28_Apu.h"
-#include "../mednafen.h"
+#include "../state.h"
 
 static T6W28_Apu apu;
 
 static Stereo_Buffer buf;
 
-static uint8 LastDACLeft = 0, LastDACRight = 0;
-static uint8 CurrentDACLeft = 0, CurrentDACRight = 0;
+static uint8_t LastDACLeft = 0, LastDACRight = 0;
+static uint8_t CurrentDACLeft = 0, CurrentDACRight = 0;
 
 typedef Blip_Synth<blip_good_quality, 0xFF> Synth;
 static Synth synth;
-extern int32 ngpc_soundTS;
+extern int32_t ngpc_soundTS;
 static bool schipenable = 0;
 
 void MDFNNGPCSOUND_SetEnable(bool set)
@@ -25,19 +25,19 @@ void MDFNNGPCSOUND_SetEnable(bool set)
       apu.reset();
 }
 
-void Write_SoundChipLeft(uint8 data)
+void Write_SoundChipLeft(uint8_t data)
 {
    if(schipenable)
       apu.write_data_left(ngpc_soundTS >> 1, data);
 }
 
-void Write_SoundChipRight(uint8 data)
+void Write_SoundChipRight(uint8_t data)
 {
    if(schipenable)
       apu.write_data_right(ngpc_soundTS >> 1, data);
 }
 
-void dac_write_left(uint8 data)
+void dac_write_left(uint8_t data)
 {
    CurrentDACLeft = data;
 
@@ -46,7 +46,7 @@ void dac_write_left(uint8 data)
    LastDACLeft = data;
 }
 
-void dac_write_right(uint8 data)
+void dac_write_right(uint8_t data)
 {
    CurrentDACRight = data;
 
@@ -55,9 +55,9 @@ void dac_write_right(uint8 data)
    LastDACRight = data;
 }
 
-int32 MDFNNGPCSOUND_Flush(int16 *SoundBuf, const int32 MaxSoundFrames)
+int32_t MDFNNGPCSOUND_Flush(int16_t *SoundBuf, const int32_t MaxSoundFrames)
 {
-   int32 FrameCount = 0;
+   int32_t FrameCount = 0;
 
    apu.end_frame(ngpc_soundTS >> 1);
 
@@ -87,7 +87,7 @@ void MDFNNGPCSOUND_Init(void)
    buf.bass_freq(20);
 }
 
-bool MDFNNGPC_SetSoundRate(uint32 rate)
+bool MDFNNGPC_SetSoundRate(uint32_t rate)
 {
    buf.set_sample_rate(rate?rate:44100, 60);
    return(TRUE);
