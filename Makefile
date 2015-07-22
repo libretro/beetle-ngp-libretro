@@ -51,6 +51,7 @@ CORE_SOURCES := $(CORE_DIR)/biosHLE.cpp \
 	$(CORE_DIR)/dma.cpp \
 	$(CORE_DIR)/flash.cpp \
 	$(CORE_DIR)/gfx.cpp \
+	$(CORE_DIR)/system.cpp \
 	$(CORE_DIR)/interrupt.cpp \
 	$(CORE_DIR)/mem.cpp \
 	$(CORE_DIR)/rom.cpp \

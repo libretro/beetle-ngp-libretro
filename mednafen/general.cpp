@@ -180,7 +180,7 @@ const char * GetFNComponent(const char *str)
 // Remove whitespace from beginning of string
 void MDFN_ltrim(char *string)
 {
- int32 di, si;
+ int32_t di, si;
  bool InWhitespace = TRUE;
 
  di = si = 0;
@@ -205,11 +205,11 @@ void MDFN_ltrim(char *string)
 // Remove whitespace from end of string
 void MDFN_rtrim(char *string)
 {
-   int32 len = strlen(string);
+   int32_t len = strlen(string);
 
    if(len)
    {
-      for(int32 x = len - 1; x >= 0; x--)
+      for(int32_t x = len - 1; x >= 0; x--)
       {
          if(string[x] == ' ' || string[x] == '\r' || string[x] == '\n' || string[x] == '\t' || string[x] == 0x0b)
             string[x] = 0;

@@ -61,6 +61,7 @@ std::string retro_save_directory;
 #include "mednafen/ngp/dma.h"
 #include "mednafen/ngp/bios.h"
 #include "mednafen/ngp/flash.h"
+#include "mednafen/ngp/system.h"
 
 extern uint8 CPUExRAM[16384];
 
@@ -69,20 +70,6 @@ ngpgfx_t *NGPGfx;
 COLOURMODE system_colour = COLOURMODE_AUTO;
 
 uint8 NGPJoyLatch;
-
-bool system_comms_read(uint8* buffer)
-{
-   return 0;
-}
-
-bool system_comms_poll(uint8* buffer)
-{
-   return 0;
-}
-
-void system_comms_write(uint8 data)
-{
-}
 
 static uint8 *chee;
 
@@ -328,40 +315,6 @@ static MDFNSetting NGPSettings[] =
  { "ngp.language", MDFNSF_EMU_STATE | MDFNSF_UNTRUSTED_SAFE, gettext_noop("Language games should display text in."), NULL, MDFNST_ENUM, "english", NULL, NULL, NULL, NULL, LanguageList },
  { NULL }
 };
-
-
-bool system_io_flash_read(uint8* buffer, uint32 bufferLength)
-{
- try
- {
-  FileStream fp(MDFN_MakeFName(MDFNMKF_SAV, 0, "flash").c_str(), FileStream::MODE_READ);
-
-  fp.read(buffer, bufferLength);
- }
- catch(std::exception &e)
- {
-  //if(ene.Errno() == ENOENT)  . asdf
-  return(0);
- }
-
- return(1);
-}
-
-bool system_io_flash_write(uint8* buffer, uint32 bufferLength)
-{
- try
- {
-  FileStream fp(MDFN_MakeFName(MDFNMKF_SAV, 0, "flash").c_str(), FileStream::MODE_WRITE);
-
-  fp.write(buffer, bufferLength);
- }
- catch(std::exception &e)
- {
-  return(0);
- }
-
- return(1);
-}
 
 static void SetLayerEnableMask(uint64 mask)
 {
