@@ -17,6 +17,9 @@
 
 #include <stdint.h>
 
+/* Speed of DAC playback (in Hz) */
+#define DAC_FREQUENCY		8000
+
 void Write_SoundChipLeft(uint8_t data);
 void Write_SoundChipRight(uint8_t data);
 

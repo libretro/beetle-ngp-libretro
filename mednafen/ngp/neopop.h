@@ -131,9 +131,6 @@ extern COLOURMODE system_colour;
 
 /* Core <--> System-Sound Interface */
 
-/* Speed of DAC playback (in Hz) */
-#define DAC_FREQUENCY		8000
-
 extern bool mute;
 
 void int_redo_icache(void);
