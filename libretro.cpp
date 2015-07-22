@@ -72,17 +72,16 @@ uint8 NGPJoyLatch;
 
 bool system_comms_read(uint8* buffer)
 {
- return(0);
+   return 0;
 }
 
 bool system_comms_poll(uint8* buffer)
 {
- return(0);
+   return 0;
 }
 
 void system_comms_write(uint8 data)
 {
- return;
 }
 
 static uint8 *chee;
@@ -179,124 +178,125 @@ static bool TestMagic(const char *name, MDFNFILE *fp)
 
 static int Load(const char *name, MDFNFILE *fp)
 {
- if(!(ngpc_rom.data = (uint8 *)MDFN_malloc(GET_FSIZE_PTR(fp), _("Cart ROM"))))
-  return(0);
+   if(!(ngpc_rom.data = (uint8 *)MDFN_malloc(GET_FSIZE_PTR(fp), _("Cart ROM"))))
+      return(0);
 
- ngpc_rom.length = GET_FSIZE_PTR(fp);
- memcpy(ngpc_rom.data, GET_FDATA_PTR(fp), GET_FSIZE_PTR(fp));
+   ngpc_rom.length = GET_FSIZE_PTR(fp);
+   memcpy(ngpc_rom.data, GET_FDATA_PTR(fp), GET_FSIZE_PTR(fp));
 
- md5_context md5;
- md5.starts();
- md5.update(ngpc_rom.data, ngpc_rom.length);
- md5.finish(MDFNGameInfo->MD5);
+   md5_context md5;
+   md5.starts();
+   md5.update(ngpc_rom.data, ngpc_rom.length);
+   md5.finish(MDFNGameInfo->MD5);
 
- rom_loaded();
- MDFN_printf(_("ROM:       %dKiB\n"), (ngpc_rom.length + 1023) / 1024);
- MDFN_printf(_("ROM MD5:   0x%s\n"), md5_context::asciistr(MDFNGameInfo->MD5, 0).c_str());
+   rom_loaded();
+   MDFN_printf(_("ROM:       %dKiB\n"), (ngpc_rom.length + 1023) / 1024);
+   MDFN_printf(_("ROM MD5:   0x%s\n"), md5_context::asciistr(MDFNGameInfo->MD5, 0).c_str());
 
- MDFNMP_Init(1024, 1024 * 1024 * 16 / 1024);
+   MDFNMP_Init(1024, 1024 * 1024 * 16 / 1024);
 
- NGPGfx = (ngpgfx_t*)calloc(1, sizeof(*NGPGfx));
- NGPGfx->layer_enable = 1 | 2 | 4;
+   NGPGfx = (ngpgfx_t*)calloc(1, sizeof(*NGPGfx));
+   NGPGfx->layer_enable = 1 | 2 | 4;
 
- MDFNGameInfo->fps = (uint32)((uint64)6144000 * 65536 * 256 / 515 / 198); // 3072000 * 2 * 10000 / 515 / 198
- MDFNGameInfo->GameSetMD5Valid = FALSE;
+   MDFNGameInfo->fps = (uint32)((uint64)6144000 * 65536 * 256 / 515 / 198); // 3072000 * 2 * 10000 / 515 / 198
+   MDFNGameInfo->GameSetMD5Valid = FALSE;
 
- MDFNNGPCSOUND_Init();
+   MDFNNGPCSOUND_Init();
 
- MDFNMP_AddRAM(16384, 0x4000, CPUExRAM);
+   MDFNMP_AddRAM(16384, 0x4000, CPUExRAM);
 
- SetFRM(); // Set up fast read memory mapping
+   SetFRM(); // Set up fast read memory mapping
 
- bios_install();
+   bios_install();
 
- //main_timeaccum = 0;
- z80_runtime = 0;
+   //main_timeaccum = 0;
+   z80_runtime = 0;
 
- reset();
+   reset();
 
- return(1);
+   return(1);
 }
 
 static void CloseGame(void)
 {
- rom_unload();
- if (NGPGfx)
-    free(NGPGfx);
- NGPGfx = NULL;
+   rom_unload();
+   if (NGPGfx)
+      free(NGPGfx);
+   NGPGfx = NULL;
 }
 
 static void SetInput(int port, const char *type, void *ptr)
 {
- if(!port) chee = (uint8 *)ptr;
+   if(!port)
+      chee = (uint8 *)ptr;
 }
 
 static int StateAction(StateMem *sm, int load, int data_only)
 {
- SFORMAT StateRegs[] =
- {
-  SFVAR(z80_runtime),
-  SFARRAY(CPUExRAM, 16384),
-  SFVAR(FlashStatusEnable),
-  SFEND
- };
+   SFORMAT StateRegs[] =
+   {
+      SFVAR(z80_runtime),
+      SFARRAY(CPUExRAM, 16384),
+      SFVAR(FlashStatusEnable),
+      SFEND
+   };
 
- SFORMAT TLCS_StateRegs[] =
- {
-  SFVARN(pc, "PC"),
-  SFVARN(sr, "SR"),
-  SFVARN(f_dash, "F_DASH"),
-  SFARRAY32N(gpr, 4, "GPR"),
-  SFARRAY32N(gprBank[0], 4, "GPRB0"),
-  SFARRAY32N(gprBank[1], 4, "GPRB1"),
-  SFARRAY32N(gprBank[2], 4, "GPRB2"),
-  SFARRAY32N(gprBank[3], 4, "GPRB3"),
-  SFEND
- };
+   SFORMAT TLCS_StateRegs[] =
+   {
+      SFVARN(pc, "PC"),
+      SFVARN(sr, "SR"),
+      SFVARN(f_dash, "F_DASH"),
+      SFARRAY32N(gpr, 4, "GPR"),
+      SFARRAY32N(gprBank[0], 4, "GPRB0"),
+      SFARRAY32N(gprBank[1], 4, "GPRB1"),
+      SFARRAY32N(gprBank[2], 4, "GPRB2"),
+      SFARRAY32N(gprBank[3], 4, "GPRB3"),
+      SFEND
+   };
 
- if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "MAIN"))
-  return(0);
+   if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "MAIN"))
+      return(0);
 
- if(!MDFNSS_StateAction(sm, load, data_only, TLCS_StateRegs, "TLCS"))
-  return(0);
+   if(!MDFNSS_StateAction(sm, load, data_only, TLCS_StateRegs, "TLCS"))
+      return(0);
 
- if(!MDFNNGPCDMA_StateAction(sm, load, data_only))
-  return(0);
+   if(!MDFNNGPCDMA_StateAction(sm, load, data_only))
+      return(0);
 
- if(!MDFNNGPCSOUND_StateAction(sm, load, data_only))
-  return(0);
+   if(!MDFNNGPCSOUND_StateAction(sm, load, data_only))
+      return(0);
 
- if(!ngpgfx_StateAction(NGPGfx, sm, load, data_only))
-  return(0);
+   if(!ngpgfx_StateAction(NGPGfx, sm, load, data_only))
+      return(0);
 
- if(!MDFNNGPCZ80_StateAction(sm, load, data_only))
-  return(0);
+   if(!MDFNNGPCZ80_StateAction(sm, load, data_only))
+      return(0);
 
- if(!int_timer_StateAction(sm, load, data_only))
-  return(0);
+   if(!int_timer_StateAction(sm, load, data_only))
+      return(0);
 
- if(!BIOSHLE_StateAction(sm, load, data_only))
-  return(0);
+   if(!BIOSHLE_StateAction(sm, load, data_only))
+      return(0);
 
- if(!FLASH_StateAction(sm, load, data_only))
-  return(0);
+   if(!FLASH_StateAction(sm, load, data_only))
+      return(0);
 
- if(load)
- {
-  RecacheFRM();
-  changedSP();
- }
- return(1);
+   if(load)
+   {
+      RecacheFRM();
+      changedSP();
+   }
+   return(1);
 }
 
 static void DoSimpleCommand(int cmd)
 {
- switch(cmd)
- {
-  case MDFN_MSC_POWER:
-  case MDFN_MSC_RESET: reset();
-			break;
- }
+   switch(cmd)
+   {
+      case MDFN_MSC_POWER:
+      case MDFN_MSC_RESET: reset();
+                           break;
+   }
 }
 
 static const MDFNSetting_EnumList LanguageList[] =
