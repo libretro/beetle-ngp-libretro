@@ -96,7 +96,6 @@ bool MDFNNGPC_SetSoundRate(uint32_t rate)
 int MDFNNGPCSOUND_StateAction(void *data, int load, int data_only)
 {
    T6W28_ApuState *sn_state;
-   StateMem *sm = (StateMem*)data;
 
    if(!load)
       sn_state = apu.save_state();
@@ -122,7 +121,7 @@ int MDFNNGPCSOUND_StateAction(void *data, int load, int data_only)
       SFEND
    };
 
-   if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "SND"))
+   if(!MDFNSS_StateAction(data, load, data_only, StateRegs, "SND"))
    {
       free(sn_state);
       return 0;
