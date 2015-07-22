@@ -24,13 +24,11 @@
 #include "rtc.h"
 #include "../masmem.h"
 
-//=============================================================================
-
-//Hack way of returning good Flash status.
+/* Hack way of returning good Flash status. */
 bool FlashStatusEnable = FALSE;
 static uint32 FlashStatus;	
 
-uint8 CPUExRAM[16384];
+uint8_t CPUExRAM[16384];
 
 bool debug_abort_memory = FALSE;
 bool debug_mask_memory_error_messages = FALSE;
@@ -40,17 +38,19 @@ bool memory_flash_error = FALSE;
 bool memory_flash_command = FALSE;
 
 
-uint8 SC0BUF; // Serial channel 0 buffer.
-uint8 COMMStatus;
+uint8_t SC0BUF; /* Serial channel 0 buffer. */
+uint8_t COMMStatus;
 
-// In very very very rare conditions(like on embedded platforms with no virtual memory and very limited RAM and
-// malloc happens to return a pointer aligned to a 64KiB boundary), a FastReadMap entry may be NULL even if
-// it points to valid data when it's added to the address of the read, but
-// if this happens, it will only make the emulator slightly slower.
-static uint8 *FastReadMap[256], *FastReadMapReal[256];
+/* In very very very rare conditions(like on embedded platforms with 
+ * no virtual memory and very limited RAM and malloc happens to 
+ * return a pointer aligned to a 64KiB boundary), a FastReadMap entry 
+ * may be NULL even if it points to valid data when it's added to 
+ * the address of the read, but if this happens, it will only 
+ * make the emulator slightly slower. */
+static uint8_t *FastReadMap[256], *FastReadMapReal[256];
 
-
-void SetFRM(void) /* Call this function after ROM is loaded */
+/* Call this function after ROM is loaded */
+void SetFRM(void) 
 {
    unsigned int x;
 
@@ -121,9 +121,7 @@ static void* translate_address_read(uint32 address)
 	return NULL;
 }
 
-//=============================================================================
-
-static void* translate_address_write(uint32 address)
+static void *translate_address_write(uint32 address)
 {	
    address &= 0xFFFFFF;
 
@@ -186,7 +184,6 @@ static void* translate_address_write(uint32 address)
       }
    }
 
-   // ===================================
    return NULL;
 }
 
@@ -198,9 +195,9 @@ extern "C" {
 /* Treat all 32-bit operations as two 16-bit operations */
 extern uint32 pc;
 
-uint8 lastpoof = 0;
+uint8_t lastpoof = 0;
 
-uint8 loadB(uint32 address)
+uint8_t loadB(uint32 address)
 {
    address &= 0xFFFFFF;
 
@@ -208,7 +205,7 @@ uint8 loadB(uint32 address)
       return(FastReadMap[address >> 16][address]);
 
 
-   uint8* ptr = (uint8*)translate_address_read(address);
+   uint8_t* ptr = (uint8_t*)translate_address_read(address);
 
    if (ptr)
       return *ptr;
@@ -217,7 +214,7 @@ uint8 loadB(uint32 address)
       return(ngpgfx_read8(NGPGfx, address));
 
    if(address >= 0x4000 && address <= 0x7fff)
-      return(*(uint8 *)(CPUExRAM + address - 0x4000));
+      return(*(uint8_t *)(CPUExRAM + address - 0x4000));
 
    if(address >= 0x70 && address <= 0x7F)
       return(int_read8(address));
@@ -239,7 +236,7 @@ uint8 loadB(uint32 address)
    return(0);
 }
 
-uint16 loadW(uint32 address)
+uint16_t loadW(uint32 address)
 {
    address &= 0xFFFFFF;
 
@@ -247,9 +244,9 @@ uint16 loadW(uint32 address)
       return(loadB(address) | (loadB(address + 1) << 8));
 
    if(FastReadMap[address >> 16])
-      return(LoadU16_LE((uint16*)&FastReadMap[address >> 16][address]));
+      return(LoadU16_LE((uint16_t*)&FastReadMap[address >> 16][address]));
 
-   uint16* ptr = (uint16*)translate_address_read(address);
+   uint16_t* ptr = (uint16_t*)translate_address_read(address);
    if(ptr)
       return LoadU16_LE(ptr);
 
@@ -257,7 +254,7 @@ uint16 loadW(uint32 address)
       return(ngpgfx_read16(NGPGfx, address));
 
    if(address >= 0x4000 && address <= 0x7fff)
-      return(LoadU16_LE((uint16 *)(CPUExRAM + address - 0x4000)));
+      return(LoadU16_LE((uint16_t *)(CPUExRAM + address - 0x4000)));
 
    if(address == 0x50)
       return(SC0BUF);
@@ -281,13 +278,10 @@ uint16 loadW(uint32 address)
 
 uint32 loadL(uint32 address)
 {
-	uint32 ret = loadW(address);
-	return (ret | loadW(address + 2) << 16);
+	return (loadW(address) | loadW(address + 2) << 16);
 }
 
-//=============================================================================
-
-void storeB(uint32 address, uint8 data)
+void storeB(uint32 address, uint8_t data)
 {
    address &= 0xFFFFFF;
 
@@ -302,7 +296,7 @@ void storeB(uint32 address, uint8 data)
 
    if(address >= 0x4000 && address <= 0x7fff)
    {
-      *(uint8 *)(CPUExRAM + address - 0x4000) = data;
+      *(uint8_t *)(CPUExRAM + address - 0x4000) = data;
       return;
    }
    if(address >= 0x70 && address <= 0x7F)
@@ -378,8 +372,7 @@ void storeB(uint32 address, uint8 data)
       return;
    }
 
-   //printf("%08x %02x\n", address, data);
-   uint8* ptr = (uint8*)translate_address_write(address);
+   uint8_t* ptr = (uint8_t*)translate_address_write(address);
 
    //Write
    if (ptr)
@@ -389,8 +382,9 @@ void storeB(uint32 address, uint8 data)
 
 }
 
-void storeW(uint32 address, uint16 data)
+void storeW(uint32 address, uint16_t data)
 {
+   uint16_t* ptr;
    address &= 0xFFFFFF;
 
    if(address & 1)
@@ -412,7 +406,7 @@ void storeW(uint32 address, uint16 data)
    }
    if(address >= 0x4000 && address <= 0x7fff)
    {
-      StoreU16_LE((uint16 *)(CPUExRAM + address - 0x4000), data);
+      StoreU16_LE((uint16_t *)(CPUExRAM + address - 0x4000), data);
       return;
    }
    if(address >= 0x70 && address <= 0x7F)
@@ -476,14 +470,15 @@ void storeW(uint32 address, uint16 data)
       return;
    }
 
-   uint16* ptr = (uint16*)translate_address_write(address);
+   ptr = (uint16_t*)translate_address_write(address);
 
-   //Write
+   /* Write */
    if (ptr)
       StoreU16_LE(ptr, data);
-   //else
-   //        printf("ACK16: %08x %04x\n", address, data);
-
+#if 0
+   else
+      printf("ACK16: %08x %04x\n", address, data);
+#endif
 }
 
 void storeL(uint32 address, uint32 data)
@@ -496,9 +491,7 @@ void storeL(uint32 address, uint32 data)
 }
 #endif
 
-//=============================================================================
-
-static const uint8 systemMemory[] = 
+static const uint8_t systemMemory[] = 
 {
 	// 0x00												// 0x08
 	0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x08, 0xFF, 0xFF,
@@ -534,8 +527,6 @@ static const uint8 systemMemory[] =
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-//=============================================================================
-
 void reset_memory(void)
 {
 	unsigned int i;
@@ -545,16 +536,12 @@ void reset_memory(void)
 
 	memory_flash_command = FALSE;
 
-//=============================================================================
-//000000 -> 000100	CPU Internal RAM (Timers/DMA/Z80)
-//=====================================================
+   /* 000000 -> 000100	CPU Internal RAM (Timers/DMA/Z80) */
 
 	for (i = 0; i < sizeof(systemMemory); i++)
 		storeB(i, systemMemory[i]);
 
-//=============================================================================
-//006C00 -> 006FFF	BIOS Workspace
-//==================================
+   /* 006C00 -> 006FFF	BIOS Workspace */
 
 	storeL(0x6C00, rom_header->startPC);		//Start
 
@@ -569,40 +556,37 @@ void reset_memory(void)
 
 	storeB(0x6C58, 0x01);
 
-	//32MBit cart?
+	/* 32MBit cart? */
 	if (ngpc_rom.length > 0x200000)
 		storeB(0x6C59, 0x01);
 	else
 		storeB(0x6C59, 0x00);
 
-	storeB(0x6C55, 1);	//Commercial game
+	storeB(0x6C55, 1);      /* Commercial game */
 
-	storeB(0x6F80, 0xFF);	//Lots of battery power!
+	storeB(0x6F80, 0xFF);	/* Lots of battery power! */
 	storeB(0x6F81, 0x03);
 
-	storeB(0x6F84, 0x40);	// "Power On" startup
-	storeB(0x6F85, 0x00);	// No shutdown request
-	storeB(0x6F86, 0x00);	// No user answer (?)
+	storeB(0x6F84, 0x40);	/* "Power On" startup */
+	storeB(0x6F85, 0x00);	/* No shutdown request */
+	storeB(0x6F86, 0x00);	/* No user answer (?) */
 
-	//Language: 0 = Japanese, 1 = English
+	/* Language: 0 = Japanese, 1 = English */
 	storeB(0x6F87, MDFN_GetSettingB("ngp.language"));
 
-	//Color Mode Selection: 0x00 = B&W, 0x10 = Colour
+	/* Color Mode Selection: 0x00 = B&W, 0x10 = Colour */
 	storeB(0x6F91, rom_header->mode);
 	storeB(0x6F95, rom_header->mode);
 
-	//Interrupt table
+	/* Interrupt table */
 	for (i = 0; i < 0x12; i++)
 		storeL(0x6FB8 + i * 4, 0x00FF23DF);
 
 
-//=============================================================================
-//008000 -> 00BFFF	Video RAM
-//=============================
-
+   /* 008000 -> 00BFFF	Video RAM */
 	storeB(0x8000, 0xC0);	// Both interrupts allowed
 
-	//Hardware window
+	/* Hardware window */
 	storeB(0x8002, 0x00);
 	storeB(0x8003, 0x00);
 	storeB(0x8004, 0xFF);
@@ -625,7 +609,3 @@ void reset_memory(void)
 
 	storeB(0x87E2, loadB(0x6F95) ? 0x00 : 0x80);
 }
-
-//=============================================================================
-
-

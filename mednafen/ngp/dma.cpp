@@ -65,13 +65,9 @@
 extern "C" {
 #endif
 
-//=============================================================================
-
 static uint32_t dmaS[4], dmaD[4];
 static uint16_t dmaC[4];
 static uint8_t dmaM[4];
-
-//=============================================================================
 
 void reset_dma(void)
 {
@@ -80,8 +76,6 @@ void reset_dma(void)
 	memset(dmaC, 0, sizeof(dmaC));
 	memset(dmaM, 0, sizeof(dmaM));
 }
-
-//=============================================================================
 
 void DMA_update(int channel)
 {
@@ -201,8 +195,6 @@ void DMA_update(int channel)
 		storeB(0x7C + channel, 0);
 	}
 }
-
-//=============================================================================
 
 void dmaStoreB(uint8_t cr, uint8_t data)
 {
@@ -369,7 +361,7 @@ int MDFNNGPCDMA_StateAction(void *data, int load, int data_only)
    };
 
    if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "DMA"))
-      return(0);
+      return 0;
 
-   return(1); 
+   return 1; 
 }

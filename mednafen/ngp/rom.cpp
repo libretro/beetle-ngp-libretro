@@ -18,15 +18,11 @@
 #include "TLCS-900h/TLCS900h_disassemble.h"
 #include "../mednafen.h"
 
-//=============================================================================
-
 RomInfo ngpc_rom;
 RomHeader* rom_header;
 
 #define MATCH_CATALOG(c, s)	(rom_header->catalog == htole16(c) \
 				 && rom_header->subCatalog == (s))
-
-//=============================================================================
 
 static void rom_hack(void)
 {
@@ -98,8 +94,6 @@ static void rom_hack(void)
    }
 }
 
-//=============================================================================
-
 static void rom_display_header(void)
 {
    MDFN_printf(_("Name:    %s\n"), ngpc_rom.name);
@@ -120,11 +114,6 @@ static void rom_display_header(void)
    MDFN_printf(_("Starting PC:  0x%06X\n"), le32toh(rom_header->startPC) & 0xFFFFFF);
 }
 
-//=============================================================================
-
-//-----------------------------------------------------------------------------
-// rom_loaded()
-//-----------------------------------------------------------------------------
 void rom_loaded(void)
 {
    int i;
@@ -152,9 +141,6 @@ void rom_loaded(void)
    flash_read();
 }
 
-//-----------------------------------------------------------------------------
-// rom_unload()
-//-----------------------------------------------------------------------------
 void rom_unload(void)
 {
    if (ngpc_rom.data)
@@ -178,5 +164,3 @@ void rom_unload(void)
       ngpc_rom.orig_data = NULL;
    }
 }
-
-//=============================================================================

@@ -125,7 +125,7 @@ int MDFNNGPCSOUND_StateAction(void *data, int load, int data_only)
    if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "SND"))
    {
       free(sn_state);
-      return(0);
+      return 0;
    }
 
    if(load)
@@ -138,5 +138,5 @@ int MDFNNGPCSOUND_StateAction(void *data, int load, int data_only)
    }
 
    free(sn_state);
-   return(1);
+   return 1;
 }

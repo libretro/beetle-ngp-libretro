@@ -14,10 +14,9 @@
 
 #ifndef __INTERRUPT__
 #define __INTERRUPT__
-//=============================================================================
 
 #include <boolean.h>
-#include <mednafen/mednafen-types.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,17 +37,16 @@ void interrupt(uint8 index);
 void reset_timers(void);
 void reset_int(void);
 
-//Call this after each instruction
+/* Call this after each instruction */
 bool updateTimers(void *data, int cputicks);
 
-//H-INT Timer
+/* H-INT Timer */
 extern uint32 timer_hint;
 
 void timer_write8(uint32 address, uint8 data);
 uint8 timer_read8(uint32 address);
 
-
-// Set this value to fix problems with glitching extra lines.
+/* Set this value to fix problems with glitching extra lines. */
 extern bool gfx_hack;
 
 
@@ -63,7 +61,6 @@ void TestIntHDMA(int bios_num, int vec_num);
 
 int int_timer_StateAction(void *data, int load, int data_only);
 
-//=============================================================================
 #endif
 
 

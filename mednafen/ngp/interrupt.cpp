@@ -21,7 +21,6 @@
 #include "Z80_interface.h"
 #include "dma.h"
 
-//=============================================================================
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -201,24 +200,21 @@ void int_write8(uint32 address, uint8 data)
 
 uint8 int_read8(uint32 address)
 {
-   uint8 ret = 0;
    switch(address)
    {
       case 0x71:
-         ret = ((ipending[5] ? 0x08 : 0x00) | (ipending[6] ? 0x80 : 0x00));
-         break;
+         return ((ipending[5] ? 0x08 : 0x00) | (ipending[6] ? 0x80 : 0x00));
       case 0x73:
-         ret = ((ipending[7] ? 0x08 : 0x00) | (ipending[8] ? 0x80 : 0x00));
-         break;
+         return ((ipending[7] ? 0x08 : 0x00) | (ipending[8] ? 0x80 : 0x00));
       case 0x74:
-         ret = ((ipending[9] ? 0x08 : 0x00) | (ipending[10] ? 0x80 : 0x00));
-         break;
+         return ((ipending[9] ? 0x08 : 0x00) | (ipending[10] ? 0x80 : 0x00));
       case 0x77:
-         ret = ((ipending[11] ? 0x08 : 0x00) | (ipending[12] ? 0x80 : 0x00));
+         return ((ipending[11] ? 0x08 : 0x00) | (ipending[12] ? 0x80 : 0x00));
+      default:
          break;
    }
 
-   return(ret);
+   return 0;
 }
 
 void TestIntHDMA(int bios_num, int vec_num)
@@ -271,30 +267,25 @@ extern bool NGPFrameSkip;
 
 bool updateTimers(void *data, int cputicks)
 {
+   bool ret = false;
    MDFN_Surface *surface = (MDFN_Surface*)data;
-   bool ret = 0;
 
    ngpc_soundTS += cputicks;
-   //increment H-INT timer
+
+   /* increment H-INT timer */
    timer_hint += cputicks;
 
-   //=======================
-
-   //End of scanline / Start of Next one
+   /*End of scanline / Start of Next one */
    if (timer_hint >= TIMER_HINT_RATE)
    {
       uint8 data;
 
-      // ============= END OF CURRENT SCANLINE =============
-
       h_int = ngpgfx_hint(NGPGfx);	
       ret   = ngpgfx_draw(NGPGfx, surface, NGPFrameSkip);
 
-      // ============= START OF NEXT SCANLINE =============
+      timer_hint -= TIMER_HINT_RATE;	/* Start of next scanline */
 
-      timer_hint -= TIMER_HINT_RATE;	//Start of next scanline
-
-      //Comms. Read interrupt
+      /* Comms. Read interrupt */
       if ((COMMStatus & 1) == 0 && system_comms_poll(&data))
       {
          storeB(0x50, data);
@@ -302,55 +293,53 @@ bool updateTimers(void *data, int cputicks)
       }
    }
 
-   //=======================
-
-   //Tick the Clock Generator
+   /* Tick the Clock Generator */
    timer_clock[0] += cputicks;
    timer_clock[1] += cputicks;
 
-   timer0 = FALSE;	//Clear the timer0 tick, for timer1 chain mode.
+   timer0 = FALSE;	/* Clear the timer0 tick, for timer1 chain mode. */
 
-   //=======================
-
-   //Run Timer 0 (TRUN)?
+   /* Run Timer 0 (TRUN)? */
    if ((TRUN & 0x01))
    {
-      //T01MOD
+      /* T01MOD */
       switch(T01MOD & 0x03)
       {
-         case 0:	if (h_int)	//Horizontal interrupt trigger
-                  {
-                     timer[0]++;
+         case 0:
+            /* Horizontal interrupt trigger */
+            if (h_int) 
+            {
+               timer[0]++;
 
-                     timer_clock[0] = 0;
-                     h_int = FALSE;	// Stop h_int remaining active
-                  }
-                  break;
+               timer_clock[0] = 0;
+               h_int = FALSE;	// Stop h_int remaining active
+            }
+            break;
 
-         case 1:	while (timer_clock[0] >= TIMER_T1_RATE)
-                  {
-                     timer[0]++;
-                     timer_clock[0] -= TIMER_T1_RATE;
-                  }
-                  break;
-
-         case 2:	while(timer_clock[0] >= TIMER_T4_RATE)
-                  {
-                     timer[0]++;
-                     timer_clock[0] -= TIMER_T4_RATE;
-                  }
-                  break;
-
-         case 3:	while (timer_clock[0] >= TIMER_T16_RATE)
-                  {
-                     timer[0]++;
-                     timer_clock[0] -= TIMER_T16_RATE;
-                  }
-                  break;
+         case 1:
+            while (timer_clock[0] >= TIMER_T1_RATE)
+            {
+               timer[0]++;
+               timer_clock[0] -= TIMER_T1_RATE;
+            }
+            break;
+         case 2:
+            while(timer_clock[0] >= TIMER_T4_RATE)
+            {
+               timer[0]++;
+               timer_clock[0] -= TIMER_T4_RATE;
+            }
+            break;
+         case 3:
+            while (timer_clock[0] >= TIMER_T16_RATE)
+            {
+               timer[0]++;
+               timer_clock[0] -= TIMER_T16_RATE;
+            }
+            break;
       }
 
-
-      //Threshold check
+      /* Threshold check */
       if (timer_threshold[0] && timer[0] >= timer_threshold[0])
       {
          timer[0] = 0;
@@ -360,41 +349,40 @@ bool updateTimers(void *data, int cputicks)
       }
    }
 
-   //=======================
-
-   //Run Timer 1 (TRUN)?
+   /*Run Timer 1 (TRUN)? */
    if ((TRUN & 0x02))
    {
-      //T01MOD
+      /* T01MOD */
       switch((T01MOD & 0x0C) >> 2)
       {
-         case 0:	if (timer0)	//Timer 0 chain mode.
-                  {
-                     timer[1] += timer0;
-                     timer_clock[1] = 0;
-                  }
-                  break;
-
-         case 1:	while (timer_clock[1] >= TIMER_T1_RATE)
-                  {
-                     timer[1]++;
-                     timer_clock[1] -= TIMER_T1_RATE;
-                  }
-                  break;
-
-         case 2:	while (timer_clock[1] >= TIMER_T16_RATE)
-                  {
-                     timer[1]++;
-                     timer_clock[1] -= TIMER_T16_RATE;
-                  }
-                  break;
-
-         case 3:	while (timer_clock[1] >= TIMER_T256_RATE)
-                  {
-                     timer[1]++;
-                     timer_clock[1] -= TIMER_T256_RATE;
-                  }
-                  break;
+         case 0:
+            if (timer0)	//Timer 0 chain mode.
+            {
+               timer[1] += timer0;
+               timer_clock[1] = 0;
+            }
+            break;
+         case 1:
+            while (timer_clock[1] >= TIMER_T1_RATE)
+            {
+               timer[1]++;
+               timer_clock[1] -= TIMER_T1_RATE;
+            }
+            break;
+         case 2:
+            while (timer_clock[1] >= TIMER_T16_RATE)
+            {
+               timer[1]++;
+               timer_clock[1] -= TIMER_T16_RATE;
+            }
+            break;
+         case 3:
+            while (timer_clock[1] >= TIMER_T256_RATE)
+            {
+               timer[1]++;
+               timer_clock[1] -= TIMER_T256_RATE;
+            }
+            break;
       }
 
       //Threshold check
@@ -406,45 +394,42 @@ bool updateTimers(void *data, int cputicks)
       }
    }
 
-   //=======================
-
-   //Tick the Clock Generator
+   /* Tick the Clock Generator */
    timer_clock[2] += cputicks;
    timer_clock[3] += cputicks;
 
-   timer2 = FALSE;	//Clear the timer2 tick, for timer3 chain mode.
+   timer2 = FALSE;	/* Clear the timer2 tick, for timer3 chain mode. */
 
-   //=======================
-
-   //Run Timer 2 (TRUN)?
+   /* Run Timer 2 (TRUN)? */
    if ((TRUN & 0x04))
    {
-      //T23MOD
+      /* T23MOD */
       switch(T23MOD & 0x03)
       {
-         case 0:	// -
+         case 0:
+            break;
+         case 1:
+            while (timer_clock[2] >= TIMER_T1_RATE / 2) // Kludge :(
+            {
+               timer[2]++;
+               timer_clock[2] -= TIMER_T1_RATE / 2;
+            }
+            break;
+         case 2:
+            while (timer_clock[2] >= TIMER_T4_RATE)
+            {
+               timer[2]++;
+               timer_clock[2] -= TIMER_T4_RATE;
+            }
             break;
 
-         case 1:	while (timer_clock[2] >= TIMER_T1_RATE / 2) // Kludge :(
-                  {
-                     timer[2]++;
-                     timer_clock[2] -= TIMER_T1_RATE / 2;
-                  }
-                  break;
-
-         case 2:	while (timer_clock[2] >= TIMER_T4_RATE)
-                  {
-                     timer[2]++;
-                     timer_clock[2] -= TIMER_T4_RATE;
-                  }
-                  break;
-
-         case 3:	while (timer_clock[2] >= TIMER_T16_RATE)
-                  {
-                     timer[2]++;
-                     timer_clock[2] -= TIMER_T16_RATE;
-                  }
-                  break;
+         case 3:
+            while (timer_clock[2] >= TIMER_T16_RATE)
+            {
+               timer[2]++;
+               timer_clock[2] -= TIMER_T16_RATE;
+            }
+            break;
       }
 
       //Threshold check
@@ -457,12 +442,10 @@ bool updateTimers(void *data, int cputicks)
       }
    }
 
-   //=======================
-
-   //Run Timer 3 (TRUN)?
+   /* Run Timer 3 (TRUN)? */
    if ((TRUN & 0x08))
    {
-      //T23MOD
+      /* T23MOD */
       switch((T23MOD & 0x0C) >> 2)
       {
          case 0:
@@ -506,7 +489,7 @@ bool updateTimers(void *data, int cputicks)
       }
    }
 
-   return(ret);
+   return ret;
 }
 
 void reset_timers(void)
@@ -580,26 +563,21 @@ void timer_write8(uint32 address, uint8 data)
 
 uint8 timer_read8(uint32 address)
 {
-   uint8 ret = 0;
-
    switch(address)
    {
       //default: printf("Baaaad: %08x\n", address); break;
       // Cool boarders is stupid and tries to read from a write-only register >_<
       // Returning 4 makes the game run ok, so 4 it is!
-      default:
-         ret = 0x4;
-         break;
       case 0x20:
-         ret = TRUN;
-         break;
+         return TRUN;
       case 0x29:
-         ret = TRDC;
+         return TRDC;
+      default:
          break;
    }
 
    //printf("UNK B R: %08x\n", address);
-   return(ret);
+   return 0x4;
 }
 
 #ifdef __cplusplus
@@ -628,6 +606,7 @@ int int_timer_StateAction(void *data, int load, int data_only)
       SFEND
    };
    if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "INTT"))
-      return(0);
-   return(1);
+      return 0;
+
+   return 1;
 }

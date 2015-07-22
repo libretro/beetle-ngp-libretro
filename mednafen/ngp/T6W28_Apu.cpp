@@ -75,9 +75,8 @@ void T6W28_Square::run( sms_time_t time, sms_time_t end_time )
 	}
 	else
 	{
-		int amp_left = phase ? volume_left : -volume_left;
-		int amp_right = phase ? volume_right : -volume_right;
-
+		int amp_left    = phase ? volume_left : -volume_left;
+		int amp_right   = phase ? volume_right : -volume_right;
 		int delta_left  = amp_left - last_amp_left;
 		int delta_right = amp_right - last_amp_right;
 

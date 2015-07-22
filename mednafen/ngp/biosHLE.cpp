@@ -633,10 +633,9 @@ int BIOSHLE_StateAction(void *data, int load, int data_only)
       SFARRAY(CacheIntPrio, 0xB),
       SFEND
    };
+
    if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "BHLE"))
-      return(0);
+      return 0;
 
-   return(1);
+   return 1;
 }
-
-//=============================================================================

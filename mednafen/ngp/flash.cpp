@@ -55,11 +55,6 @@ typedef struct
 static FlashFileBlockHeader	blocks[256];
 static uint16_t block_count;
 
-//=============================================================================
-
-//-----------------------------------------------------------------------------
-// optimise_blocks()
-//-----------------------------------------------------------------------------
 static void optimise_blocks(void)
 {
    int i, j;
@@ -156,10 +151,6 @@ void do_flash_read(uint8_t *flashdata)
       blocks[i].start_address, blocks[i].data_length);*/
 }
 
-
-//-----------------------------------------------------------------------------
-// flash_read()
-//-----------------------------------------------------------------------------
 void flash_read(void)
 {
    FlashFileHeader header;
@@ -188,10 +179,6 @@ void flash_read(void)
    free(flashdata);
 }
 
-
-//-----------------------------------------------------------------------------
-// flash_write()
-//-----------------------------------------------------------------------------
 void flash_write(uint32_t start_address, uint16_t length)
 {
    uint16_t i;
@@ -231,7 +218,7 @@ static uint8_t *make_flash_commit(int32_t *length)
 
    //No flash data?
    if (block_count == 0)
-      return(NULL);
+      return NULL;
 
    //Optimise before writing
    optimise_blocks();
@@ -270,7 +257,7 @@ static uint8_t *make_flash_commit(int32_t *length)
    }
 
    *length = header.total_file_length;
-   return(flashdata);
+   return flashdata;
 }
 
 void flash_commit(void)
@@ -303,12 +290,12 @@ int FLASH_StateAction(void *data, int load, int data_only)
    };
 
    if(!MDFNSS_StateAction(sm, load, data_only, FINF_StateRegs, "FINF"))
-      return(0);
+      return 0;
 
    if(!FlashLength) // No flash data to save, OR no flash data to load.
    {
       if(flashdata) free(flashdata);
-      return(1);
+      return 1;
    }
 
    if(load)
@@ -323,7 +310,7 @@ int FLASH_StateAction(void *data, int load, int data_only)
    if(!MDFNSS_StateAction(sm, load, data_only, FLSH_StateRegs, "FLSH"))
    {
       free(flashdata);
-      return(0);
+      return 0;
    }
 
    if(load)
@@ -333,5 +320,5 @@ int FLASH_StateAction(void *data, int load, int data_only)
    }
 
    free(flashdata);
-   return(1);
+   return 1;
 }
