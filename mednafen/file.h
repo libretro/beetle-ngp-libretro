@@ -30,18 +30,8 @@ class MDFNFILE
 	 return(location);
 	}
 
-	inline void rewind(void)
-	{
-	 location = 0;
-	}
-
 	int read32le(uint32_t *Bufo);
 	int read16le(uint16_t *Bufo);
-
-	inline int fisarchive(void)
-	{
-	 return(0);
-	}
 
 	char *fgets(char *s, int size);
    uint8_t *f_data;
