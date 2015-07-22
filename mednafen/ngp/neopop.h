@@ -59,17 +59,6 @@ void emulate(void);
 	necessarily a fatal error. */
 void system_message(char* vaMessage,...);
 
-/*! Called at the start of the vertical blanking period, this function is
-	designed to perform many of the critical hardware interface updates
-	Here is a list of recommended actions to take:
-	
-	- The frame buffer should be copied to the screen.
-	- The frame rate should be throttled to 59.95hz
-	- The sound chips should be polled for the next chunk of data
-	- Input should be polled and the current status written to "ram[0x6F82]" */
-void system_VBL(void);
-
-
 /* Core <--> System-Graphics Interface */
 
 /* Physical screen dimensions */
@@ -79,8 +68,6 @@ void system_VBL(void);
 extern COLOURMODE system_colour;
 
 /* Core <--> System-Sound Interface */
-
-extern bool mute;
 
 void int_redo_icache(void);
 
