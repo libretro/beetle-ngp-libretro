@@ -260,7 +260,6 @@ extern bool NGPFrameSkip;
 bool updateTimers(void *data, int cputicks)
 {
    bool ret = false;
-   MDFN_Surface *surface = (MDFN_Surface*)data;
 
    ngpc_soundTS += cputicks;
 
@@ -270,17 +269,17 @@ bool updateTimers(void *data, int cputicks)
    /*End of scanline / Start of Next one */
    if (timer_hint >= TIMER_HINT_RATE)
    {
-      uint8_t data;
+      uint8_t _data;
 
       h_int = ngpgfx_hint(NGPGfx);	
-      ret   = ngpgfx_draw(NGPGfx, surface, NGPFrameSkip);
+      ret   = ngpgfx_draw(NGPGfx, data, NGPFrameSkip);
 
       timer_hint -= TIMER_HINT_RATE;	/* Start of next scanline */
 
       /* Comms. Read interrupt */
-      if ((COMMStatus & 1) == 0 && system_comms_poll(&data))
+      if ((COMMStatus & 1) == 0 && system_comms_poll(&_data))
       {
-         storeB(0x50, data);
+         storeB(0x50, _data);
          TestIntHDMA(12, 0x19);
       }
    }
