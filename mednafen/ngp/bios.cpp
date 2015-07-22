@@ -12,8 +12,9 @@
 //	additional informations.
 //---------------------------------------------------------------------------
 
-#include "neopop.h"
+#include <string.h>
 #include "bios.h"
+#include "../mednafen-endian.h"
 
 uint8_t ngpc_bios[0x10000];		/* Holds BIOS program data */
 
