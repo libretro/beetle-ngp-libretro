@@ -39,9 +39,6 @@ void MDFNI_SetBaseDirectory(const char *dir);
 /* Closes currently loaded game */
 void MDFNI_CloseGame(void);
 
-void MDFN_DispMessage(const char *format, ...);
-#define MDFNI_DispMessage MDFN_DispMessage
-
 uint32 MDFNI_CRC32(uint32 crc, uint8 *buf, uint32 len);
 
 // NES hackish function.  Should abstract in the future.

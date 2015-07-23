@@ -41,27 +41,6 @@
 extern MDFNGI EmulatedNGP;
 MDFNGI *MDFNGameInfo = &EmulatedNGP;
 
-/* forward declarations */
-extern void MDFND_DispMessage(unsigned char *str);
-
-void MDFN_DispMessage(const char *format, ...)
-{
- va_list ap;
- va_start(ap,format);
- char *msg = NULL;
-
- trio_vasprintf(&msg, format,ap);
- va_end(ap);
-
- MDFND_DispMessage((UTF8*)msg);
-}
-
-void MDFN_ResetMessages(void)
-{
- MDFND_DispMessage(NULL);
-}
-
-
 MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
 {
    MDFNFILE GameFile;
@@ -107,8 +86,6 @@ MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
 
 	MDFN_LoadGameCheats(NULL);
 	MDFNMP_InstallReadPatches();
-
-	MDFN_ResetMessages();	// Save state, status messages, etc.
 
 	MDFN_indent(-2);
 

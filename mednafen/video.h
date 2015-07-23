@@ -3,6 +3,4 @@
 
 #include "surface.h"
 
-void MDFN_DispMessage(const char *format, ...);
-
 #endif
