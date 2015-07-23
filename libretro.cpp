@@ -186,8 +186,8 @@ static int Load(const char *name, MDFNFILE *fp)
    md5.finish(MDFNGameInfo->MD5);
 
    rom_loaded();
-   MDFN_printf(_("ROM:       %dKiB\n"), (ngpc_rom.length + 1023) / 1024);
-   MDFN_printf(_("ROM MD5:   0x%s\n"), md5_context::asciistr(MDFNGameInfo->MD5, 0).c_str());
+   printf(_("ROM:       %dKiB\n"), (ngpc_rom.length + 1023) / 1024);
+   printf(_("ROM MD5:   0x%s\n"), md5_context::asciistr(MDFNGameInfo->MD5, 0).c_str());
 
    MDFNMP_Init(1024, 1024 * 1024 * 16 / 1024);
 
@@ -451,8 +451,6 @@ void retro_init(void)
    else 
       log_cb = NULL;
 
-   MDFNI_InitializeModule();
-
    const char *dir = NULL;
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &dir) && dir)
@@ -468,8 +466,6 @@ void retro_init(void)
       retro_base_dir_tmp= retro_base_dir_tmp.substr(0, last);
 
       strcpy(retro_base_directory, retro_base_dir_tmp.c_str());
-
-      MDFNI_Initialize(retro_base_directory);
    }
    else
    {

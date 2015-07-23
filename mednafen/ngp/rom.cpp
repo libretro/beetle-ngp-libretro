@@ -35,7 +35,7 @@ static void rom_hack(void)
    {
       ngpc_rom.data[0x23] = 0x10;	// Fix rom header
 
-      MDFN_printf("HACK: \"Neo-Neo! V1.0 (PD)\"\n");
+      printf("HACK: \"Neo-Neo! V1.0 (PD)\"\n");
    }
 
    //"Cool Cool Jam SAMPLE (U)"
@@ -43,7 +43,7 @@ static void rom_hack(void)
    {
       ngpc_rom.data[0x23] = 0x10;	// Fix rom header
 
-      MDFN_printf("HACK: \"Cool Cool Jam SAMPLE (U)\"\n");
+      printf("HACK: \"Cool Cool Jam SAMPLE (U)\"\n");
    }
 
    //"Dokodemo Mahjong (J)"
@@ -51,7 +51,7 @@ static void rom_hack(void)
    {
       ngpc_rom.data[0x23] = 0x00;	// Fix rom header
 
-      MDFN_printf("HACK: \"Dokodemo Mahjong (J)\"\n");
+      printf("HACK: \"Dokodemo Mahjong (J)\"\n");
    }
 
    //"Puyo Pop (V05) (JUE)"
@@ -61,7 +61,7 @@ static void rom_hack(void)
       for (i = 0x8F0; i < 0x8FC; i++)
          ngpc_rom.data[i] = 0;
 
-      MDFN_printf("HACK: \"Puyo Pop (V05) (JUE)\"\n");
+      printf("HACK: \"Puyo Pop (V05) (JUE)\"\n");
    }
 
    //"Puyo Pop (V06) (JUE)"
@@ -74,7 +74,7 @@ static void rom_hack(void)
       //pc = 0x200000 + 0x100;
       //for(int x = 0; x < 65536; x++)
       //puts(TLCS900h_disassemble());
-      MDFN_printf("HACK: \"Puyo Pop (V06) (JUE)\"\n");
+      printf("HACK: \"Puyo Pop (V06) (JUE)\"\n");
    }
 
    //"Metal Slug - 2nd Mission (JUE) [!]"
@@ -90,28 +90,28 @@ static void rom_hack(void)
       //that were aren't supposed to be available in Dev-kit mode.
       ngpc_rom.data[0x8DDF8] = 0xF0;	//28DDF7: "RET NZ" -> "RET F"
 
-      MDFN_printf("HACK: \"Metal Slug - 2nd Mission (JUE)\"\n");
+      printf("HACK: \"Metal Slug - 2nd Mission (JUE)\"\n");
    }
 }
 
 static void rom_display_header(void)
 {
-   MDFN_printf(_("Name:    %s\n"), ngpc_rom.name);
-   MDFN_printf(_("System:  "));
+   printf(_("Name:    %s\n"), ngpc_rom.name);
+   printf(_("System:  "));
 
    if(rom_header->mode & 0x10)
-      MDFN_printf(_("Color"));
+      printf(_("Color"));
    else
-      MDFN_printf(_("Greyscale"));
+      printf(_("Greyscale"));
 
-   MDFN_printf("\n");
+   printf("\n");
 
-   MDFN_printf(_("Catalog:  %d (sub %d)\n"),
+   printf(_("Catalog:  %d (sub %d)\n"),
          le16toh(rom_header->catalog),
          rom_header->subCatalog);
 
    //Starting PC
-   MDFN_printf(_("Starting PC:  0x%06X\n"), le32toh(rom_header->startPC) & 0xFFFFFF);
+   printf(_("Starting PC:  0x%06X\n"), le32toh(rom_header->startPC) & 0xFFFFFF);
 }
 
 void rom_loaded(void)

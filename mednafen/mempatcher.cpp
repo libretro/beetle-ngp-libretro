@@ -167,11 +167,6 @@ void MDFNMP_RemoveReadPatches(void)
   MDFNGameInfo->RemoveReadPatches();
 }
 
-static void CheatMemErr(void)
-{
- MDFN_PrintError(_("Error allocating memory for cheat data."));
-}
-
 /* This function doesn't allocate any memory for "name" */
 static int AddCheatEntry(char *name, char *conditions, uint32 addr, uint64 val, uint64 compare, int status, char type, unsigned int length, bool bigendian)
 {
@@ -233,14 +228,12 @@ void MDFN_LoadGameCheats(void *override_ptr)
   fp = override;
  else
  {
-  std::string fn = MDFN_MakeFName(MDFNMKF_CHEAT,0,0).c_str();
+    /* Loading cheats */
 
-  MDFN_printf("\n");
-  MDFN_printf(_("Loading cheats from %s...\n"), fn.c_str());
-  MDFN_indent(1);
+    std::string fn = MDFN_MakeFName(MDFNMKF_CHEAT,0,0).c_str();
 
-  if(!(fp = fopen(fn.c_str(),"rb")))
-     return;
+    if(!(fp = fopen(fn.c_str(),"rb")))
+       return;
  }
 
  if(SeekToOurSection(fp))
@@ -264,8 +257,8 @@ void MDFN_LoadGameCheats(void *override_ptr)
 
    if(tbuf[0] != 'R' && tbuf[0] != 'C' && tbuf[0] != 'S')
    {
-    MDFN_printf(_("Invalid cheat type: %c\n"), tbuf[0]);
-    break;
+      /* Invalid cheat type. */
+      break;
    }
    type = tbuf[0];
    namebuf[0] = 0;
@@ -312,9 +305,8 @@ void MDFN_LoadGameCheats(void *override_ptr)
 
  if(!override)
  {
-  MDFN_printf(_("%lu cheats loaded.\n"), (unsigned long)cheats.size());
-  MDFN_indent(-1);
-  fclose(fp);
+    /* Cheats loaded. */
+    fclose(fp);
  }
 }
 
@@ -449,7 +441,7 @@ int MDFNI_AddCheat(const char *name, uint32 addr, uint64 val, uint64 compare, ch
 
  if(!(t = strdup(name)))
  {
-  CheatMemErr();
+  /* Error allocating memory for cheat data. */
   return(0);
  }
 
