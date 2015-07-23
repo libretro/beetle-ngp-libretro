@@ -39,38 +39,14 @@ enum
 
 #ifdef __cplusplus
 
-class MDFN_PixelFormat
+typedef struct
 {
- public:
-
- MDFN_PixelFormat();
- MDFN_PixelFormat(const unsigned int p_colorspace, const uint8 p_rs, const uint8 p_gs, const uint8 p_bs, const uint8 p_as);
-
- unsigned int bpp;
- unsigned int colorspace;
-
- union
- {
-  uint8 Rshift;  // Bit position of the lowest bit of the red component
-  uint8 Yshift;
- };
-
- union
- {
-  uint8 Gshift;  // [...] green component
-  uint8 Ushift;
-  uint8 Cbshift;
- };
-
- union
- {
-  uint8 Bshift;  // [...] blue component
-  uint8 Vshift;
-  uint8 Crshift;
- };
-
- uint8 Ashift;  // [...] alpha component.
-}; // MDFN_PixelFormat;
+   unsigned int colorspace;
+   uint8 r_shift;
+   uint8 g_shift;
+   uint8 b_shift;
+   uint8 a_shift;
+} MDFN_PixelFormat;
 
 // Supports 32-bit RGBA
 //  16-bit is WIP

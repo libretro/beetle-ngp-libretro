@@ -593,7 +593,13 @@ bool retro_load_game(const struct retro_game_info *info)
    if (!game)
       return false;
 
-   MDFN_PixelFormat pix_fmt(MDFN_COLORSPACE_RGB, 16, 8, 0, 24);
+   MDFN_PixelFormat pix_fmt;
+   pix_fmt.colorspace = MDFN_COLORSPACE_RGB;
+   pix_fmt.r_shift = 16;
+   pix_fmt.g_shift = 8;
+   pix_fmt.b_shift = 0;
+   pix_fmt.a_shift = 24;
+
    memset(&last_pixel_format, 0, sizeof(MDFN_PixelFormat));
    
    surf = new MDFN_Surface(NULL, FB_WIDTH, FB_HEIGHT, FB_WIDTH, pix_fmt);

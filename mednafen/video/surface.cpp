@@ -18,28 +18,6 @@
 #include "../mednafen.h"
 #include "surface.h"
 
-MDFN_PixelFormat::MDFN_PixelFormat()
-{
-   bpp = 0;
-   colorspace = 0;
-
-   Rshift = 0;
-   Gshift = 0;
-   Bshift = 0;
-   Ashift = 0;
-}
-
-MDFN_PixelFormat::MDFN_PixelFormat(const unsigned int p_colorspace, const uint8 p_rs, const uint8 p_gs, const uint8 p_bs, const uint8 p_as)
-{
-   bpp = 16;
-   colorspace = p_colorspace;
-
-   Rshift = p_rs;
-   Gshift = p_gs;
-   Bshift = p_bs;
-   Ashift = p_as;
-}
-
 MDFN_Surface::MDFN_Surface()
 {
    memset(&format, 0, sizeof(format));
@@ -58,13 +36,12 @@ MDFN_Surface::MDFN_Surface(void *const p_pixels, const uint32 p_width, const uin
 void MDFN_Surface::Init(void *const p_pixels, const uint32 p_width, const uint32 p_height, const uint32 p_pitchinpix, const MDFN_PixelFormat &nf)
 {
    void *rpix = NULL;
-   assert(nf.bpp == 16 || nf.bpp == 32);
 
    format = nf;
 
    pixels16 = NULL;
 
-   if(!(rpix = calloc(1, p_pitchinpix * p_height * (nf.bpp / 8))))
+   if(!(rpix = calloc(1, p_pitchinpix * p_height * 2)))
       throw(1);
 
    pixels16 = (uint16 *)rpix;
