@@ -240,13 +240,7 @@ void MDFN_LoadGameCheats(void *override_ptr)
   MDFN_indent(1);
 
   if(!(fp = fopen(fn.c_str(),"rb")))
-  {
-   ErrnoHolder ene(errno);
-
-   MDFN_printf(_("Error opening file: %s\n"), ene.StrError());
-   MDFN_indent(-1);
-   return;
-  }
+     return;
  }
 
  if(SeekToOurSection(fp))

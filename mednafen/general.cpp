@@ -138,43 +138,32 @@ void MDFN_GetFilePathComponents(const std::string &file_path,
 
 std::string MDFN_EvalFIP(const std::string &dir_path, const std::string &rel_path, bool skip_safety_check)
 {
-   char slash;
 #ifdef _WIN32
-   slash = '\\';
+   char slash = '\\';
 #else
-   slash = '/';
+   char slash = '/';
 #endif
-
-   if(!skip_safety_check && !MDFN_IsFIROPSafe(rel_path))
-      throw MDFN_Error(0, _("Referenced path \"%s\" is potentially unsafe.  See \"filesys.untrusted_fip_check\" setting.\n"), rel_path.c_str());
 
    if(IsAbsolutePath(rel_path.c_str()))
       return(rel_path);
-   else
-      return(dir_path + slash + rel_path);
+   return(dir_path + slash + rel_path);
 }
 
 const char * GetFNComponent(const char *str)
 {
-   const char *tp1;
-
 #ifdef _WIN32
-   tp1 = ((char *)strrchr(str,'\\'));
-
-   const char *tp3;
-
-   tp3 = ((char *)strrchr(str,'/'));
+   const char *tp1 = ((char *)strrchr(str,'\\'));
+   const char *tp3 = ((char *)strrchr(str,'/'));
 
    if (tp1<tp3)
       tp1 = tp3;
 #else
-   tp1 = ((char *)strrchr(str,'/'));
+   const char *tp1 = ((char *)strrchr(str,'/'));
 #endif
 
    if (tp1)
       return (tp1+1);
-   else
-      return (str);
+   return (str);
 }
 
 // Remove whitespace from beginning of string
