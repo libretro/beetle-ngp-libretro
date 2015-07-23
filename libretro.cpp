@@ -177,7 +177,7 @@ void reset(void)
 
 static int Load(const char *name, MDFNFILE *fp)
 {
-   if(!(ngpc_rom.data = (uint8 *)MDFN_malloc(GET_FSIZE_PTR(fp), _("Cart ROM"))))
+   if(!(ngpc_rom.data = (uint8 *)malloc(GET_FSIZE_PTR(fp))))
       return(0);
 
    ngpc_rom.length = GET_FSIZE_PTR(fp);

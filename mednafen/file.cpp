@@ -37,7 +37,7 @@ bool MDFNFILE::MakeMemWrapAndClose(void *fp)
    f_size = ::ftell((FILE *)fp);
    ::fseek((FILE *)fp, 0, SEEK_SET);
 
-   if (!(f_data = (uint8*)MDFN_malloc(f_size, _("file read buffer"))))
+   if (!(f_data = (uint8*)malloc(f_size)))
       goto fail;
    ::fread(f_data, 1, f_size, (FILE *)fp);
 
@@ -118,14 +118,12 @@ uint64 MDFNFILE::fread(void *ptr, size_t element_size, size_t nmemb)
 
       return(ak / element_size);
    }
-   else
-   {
-      memcpy((uint8*)ptr, f_data + location, total);
 
-      location += total;
+   memcpy((uint8*)ptr, f_data + location, total);
 
-      return nmemb;
-   }
+   location += total;
+
+   return nmemb;
 }
 
 int MDFNFILE::fseek(int64 offset, int whence)
@@ -197,41 +195,4 @@ char *MDFNFILE::fgets(char *s, int buffer_size)
       s[pos] = 0;
 
    return s;
-}
-
-static INLINE bool MDFN_DumpToFileReal(const char *filename, int compress, const std::vector<PtrLengthPair> &pearpairs)
-{
-   FILE *fp = fopen(filename, "wb");
-
-   if (!fp)
-      return 0;
-
-   for(unsigned int i = 0; i < pearpairs.size(); i++)
-   {
-      const void *data = pearpairs[i].GetData();
-      const uint64 length = pearpairs[i].GetLength();
-
-      if (fwrite(data, 1, length, fp) != length)
-      {
-         fclose(fp);
-         return 0;
-      }
-   }
-
-   if (fclose(fp) == EOF)
-      return 0;
-
-   return 1;
-}
-
-bool MDFN_DumpToFile(const char *filename, int compress, const std::vector<PtrLengthPair> &pearpairs)
-{
-   return (MDFN_DumpToFileReal(filename, compress, pearpairs));
-}
-
-bool MDFN_DumpToFile(const char *filename, int compress, const void *data, uint64 length)
-{
-   std::vector<PtrLengthPair> tmp_pairs;
-   tmp_pairs.push_back(PtrLengthPair(data, length));
-   return (MDFN_DumpToFileReal(filename, compress, tmp_pairs));
 }
