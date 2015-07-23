@@ -18,7 +18,6 @@ static retro_input_state_t input_state_cb;
 
 static bool overscan;
 static double last_sound_rate;
-static MDFN_PixelFormat last_pixel_format;
 
 static MDFN_Surface *surf;
 
@@ -86,8 +85,6 @@ static void Emulate(EmulateSpecStruct *espec)
    espec->DisplayRect.w = 160;
    espec->DisplayRect.h = 152;
 
-   if(espec->VideoFormatChanged)
-      ngpgfx_set_pixel_format(NGPGfx);
 
    if(espec->SoundFormatChanged)
       MDFNNGPC_SetSoundRate(espec->SoundRate);
@@ -593,20 +590,12 @@ bool retro_load_game(const struct retro_game_info *info)
    if (!game)
       return false;
 
-   MDFN_PixelFormat pix_fmt;
-   pix_fmt.colorspace = MDFN_COLORSPACE_RGB;
-   pix_fmt.r_shift = 16;
-   pix_fmt.g_shift = 8;
-   pix_fmt.b_shift = 0;
-   pix_fmt.a_shift = 24;
-
-   memset(&last_pixel_format, 0, sizeof(MDFN_PixelFormat));
-   
-   surf = new MDFN_Surface(NULL, FB_WIDTH, FB_HEIGHT, FB_WIDTH, pix_fmt);
+   surf = new MDFN_Surface(NULL, FB_WIDTH, FB_HEIGHT, FB_WIDTH);
 
    hookup_ports(true);
 
    check_variables();
+   ngpgfx_set_pixel_format(NGPGfx);
 
    return game;
 }
@@ -680,13 +669,6 @@ void retro_run()
    spec.SoundBufSize = 0;
    spec.VideoFormatChanged = false;
    spec.SoundFormatChanged = false;
-
-   if (memcmp(&last_pixel_format, &spec.surface->format, sizeof(MDFN_PixelFormat)))
-   {
-      spec.VideoFormatChanged = TRUE;
-
-      last_pixel_format = spec.surface->format;
-   }
 
    if (spec.SoundRate != last_sound_rate)
    {
