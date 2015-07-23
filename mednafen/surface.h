@@ -47,15 +47,12 @@ typedef struct
    uint8_t a_shift;
 } MDFN_PixelFormat;
 
-// Supports 32-bit RGBA
-//  16-bit is WIP
 typedef struct
 {
    uint16_t *pixels;
-   /* w, h, and pitch32 should always be > 0 */
    int32_t width;
    int32_t height;
-   int32_t pitch;	// New name, new code should use this.
+   int32_t pitch;
 } MDFN_Surface;
 
 #ifdef __cplusplus
