@@ -31,8 +31,6 @@
 #include "msvc_compat.h"
 #endif
 
-#include "error.h"
-
 static uint8 **RAMPtrs = NULL;
 static uint32 PageSize;
 static uint32 NumPages;

@@ -23,7 +23,6 @@
 
 #include "file.h"
 #include "general.h"
-#include "error.h"
 
 // This function should ALWAYS close the system file "descriptor"(gzip library, zip library, or FILE *) it's given,
 // even if it errors out.

@@ -28,7 +28,6 @@
 #include "state.h"
 
 #include "md5.h"
-#include "error.h"
 
 using namespace std;
 
