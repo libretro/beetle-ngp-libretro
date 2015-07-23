@@ -15,26 +15,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "mednafen.h"
+#include <stdio.h>
 #include <errno.h>
 #include <string.h>
-#include <string>
+#include "include/boolean.h"
 #include "settings.h"
 
 uint32_t setting_ngp_language = 0;
 
-bool MDFN_SaveSettings(const char *path)
-{
-   return(1);
-}
-
-uint64 MDFN_GetSettingUI(const char *name)
+uint64_t MDFN_GetSettingUI(const char *name)
 {
    fprintf(stderr, "unhandled setting UI: %s\n", name);
    return 0;
 }
 
-int64 MDFN_GetSettingI(const char *name)
+int64_t MDFN_GetSettingI(const char *name)
 {
    fprintf(stderr, "unhandled setting I: %s\n", name);
    return 0;
@@ -64,22 +59,21 @@ bool MDFN_GetSettingB(const char *name)
    return 0;
 }
 
-extern std::string retro_base_directory;
-extern std::string retro_base_name;
+extern char retro_base_directory[1024];
 
-std::string MDFN_GetSettingS(const char *name)
+const char *MDFN_GetSettingS(const char *name)
 {
 #if defined(WANT_GBA_EMU)
    if (!strcmp("gba.bios", name))
-      return setting_gba_hle ? std::string("") : std::string("gba_bios.bin");
+      return setting_gba_hle ? "" : "gba_bios.bin";
 #elif defined(WANT_PCFX_EMU)
    if (!strcmp("pcfx.bios", name))
-      return std::string("pcfx.bios");
+      return "pcfx.bios";
    if (!strcmp("pcfx.fxscsi", name))
-      return std::string("pcfx.fxscsi");
+      return "pcfx.fxscsi";
 #elif defined(WANT_WSWAN_EMU)
    if (!strcmp("wswan.name", name))
-      return std::string("Mednafen");
+      return "Mednafen";
 #endif
    /* FILESYS */
    if (!strcmp("filesys.path_firmware", name))
@@ -92,10 +86,6 @@ std::string MDFN_GetSettingS(const char *name)
       return retro_base_directory;
    if (!strcmp("filesys.path_cheat", name))
       return retro_base_directory;
-   if (!strcmp("filesys.fname_state", name))
-      return retro_base_name + std::string(".sav");
-   if (!strcmp("filesys.fname_sav", name))
-      return retro_base_name + std::string(".bsv");
    fprintf(stderr, "unhandled setting S: %s\n", name);
    return 0;
 }
@@ -110,11 +100,7 @@ bool MDFNI_SetSettingB(const char *name, bool value)
    return false;
 }
 
-bool MDFNI_SetSettingUI(const char *name, uint64 value)
+bool MDFNI_SetSettingUI(const char *name, uint64_t value)
 {
    return false;
-}
-
-void MDFNI_DumpSettingsDef(const char *path)
-{
 }

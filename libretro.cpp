@@ -27,9 +27,9 @@ static void hookup_ports(bool force);
 
 static bool initial_ports_hookup = false;
 
-std::string retro_base_directory;
+char retro_base_directory[1024];
 std::string retro_base_name;
-std::string retro_save_directory;
+char retro_save_directory[1024];
 
 //---------------------------------------------------------------------------
 // NEOPOP : Emulator as in Dreamland
@@ -457,15 +457,19 @@ void retro_init(void)
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &dir) && dir)
    {
-      retro_base_directory = dir;
+      std::string retro_base_dir_tmp;
+
+      retro_base_dir_tmp = dir;
       // Make sure that we don't have any lingering slashes, etc, as they break Windows.
-      size_t last = retro_base_directory.find_last_not_of("/\\");
+      size_t last = retro_base_dir_tmp.find_last_not_of("/\\");
       if (last != std::string::npos)
          last++;
 
-      retro_base_directory = retro_base_directory.substr(0, last);
+      retro_base_dir_tmp= retro_base_dir_tmp.substr(0, last);
 
-      MDFNI_Initialize(retro_base_directory.c_str());
+      strcpy(retro_base_directory, retro_base_dir_tmp.c_str());
+
+      MDFNI_Initialize(retro_base_directory);
    }
    else
    {
@@ -477,21 +481,25 @@ void retro_init(void)
    
    if (environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &dir) && dir)
    {
+      std::string retro_save_dir_tmp;
+
 	  // If save directory is defined use it, otherwise use system directory
-      retro_save_directory = *dir ? dir : retro_base_directory;
+      retro_save_dir_tmp = *dir ? dir : retro_base_directory;
       // Make sure that we don't have any lingering slashes, etc, as they break Windows.
-      size_t last = retro_save_directory.find_last_not_of("/\\");
+      size_t last = retro_save_dir_tmp.find_last_not_of("/\\");
       if (last != std::string::npos)
          last++;
 
-      retro_save_directory = retro_save_directory.substr(0, last);      
+      retro_save_dir_tmp = retro_save_dir_tmp.substr(0, last);      
+
+      strcpy(retro_save_directory, retro_save_dir_tmp.c_str());
    }
    else
    {
       /* TODO: Add proper fallback */
       if (log_cb)
          log_cb(RETRO_LOG_WARN, "Save directory is not defined. Fallback on using SYSTEM directory ...\n");
-	  retro_save_directory = retro_base_directory;
+      strcpy(retro_save_directory, retro_base_directory);
    }      
 
 #if defined(FRONTEND_SUPPORTS_RGB565)
@@ -879,7 +887,7 @@ std::string MDFN_MakeFName(MakeFName_Type type, int id1, const char *cd1)
    switch (type)
    {
       case MDFNMKF_SAV:
-         ret = retro_save_directory +slash + retro_base_name +
+         ret = retro_save_directory + slash + retro_base_name +
             std::string(".") +
 #ifndef _XBOX
 	    md5_context::asciistr(MDFNGameInfo->MD5, 0) + std::string(".") +
