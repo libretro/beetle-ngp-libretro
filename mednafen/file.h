@@ -19,16 +19,10 @@ class MDFNFILE
 
 	bool Open(const char *path, const void *known_ext, const char *purpose = NULL, const bool suppress_notfound_pe = 0);
 
-   bool ApplyIPS(void*);
 	bool Close(void);
 
 	uint64_t fread(void *ptr, size_t size, size_t nmemb);
 	int fseek(int64_t offset, int whence);
-
-	inline uint64_t ftell(void)
-	{
-	 return(location);
-	}
 
 	int read32le(uint32_t *Bufo);
 	int read16le(uint16_t *Bufo);
@@ -40,7 +34,7 @@ class MDFNFILE
 
 	private:
 
-        int64_t location;
+   int64_t location;
 
 	bool MakeMemWrapAndClose(void *tz);
 };

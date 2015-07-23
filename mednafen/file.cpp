@@ -25,13 +25,6 @@
 #include "general.h"
 #include "error.h"
 
-bool MDFNFILE::ApplyIPS(void *unused)
-{
-   (void)unused;
-
-   return 1;
-}
-
 // This function should ALWAYS close the system file "descriptor"(gzip library, zip library, or FILE *) it's given,
 // even if it errors out.
 bool MDFNFILE::MakeMemWrapAndClose(void *fp)
