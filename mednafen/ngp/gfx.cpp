@@ -20,7 +20,7 @@
 #include "TLCS-900h/TLCS900h_registers.h"
 #include "../masmem.h"
 #include "../state.h"
-#include "../video/surface.h"
+#include "../video.h"
 
 static const unsigned char mirrored[] = {
     0x00, 0x40, 0x80, 0xc0, 0x10, 0x50, 0x90, 0xd0,
@@ -616,7 +616,7 @@ bool ngpgfx_draw(ngpgfx_t *gfx, void *data, bool skip)
    /* Draw the scanline */
    if (gfx->raster_line < SCREEN_HEIGHT && !skip)
    {
-      uint16_t *dest = surface->pixels16 + surface->pitchinpix * gfx->raster_line;
+      uint16_t *dest = surface->pixels + surface->pitch * gfx->raster_line;
 
       if (!gfx->K2GE_MODE)
          draw_scanline_colour(gfx, dest, gfx->layer_enable, gfx->raster_line);

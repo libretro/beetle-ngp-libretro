@@ -590,7 +590,22 @@ bool retro_load_game(const struct retro_game_info *info)
    if (!game)
       return false;
 
-   surf = new MDFN_Surface(NULL, FB_WIDTH, FB_HEIGHT, FB_WIDTH);
+   surf = (MDFN_Surface*)calloc(1, sizeof(*surf));
+   
+   if (!surf)
+      return false;
+   
+   surf->width  = FB_WIDTH;
+   surf->height = FB_HEIGHT;
+   surf->pitch  = FB_WIDTH;
+
+   surf->pixels = (uint16_t*)calloc(1, FB_WIDTH * FB_HEIGHT * 2);
+
+   if (!surf->pixels)
+   {
+      free(surf);
+      return false;
+   }
 
    hookup_ports(true);
 
@@ -649,7 +664,6 @@ void retro_run()
    const int16 *SoundBuf;
    static int16_t sound_buf[0x10000];
    static MDFN_Rect rects[FB_MAX_HEIGHT];
-   const uint16_t *pix;
    bool updated = false;
    EmulateSpecStruct spec = {0};
 
@@ -687,8 +701,7 @@ void retro_run()
    width  = spec.DisplayRect.w;
    height = spec.DisplayRect.h;
 
-   pix = surf->pixels16;
-   video_cb(pix, width, height, FB_WIDTH << 1);
+   video_cb(surf->pixels, width, height, FB_WIDTH << 1);
 
    video_frames++;
    audio_frames += spec.SoundBufSize;
@@ -721,9 +734,10 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
    info->geometry.aspect_ratio = MEDNAFEN_CORE_GEOMETRY_ASPECT_RATIO;
 }
 
-void retro_deinit()
+void retro_deinit(void)
 {
-   delete surf;
+   if (surf)
+      free(surf);
    surf = NULL;
 
    if (log_cb)

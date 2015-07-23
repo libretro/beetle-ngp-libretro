@@ -1,6 +1,8 @@
 #ifndef __MDFN_SURFACE_H
 #define __MDFN_SURFACE_H
 
+#include <stdint.h>
+
 #if defined(FRONTEND_SUPPORTS_RGB565)
 /* 16bit color - RGB565 */
 #define RED_MASK  0xf800
@@ -27,53 +29,37 @@
 #define MAKECOLOR(r, g, b, a) (((r >> RED_EXPAND) << RED_SHIFT) | ((g >> GREEN_EXPAND) << GREEN_SHIFT) | ((b >> BLUE_EXPAND) << BLUE_SHIFT))
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct
 {
- int32 x, y, w, h;
+ int32_t x, y, w, h;
 } MDFN_Rect;
-
-enum
-{
- MDFN_COLORSPACE_RGB = 0,
-};
-
-#ifdef __cplusplus
 
 typedef struct
 {
    unsigned int colorspace;
-   uint8 r_shift;
-   uint8 g_shift;
-   uint8 b_shift;
-   uint8 a_shift;
+   uint8_t r_shift;
+   uint8_t g_shift;
+   uint8_t b_shift;
+   uint8_t a_shift;
 } MDFN_PixelFormat;
 
 // Supports 32-bit RGBA
 //  16-bit is WIP
-class MDFN_Surface //typedef struct
+typedef struct
 {
- public:
+   uint16_t *pixels;
+   /* w, h, and pitch32 should always be > 0 */
+   int32_t width;
+   int32_t height;
+   int32_t pitch;	// New name, new code should use this.
+} MDFN_Surface;
 
- MDFN_Surface();
- MDFN_Surface(void *const p_pixels, const uint32 p_width, const uint32 p_height, const uint32 p_pitchinpix);
-
- ~MDFN_Surface();
-
- uint16 *pixels16;
-
- // w, h, and pitch32 should always be > 0
- int32 w;
- int32 h;
-
- union
- {
-  int32 pitch32; // In pixels, not in bytes.
-  int32 pitchinpix;	// New name, new code should use this.
- };
-
- private:
- void Init(void *const p_pixels, const uint32 p_width, const uint32 p_height, const uint32 p_pitchinpix);
-};
+#ifdef __cplusplus
+}
 #endif
 
 #endif
