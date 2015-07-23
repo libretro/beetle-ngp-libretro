@@ -5,8 +5,6 @@
 
 #include "include/retro_inline.h"
 
-#include "state-common.h"
-
 typedef struct
 {
    uint8_t *data;
