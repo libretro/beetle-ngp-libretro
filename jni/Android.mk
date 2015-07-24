@@ -89,7 +89,6 @@ FLAGS += -DNEED_DEINTERLACER
 endif
 
 MEDNAFEN_SOURCES := $(MEDNAFEN_DIR)/mednafen.cpp \
-	$(MEDNAFEN_DIR)/math_ops.cpp \
 	$(MEDNAFEN_DIR)/general.cpp \
 	$(MEDNAFEN_DIR)/state.cpp \
 	$(MEDNAFEN_DIR)/mempatcher.cpp \
