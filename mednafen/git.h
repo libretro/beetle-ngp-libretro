@@ -110,7 +110,7 @@ struct CheatFormatStruct
  const char *FullName;		//"Game Genie", "GameShark", "Pro Action Catplay", etc.
  const char *Description;	// Whatever?
 
- bool (*DecodeCheat)(const std::string& cheat_string, MemoryPatch* patch);	// *patch should be left as initialized by MemoryPatch::MemoryPatch(), unless this is the
+ bool (*DecodeCheat)(const char * cheat_string, MemoryPatch* patch);	// *patch should be left as initialized by MemoryPatch::MemoryPatch(), unless this is the
 										// second(or third or whatever) part of a multipart cheat.
 										//
 										// Will throw an std::exception(or derivative) on format error.

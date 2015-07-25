@@ -15,181 +15,161 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "mednafen.h"
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#include <errno.h>
-#include "include/trio/trio.h"
 
 #include "file.h"
-#include "general.h"
+#include "mednafen-endian.h"
 
-// This function should ALWAYS close the system file "descriptor"(gzip library, zip library, or FILE *) it's given,
-// even if it errors out.
-bool MDFNFILE::MakeMemWrapAndClose(void *fp)
-{
-   bool ret = FALSE;
-
-   location = 0;
-
-   ::fseek((FILE *)fp, 0, SEEK_END);
-   f_size = ::ftell((FILE *)fp);
-   ::fseek((FILE *)fp, 0, SEEK_SET);
-
-   if (!(f_data = (uint8*)malloc(f_size)))
-      goto fail;
-   ::fread(f_data, 1, f_size, (FILE *)fp);
-
-   ret = TRUE;
-fail:
-   fclose((FILE*)fp);
-   return ret;
-}
-
-MDFNFILE::MDFNFILE()
-{
-   f_data = NULL;
-   f_size = 0;
-   f_ext = NULL;
-
-   location = 0;
-}
-
-MDFNFILE::MDFNFILE(const char *path)
-{
-   Open(path);
-}
-
-
-MDFNFILE::~MDFNFILE()
-{
-   Close();
-}
-
-
-bool MDFNFILE::Open(const char *path)
+struct MDFNFILE *file_open(const char *path)
 {
    const char *ld;
-   FILE *fp = fopen(path, "rb");
+   FILE *fp;
+   struct MDFNFILE *file = (struct MDFNFILE*)calloc(1, sizeof(*file));
+
+   if (!file)
+      return NULL;
+
+   fp = fopen(path, "rb");
 
    if (!fp)
-      return FALSE;
+      goto error;
 
-   ::fseek(fp, 0, SEEK_SET);
+   fseek(fp, 0, SEEK_SET);
+   fseek((FILE *)fp, 0, SEEK_END);
+   file->size = ftell((FILE *)fp);
+   fseek((FILE *)fp, 0, SEEK_SET);
 
-   if (!MakeMemWrapAndClose(fp))
-      return FALSE;
+   if (!(file->data = (uint8_t*)malloc(file->size)))
+      goto error;
+   fread(file->data, 1, file->size, (FILE *)fp);
 
    ld = (const char*)strrchr(path, '.');
-   f_ext = strdup(ld ? ld + 1 : "");
+   file->ext = strdup(ld ? ld + 1 : "");
 
-   return(TRUE);
+   return file;
+
+error:
+   if (fp)
+      fclose((FILE*)fp);
+   if (file)
+      free(file);
+   return NULL;
 }
 
-bool MDFNFILE::Close(void)
+bool file_close(struct MDFNFILE *file)
 {
-   if (f_ext)
-      free(f_ext);
-   f_ext = 0;
-
-   if (f_data)
-      free(f_data);
-   f_data = 0;
-
-   return(1);
-}
-
-uint64 MDFNFILE::fread(void *ptr, size_t element_size, size_t nmemb)
-{
-   uint32 total = element_size * nmemb;
-
-   if (location >= f_size)
+   if (!file)
       return 0;
 
-   if ((location + total) > f_size)
+   if (file->ext)
+      free(file->ext);
+   file->ext = NULL;
+
+   if (file->data)
+      free(file->data);
+   file->data = NULL;
+
+   free(file);
+
+   return 1;
+}
+
+uint64_t file_read(struct MDFNFILE *file, void *ptr,
+      size_t element_size, size_t nmemb)
+{
+   uint32_t total = element_size * nmemb;
+
+   if (file->location >= file->size)
+      return 0;
+
+   if ((file->location + total) > file->size)
    {
-      int64 ak = f_size - location;
+      int64_t ak = file->size - file->location;
 
-      memcpy((uint8*)ptr, f_data + location, ak);
+      memcpy((uint8_t*)ptr, file->data + file->location, ak);
 
-      location = f_size;
+      file->location = file->size;
 
       return(ak / element_size);
    }
 
-   memcpy((uint8*)ptr, f_data + location, total);
+   memcpy((uint8_t*)ptr, file->data + file->location, total);
 
-   location += total;
+   file->location += total;
 
    return nmemb;
 }
 
-int MDFNFILE::fseek(int64 offset, int whence)
+int file_seek(struct MDFNFILE *file, int64_t offset, int whence)
 {
    switch(whence)
    {
       case SEEK_SET:
-         if (offset >= f_size)
+         if (offset >= file->size)
             return -1;
 
-         location = offset;
+         file->location = offset;
          break;
       case SEEK_CUR:
-         if ((offset + location) > f_size)
+         if ((offset + file->location) > file->size)
             return -1;
 
-         location += offset;
+         file->location += offset;
          break;
    }    
 
    return 0;
 }
 
-int MDFNFILE::read16le(uint16 *val)
+int file_read16le(struct MDFNFILE *file, uint16_t *val)
 {
-   if ((location + 2) > f_size)
+   if ((file->location + 2) > file->size)
       return 0;
 
-   *val = MDFN_de16lsb(f_data + location);
+   *val = MDFN_de16lsb(file->data + file->location);
 
-   location += 2;
+   file->location += 2;
 
    return 1;
 }
 
-int MDFNFILE::read32le(uint32 *val)
+int file_read32le(struct MDFNFILE *file, uint32_t *val)
 {
-   if ((location + 4) > f_size)
+   if ((file->location + 4) > file->size)
       return 0;
 
-   *val = MDFN_de32lsb(f_data + location);
+   *val = MDFN_de32lsb(file->data + file->location);
 
-   location += 4;
+   file->location += 4;
 
    return 1;
 }
 
-char *MDFNFILE::fgets(char *s, int buffer_size)
+char *file_fgets(struct MDFNFILE *file, char *s, int len)
 {
    int pos = 0;
 
-   if (!buffer_size)
+   if (!len)
       return(NULL);
 
-   if (location >= buffer_size)
+   if (file->location >= len)
       return(NULL);
 
-   while(pos < (buffer_size - 1) && location < buffer_size)
+   while(pos < (len - 1) && file->location < len)
    {
-      int v = f_data[location];
+      int v = file->data[file->location];
       s[pos] = v;
-      location++;
+      file->location++;
       pos++;
       if (v == '\n')
          break;
    }
 
-   if (buffer_size)
+   if (len)
       s[pos] = 0;
 
    return s;
