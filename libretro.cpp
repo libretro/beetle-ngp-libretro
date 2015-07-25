@@ -17,7 +17,6 @@ static retro_input_poll_t input_poll_cb;
 static retro_input_state_t input_state_cb;
 
 static bool overscan;
-static double last_sound_rate;
 
 static MDFN_Surface *surf;
 
@@ -86,8 +85,6 @@ static void Emulate(EmulateSpecStruct *espec)
    espec->DisplayRect.h = 152;
 
 
-   if(espec->SoundFormatChanged)
-      MDFNNGPC_SetSoundRate(espec->SoundRate);
 
 
    NGPJoyLatch = *chee;
@@ -618,6 +615,7 @@ bool retro_load_game(const struct retro_game_info *info)
 
    check_variables();
    ngpgfx_set_pixel_format(NGPGfx);
+   MDFNNGPC_SetSoundRate(44100);
 
    return game;
 }
@@ -691,12 +689,6 @@ void retro_run()
    spec.SoundBufSize = 0;
    spec.VideoFormatChanged = false;
    spec.SoundFormatChanged = false;
-
-   if (spec.SoundRate != last_sound_rate)
-   {
-      spec.SoundFormatChanged = true;
-      last_sound_rate = spec.SoundRate;
-   }
 
    Emulate(&spec);
 
