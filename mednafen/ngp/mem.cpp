@@ -246,17 +246,37 @@ uint16_t loadW(uint32 address)
       return(loadB(address) | (loadB(address + 1) << 8));
 
    if(FastReadMap[address >> 16])
-      return(LoadU16_LE((uint16_t*)&FastReadMap[address >> 16][address]));
+   {
+      uint16_t *ptr16 = (uint16_t*)&FastReadMap[address >> 16][address];
+#ifdef MSB_FIRST
+      return LoadU16_RBO(ptr16);
+#else
+      return *ptr16;
+#endif
+   }
 
    uint16_t* ptr = (uint16_t*)translate_address_read(address);
    if(ptr)
-      return LoadU16_LE(ptr);
+   {
+#ifdef MSB_FIRST
+      return LoadU16_RBO(ptr);
+#else
+      return *ptr;
+#endif
+   }
 
    if(address >= 0x8000 && address <= 0xbfff)
       return(ngpgfx_read16(NGPGfx, address));
 
    if(address >= 0x4000 && address <= 0x7fff)
-      return(LoadU16_LE((uint16_t *)(CPUExRAM + address - 0x4000)));
+   {
+      uint16_t *ptr16 = (uint16_t *)(CPUExRAM + address - 0x4000);
+#ifdef MSB_FIRST
+      return LoadU16_RBO(ptr16);
+#else
+      return *ptr16;
+#endif
+   }
 
    if(address == 0x50)
       return(SC0BUF);
