@@ -69,28 +69,6 @@ void Endian_A64_Swap(void *src, uint32_t nelements)
    }
 }
 
-void Endian_A16_NE_to_LE(void *src, uint32_t nelements)
-{
-#ifdef MSB_FIRST
-   Endian_A16_Swap(src, nelements);
-#endif
-}
-
-void Endian_A32_NE_to_LE(void *src, uint32_t nelements)
-{
-#ifdef MSB_FIRST
-   Endian_A32_Swap(src, nelements);
-#endif
-}
-
-void Endian_A64_NE_to_LE(void *src, uint32_t nelements)
-{
-#ifdef MSB_FIRST
-   Endian_A64_Swap(src, nelements);
-#endif
-}
-
-
 void Endian_A16_LE_to_NE(void *src, uint32_t nelements)
 {
 #ifdef MSB_FIRST
@@ -171,34 +149,20 @@ void FlipByteOrder(uint8_t *src, uint32_t count)
    uint8_t *start=src;
    uint8_t *end=src+count-1;
 
-   if((count&1) || !count)        return;         /* This shouldn't happen. */
+   if((count&1) || !count)
+      return; /* This shouldn't happen. */
 
    count >>= 1;
 
    while(count--)
    {
-      uint8_t tmp;
+      uint8_t tmp = *end;
 
-      tmp=*end;
       *end=*start;
       *start=tmp;
       end--;
       start++;
    }
-}
-
-void Endian_V_LE_to_NE(void *src, uint32_t bytesize)
-{
-#ifdef MSB_FIRST
-   FlipByteOrder((uint8_t *)src, bytesize);
-#endif
-}
-
-void Endian_V_NE_to_LE(void *src, uint32_t bytesize)
-{
-#ifdef MSB_FIRST
-   FlipByteOrder((uint8_t *)src, bytesize);
-#endif
 }
 
 int write16le(uint16_t b, FILE *fp)
