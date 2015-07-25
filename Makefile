@@ -256,44 +256,12 @@ ifeq ($(NEED_CRC32), 1)
 	LIBRETRO_SOURCES += scrc32.cpp
 endif
 
-ifeq ($(NEED_DEINTERLACER), 1)
-   FLAGS += -DNEED_DEINTERLACER
-endif
-
-ifeq ($(NEED_SCSI_CD), 1)
-   CDROM_SOURCES += $(MEDNAFEN_DIR)/cdrom/scsicd.cpp
-endif
-
-ifeq ($(NEED_CD), 1)
-CDROM_SOURCES += $(MEDNAFEN_DIR)/cdrom/CDAccess.cpp \
-	$(MEDNAFEN_DIR)/cdrom/CDAccess_Image.cpp \
-	$(MEDNAFEN_DIR)/cdrom/CDAccess_CCD.cpp \
-	$(MEDNAFEN_DIR)/cdrom/CDUtility.cpp \
-	$(MEDNAFEN_DIR)/cdrom/lec.cpp \
-	$(MEDNAFEN_DIR)/cdrom/SimpleFIFO.cpp \
-	$(MEDNAFEN_DIR)/cdrom/audioreader.cpp \
-	$(MEDNAFEN_DIR)/cdrom/galois.cpp \
-	$(MEDNAFEN_DIR)/cdrom/recover-raw.cpp \
-	$(MEDNAFEN_DIR)/cdrom/l-ec.cpp \
-	$(MEDNAFEN_DIR)/cdrom/crc32.cpp \
-	$(MEDNAFEN_DIR)/cdrom/cdromif.cpp
-   FLAGS += -DNEED_CD
-endif
-
-ifeq ($(NEED_TREMOR), 1)
-   TREMOR_SRC := $(wildcard $(MEDNAFEN_DIR)/tremor/*.c)
-   FLAGS += -DNEED_TREMOR
-endif
-
-
 MEDNAFEN_SOURCES := $(MEDNAFEN_DIR)/mednafen.cpp \
 	$(MEDNAFEN_DIR)/general.cpp \
 	$(MEDNAFEN_DIR)/state.cpp \
-	$(CDROM_SOURCES) \
 	$(MEDNAFEN_DIR)/mempatcher.cpp \
 	$(RESAMPLER_SOURCES) \
 	$(MEDNAFEN_DIR)/sound/Stereo_Buffer.cpp \
-	$(OKIADPCM_SOURCES) \
 	$(MEDNAFEN_DIR)/md5.cpp
 
 MEDNAFEN_SOURCES_C := \

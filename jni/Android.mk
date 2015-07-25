@@ -27,10 +27,6 @@ MEDNAFEN_LIBRETRO_DIR := ..
 
 LOCAL_MODULE    := libretro
 
-# If you have a system with 1GB RAM or more - cache the whole 
-# CD for CD-based systems in order to prevent file access delays/hiccups
-CACHE_CD = 0
-
 core = ngp
 NEED_BPP = 16
 WANT_NEW_API = 1
@@ -94,7 +90,6 @@ MEDNAFEN_SOURCES := $(MEDNAFEN_DIR)/mednafen.cpp \
 	$(MEDNAFEN_DIR)/mempatcher.cpp \
 	$(MEDNAFEN_DIR)/sound/Blip_Buffer.cpp \
 	$(MEDNAFEN_DIR)/sound/Stereo_Buffer.cpp \
-	$(OKIADPCM_SOURCES) \
 	$(MEDNAFEN_DIR)/md5.cpp
 
 MEDNAFEN_SOURCES_C := \
@@ -106,7 +101,7 @@ LIBRETRO_SOURCES := $(MEDNAFEN_LIBRETRO_DIR)/libretro.cpp $(THREAD_STUBS)
 
 SOURCES_C := 	$(TREMOR_SRC) $(LIBRETRO_SOURCES_C) $(MEDNAFEN_DIR)/trio/trio.c $(MEDNAFEN_DIR)/trio/triostr.c $(THREAD_SOURCES) $(MEDNAFEN_SOURCES_C)
 
-LOCAL_SRC_FILES += $(LIBRETRO_SOURCES) $(CORE_SOURCES) $(CORE_SOURCES_C) $(MEDNAFEN_SOURCES) $(CDROM_SOURCES) $(SCSI_CD_SOURCES) $(HW_CPU_SOURCES) $(HW_MISC_SOURCES) $(HW_SOUND_SOURCES) $(HW_VIDEO_SOURCES) $(SOURCES_C) $(CORE_CD_SOURCES)
+LOCAL_SRC_FILES += $(LIBRETRO_SOURCES) $(CORE_SOURCES) $(CORE_SOURCES_C) $(MEDNAFEN_SOURCES) $(HW_CPU_SOURCES) $(HW_MISC_SOURCES) $(HW_SOUND_SOURCES) $(HW_VIDEO_SOURCES) $(SOURCES_C) $(CORE_CD_SOURCES)
 
 WARNINGS := -Wall \
 	-Wno-sign-compare \
