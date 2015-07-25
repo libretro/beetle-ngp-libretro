@@ -193,7 +193,7 @@ static bool SubWrite(StateMem *st, SFORMAT *sf, const char *name_prefix = NULL)
   else if(sf->flags & MDFNSTATE_RLSB16)
 	  Endian_A16_LE_to_NE(sf->v, bytesize / sizeof(uint16));
   else if(sf->flags & RLSB)
-	  Endian_V_LE_to_NE(sf->v, bytesize);
+	  FlipByteOrder((uint8_t*)sf->v, bytesize);
 #endif
 
   sf++; 
