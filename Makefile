@@ -293,12 +293,12 @@ MEDNAFEN_SOURCES := $(MEDNAFEN_DIR)/mednafen.cpp \
 	$(MEDNAFEN_DIR)/mempatcher.cpp \
 	$(RESAMPLER_SOURCES) \
 	$(MEDNAFEN_DIR)/sound/Stereo_Buffer.cpp \
-	$(MEDNAFEN_DIR)/file.cpp \
 	$(OKIADPCM_SOURCES) \
 	$(MEDNAFEN_DIR)/md5.cpp
 
 MEDNAFEN_SOURCES_C := \
 	$(MEDNAFEN_DIR)/mednafen-endian.c \
+	$(MEDNAFEN_DIR)/file.c \
 	$(MEDNAFEN_DIR)/settings.c
 
 LIBRETRO_SOURCES += libretro.cpp

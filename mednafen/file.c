@@ -60,7 +60,7 @@ error:
    return NULL;
 }
 
-bool file_close(struct MDFNFILE *file)
+int file_close(struct MDFNFILE *file)
 {
    if (!file)
       return 0;
