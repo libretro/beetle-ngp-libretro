@@ -13,11 +13,10 @@ class MDFNFILE
 
 	MDFNFILE();
 	// WIP constructors:
-	MDFNFILE(const char *path, const void *known_ext, const char *purpose = NULL);
-
+	MDFNFILE(const char *path);
 	~MDFNFILE();
 
-	bool Open(const char *path, const void *known_ext, const char *purpose = NULL, const bool suppress_notfound_pe = 0);
+   bool Open(const char *path);
 
 	bool Close(void);
 

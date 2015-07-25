@@ -21,8 +21,6 @@
 #include	<stdarg.h>
 #include	<errno.h>
 #include	"include/trio/trio.h"
-#include	<list>
-#include	<algorithm>
 
 #include	"general.h"
 
@@ -44,19 +42,9 @@ MDFNGI *MDFNGameInfo = &EmulatedNGP;
 MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
 {
    MDFNFILE GameFile;
-	std::vector<FileExtensionSpecStruct> valid_iae;
    MDFNGameInfo = &EmulatedNGP;
 
-	// Construct a NULL-delimited list of known file extensions for MDFN_fopen()
-   const FileExtensionSpecStruct *curexts = MDFNGameInfo->FileExtensions;
-
-   while(curexts->extension && curexts->description)
-   {
-      valid_iae.push_back(*curexts);
-      curexts++;
-   }
-
-	if(!GameFile.Open(name, &valid_iae[0], _("game")))
+	if(!GameFile.Open(name))
    {
       MDFNGameInfo = NULL;
       return 0;

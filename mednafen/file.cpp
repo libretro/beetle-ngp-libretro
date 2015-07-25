@@ -55,10 +55,9 @@ MDFNFILE::MDFNFILE()
    location = 0;
 }
 
-MDFNFILE::MDFNFILE(const char *path, const void *known_ext, const char *purpose)
+MDFNFILE::MDFNFILE(const char *path)
 {
-   (void)known_ext;
-   Open(path, known_ext, purpose, false);
+   Open(path);
 }
 
 
@@ -68,12 +67,12 @@ MDFNFILE::~MDFNFILE()
 }
 
 
-bool MDFNFILE::Open(const char *path, const void *known_ext, const char *purpose, const bool suppress_notfound_pe)
+bool MDFNFILE::Open(const char *path)
 {
-   FILE *fp;
-   (void)known_ext;
+   const char *ld;
+   FILE *fp = fopen(path, "rb");
 
-   if (!(fp = fopen(path, "rb")))
+   if (!fp)
       return FALSE;
 
    ::fseek(fp, 0, SEEK_SET);
@@ -81,7 +80,7 @@ bool MDFNFILE::Open(const char *path, const void *known_ext, const char *purpose
    if (!MakeMemWrapAndClose(fp))
       return FALSE;
 
-   const char *ld = (const char*)strrchr(path, '.');
+   ld = (const char*)strrchr(path, '.');
    f_ext = strdup(ld ? ld + 1 : "");
 
    return(TRUE);
