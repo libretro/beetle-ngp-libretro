@@ -19,13 +19,9 @@
 
 #include <string.h>
 #include	<stdarg.h>
-#include	<errno.h>
-#include	"include/trio/trio.h"
 
 #include	"general.h"
 
-#include	"state.h"
-#include "video.h"
 #include	"file.h"
 
 #include	"mempatcher.h"
@@ -45,18 +41,10 @@ MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
    MDFNFILE *GameFile = file_open(name);
 
    if(!GameFile)
-   {
-      MDFNGameInfo = NULL;
-      return 0;
-   }
+      goto error;
 
    if(MDFNGameInfo->Load(name, GameFile) <= 0)
-   {
-      file_close(GameFile);
-      GameFile     = NULL;
-      MDFNGameInfo = NULL;
-      return(0);
-   }
+      goto error;
 
    file_close(GameFile);
    GameFile     = NULL;
@@ -80,7 +68,14 @@ MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
          *tmp = 0;
    }
 
-   return(MDFNGameInfo);
+   return MDFNGameInfo;
+
+error:
+   if (GameFile)
+      file_close(GameFile);
+   GameFile     = NULL;
+   MDFNGameInfo = NULL;
+   return(0);
 }
 
 void MDFNI_CloseGame(void)
