@@ -924,14 +924,6 @@ static char internalCollationArray[MAX_CHARACTER_CLASS][MAX_CHARACTER_CLASS];
  *
  ************************************************************************/
 
-#if defined(TRIO_EMBED_NAN)
-# include "trionan.c"
-#endif
-
-#if defined(TRIO_EMBED_STRING)
-# include "triostr.c"
-#endif
-
 /*************************************************************************
  * TrioInitializeParameter
  *
@@ -4773,70 +4765,6 @@ TRIO_ARGS2((self, intPointer),
  *
  ************************************************************************/
 
-#if defined(TRIO_DOCUMENTATION)
-# include "doc/doc_scanf.h"
-#endif
-/** @addtogroup Scanf
-    @{
-*/
-
-/*************************************************************************
- * scanf
- */
-
-/**
-   Scan characters from standard input stream.
-
-   @param format Formatting string.
-   @param ... Arguments.
-   @return Number of scanned characters.
- */
-#if TRIO_FEATURE_STDIO
-TRIO_PUBLIC int
-trio_scanf
-TRIO_VARGS2((format, va_alist),
-	    TRIO_CONST char *format,
-	    TRIO_VA_DECL)
-{
-  int status;
-  va_list args;
-
-  assert(VALID(format));
-  
-  TRIO_VA_START(args, format);
-  status = TrioScan((trio_pointer_t)stdin, 0,
-		    TrioInStreamFile,
-		    TrioUndoStreamFile,
-		    format, args, NULL);
-  TRIO_VA_END(args);
-  return status;
-}
-#endif /* TRIO_FEATURE_STDIO */
-
-/**
-   Scan characters from standard input stream.
-
-   @param format Formatting string.
-   @param args Arguments.
-   @return Number of scanned characters.
- */
-#if TRIO_FEATURE_STDIO
-TRIO_PUBLIC int
-trio_vscanf
-TRIO_ARGS2((format, args),
-	   TRIO_CONST char *format,
-	   va_list args)
-{
-  assert(VALID(format));
-  
-  return TrioScan((trio_pointer_t)stdin, 0,
-		  TrioInStreamFile,
-		  TrioUndoStreamFile,
-		  format, args, NULL);
-}
-#endif /* TRIO_FEATURE_STDIO */
-
-
 /*************************************************************************
  * sscanf
  */
@@ -4870,57 +4798,6 @@ TRIO_VARGS3((buffer, format, va_alist),
   TRIO_VA_END(args);
   return status;
 }
-
-/**
-   Scan characters from string.
-
-   @param buffer Input string.
-   @param format Formatting string.
-   @param args Arguments.
-   @return Number of scanned characters.
- */
-TRIO_PUBLIC int
-trio_vsscanf
-TRIO_ARGS3((buffer, format, args),
-	   TRIO_CONST char *buffer,
-	   TRIO_CONST char *format,
-	   va_list args)
-{
-  assert(VALID(buffer));
-  assert(VALID(format));
-  
-  return TrioScan((trio_pointer_t)&buffer, 0,
-		  TrioInStreamString,
-		  NULL,
-		  format, args, NULL);
-}
-
-/**
-   Scan characters from string.
-
-   @param buffer Input string.
-   @param format Formatting string.
-   @param args Arguments.
-   @return Number of scanned characters.
- */
-TRIO_PUBLIC int
-trio_sscanfv
-TRIO_ARGS3((buffer, format, args),
-	   TRIO_CONST char *buffer,
-	   TRIO_CONST char *format,
-	   trio_pointer_t *args)
-{
-  static va_list unused;
-  
-  assert(VALID(buffer));
-  assert(VALID(format));
-  
-  return TrioScan((trio_pointer_t)&buffer, 0,
-		  TrioInStreamString,
-		  NULL,
-		  format, unused, args);
-}
-
 #endif /* TRIO_FEATURE_SCANF */
 
 /** @} End of Scanf documentation module */
