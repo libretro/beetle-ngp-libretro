@@ -51,14 +51,6 @@ typedef enum
 
 void reset(void);
 
-/*!	Emulate a single instruction with correct TLCS900h:Z80 timing */
-void emulate(void);
-
-/*! Used to generate a critical message for the user. After the message
-	has been displayed, the function should return. The message is not
-	necessarily a fatal error. */
-void system_message(char* vaMessage,...);
-
 /* Core <--> System-Graphics Interface */
 
 /* Physical screen dimensions */
