@@ -44,7 +44,7 @@ MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
    MDFNFILE GameFile;
    MDFNGameInfo = &EmulatedNGP;
 
-	if(!GameFile.Open(name))
+   if(!GameFile.Open(name))
    {
       MDFNGameInfo = NULL;
       return 0;
@@ -57,10 +57,10 @@ MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
       return(0);
    }
 
-	MDFN_LoadGameCheats(NULL);
-	MDFNMP_InstallReadPatches();
+   MDFN_LoadGameCheats(NULL);
+   MDFNMP_InstallReadPatches();
 
-	if(!MDFNGameInfo->name)
+   if(!MDFNGameInfo->name)
    {
       unsigned int x;
       char *tmp;
