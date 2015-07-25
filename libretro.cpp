@@ -594,6 +594,9 @@ bool retro_load_game(const struct retro_game_info *info)
    if (!game)
       return false;
 
+   MDFN_LoadGameCheats(NULL);
+   MDFNMP_InstallReadPatches();
+
    surf = (MDFN_Surface*)calloc(1, sizeof(*surf));
    
    if (!surf)
@@ -624,7 +627,9 @@ void retro_unload_game(void)
    if (!game)
       return;
 
+   MDFN_FlushGameCheats(0);
    MDFNI_CloseGame();
+   MDFNMP_Kill();
 }
 
 static void update_input(void)

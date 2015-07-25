@@ -24,8 +24,6 @@
 
 #include	"file.h"
 
-#include	"mempatcher.h"
-
 #ifdef _MSC_VER
 #include "msvc_compat.h"
 #endif
@@ -47,9 +45,6 @@ MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
 
    file_close(GameFile);
    GameFile     = NULL;
-
-   MDFN_LoadGameCheats(NULL);
-   MDFNMP_InstallReadPatches();
 
    if(!MDFNGameInfo->name)
    {
@@ -82,15 +77,10 @@ void MDFNI_CloseGame(void)
    if(!MDFNGameInfo)
       return;
 
-   MDFN_FlushGameCheats(0);
-
    MDFNGameInfo->CloseGame();
 
    if(MDFNGameInfo->name)
       free(MDFNGameInfo->name);
    MDFNGameInfo->name = NULL;
-
-   MDFNMP_Kill();
-
    MDFNGameInfo = NULL;
 }
