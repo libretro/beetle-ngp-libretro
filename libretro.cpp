@@ -670,7 +670,6 @@ void retro_run()
    int32 SoundBufMaxSize;
    int32 SoundBufSize;
    unsigned width, height;
-   const int16 *SoundBuf;
    static int16_t sound_buf[0x10000];
    static MDFN_Rect rects[FB_MAX_HEIGHT];
    bool updated = false;
@@ -701,7 +700,6 @@ void retro_run()
 
    Emulate(&spec);
 
-   SoundBuf = spec.SoundBuf + spec.SoundBufSizeALMS * 2;
    SoundBufSize = spec.SoundBufSize - spec.SoundBufSizeALMS;
    SoundBufMaxSize = spec.SoundBufMaxSize - spec.SoundBufSizeALMS;
 
