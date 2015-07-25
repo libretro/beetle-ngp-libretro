@@ -40,8 +40,6 @@ CORE_SOURCES := \
 		$(CORE_DIR)/dma.cpp \
 		$(CORE_DIR)/flash.cpp \
 		$(CORE_DIR)/gfx.cpp \
-		$(CORE_DIR)/gfx_scanline_colour.cpp \
-		$(CORE_DIR)/gfx_scanline_mono.cpp \
 		$(CORE_DIR)/interrupt.cpp \
 		$(CORE_DIR)/mem.cpp \
 		$(CORE_DIR)/system.cpp \
