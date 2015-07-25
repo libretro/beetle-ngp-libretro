@@ -25,11 +25,6 @@
 #include <string>
 
 #include "general.h"
-#include "state.h"
-
-#include "md5.h"
-
-using namespace std;
 
 const char * GetFNComponent(const char *str)
 {
