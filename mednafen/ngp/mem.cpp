@@ -22,7 +22,9 @@
 #include "sound.h"
 #include "flash.h"
 #include "rtc.h"
+#ifdef MSB_FIRST
 #include "../masmem.h"
+#endif
 
 /* Hack way of returning good Flash status. */
 bool FlashStatusEnable = FALSE;
@@ -412,7 +414,12 @@ void storeW(uint32 address, uint16_t data)
    }
    if(address >= 0x4000 && address <= 0x7fff)
    {
-      StoreU16_LE((uint16_t *)(CPUExRAM + address - 0x4000), data);
+      uint16_t *ptr16 = (uint16_t *)(CPUExRAM + address - 0x4000);
+#ifdef MSB_FIRST
+      StoreU16_RBO(ptr16, data);
+#else
+      *ptr16 = data;
+#endif
       return;
    }
    if(address >= 0x70 && address <= 0x7F)
@@ -468,11 +475,13 @@ void storeW(uint32 address, uint16_t data)
 
    /* Write */
    if (ptr)
-      StoreU16_LE(ptr, data);
-#if 0
-   else
-      printf("ACK16: %08x %04x\n", address, data);
+   {
+#ifdef MSB_FIRST
+      StoreU16_RBO(ptr, data);
+#else
+      *ptr = data;
 #endif
+   }
 }
 
 void storeL(uint32 address, uint32 data)

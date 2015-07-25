@@ -18,9 +18,11 @@
 #include "interrupt.h"
 #include "dma.h"
 #include "TLCS-900h/TLCS900h_registers.h"
-#include "../masmem.h"
 #include "../state.h"
 #include "../video.h"
+#ifdef MSB_FIRST
+#include "../masmem.h"
+#endif
 
 static const unsigned char mirrored[] = {
     0x00, 0x40, 0x80, 0xc0, 0x10, 0x50, 0x90, 0xd0,

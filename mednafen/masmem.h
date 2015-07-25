@@ -1,18 +1,16 @@
 #ifndef __MDFN_PSX_MASMEM_H
 #define __MDFN_PSX_MASMEM_H
 
-// TODO, WIP (big-endian stores and loads not fully supported yet)
+#include <stdint.h>
 
-#ifdef MSB_FIRST
- #define MAS_NATIVE_IS_BIGENDIAN 1
-#else
- #define MAS_NATIVE_IS_BIGENDIAN 0
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-static INLINE uint16 LoadU16_RBO(const uint16 *a)
+static INLINE uint16_t LoadU16_RBO(const uint16_t *a)
 {
 #ifdef ARCH_POWERPC
-   uint16 tmp;
+   uint16_t tmp;
    __asm__ ("lhbrx %0, %y1" : "=r"(tmp) : "Z"(*a));
    return(tmp);
 #else
@@ -20,76 +18,42 @@ static INLINE uint16 LoadU16_RBO(const uint16 *a)
 #endif
 }
 
-static INLINE uint32 LoadU32_RBO(const uint32 *a)
+static INLINE uint32_t LoadU32_RBO(const uint32_t *a)
 {
 #ifdef ARCH_POWERPC
-   uint32 tmp;
+   uint32_t tmp;
 
    __asm__ ("lwbrx %0, %y1" : "=r"(tmp) : "Z"(*a));
 
    return(tmp);
 #else
-   uint32 tmp = *a;
+   uint32_t tmp = *a;
    return((tmp << 24) | ((tmp & 0xFF00) << 8) | ((tmp >> 8) & 0xFF00) | (tmp >> 24));
 #endif
 }
 
-static INLINE void StoreU16_RBO(uint16 *a, const uint16 v)
+static INLINE void StoreU16_RBO(uint16_t *a, const uint16_t v)
 {
 #ifdef ARCH_POWERPC
    __asm__ ("sthbrx %0, %y1" : : "r"(v), "Z"(*a));
 #else
-   uint16 tmp = (v << 8) | (v >> 8);
+   uint16_t tmp = (v << 8) | (v >> 8);
    *a = tmp;
 #endif
 }
 
-static INLINE void StoreU32_RBO(uint32 *a, const uint32 v)
+static INLINE void StoreU32_RBO(uint32_t *a, const uint32_t v)
 {
 #ifdef ARCH_POWERPC
    __asm__ ("stwbrx %0, %y1" : : "r"(v), "Z"(*a));
 #else
-   uint32 tmp = (v << 24) | ((v & 0xFF00) << 8) | ((v >> 8) & 0xFF00) | (v >> 24);
+   uint32_t tmp = (v << 24) | ((v & 0xFF00) << 8) | ((v >> 8) & 0xFF00) | (v >> 24);
    *a = tmp;
 #endif
 }
 
-static INLINE uint16 LoadU16_LE(const uint16 *a)
-{
-#ifdef MSB_FIRST
-   return LoadU16_RBO(a);
-#else
-   return *a;
-#endif
+#ifdef __cplusplus
 }
-
-static INLINE uint32 LoadU32_LE(const uint32 *a)
-{
-#ifdef MSB_FIRST
-   return LoadU32_RBO(a);
-#else
-   return *a;
 #endif
-}
-
-static INLINE void StoreU16_LE(uint16 *a, const uint16 v)
-{
-#ifdef MSB_FIRST
- StoreU16_RBO(a, v);
-#else
- *a = v;
-#endif
-}
-
-static INLINE void StoreU32_LE(uint32 *a, const uint32 v)
-{
-#ifdef MSB_FIRST
-   StoreU32_RBO(a, v);
-#else
-   *a = v;
-#endif
-}
-
-#undef MAS_NATIVE_IS_BIGENDIAN
 
 #endif
