@@ -41,7 +41,7 @@
     <ClCompile Include="..\..\scrc32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\mednafen\endian.cpp">
+    <ClCompile Include="..\..\mednafen\mednafen-endian.c">
       <Filter>Source Files\mednafen</Filter>
     </ClCompile>
     <ClCompile Include="..\..\mednafen\error.cpp">
