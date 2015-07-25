@@ -13,14 +13,10 @@ static INLINE uint16 LoadU16_RBO(const uint16 *a)
 {
 #ifdef ARCH_POWERPC
    uint16 tmp;
-
    __asm__ ("lhbrx %0, %y1" : "=r"(tmp) : "Z"(*a));
-
    return(tmp);
-
 #else
-   uint16 tmp = *a;
-   return((tmp << 8) | (tmp >> 8));
+   return((*a << 8) | (*a >> 8));
 #endif
 }
 

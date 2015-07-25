@@ -61,6 +61,7 @@ static void drawColourPattern(ngpgfx_t *gfx, uint16_t *cfb_scanline, uint8_t *zb
       uint8 screenx, uint16 tile, uint8 tiley, uint16 mirror, 
       uint16* palette_ptr, uint8 pal, uint8 depth)
 {
+   uint16_t *ptr16;
 	int index, left, right, highmark, xx;
 	int x = screenx;
 	if (x > 0xf8)
@@ -69,7 +70,12 @@ static void drawColourPattern(ngpgfx_t *gfx, uint16_t *cfb_scanline, uint8_t *zb
 		return;
 
 	/* Get the data for the "tiley'th" line of "tile". */
-	index = LoadU16_LE((uint16*)(gfx->CharacterRAM + (tile * 16) + (tiley * 2)));
+   ptr16 = (uint16_t*)(gfx->CharacterRAM + (tile * 16) + (tiley * 2));
+#ifdef MSB_FIRST
+	index = LoadU16_RBO(ptr16);
+#else
+   index = *ptr16;
+#endif
 
 	/* Horizontal Flip */
 	if (mirror)
@@ -97,7 +103,13 @@ static void drawColourPattern(ngpgfx_t *gfx, uint16_t *cfb_scanline, uint8_t *zb
 		*zbuf = depth;
 
 		/* Get the colour of the pixel */
-		data16 = LoadU16_LE(&palette_ptr[index&3]);
+      ptr16 = (uint16_t*)&palette_ptr[index&3];
+
+#ifdef MSB_FIRST
+		data16 = LoadU16_RBO(ptr16);
+#else
+		data16 = *ptr16;
+#endif
 		if (gfx->negative)
          data16 = ~data16;
 
@@ -116,7 +128,12 @@ static void draw_colour_scroll1(ngpgfx_t *gfx,
 	/* Draw Foreground scroll plane (Scroll 1) */
 	for (i = 0; i < 32; i++)
 	{
-		uint16_t data16 = LoadU16_LE((uint16_t*)(gfx->ScrollVRAM + ((i + ((line >> 3) << 5)) << 1)));
+      uint16_t *ptr16 = (uint16_t*)(gfx->ScrollVRAM + ((i + ((line >> 3) << 5)) << 1));
+#ifdef MSB_FIRST
+		uint16_t data16 = LoadU16_RBO(ptr16);
+#else
+      uint16_t data16 = *ptr16;
+#endif
 		
 		/* Draw the line of the tile */
 		drawColourPattern(gfx, cfb_scanline, zbuffer, (i << 3) - gfx->scroll1x, data16 & 0x01FF, 
@@ -135,7 +152,12 @@ static void draw_colour_scroll2(ngpgfx_t *gfx, uint16_t *cfb_scanline,
 	/* Draw Background scroll plane (Scroll 2) */
 	for (i = 0; i < 32; i++)
 	{
-		uint16_t data16 = LoadU16_LE((uint16_t*)(gfx->ScrollVRAM + 0x0800 + ((i + ((line >> 3) << 5)) << 1)));
+      uint16_t *ptr16 = (uint16_t*)(gfx->ScrollVRAM + 0x0800 + ((i + ((line >> 3) << 5)) << 1));
+#ifdef MSB_FIRST
+		uint16_t data16 = LoadU16_RBO(ptr16);
+#else
+		uint16_t data16 = *ptr16;
+#endif
 		
 		/* Draw the line of the tile */
 		drawColourPattern(gfx, cfb_scanline, zbuffer, (i << 3) - gfx->scroll2x, data16 & 0x01FF, 
@@ -147,15 +169,19 @@ static void draw_colour_scroll2(ngpgfx_t *gfx, uint16_t *cfb_scanline,
 static void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline,
       int layer_enable, int ngpc_scanline)
 {
-	int16 lastSpriteX;
-	int16 lastSpriteY;
+	int16_t lastSpriteX;
+	int16_t lastSpriteY;
 	int spr;
    uint16_t *scan;
    int x = 0;
    uint8_t zbuffer[256] = {0};
-
 	/* Window colour */
-	uint16_t data16 = LoadU16_LE((uint16_t*)(gfx->ColorPaletteRAM + 0x01F0 + (gfx->oowc << 1)));
+   uint16_t *ptr16 = (uint16_t*)(gfx->ColorPaletteRAM + 0x01F0 + (gfx->oowc << 1));
+#ifdef MSB_FIRST
+	uint16_t data16 = LoadU16_RBO(ptr16);
+#else
+	uint16_t data16 = *ptr16;
+#endif
 	if (gfx->negative)
       data16 = ~data16;
 
@@ -181,15 +207,11 @@ static void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline,
 	{
       int x;
       uint16_t *scan;
-#if 0
-      /* Background colour Enabled?	HACK: 01 AUG 2002 - Always on! */
-      if ((bgc & 0xC0) == 0x80)
-#endif
-		{
-			data16 = LoadU16_LE((uint16_t*)(uint8*)(gfx->ColorPaletteRAM + 0x01E0 + ((gfx->bgc & 7) << 1)));
-		}
-#if 0
-      else data16 = 0;
+      uint16_t *ptr16 = (uint16_t*)(uint8*)(gfx->ColorPaletteRAM + 0x01E0 + ((gfx->bgc & 7) << 1));
+#ifdef MSB_FIRST
+      data16 = LoadU16_RBO(ptr16);
+#else
+      data16 = *ptr16;
 #endif
 
 		if (gfx->negative)
@@ -232,7 +254,12 @@ static void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline,
 			uint8_t sy       = gfx->SpriteVRAM[(spr * 4) + 3];	/* Y position */
 			int16_t x        = sx;
 			int16_t y        = sy;
-			uint16_t data16  = LoadU16_LE((uint16_t*)(gfx->SpriteVRAM + (spr * 4)));
+         uint16_t *ptr16  = (uint16_t*)(gfx->SpriteVRAM + (spr * 4));
+#ifdef MSB_FIRST
+			uint16_t data16  = LoadU16_RBO(ptr16);
+#else
+         uint16_t data16  = *ptr16;
+#endif
 			uint8_t priority = (data16 & 0x1800) >> 11;
 
 			if (data16 & 0x0400)
@@ -311,7 +338,12 @@ static void drawMonoPattern(ngpgfx_t *gfx,
       uint8* palette_ptr, uint16 pal, uint8 depth)
 {
 	/* Get the data for th e "tiley'th" line of "tile". */
-	uint16_t data = LoadU16_LE((uint16*)(gfx->CharacterRAM + (tile * 16) + (tiley * 2)));
+   uint16_t *ptr16 = (uint16_t*)(gfx->CharacterRAM + (tile * 16) + (tiley * 2));
+#ifdef MSB_FIRST
+	uint16_t   data = LoadU16_RBO(ptr16);
+#else
+   uint16_t   data = *ptr16;
+#endif
 
 	if (mirror)
 	{
@@ -349,7 +381,12 @@ static void draw_mono_scroll1(ngpgfx_t *gfx, uint16_t *cfb_scanline,
 	/* Draw Foreground scroll plane (Scroll 1) */
 	for (i = 0; i < 32; i++)
 	{
-		uint16_t data16 = LoadU16_LE((uint16*)(gfx->ScrollVRAM + ((i + ((line >> 3) << 5)) << 1)));
+      uint16_t *ptr16 = (uint16_t*)(gfx->ScrollVRAM + ((i + ((line >> 3) << 5)) << 1));
+#ifdef MSB_FIRST
+		uint16_t data16 = LoadU16_RBO(ptr16);
+#else
+      uint16_t data16 = *ptr16;
+#endif
 		
 		//Draw the line of the tile
 		drawMonoPattern(gfx, cfb_scanline, zbuffer, (i << 3) - gfx->scroll1x, data16 & 0x01FF, 
@@ -367,7 +404,12 @@ static void draw_mono_scroll2(ngpgfx_t *gfx, uint16_t *cfb_scanline, uint8_t *zb
 	/* Draw Background scroll plane (Scroll 2) */
 	for (i = 0; i < 32; i++)
 	{
-		uint16_t data16 = LoadU16_LE((uint16*)(gfx->ScrollVRAM + 0x0800 + ((i + ((line >> 3) << 5)) << 1)));
+      uint16_t *ptr16 = (uint16_t*)(gfx->ScrollVRAM + 0x0800 + ((i + ((line >> 3) << 5)) << 1));
+#ifdef MSB_FIRST
+		uint16_t data16 = LoadU16_RBO(ptr16);
+#else
+      uint16_t data16 = *ptr16;
+#endif
 		
 		/* Draw the line of the tile */
 		drawMonoPattern(gfx, cfb_scanline, zbuffer, (i << 3) - gfx->scroll2x, data16 & 0x01FF, 
@@ -461,17 +503,24 @@ static void draw_scanline_mono(ngpgfx_t *gfx,
 		if(layer_enable & 4)
 		for (spr = 0; spr < 64; spr++)
 		{
-			uint8 priority, row;
-			uint8 sx = gfx->SpriteVRAM[(spr * 4) + 2];	//X position
-			uint8 sy = gfx->SpriteVRAM[(spr * 4) + 3];	//Y position
-			int16 x = sx;
-			int16 y = sy;
-			
-			data16 = LoadU16_LE((uint16*)(gfx->SpriteVRAM + (spr * 4)));
+			uint8_t priority, row;
+			uint8_t sx = gfx->SpriteVRAM[(spr * 4) + 2];	//X position
+			uint8_t sy = gfx->SpriteVRAM[(spr * 4) + 3];	//Y position
+			int16_t x = sx;
+			int16_t y = sy;
+         uint16_t *ptr16 = (uint16_t*)(gfx->SpriteVRAM + (spr * 4));
+
+#ifdef MSB_FIRST
+			data16 = LoadU16_RBO(ptr16);
+#else
+         data16 = *ptr16;
+#endif
 			priority = (data16 & 0x1800) >> 11;
 
-			if (data16 & 0x0400) x = lastSpriteX + sx;	//Horizontal chain?
-			if (data16 & 0x0200) y = lastSpriteY + sy;	//Vertical chain?
+			if (data16 & 0x0400)
+            x = lastSpriteX + sx;	//Horizontal chain?
+			if (data16 & 0x0200)
+            y = lastSpriteY + sy;	//Vertical chain?
 
 			//Store the position for chaining
 			lastSpriteX = x;
