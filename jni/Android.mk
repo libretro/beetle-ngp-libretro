@@ -1,30 +1,27 @@
 LOCAL_PATH := $(call my-dir)
 DEBUG = 0
 FRONTEND_SUPPORTS_RGB565 = 1
-FAST = 1
 
 include $(CLEAR_VARS)
 
 ifeq ($(TARGET_ARCH),arm)
-LOCAL_CXXFLAGS += -DANDROID_ARM
-LOCAL_CFLAGS +=-DANDROID_ARM
+ANDROID_FLAGS := -DANDROID_ARM
 LOCAL_ARM_MODE := arm
 endif
 
 ifeq ($(TARGET_ARCH),x86)
-LOCAL_CXXFLAGS +=  -DANDROID_X86
-LOCAL_CFLAGS += -DANDROID_X86
+ANDROID_FLAGS := -DANDROID_X86
 IS_X86 = 1
 endif
 
 ifeq ($(TARGET_ARCH),mips)
-LOCAL_CXXFLAGS += -DANDROID_MIPS -D__mips__ -D__MIPSEL__
-LOCAL_CFLAGS += -DANDROID_MIPS -D__mips__ -D__MIPSEL__
+ANDROID_FLAGS := -DANDROID_MIPS -D__mips__ -D__MIPSEL__
 endif
 
-MEDNAFEN_DIR := ../mednafen
-MEDNAFEN_LIBRETRO_DIR := ..
+LOCAL_CXXFLAGS += $(ANDROID_FLAGS)
+LOCAL_CFLAGS   += $(ANDROID_FLAGS)
 
+CORE_DIR        := ..
 LOCAL_MODULE    := libretro
 
 core = ngp
@@ -33,88 +30,13 @@ WANT_NEW_API = 1
 NEED_BLIP = 1
 NEED_STEREO_SOUND = 1
 CORE_DEFINE := -DWANT_NGP_EMU
-CORE_DIR := $(MEDNAFEN_DIR)/ngp
 
-CORE_SOURCES := \
-		$(CORE_DIR)/biosHLE.cpp \
-		$(CORE_DIR)/dma.cpp \
-		$(CORE_DIR)/flash.cpp \
-		$(CORE_DIR)/gfx.cpp \
-		$(CORE_DIR)/interrupt.cpp \
-		$(CORE_DIR)/mem.cpp \
-		$(CORE_DIR)/system.cpp \
-		$(CORE_DIR)/rom.cpp \
-		$(CORE_DIR)/sound.cpp \
-		$(CORE_DIR)/T6W28_Apu.cpp \
-		$(CORE_DIR)/Z80_interface.cpp
+TARGET_NAME := mednafen_ngp_libretro
 
-CORE_SOURCES_C := \
-	$(CORE_DIR)/bios.c \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble.c \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_extra.c \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_reg.c \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_dst.c \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_disassemble_src.c \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret.c \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_dst.c \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_reg.c \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_single.c \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_interpret_src.c \
-	$(CORE_DIR)/TLCS-900h/TLCS900h_registers.c \
-	$(CORE_DIR)/rtc.c
+include ../Makefile.common
 
-	HW_CPU_SOURCES := $(MEDNAFEN_DIR)/hw_cpu/z80-fuse/z80.cpp \
-							$(MEDNAFEN_DIR)/hw_cpu/z80-fuse/z80_ops.cpp
-	TARGET_NAME := mednafen_ngp_libretro
-
-	ifeq ($(NEED_STEREO_SOUND), 1)
-	SOUND_DEFINE := -DWANT_STEREO_SOUND
-	endif
-
-	CORE_INCDIR := $(CORE_DIR)
-
-	ifeq ($(NEED_CRC32), 1)
-	FLAGS += -DWANT_CRC32
-CORE_SOURCES += $(MEDNAFEN_LIBRETRO_DIR)/scrc32.cpp
-endif
-
-ifeq ($(NEED_DEINTERLACER), 1)
-FLAGS += -DNEED_DEINTERLACER
-endif
-
-MEDNAFEN_SOURCES := $(MEDNAFEN_DIR)/mednafen.cpp \
-	$(MEDNAFEN_DIR)/general.cpp \
-	$(MEDNAFEN_DIR)/state.cpp \
-	$(MEDNAFEN_DIR)/mempatcher.cpp \
-	$(MEDNAFEN_DIR)/sound/Blip_Buffer.cpp \
-	$(MEDNAFEN_DIR)/sound/Stereo_Buffer.cpp \
-	$(MEDNAFEN_DIR)/md5.cpp
-
-MEDNAFEN_SOURCES_C := \
-	$(MEDNAFEN_DIR)/mednafen-endian.c \
-	$(MEDNAFEN_DIR)/file.c \
-	$(MEDNAFEN_DIR)/settings.c 
-
-LIBRETRO_SOURCES := $(MEDNAFEN_LIBRETRO_DIR)/libretro.cpp $(THREAD_STUBS)
-
-SOURCES_C := 	$(TREMOR_SRC) $(LIBRETRO_SOURCES_C) $(MEDNAFEN_DIR)/trio/trio.c $(MEDNAFEN_DIR)/trio/triostr.c $(THREAD_SOURCES) $(MEDNAFEN_SOURCES_C)
-
-LOCAL_SRC_FILES += $(LIBRETRO_SOURCES) $(CORE_SOURCES) $(CORE_SOURCES_C) $(MEDNAFEN_SOURCES) $(HW_CPU_SOURCES) $(HW_MISC_SOURCES) $(HW_SOUND_SOURCES) $(HW_VIDEO_SOURCES) $(SOURCES_C) $(CORE_CD_SOURCES)
-
-WARNINGS := -Wall \
-	-Wno-sign-compare \
-	-Wno-unused-variable \
-	-Wno-unused-function \
-	-Wno-uninitialized \
-	$(NEW_GCC_WARNING_FLAGS) \
-	-Wno-strict-aliasing
-
+LOCAL_SRC_FILES += $(SOURCES_CXX) $(SOURCES_C)
 EXTRA_GCC_FLAGS := -funroll-loops
-
-ifeq ($(NO_GCC),1)
-	EXTRA_GCC_FLAGS :=
-	WARNINGS :=
-endif
 
 ifeq ($(DEBUG),0)
    FLAGS += -O3 $(EXTRA_GCC_FLAGS)
@@ -122,41 +44,12 @@ else
    FLAGS += -O0 -g
 endif
 
-ifneq ($(OLD_GCC),1)
-NEW_GCC_WARNING_FLAGS += -Wno-narrowing \
-	-Wno-unused-but-set-variable \
-	-Wno-unused-result \
-	-Wno-overflow
-NEW_GCC_FLAGS += -fno-strict-overflow
-endif
-
 LDFLAGS += $(fpic) $(SHARED)
-FLAGS += $(fpic) $(NEW_GCC_FLAGS)
-LOCAL_C_INCLUDES += .. ../mednafen ../mednafen/include ../mednafen/intl ../mednafen/hw_cpu ../mednafen/hw_sound ../mednafen/hw_misc ../mednafen/hw_video $(CORE_INCDIR) $(EXTRA_CORE_INCDIR)
+FLAGS   += $(fpic) $(NEW_GCC_FLAGS) $(INCFLAGS)
 
 FLAGS += $(ENDIANNESS_DEFINES) -DSIZEOF_DOUBLE=8 $(WARNINGS) -DMEDNAFEN_VERSION=\"0.9.26\" -DPACKAGE=\"mednafen\" -DMEDNAFEN_VERSION_NUMERIC=926 -DPSS_STYLE=1 -DMPC_FIXED_POINT $(CORE_DEFINE) -DSTDC_HEADERS -D__STDC_LIMIT_MACROS -D__LIBRETRO__ -DNDEBUG -D_LOW_ACCURACY_ $(SOUND_DEFINE)
 
-ifeq ($(IS_X86), 1)
-FLAGS += -DARCH_X86
-endif
-
-ifeq ($(NEED_BPP), 16)
-FLAGS += -DWANT_16BPP
-endif
-
-ifeq ($(WANT_NEW_API), 1)
-FLAGS += -DWANT_NEW_API
-endif
-
-ifeq ($(FRONTEND_SUPPORTS_RGB565), 1)
-FLAGS += -DFRONTEND_SUPPORTS_RGB565
-endif
-
-ifeq ($(NEED_BPP), 32)
-FLAGS += -DWANT_32BPP
-endif
-
-LOCAL_CFLAGS =  $(FLAGS) 
+LOCAL_CFLAGS   = $(FLAGS) 
 LOCAL_CXXFLAGS = $(FLAGS) -fexceptions
 
 include $(BUILD_SHARED_LIBRARY)
