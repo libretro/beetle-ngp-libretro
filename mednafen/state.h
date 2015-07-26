@@ -41,14 +41,12 @@ int MDFNSS_LoadSM(void *st, int, int);
 
 #define MDFNSTATE_BOOL		  0x08000000
 
-typedef struct {
-   void *v;		// Pointer to the variable/array
-   uint32_t size;		// Length, in bytes, of the data to be saved EXCEPT:
-   //  In the case of MDFNSTATE_BOOL, it is the number of bool elements to save(bool is not always 1-byte).
-   // If 0, the subchunk isn't saved.
-   uint32_t flags;	// Flags
-   const char *name;	// Name
-   //uint32_t struct_size;	// Only used for MDFNSTATE_ARRAYOFS, sizeof(struct) that members of the linked SFORMAT struct are in.
+typedef struct
+{
+   void *v;
+   uint32_t size;
+   uint32_t flags;
+   const char *name;
 } SFORMAT;
 
 INLINE bool SF_IS_BOOL(bool *) { return(1); }
