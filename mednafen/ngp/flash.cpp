@@ -286,8 +286,8 @@ int FLASH_StateAction(void *data, int load, int data_only)
 
    SFORMAT FINF_StateRegs[] =
    {
-      SFVAR(FlashLength),
-      SFEND
+      { &FlashLength, sizeof(FlashLength), 0x80000000, "FlashLength" },
+      { 0, 0, 0, 0 }
    };
 
    if(!MDFNSS_StateAction(data, load, data_only, FINF_StateRegs, "FINF"))
@@ -304,8 +304,8 @@ int FLASH_StateAction(void *data, int load, int data_only)
 
    SFORMAT FLSH_StateRegs[] =
    {
-      SFARRAY(flashdata, FlashLength),
-      SFEND
+      { flashdata, (uint32_t)FlashLength, 0, "flashdata" },
+      { 0, 0, 0, 0 }
    };
 
    if(!MDFNSS_StateAction(data, load, data_only, FLSH_StateRegs, "FLSH"))

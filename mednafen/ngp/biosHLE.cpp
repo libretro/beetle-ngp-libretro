@@ -629,8 +629,8 @@ int BIOSHLE_StateAction(void *data, int load, int data_only)
 {
    SFORMAT StateRegs[] =
    {
-      SFARRAY(CacheIntPrio, 0xB),
-      SFEND
+      { CacheIntPrio, (uint32_t)((0xB)), 0, "CacheIntPrio" },
+      { 0, 0, 0, 0 }
    };
 
    if(!MDFNSS_StateAction(data, load, data_only, StateRegs, "BHLE"))
