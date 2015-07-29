@@ -126,7 +126,6 @@ SOURCES_CXX += \
 	$(MEDNAFEN_DIR)/state.cpp \
 	$(MEDNAFEN_DIR)/mempatcher.cpp \
 	$(MEDNAFEN_DIR)/sound/Stereo_Buffer.cpp \
-	$(MEDNAFEN_DIR)/md5.cpp \
 	$(CORE_DIR)/libretro.cpp
 
 SOURCES_C += \

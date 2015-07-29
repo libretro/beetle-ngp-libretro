@@ -2,7 +2,6 @@
 #include "mednafen/mempatcher.h"
 #include "mednafen/git.h"
 #include "mednafen/general.h"
-#include "mednafen/md5.h"
 #include "libretro.h"
 
 static MDFNGI *game;
@@ -46,7 +45,6 @@ char retro_save_directory[1024];
 
 #include "mednafen/ngp/neopop.h"
 #include "mednafen/general.h"
-#include "mednafen/md5.h"
 
 #include "mednafen/ngp/TLCS-900h/TLCS900h_interpret.h"
 #include "mednafen/ngp/TLCS-900h/TLCS900h_registers.h"
@@ -177,14 +175,9 @@ static int Load(const char *name, MDFNFILE *fp)
    ngpc_rom.length = GET_FSIZE_PTR(fp);
    memcpy(ngpc_rom.data, GET_FDATA_PTR(fp), GET_FSIZE_PTR(fp));
 
-   md5_context md5;
-   md5.starts();
-   md5.update(ngpc_rom.data, ngpc_rom.length);
-   md5.finish(MDFNGameInfo->MD5);
 
    rom_loaded();
    printf(_("ROM:       %dKiB\n"), (ngpc_rom.length + 1023) / 1024);
-   printf(_("ROM MD5:   0x%s\n"), md5_context::asciistr(MDFNGameInfo->MD5, 0).c_str());
 
    MDFNMP_Init(1024, 1024 * 1024 * 16 / 1024);
 
@@ -879,11 +872,7 @@ std::string MDFN_MakeFName(MakeFName_Type type, int id1, const char *cd1)
    {
       case MDFNMKF_SAV:
          ret = retro_save_directory + slash + retro_base_name +
-            std::string(".") +
-#ifndef _XBOX
-	    md5_context::asciistr(MDFNGameInfo->MD5, 0) + std::string(".") +
-#endif
-            std::string(cd1);
+            std::string(".") + std::string(cd1);
          break;
       case MDFNMKF_FIRMWARE:
          ret = retro_base_directory + slash + std::string(cd1);
