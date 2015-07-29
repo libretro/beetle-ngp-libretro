@@ -185,7 +185,6 @@ static int Load(const char *name, MDFNFILE *fp)
    NGPGfx->layer_enable = 1 | 2 | 4;
 
    MDFNGameInfo->fps = (uint32)((uint64)6144000 * 65536 * 256 / 515 / 198); // 3072000 * 2 * 10000 / 515 / 198
-   MDFNGameInfo->GameSetMD5Valid = FALSE;
 
    MDFNNGPCSOUND_Init();
 
