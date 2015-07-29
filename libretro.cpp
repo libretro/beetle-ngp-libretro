@@ -82,9 +82,6 @@ static void Emulate(EmulateSpecStruct *espec)
    espec->DisplayRect.w = 160;
    espec->DisplayRect.h = 152;
 
-
-
-
    NGPJoyLatch = *chee;
    storeB(0x6F82, *chee);
 
@@ -801,11 +798,7 @@ size_t retro_serialize_size(void)
    memset(&st, 0, sizeof(st));
 
    if (!MDFNSS_SaveSM(&st, 0, 0, NULL, NULL, NULL))
-   {
-      if (log_cb)
-         log_cb(RETRO_LOG_WARN, "[mednafen]: Module %s doesn't support save states.\n", "ngp");
       return 0;
-   }
 
    free(st.data);
    return serialize_size = st.len;
