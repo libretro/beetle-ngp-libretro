@@ -12,6 +12,10 @@
 //	additional informations.
 //---------------------------------------------------------------------------
 
+#include <string.h>
+
+#include "../mednafen.h"
+
 #include "TLCS-900h/TLCS900h_registers.h"
 #include "TLCS-900h/TLCS900h_interpret.h"
 #include "mem.h"

@@ -26,7 +26,8 @@
 #ifndef FUSE_Z80_H
 #define FUSE_Z80_H
 
-#include "../../mednafen.h"
+#include <stdint.h>
+#include "../mednafen-types.h"
 
 /* Union allowing a register pair to be accessed as bytes or as a word */
 typedef union {
@@ -60,10 +61,21 @@ typedef struct {
 void z80_init( void );
 void z80_reset( void );
 
-int z80_interrupt( void );
 void z80_nmi( void );
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void z80_set_interrupt(int set);
+
+int z80_interrupt( void );
+
 int z80_do_opcode(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 void z80_enable_interrupts( void );
 
@@ -113,9 +125,6 @@ static INLINE uint8 Z80_RP_MACRO(uint16 A)
  z80_tstates += 4; 
  return(z80_readport(A));
 }
-
-
-void z80_set_interrupt(int set);
 
 int z80_state_action(void *data, int load, int data_only, const char *section_name);
 

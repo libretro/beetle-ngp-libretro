@@ -19,8 +19,7 @@ SOURCES_CXX += \
 	$(CORE_EMU_DIR)/sound.cpp \
 	$(CORE_EMU_DIR)/T6W28_Apu.cpp \
 	$(CORE_EMU_DIR)/Z80_interface.cpp \
-	$(MEDNAFEN_DIR)/hw_cpu/z80-fuse/z80.cpp \
-	$(MEDNAFEN_DIR)/hw_cpu/z80-fuse/z80_ops.cpp
+	$(MEDNAFEN_DIR)/hw_cpu/z80-fuse/z80.cpp
 
 SOURCES_C += \
 	$(CORE_EMU_DIR)/bios.c \
@@ -35,6 +34,7 @@ SOURCES_C += \
 	$(CORE_EMU_DIR)/TLCS-900h/TLCS900h_interpret_single.c \
 	$(CORE_EMU_DIR)/TLCS-900h/TLCS900h_interpret_src.c \
 	$(CORE_EMU_DIR)/TLCS-900h/TLCS900h_registers.c \
+	$(MEDNAFEN_DIR)/hw_cpu/z80-fuse/z80_ops.c \
 	$(CORE_EMU_DIR)/rtc.c
 
 endif

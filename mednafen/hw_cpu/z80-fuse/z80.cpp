@@ -24,6 +24,8 @@
 #include "z80.h"
 #include "z80_macros.h"
 
+#include "../../state.h"
+
 void (*z80_writebyte)(uint16, uint8);
 uint8 (*z80_readbyte)(uint16);
 void (*z80_writeport)(uint16, uint8);

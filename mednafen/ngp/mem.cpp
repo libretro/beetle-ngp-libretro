@@ -22,9 +22,12 @@
 #include "sound.h"
 #include "flash.h"
 #include "rtc.h"
+
 #ifdef MSB_FIRST
 #include "../masmem.h"
 #endif
+
+#include "../settings.h"
 
 /* Hack way of returning good Flash status. */
 bool FlashStatusEnable = FALSE;

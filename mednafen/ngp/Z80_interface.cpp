@@ -20,6 +20,8 @@
 #include "interrupt.h"
 #include "dma.h"
 
+#include "../state.h"
+
 static uint8_t CommByte;
 static bool Z80Enabled;
 
