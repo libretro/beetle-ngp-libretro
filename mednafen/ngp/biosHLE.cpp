@@ -42,29 +42,27 @@ void BIOSHLE_Reset(void)
       storeB(0x70 + x, CacheIntPrio[x]);
 }
 
+#define VECT_SHUTDOWN         0xFF27A2
+#define VECT_CLOCKGEARSET     0xFF1030
+#define VECT_COMGETBUFDATA    0xFF2D85
+#define VECT_COMCREATEBUFDATA 0xFF2D6C
+
 /* This is the custom HLE instruction. I considered it was the fastest and
 most streamlined way of intercepting a bios call. The operation performed
 is dependant on the current program counter. */
 
 void iBIOSHLE(void)
 {
-   //Only works within the bios
+   /* Only works within the bios */
    if ((pc & 0xFF0000) != 0xFF0000)
       return;
 
-   pc --;	//Compensate for processing this instruction.
-
-   cycles = 8;		//TODO: Correct cycle counts (or approx?)
-
-   //if(pc != 0xff1222)
-   //printf("SPOON: %08x\n", pc);
+   pc      --;	    /* Compensate for processing this instruction. */
+   cycles = 8;		/* TODO: Correct cycle counts (or approx?) */
 
    switch (pc & 0xffffff)
    {	
-
-      //default: printf("SPOON: %08x\n", pc); break;
-      //VECT_SHUTDOWN
-      case 0xFF27A2:
+      case VECT_SHUTDOWN:
 #ifdef NEOPOP_DEBUG
          if (filter_bios)
          {
@@ -85,9 +83,7 @@ void iBIOSHLE(void)
          }
 
          return;	//Don't pop a return address, stay here
-
-         //VECT_CLOCKGEARSET
-      case 0xFF1030:
+      case VECT_CLOCKGEARSET:
 #ifdef NEOPOP_DEBUG
          if (filter_bios)
          {
@@ -96,11 +92,6 @@ void iBIOSHLE(void)
             push32(a);
          }
 #endif
-         //printf("%d\n", rCodeB(0x35));
-         //TODO
-         //	if (rCodeB(0x35) > 0)
-         //		system_message("Unsupported clock gear %d set\nPlease inform the author", rCodeB(0x35));
-
          break;
 
          //VECT_RTCGET
@@ -127,10 +118,6 @@ void iBIOSHLE(void)
          }
 
          break; 
-
-         //?
-         //case 0xFF12B4:
-         //	break;
 
          //VECT_INTLVSET
       case 0xFF1222:
@@ -348,9 +335,6 @@ void iBIOSHLE(void)
          rCodeB(0x30) = 0;	//RA3 = SYS_SUCCESS
          break;
 
-         //?
-         //case 0xFF1033: break;
-
          //VECT_ALARMDOWNSET
       case 0xFF1487:
 #ifdef NEOPOP_DEBUG
@@ -364,9 +348,6 @@ void iBIOSHLE(void)
          //TODO
          rCodeB(0x30) = 0;	//RA3 = SYS_SUCCESS
          break;
-
-         //?
-         //case 0xFF731F: break;
 
          //VECT_FLASHPROTECT
       case 0xFF70CA:
@@ -394,9 +375,6 @@ void iBIOSHLE(void)
 #endif
          //TODO
          break;
-
-         //?
-         //case 0xFF1032: break;
 
          //VECT_COMINIT
       case 0xFF2BBD:
@@ -553,8 +531,7 @@ void iBIOSHLE(void)
 
          break;
 
-         //VECT_COMCREATEBUFDATA
-      case 0xFF2D6C:
+      case VECT_COMCREATEBUFDATA:
 #ifdef NEOPOP_DEBUG
          if (filter_comms)
          {
@@ -579,9 +556,7 @@ void iBIOSHLE(void)
 
          TestIntHDMA(11, 0x18);
          return;
-
-         //VECT_COMGETBUFDATA
-      case 0xFF2D85:
+      case VECT_COMGETBUFDATA:
 #ifdef NEOPOP_DEBUG
          if (filter_comms)
          {
@@ -590,28 +565,25 @@ void iBIOSHLE(void)
             push32(a);
          }
 #endif
+         pc = pop32();
+
+         while(rCodeB(0x35) > 0)
          {
-            pc = pop32();
+            uint8 data;
 
-            while(rCodeB(0x35) > 0)
+            if (system_comms_read(&data))
             {
-               uint8 data;
+               //Read data into (XHL3++)
+               storeB(rCodeL(0x3C), data);
+               rCodeL(0x3C)++; //Next data
+               rCodeB(0x35)--;	//RB3 = Count Left
 
-               if (system_comms_read(&data))
-               {
-                  //Read data into (XHL3++)
-                  storeB(rCodeL(0x3C), data);
-                  rCodeL(0x3C)++; //Next data
-                  rCodeB(0x35)--;	//RB3 = Count Left
-
-                  //Comms. Read interrupt
-                  storeB(0x50, data);
-                  TestIntHDMA(12, 0x19);
-                  return;
-               }
-               break;
+               //Comms. Read interrupt
+               storeB(0x50, data);
+               TestIntHDMA(12, 0x19);
+               return;
             }
-
+            break;
          }
 
          return;

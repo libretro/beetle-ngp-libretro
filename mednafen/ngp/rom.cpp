@@ -30,67 +30,55 @@ static void rom_hack(void)
    // SPECIFIC ROM HACKS !
    //=============================
 
-   //"Neo-Neo! V1.0 (PD)"
    if (MATCH_CATALOG(0, 16))
    {
+      /* "Neo-Neo! V1.0 (PD)" */
       ngpc_rom.data[0x23] = 0x10;	// Fix rom header
-
-      printf("HACK: \"Neo-Neo! V1.0 (PD)\"\n");
    }
 
-   //"Cool Cool Jam SAMPLE (U)"
    if (MATCH_CATALOG(4660, 161))
    {
+      /* "Cool Cool Jam SAMPLE (U)" */
       ngpc_rom.data[0x23] = 0x10;	// Fix rom header
-
-      printf("HACK: \"Cool Cool Jam SAMPLE (U)\"\n");
    }
 
-   //"Dokodemo Mahjong (J)"
    if (MATCH_CATALOG(51, 33))
    {
+      /* "Dokodemo Mahjong (J)" */
       ngpc_rom.data[0x23] = 0x00;	// Fix rom header
-
-      printf("HACK: \"Dokodemo Mahjong (J)\"\n");
    }
 
-   //"Puyo Pop (V05) (JUE)"
    if (MATCH_CATALOG(65, 5))
    {
+      /* "Puyo Pop (V05) (JUE)" */
       int i;
       for (i = 0x8F0; i < 0x8FC; i++)
          ngpc_rom.data[i] = 0;
-
-      printf("HACK: \"Puyo Pop (V05) (JUE)\"\n");
    }
 
-   //"Puyo Pop (V06) (JUE)"
    if (MATCH_CATALOG(65, 6))
    {
+      /* "Puyo Pop (V06) (JUE)" */
       int i;
       for (i = 0x8F0; i < 0x8FC; i++)
          ngpc_rom.data[i] = 0;
-      //extern uint32 pc;
-      //pc = 0x200000 + 0x100;
-      //for(int x = 0; x < 65536; x++)
-      //puts(TLCS900h_disassemble());
-      printf("HACK: \"Puyo Pop (V06) (JUE)\"\n");
    }
 
-   //"Metal Slug - 2nd Mission (JUE) [!]"
-   //"Metal Slug - 2nd Mission (JUE) [h1]"
    if (MATCH_CATALOG(97, 4))
    {
-      //Enable dev-kit code path, because otherwise it doesn't
-      //allow jumping or firing (for some reason!)
+      /*
+       * "Metal Slug - 2nd Mission (JUE) [!]"
+       * "Metal Slug - 2nd Mission (JUE) [h1]"
+       *
+       * Enable dev-kit code path, because otherwise it doesn't
+       * allow jumping or firing (for some reason!)
+       */
 
       ngpc_rom.data[0x1f] = 0xFF;
 
-      //Enables in-game voices ("Pineapple", etc.)
-      //that were aren't supposed to be available in Dev-kit mode.
+      /* Enables in-game voices ("Pineapple", etc.)
+       * that were aren't supposed to be available in Dev-kit mode. */
       ngpc_rom.data[0x8DDF8] = 0xF0;	//28DDF7: "RET NZ" -> "RET F"
-
-      printf("HACK: \"Metal Slug - 2nd Mission (JUE)\"\n");
    }
 }
 
@@ -110,7 +98,6 @@ static void rom_display_header(void)
          le16toh(rom_header->catalog),
          rom_header->subCatalog);
 
-   //Starting PC
    printf(_("Starting PC:  0x%06X\n"), le32toh(rom_header->startPC) & 0xFFFFFF);
 }
 
@@ -127,10 +114,9 @@ void rom_loaded(void)
    /* ROM Name */
    for(i = 0; i < 12; i++)
    {
+      ngpc_rom.name[i] = ' ';
       if (rom_header->name[i] >= 32 && rom_header->name[i] < 128)
          ngpc_rom.name[i] = rom_header->name[i];
-      else
-         ngpc_rom.name[i] = ' ';
    }
    ngpc_rom.name[i] = 0;
 

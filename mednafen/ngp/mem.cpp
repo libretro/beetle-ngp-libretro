@@ -83,10 +83,9 @@ static void* translate_address_read(uint32 address)
 {
 	address &= 0xFFFFFF;
 
-	/*Get Flash status? */
-
 	if (FlashStatusEnable)
 	{
+      /*Get Flash status? */
 		if (
             (address >= ROM_START && address <= ROM_END) || 
             (address >= HIROM_START && address <= HIROM_END))
@@ -101,17 +100,17 @@ static void* translate_address_read(uint32 address)
       }
 	}
 
-	/* ROM (LOW) */
 	if (address >= ROM_START && address <= ROM_END)
 	{
+      /* ROM (LOW) */
 		if (address <= ROM_START + ngpc_rom.length)
 			return ngpc_rom.data + (address - ROM_START);
       return NULL;
 	}
 
-	/* ROM (HIGH) */
 	if (address >= HIROM_START && address <= HIROM_END)
 	{
+      /* ROM (HIGH) */
 		if (address <= HIROM_START + (ngpc_rom.length - 0x200000))
 			return ngpc_rom.data + 0x200000 + (address - HIROM_START);
       return NULL;
@@ -386,10 +385,6 @@ void storeB(uint32 address, uint8_t data)
    /* Write */
    if (ptr)
       *ptr = data;
-#if 0
-   else
-      printf("ACK: %08x %02x\n", address, data);
-#endif
 }
 
 void storeW(uint32 address, uint16_t data)
