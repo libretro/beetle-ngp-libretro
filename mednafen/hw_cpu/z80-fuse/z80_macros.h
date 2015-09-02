@@ -101,42 +101,11 @@
    reasons in the main core, but a function for flexibility when building
    the core tester */
 
-#ifndef CORETEST
+#define contend_read(address,time)          z80_tstates += (time);
 
-#if 0
-#define contend_read(address,time) \
-  if( memory_map_read[ (address) >> MEMORY_PAGE_SIZE_LOGARITHM ].contended ) \
-    z80_tstates += ula_contention[ z80_tstates ]; \
-  z80_tstates += (time);
+#define contend_read_no_mreq(address,time)  z80_tstates += (time);
 
-#define contend_read_no_mreq(address,time) \
-  if( memory_map_read[ (address) >> MEMORY_PAGE_SIZE_LOGARITHM ].contended ) \
-    z80_tstates += ula_contention_no_mreq[ z80_tstates ]; \
-  z80_tstates += (time);
-
-#define contend_write_no_mreq(address,time) \
-  if( memory_map_write[ (address) >> MEMORY_PAGE_SIZE_LOGARITHM ].contended ) \
-    z80_tstates += ula_contention_no_mreq[ z80_tstates ]; \
-  z80_tstates += (time);
-#endif
-
-#define contend_read(address,time) \
-  z80_tstates += (time);
-
-#define contend_read_no_mreq(address,time) \
-  z80_tstates += (time);
-
-#define contend_write_no_mreq(address,time) \
-  z80_tstates += (time);
-
-
-#else				/* #ifndef CORETEST */
-
-void contend_read( uint16 address, uint32 time );
-void contend_read_no_mreq( uint16 address, uint32 time );
-void contend_write_no_mreq( uint16 address, uint32 time );
-
-#endif				/* #ifndef CORETEST */
+#define contend_write_no_mreq(address,time) z80_tstates += (time);
 
 /* Some commonly used instructions */
 #define AND(value)\
