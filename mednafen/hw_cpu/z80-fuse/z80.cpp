@@ -63,21 +63,30 @@ static void z80_init_tables(void);
 /* Set up the z80 emulation */
 void z80_init( void )
 {
-  z80_init_tables();
+   z80_init_tables();
 }
 
-/* Initalise the tables used to set flags */
+/* Initialise the tables used to set flags */
 static void z80_init_tables(void)
 {
-  int i,j,k;
-  uint8 parity;
+  int i;
 
-  for(i=0;i<0x100;i++) {
-    sz53_table[i]= i & ( FLAG_3 | FLAG_5 | FLAG_S );
-    j=i; parity=0;
-    for(k=0;k<8;k++) { parity ^= j & 1; j >>=1; }
-    parity_table[i]= ( parity ? 0 : FLAG_P );
-    sz53p_table[i] = sz53_table[i] | parity_table[i];
+  for(i = 0; i < 0x100; i++)
+  {
+     int j        = i;
+     int k        = 0;
+     uint8 parity = 0;
+
+     sz53_table[i]= i & ( FLAG_3 | FLAG_5 | FLAG_S );
+
+     for(; k < 8; k++)
+     {
+        parity ^= j & 1;
+        j >>=1;
+     }
+
+     parity_table[i] = ( parity ? 0 : FLAG_P );
+     sz53p_table[i]  = sz53_table[i] | parity_table[i];
   }
 
   sz53_table[0]  |= FLAG_Z;
@@ -103,60 +112,68 @@ void z80_reset( void )
 /* Process a z80 maskable interrupt */
 int z80_interrupt( void )
 {
+   if (!IFF1)
+      return 0;			/* Did not accept an interrupt */
 
-  if( IFF1 ) {
-
-    /* If interrupts have just been enabled, don't accept the interrupt now,
-       but check after the next instruction has been executed */
-    if( z80_tstates == z80.interrupts_enabled_at ) {
+   /* If interrupts have just been enabled, don't accept the interrupt now,
+      but check after the next instruction has been executed */
+   if(z80_tstates == z80.interrupts_enabled_at)
       return 0;
-    }
 
-    if( z80.halted ) { PC++; z80.halted = 0; }
-    
-    IFF1=IFF2=0;
+   if(z80.halted)
+   {
+      PC++;
+      z80.halted = 0;
+   }
 
-    Z80_WB_MACRO( --SP, PCH ); Z80_WB_MACRO( --SP, PCL );
+   IFF1 = IFF2 = 0;
 
-    R++;
+   Z80_WB_MACRO( --SP, PCH );
+   Z80_WB_MACRO( --SP, PCL );
 
-    switch(IM) {
-      case 0: PC = 0x0038; z80_tstates += 7; break;
-      case 1: PC = 0x0038; z80_tstates += 7; break;
+   R++;
+
+   switch(IM)
+   {
+      case 0:
+         PC = 0x0038;
+         z80_tstates += 7;
+         break;
+      case 1:
+         PC = 0x0038;
+         z80_tstates += 7;
+         break;
       case 2: 
-	{
-	  uint16 inttemp=(0x100*I)+0xff;
-	  PCL = Z80_RB_MACRO(inttemp++); PCH = Z80_RB_MACRO(inttemp);
-	  z80_tstates += 7;
-	  break;
-	}
-      //default:
-      //	ui_error( UI_ERROR_ERROR, "Unknown interrupt mode %d", IM );
-      //	fuse_abort();
-    }
+         {
+            uint16 inttemp=(0x100*I)+0xff;
+            PCL = Z80_RB_MACRO(inttemp++); PCH = Z80_RB_MACRO(inttemp);
+            z80_tstates += 7;
+            break;
+         }
+   }
 
-    return 1;			/* Accepted an interrupt */
-
-  } else {
-
-    return 0;			/* Did not accept an interrupt */
-
-  }
+   return 1;			/* Accepted an interrupt */
 }
 
 /* Process a z80 non-maskable interrupt */
-void z80_nmi( void )
+void z80_nmi(void)
 {
-  if( z80.halted ) { PC++; z80.halted = 0; }
+  if(z80.halted)
+  {
+     PC++;
+     z80.halted = 0;
+  }
 
   IFF1 = 0;
 
-  Z80_WB_MACRO( --SP, PCH ); Z80_WB_MACRO( --SP, PCL );
+  Z80_WB_MACRO( --SP, PCH );
+  Z80_WB_MACRO( --SP, PCL );
 
   /* FIXME: how is R affected? */
 
   /* FIXME: how does contention apply here? */
-  z80_tstates += 11; PC = 0x0066;
+  z80_tstates += 11;
+  PC = 0x0066;
 }
 
 #if 0
@@ -218,51 +235,49 @@ z80_to_snapshot( libspectrum_snap *snap )
 
 int z80_state_action(void *data, int load, int data_only, const char *section_name)
 {
- uint8 r_register;
+   uint8 r_register;
 
- SFORMAT StateRegs[] =
- {
-  { &(z80.af.w), sizeof(z80.af.w), 0x80000000, "AF" },
-  { &(z80.bc.w), sizeof(z80.bc.w), 0x80000000, "BC" },
-  { &(z80.de.w), sizeof(z80.de.w), 0x80000000, "DE" },
-  { &(z80.hl.w), sizeof(z80.hl.w), 0x80000000, "HL" },
-  { &(z80.af_.w), sizeof(z80.af_.w), 0x80000000, "AF_" },
-  { &(z80.bc_.w), sizeof(z80.bc_.w), 0x80000000, "BC_" },
-  { &(z80.de_.w), sizeof(z80.de_.w), 0x80000000, "DE_" },
-  { &(z80.hl_.w), sizeof(z80.hl_.w), 0x80000000, "HL_" },
-  { &(z80.ix.w), sizeof(z80.ix.w), 0x80000000, "IX" },
-  { &(z80.iy.w), sizeof(z80.iy.w), 0x80000000, "IY" },
-  { &(z80.i), sizeof(z80.i), 0x80000000, "I" },
-  { &(z80.sp.w), sizeof(z80.sp.w), 0x80000000, "SP" },
-  { &(z80.pc.w), sizeof(z80.pc.w), 0x80000000, "PC" },
-  { &(z80.iff1), sizeof(z80.iff1), 0x80000000, "IFF1" },
-  { &(z80.iff2), sizeof(z80.iff2), 0x80000000, "IFF2" },
-  { &(z80.im), sizeof(z80.im), 0x80000000, "IM" },
-  { &(r_register), sizeof(r_register), 0x80000000, "R" },
+   SFORMAT StateRegs[] =
+   {
+      { &(z80.af.w), sizeof(z80.af.w), 0x80000000, "AF" },
+      { &(z80.bc.w), sizeof(z80.bc.w), 0x80000000, "BC" },
+      { &(z80.de.w), sizeof(z80.de.w), 0x80000000, "DE" },
+      { &(z80.hl.w), sizeof(z80.hl.w), 0x80000000, "HL" },
+      { &(z80.af_.w), sizeof(z80.af_.w), 0x80000000, "AF_" },
+      { &(z80.bc_.w), sizeof(z80.bc_.w), 0x80000000, "BC_" },
+      { &(z80.de_.w), sizeof(z80.de_.w), 0x80000000, "DE_" },
+      { &(z80.hl_.w), sizeof(z80.hl_.w), 0x80000000, "HL_" },
+      { &(z80.ix.w), sizeof(z80.ix.w), 0x80000000, "IX" },
+      { &(z80.iy.w), sizeof(z80.iy.w), 0x80000000, "IY" },
+      { &(z80.i), sizeof(z80.i), 0x80000000, "I" },
+      { &(z80.sp.w), sizeof(z80.sp.w), 0x80000000, "SP" },
+      { &(z80.pc.w), sizeof(z80.pc.w), 0x80000000, "PC" },
+      { &(z80.iff1), sizeof(z80.iff1), 0x80000000, "IFF1" },
+      { &(z80.iff2), sizeof(z80.iff2), 0x80000000, "IFF2" },
+      { &(z80.im), sizeof(z80.im), 0x80000000, "IM" },
+      { &(r_register), sizeof(r_register), 0x80000000, "R" },
 
-  { &(z80.interrupts_enabled_at), sizeof(z80.interrupts_enabled_at), 0x80000000, "interrupts_enabled_at" },
-  { &(z80.halted), sizeof(z80.halted), 0x80000000, "halted" },
+      { &(z80.interrupts_enabled_at), sizeof(z80.interrupts_enabled_at), 0x80000000, "interrupts_enabled_at" },
+      { &(z80.halted), sizeof(z80.halted), 0x80000000, "halted" },
 
-  { &((z80_tstates)), sizeof((z80_tstates)), 0x80000000, "z80_tstates" },
-  { &((last_z80_tstates)), sizeof((last_z80_tstates)), 0x80000000, "last_z80_tstates" },
+      { &((z80_tstates)), sizeof((z80_tstates)), 0x80000000, "z80_tstates" },
+      { &((last_z80_tstates)), sizeof((last_z80_tstates)), 0x80000000, "last_z80_tstates" },
 
-  { 0, 0, 0, 0 }
- };
+      { 0, 0, 0, 0 }
+   };
 
- if(!load)
-  r_register = (z80.r7 & 0x80) | (z80.r & 0x7f);
+   if(!load)
+      r_register = (z80.r7 & 0x80) | (z80.r & 0x7f);
 
- if(!MDFNSS_StateAction(data, load, data_only, StateRegs, section_name))
- {
-  return(0);
- }
+   if(!MDFNSS_StateAction(data, load, data_only, StateRegs, section_name))
+      return(0);
 
- if(load)
- {
-  z80.r7 = r_register & 0x80;
-  z80.r = r_register & 0x7F;
- }
+   if(load)
+   {
+      z80.r7 = r_register & 0x80;
+      z80.r = r_register & 0x7F;
+   }
 
- return(1);
+   return(1);
 }
 
