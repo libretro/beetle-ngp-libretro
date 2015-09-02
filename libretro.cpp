@@ -70,64 +70,37 @@ static uint8 *chee;
 
 bool NGPFrameSkip;
 int32 ngpc_soundTS = 0;
-//static int32 main_timeaccum;
 static int32 z80_runtime;
 
 static void Emulate(EmulateSpecStruct *espec)
 {
-   bool MeowMeow = 0;
+   bool MeowMeow        = false;
 
    espec->DisplayRect.x = 0;
    espec->DisplayRect.y = 0;
    espec->DisplayRect.w = 160;
    espec->DisplayRect.h = 152;
 
-   NGPJoyLatch = *chee;
+   NGPJoyLatch          = *chee;
+
    storeB(0x6F82, *chee);
 
    MDFNMP_ApplyPeriodicCheats();
 
-   ngpc_soundTS = 0;
-   NGPFrameSkip = espec->skip;
+   ngpc_soundTS         = 0;
+   NGPFrameSkip         = espec->skip;
 
    do
    {
-#if 0
-      int32 timetime;
-
-      if(main_timeaccum == 0)
-      {
-         main_timeaccum = TLCS900h_interpret();
-         if(main_timeaccum > 255)
-         {
-            main_timeaccum = 255;
-            printf("%d\n", main_timeaccum);
-         }
-      }
-
-      timetime = std::min<int32>(main_timeaccum, 24);
-      main_timeaccum -= timetime;
-#else
-      int32 timetime = (uint8)TLCS900h_interpret();	// This is sooo not right, but it's replicating the old behavior(which is necessary
-      // now since I've fixed the TLCS900h core and other places not to truncate cycle counts
-      // internally to 8-bits).  Switch to the #if 0'd block of code once we fix cycle counts in the
-      // TLCS900h core(they're all sorts of messed up), and investigate if certain long
-      // instructions are interruptable(by interrupts) and later resumable, RE Rockman Battle
-      // & Fighters voice sample playback.
-#endif
-      //if(timetime > 255)
-      // printf("%d\n", timetime);
-
-      // Note: Don't call updateTimers with a time/tick/cycle/whatever count greater than 255.
+      int32 timetime = (uint8)TLCS900h_interpret();
       MeowMeow |= updateTimers(espec->surface, timetime);
-
       z80_runtime += timetime;
 
       while(z80_runtime > 0)
       {
          int z80rantime = Z80_RunOP();
 
-         if(z80rantime < 0) // Z80 inactive, so take up all run time!
+         if (z80rantime < 0) // Z80 inactive, so take up all run time!
          {
             z80_runtime = 0;
             break;
@@ -136,7 +109,7 @@ static void Emulate(EmulateSpecStruct *espec)
          z80_runtime -= z80rantime << 1;
 
       }
-   } while(!MeowMeow);
+   }while(!MeowMeow);
 
 
    espec->MasterCycles = ngpc_soundTS;
@@ -172,9 +145,7 @@ static int Load(const char *name, MDFNFILE *fp)
    ngpc_rom.length = GET_FSIZE_PTR(fp);
    memcpy(ngpc_rom.data, GET_FDATA_PTR(fp), GET_FSIZE_PTR(fp));
 
-
    rom_loaded();
-   printf(_("ROM:       %dKiB\n"), (ngpc_rom.length + 1023) / 1024);
 
    MDFNMP_Init(1024, 1024 * 1024 * 16 / 1024);
 
@@ -191,7 +162,6 @@ static int Load(const char *name, MDFNFILE *fp)
 
    bios_install();
 
-   //main_timeaccum = 0;
    z80_runtime = 0;
 
    reset();
@@ -490,10 +460,9 @@ void retro_init(void)
       log_cb(RETRO_LOG_INFO, "Frontend supports RGB565 - will use that instead of XRGB1555.\n");
 #endif
 
+   perf_get_cpu_features_cb = NULL;
    if (environ_cb(RETRO_ENVIRONMENT_GET_PERF_INTERFACE, &perf_cb))
       perf_get_cpu_features_cb = perf_cb.get_cpu_features;
-   else
-      perf_get_cpu_features_cb = NULL;
 
    check_system_specs();
 }
@@ -659,23 +628,23 @@ void retro_run()
    unsigned width, height;
    static int16_t sound_buf[0x10000];
    static MDFN_Rect rects[FB_MAX_HEIGHT];
-   bool updated = false;
    EmulateSpecStruct spec = {0};
+   bool updated = false;
 
    input_poll_cb();
 
    update_input();
 
-   rects[0].w = ~0;
+   rects[0].w              = ~0;
 
-   spec.surface = surf;
-   spec.SoundRate = 44100;
-   spec.SoundBuf = sound_buf;
-   spec.LineWidths = rects;
-   spec.SoundBufMaxSize = sizeof(sound_buf) / 2;
-   spec.SoundVolume = 1.0;
-   spec.soundmultiplier = 1.0;
-   spec.SoundBufSize = 0;
+   spec.surface            = surf;
+   spec.SoundRate          = 44100;
+   spec.SoundBuf           = sound_buf;
+   spec.LineWidths         = rects;
+   spec.SoundBufMaxSize    = sizeof(sound_buf) / 2;
+   spec.SoundVolume        = 1.0;
+   spec.soundmultiplier    = 1.0;
+   spec.SoundBufSize       = 0;
    spec.VideoFormatChanged = false;
    spec.SoundFormatChanged = false;
 
