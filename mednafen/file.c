@@ -81,48 +81,39 @@ int file_close(struct MDFNFILE *file)
 uint64_t file_read(struct MDFNFILE *file, void *ptr,
       size_t element_size, size_t nmemb)
 {
-   uint32_t total = element_size * nmemb;
+   int64_t avail = file->size - file->location;
+   if (nmemb > avail)
+      nmemb = avail;
 
-   if (file->location >= file->size)
-      return 0;
-
-   if ((file->location + total) > file->size)
-   {
-      int64_t ak = file->size - file->location;
-
-      memcpy((uint8_t*)ptr, file->data + file->location, ak);
-
-      file->location = file->size;
-
-      return(ak / element_size);
-   }
-
-   memcpy((uint8_t*)ptr, file->data + file->location, total);
-
-   file->location += total;
-
+   memcpy((uint8_t*)ptr, file->data + file->location, nmemb);
+   file->location += nmemb;
    return nmemb;
 }
 
 int file_seek(struct MDFNFILE *file, int64_t offset, int whence)
 {
+   size_t ptr;
+
    switch(whence)
    {
       case SEEK_SET:
-         if (offset >= file->size)
-            return -1;
-
-         file->location = offset;
+         ptr = offset;
          break;
       case SEEK_CUR:
-         if ((offset + file->location) > file->size)
-            return -1;
-
-         file->location += offset;
+         ptr = file->location + offset;
+         break;
+      case SEEK_END:
+         ptr = file->size + offset;
          break;
    }    
 
-   return 0;
+   if (ptr <= file->size)
+   {
+      file->location = ptr;
+      return 0;
+   }
+
+   return -1;
 }
 
 int file_read16le(struct MDFNFILE *file, uint16_t *val)
@@ -147,30 +138,4 @@ int file_read32le(struct MDFNFILE *file, uint32_t *val)
    file->location += 4;
 
    return 1;
-}
-
-char *file_fgets(struct MDFNFILE *file, char *s, int len)
-{
-   int pos = 0;
-
-   if (!len)
-      return(NULL);
-
-   if (file->location >= len)
-      return(NULL);
-
-   while(pos < (len - 1) && file->location < len)
-   {
-      int v = file->data[file->location];
-      s[pos] = v;
-      file->location++;
-      pos++;
-      if (v == '\n')
-         break;
-   }
-
-   if (len)
-      s[pos] = 0;
-
-   return s;
 }
