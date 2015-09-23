@@ -122,7 +122,6 @@ endif
 ifneq ($(HAVE_GRIFFIN), 1)
 SOURCES_CXX += \
 	$(MEDNAFEN_DIR)/mednafen.cpp \
-	$(MEDNAFEN_DIR)/general.cpp \
 	$(MEDNAFEN_DIR)/state.cpp \
 	$(MEDNAFEN_DIR)/mempatcher.cpp \
 	$(MEDNAFEN_DIR)/sound/Stereo_Buffer.cpp \
@@ -130,6 +129,7 @@ SOURCES_CXX += \
 
 SOURCES_C += \
 	$(MEDNAFEN_DIR)/file.c \
+	$(MEDNAFEN_DIR)/general.c \
 	$(MEDNAFEN_DIR)/settings.c \
 	$(MEDNAFEN_DIR)/mednafen-endian.c
 endif
