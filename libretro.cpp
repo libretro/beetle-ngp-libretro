@@ -118,10 +118,10 @@ static void Emulate(EmulateSpecStruct *espec)
 
 static bool TestMagic(const char *name, MDFNFILE *fp)
 {
- if(strcasecmp(GET_FEXTS_PTR(fp), "ngp") && strcasecmp(GET_FEXTS_PTR(fp), "ngpc") && strcasecmp(GET_FEXTS_PTR(fp), "ngc") && strcasecmp(GET_FEXTS_PTR(fp), "npc"))
-  return(FALSE);
+   if(strcasecmp(fp->ext, "ngp") && strcasecmp(fp->ext, "ngpc") && strcasecmp(fp->ext, "ngc") && strcasecmp(fp->ext, "npc"))
+      return(FALSE);
 
- return(TRUE);
+   return(TRUE);
 }
 
 void reset(void)
@@ -139,11 +139,11 @@ void reset(void)
 
 static int Load(const char *name, MDFNFILE *fp)
 {
-   if(!(ngpc_rom.data = (uint8 *)malloc(GET_FSIZE_PTR(fp))))
+   if(!(ngpc_rom.data = (uint8 *)malloc(fp->size)))
       return(0);
 
-   ngpc_rom.length = GET_FSIZE_PTR(fp);
-   memcpy(ngpc_rom.data, GET_FDATA_PTR(fp), GET_FSIZE_PTR(fp));
+   ngpc_rom.length = fp->size;
+   memcpy(ngpc_rom.data, fp->data, fp->size);
 
    rom_loaded();
 

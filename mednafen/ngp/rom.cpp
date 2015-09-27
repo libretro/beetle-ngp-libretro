@@ -84,21 +84,21 @@ static void rom_hack(void)
 
 static void rom_display_header(void)
 {
-   printf(_("Name:    %s\n"), ngpc_rom.name);
-   printf(_("System:  "));
+   printf("Name:    %s\n", ngpc_rom.name);
+   printf("System:  ");
 
    if(rom_header->mode & 0x10)
-      printf(_("Color"));
+      printf("Color");
    else
-      printf(_("Greyscale"));
+      printf("Greyscale");
 
    printf("\n");
 
-   printf(_("Catalog:  %d (sub %d)\n"),
+   printf("Catalog:  %d (sub %d)\n",
          le16toh(rom_header->catalog),
          rom_header->subCatalog);
 
-   printf(_("Starting PC:  0x%06X\n"), le32toh(rom_header->startPC) & 0xFFFFFF);
+   printf("Starting PC:  0x%06X\n", le32toh(rom_header->startPC) & 0xFFFFFF);
 }
 
 void rom_loaded(void)
