@@ -171,12 +171,8 @@ static void draw_colour_scroll2(ngpgfx_t *gfx, uint16_t *cfb_scanline,
 static void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline,
       int layer_enable, int ngpc_scanline)
 {
-	int16_t lastSpriteX;
-	int16_t lastSpriteY;
-	int spr;
    uint16_t *scan;
    int x = 0;
-   uint8_t zbuffer[256] = {0};
 	/* Window colour */
    uint16_t *ptr16 = (uint16_t*)(gfx->ColorPaletteRAM + 0x01F0 + (gfx->oowc << 1));
 #ifdef MSB_FIRST
@@ -207,8 +203,9 @@ static void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline,
 
 	if (ngpc_scanline >= gfx->winy && ngpc_scanline < gfx->winy + gfx->winh)
 	{
-      int x;
+      int x, spr;
       uint16_t *scan;
+      uint8_t zbuffer[256] = {0};
       uint16_t *ptr16 = (uint16_t*)(uint8*)(gfx->ColorPaletteRAM + 0x01E0 + ((gfx->bgc & 7) << 1));
 #ifdef MSB_FIRST
       data16 = LoadU16_RBO(ptr16);
@@ -219,8 +216,6 @@ static void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline,
 		if (gfx->negative)
          data16 = ~data16;
 
-      data16 = data16;
-		
       x    = gfx->winx;
       scan = &cfb_scanline[x];
 
@@ -246,23 +241,23 @@ static void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline,
 
 		/* Draw Sprites */
 		/*Last sprite position, (defaults to top-left, sure?) */
-		lastSpriteX = 0;
-		lastSpriteY = 0;
 
 		if(layer_enable & 4)
 		for (spr = 0; spr < 64; spr++)
 		{
-			uint8_t sx       = gfx->SpriteVRAM[(spr * 4) + 2];	/* X position */
-			uint8_t sy       = gfx->SpriteVRAM[(spr * 4) + 3];	/* Y position */
-			int16_t x        = sx;
-			int16_t y        = sy;
-         uint16_t *ptr16  = (uint16_t*)(gfx->SpriteVRAM + (spr * 4));
+         int16_t lastSpriteX  = 0;
+         int16_t lastSpriteY  = 0;
+			uint8_t sx          = gfx->SpriteVRAM[(spr * 4) + 2];	/* X position */
+			uint8_t sy          = gfx->SpriteVRAM[(spr * 4) + 3];	/* Y position */
+			int16_t x           = sx;
+			int16_t y           = sy;
+         uint16_t *ptr16     = (uint16_t*)(gfx->SpriteVRAM + (spr * 4));
 #ifdef MSB_FIRST
-			uint16_t data16  = LoadU16_RBO(ptr16);
+			uint16_t data16     = LoadU16_RBO(ptr16);
 #else
-         uint16_t data16  = *ptr16;
+         uint16_t data16     = *ptr16;
 #endif
-			uint8_t priority = (data16 & 0x1800) >> 11;
+			uint8_t priority    = (data16 & 0x1800) >> 11;
 
 			if (data16 & 0x0400)
             x = lastSpriteX + sx;	/* Horizontal chain? */
@@ -425,10 +420,7 @@ static void draw_scanline_mono(ngpgfx_t *gfx,
 {
    int x;
    uint16_t *scan;
-	int16_t lastSpriteX;
-	int16_t lastSpriteY;
 	int spr;
-   uint8_t zbuffer[256] = {0};
 
 	/* Window colour */
 	uint16_t r = (uint16)gfx->oowc << 1;
@@ -460,6 +452,9 @@ static void draw_scanline_mono(ngpgfx_t *gfx,
 	{
       int x;
       uint16_t *scan;
+      int16_t lastSpriteX = 0;
+      int16_t lastSpriteY = 0;
+      uint8_t zbuffer[256] = {0};
 
       data16 = 0x0FFF;
 
@@ -500,12 +495,10 @@ static void draw_scanline_mono(ngpgfx_t *gfx,
 
 		/* Draw Sprites */
 		/* Last sprite position, (defaults to top-left, sure?) */
-		lastSpriteX = 0;
-		lastSpriteY = 0;
 		if(layer_enable & 4)
 		for (spr = 0; spr < 64; spr++)
 		{
-			uint8_t priority, row;
+			uint8_t priority;
 			uint8_t sx = gfx->SpriteVRAM[(spr * 4) + 2];	//X position
 			uint8_t sy = gfx->SpriteVRAM[(spr * 4) + 3];	//Y position
 			int16_t x = sx;
@@ -543,7 +536,7 @@ static void draw_scanline_mono(ngpgfx_t *gfx,
 			//In range?
 			if (ngpc_scanline >= y && ngpc_scanline <= y + 7)
 			{
-				row = (ngpc_scanline - y) & 7;	//Which row?
+				uint8_t row = (ngpc_scanline - y) & 7;	//Which row?
 				drawMonoPattern(gfx, cfb_scanline, zbuffer, (uint8)x, data16 & 0x01FF, 
 					(data16 & 0x4000) ? 7 - row : row, data16 & 0x8000,
 					gfx->SPPLT, data16 & 0x2000, priority << 1); 
@@ -660,13 +653,13 @@ void ngpgfx_set_pixel_format(ngpgfx_t *gfx)
 
 bool ngpgfx_draw(ngpgfx_t *gfx, void *data, bool skip)
 {
-   unsigned x;
    bool ret = 0;
    MDFN_Surface *surface = (MDFN_Surface*)data;
 
    /* Draw the scanline */
    if (gfx->raster_line < SCREEN_HEIGHT && !skip)
    {
+      unsigned x;
       uint16_t *dest = surface->pixels + surface->pitch * gfx->raster_line;
 
       if (!gfx->K2GE_MODE)

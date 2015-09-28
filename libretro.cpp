@@ -511,8 +511,6 @@ static uint8_t input_buf;
 
 static void hookup_ports(bool force)
 {
-   MDFNGI *currgame = game;
-
    if (initial_ports_hookup && !force)
       return;
 
@@ -590,7 +588,7 @@ void retro_unload_game(void)
 
 static void update_input(void)
 {
-   MDFNGI *currgame = (MDFNGI*)game;
+   unsigned i;
    input_buf = 0;
 
    static unsigned map[] = {
@@ -603,7 +601,7 @@ static void update_input(void)
       RETRO_DEVICE_ID_JOYPAD_START,
    };
 
-   for (unsigned i = 0; i < MAX_BUTTONS; i++)
+   for (i = 0; i < MAX_BUTTONS; i++)
       input_buf |= map[i] != -1u &&
          input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, map[i]) ? (1 << i) : 0;
 
@@ -650,8 +648,8 @@ void retro_run()
 
    Emulate(&spec);
 
-   SoundBufSize = spec.SoundBufSize - spec.SoundBufSizeALMS;
-   SoundBufMaxSize = spec.SoundBufMaxSize - spec.SoundBufSizeALMS;
+   SoundBufSize      = spec.SoundBufSize - spec.SoundBufSizeALMS;
+   SoundBufMaxSize   = spec.SoundBufMaxSize - spec.SoundBufSizeALMS;
 
    spec.SoundBufSize = spec.SoundBufSizeALMS + SoundBufSize;
 
@@ -718,10 +716,6 @@ unsigned retro_api_version(void)
 
 void retro_set_controller_port_device(unsigned in_port, unsigned device)
 {
-   MDFNGI *currgame = (MDFNGI*)game;
-
-   if (!currgame)
-      return;
 }
 
 void retro_set_environment(retro_environment_t cb)
