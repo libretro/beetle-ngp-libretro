@@ -849,29 +849,3 @@ std::string MDFN_MakeFName(MakeFName_Type type, int id1, const char *cd1)
       log_cb(RETRO_LOG_INFO, "MDFN_MakeFName: %s\n", ret.c_str());
    return ret;
 }
-
-void MDFND_DispMessage(unsigned char *str)
-{
-   if (log_cb)
-      log_cb(RETRO_LOG_INFO, "%s\n", str);
-}
-
-void MDFND_Message(const char *str)
-{
-   if (log_cb)
-      log_cb(RETRO_LOG_INFO, "%s\n", str);
-}
-
-void MDFND_MidSync(const EmulateSpecStruct *)
-{}
-
-void MDFN_MidLineUpdate(EmulateSpecStruct *espec, int y)
-{
- //MDFND_MidLineUpdate(espec, y);
-}
-
-void MDFND_PrintError(const char* err)
-{
-   if (log_cb)
-      log_cb(RETRO_LOG_ERROR, "%s\n", err);
-}
