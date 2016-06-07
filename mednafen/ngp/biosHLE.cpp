@@ -21,6 +21,8 @@
 #include "interrupt.h"
 #include "../state.h"
 
+#include <boolean.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -257,12 +259,12 @@ void iBIOSHLE(void)
                      rCodeL(0x3C), rCodeL(0x38) + bank, rCodeW(0x34) * 256);
 #endif
 
-            memory_flash_error = FALSE;
-            memory_unlock_flash_write = TRUE;
+            memory_flash_error = false;
+            memory_unlock_flash_write = true;
             //Copy as 32 bit values for speed
             for (i = 0; i < rCodeW(0x34) * 64ul; i++)
                storeL(rCodeL(0x38) + bank + (i * 4), loadL(rCodeL(0x3C) + (i * 4)));
-            memory_unlock_flash_write = FALSE;
+            memory_unlock_flash_write = false;
 
             if (memory_flash_error)
             {

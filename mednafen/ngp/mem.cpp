@@ -30,17 +30,17 @@
 #include "../settings.h"
 
 /* Hack way of returning good Flash status. */
-bool FlashStatusEnable = FALSE;
+bool FlashStatusEnable = false;
 static uint32 FlashStatus;	
 
 uint8_t CPUExRAM[16384];
 
-bool debug_abort_memory = FALSE;
-bool debug_mask_memory_error_messages = FALSE;
+bool debug_abort_memory = false;
+bool debug_mask_memory_error_messages = false;
 
-bool memory_unlock_flash_write = FALSE;
-bool memory_flash_error = FALSE;
-bool memory_flash_command = FALSE;
+bool memory_unlock_flash_write = false;
+bool memory_flash_error = false;
+bool memory_flash_command = false;
 
 
 uint8_t SC0BUF; /* Serial channel 0 buffer. */
@@ -93,7 +93,7 @@ static void* translate_address_read(uint32 address)
             (address >= ROM_START && address <= ROM_END) || 
             (address >= HIROM_START && address <= HIROM_END))
       {
-         FlashStatusEnable = FALSE;
+         FlashStatusEnable = false;
          RecacheFRM();
          if (address == 0x220000 || address == 0x230000)
          {
@@ -157,7 +157,7 @@ static void *translate_address_write(uint32 address)
          if (address == 0x202AAA || address == 0x205555)
          {
             //			system_debug_message("%06X: Enable Flash command from %06X", pc, address);
-            memory_flash_command = TRUE;
+            memory_flash_command = true;
             return NULL;
          }
 
@@ -165,7 +165,7 @@ static void *translate_address_write(uint32 address)
          if (address == 0x220000 || address == 0x230000)
          {
             //			system_debug_message("%06X: Flash status read from %06X", pc, address);
-            FlashStatusEnable = TRUE;
+            FlashStatusEnable = true;
             RecacheFRM();
             return NULL;
          }
@@ -176,7 +176,7 @@ static void *translate_address_write(uint32 address)
             flash_write(address & 0xFFFF00, 256);
 
             //Need to issue a new command before writing will work again.
-            memory_flash_command = FALSE;
+            memory_flash_command = false;
 
             //			system_debug_message("%06X: Direct Flash write to %06X", pc, address & 0xFFFF00);
             //			system_debug_stop();
@@ -532,10 +532,10 @@ void reset_memory(void)
 {
 	unsigned int i;
 
-	FlashStatusEnable = FALSE;
+	FlashStatusEnable = false;
 	RecacheFRM();
 
-	memory_flash_command = FALSE;
+	memory_flash_command = false;
 
    /* 000000 -> 000100	CPU Internal RAM (Timers/DMA/Z80) */
 

@@ -119,9 +119,9 @@ static void Emulate(EmulateSpecStruct *espec)
 static bool TestMagic(const char *name, MDFNFILE *fp)
 {
    if(strcasecmp(fp->ext, "ngp") && strcasecmp(fp->ext, "ngpc") && strcasecmp(fp->ext, "ngc") && strcasecmp(fp->ext, "npc"))
-      return(FALSE);
+      return false;
 
-   return(TRUE);
+   return true;
 }
 
 void reset(void)

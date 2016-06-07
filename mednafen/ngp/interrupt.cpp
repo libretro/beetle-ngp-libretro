@@ -254,7 +254,7 @@ void TestIntHDMA(int bios_num, int vec_num)
       }
    }
    if(!WasDMA)
-      set_interrupt(bios_num, TRUE);
+      set_interrupt(bios_num, true);
 }
 
 
@@ -292,7 +292,7 @@ bool updateTimers(void *data, int cputicks)
    timer_clock[0] += cputicks;
    timer_clock[1] += cputicks;
 
-   timer0 = FALSE;	/* Clear the timer0 tick, for timer1 chain mode. */
+   timer0 = false;	/* Clear the timer0 tick, for timer1 chain mode. */
 
    /* Run Timer 0 (TRUN)? */
    if ((TRUN & 0x01))
@@ -307,7 +307,7 @@ bool updateTimers(void *data, int cputicks)
                timer[0]++;
 
                timer_clock[0] = 0;
-               h_int = FALSE;	// Stop h_int remaining active
+               h_int = false;	// Stop h_int remaining active
             }
             break;
 
@@ -338,7 +338,7 @@ bool updateTimers(void *data, int cputicks)
       if (timer_threshold[0] && timer[0] >= timer_threshold[0])
       {
          timer[0] = 0;
-         timer0 = TRUE;
+         timer0 = true;
 
          TestIntHDMA(7, 0x10);
       }
@@ -393,7 +393,7 @@ bool updateTimers(void *data, int cputicks)
    timer_clock[2] += cputicks;
    timer_clock[3] += cputicks;
 
-   timer2 = FALSE;	/* Clear the timer2 tick, for timer3 chain mode. */
+   timer2 = false;	/* Clear the timer2 tick, for timer3 chain mode. */
 
    /* Run Timer 2 (TRUN)? */
    if ((TRUN & 0x04))
@@ -431,7 +431,7 @@ bool updateTimers(void *data, int cputicks)
       if (timer_threshold[2] && timer[2] >= timer_threshold[2])
       {
          timer[2] = 0;
-         timer2 = TRUE;
+         timer2 = true;
 
          TestIntHDMA(9, 0x12);
       }
@@ -495,8 +495,8 @@ void reset_timers(void)
    memset(timer_clock, 0, sizeof(timer_clock));
    memset(timer_threshold, 0, sizeof(timer_threshold));
 
-   timer0 = FALSE;
-   timer2 = FALSE;
+   timer0 = false;
+   timer2 = false;
 }
 
 void reset_int(void)
@@ -511,7 +511,7 @@ void reset_int(void)
    memset(ipending, 0, sizeof(ipending));
    memset(IntPrio, 0, sizeof(IntPrio));
 
-   h_int = FALSE;
+   h_int = false;
 }
 
 void timer_write8(uint32_t address, uint8_t data)

@@ -90,7 +90,7 @@ void MDFNNGPCSOUND_Init(void)
 bool MDFNNGPC_SetSoundRate(uint32_t rate)
 {
    buf.set_sample_rate(rate?rate:44100, 60);
-   return(TRUE);
+   return(true);
 }
 
 int MDFNNGPCSOUND_StateAction(void *data, int load, int data_only)
