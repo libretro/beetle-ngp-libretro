@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include "include/retro_inline.h"
+#include <retro_inline.h>
 
 typedef struct
 {

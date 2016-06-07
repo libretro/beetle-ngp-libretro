@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-#include "include/boolean.h"
+#include <boolean.h>
 #include "settings.h"
 
 uint32_t setting_ngp_language = 0;
