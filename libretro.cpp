@@ -359,6 +359,60 @@ MDFNGI EmulatedNGP =
  2,     // Number of output sound channels
 };
 
+MDFNGI *MDFNGameInfo = &EmulatedNGP;
+
+static MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
+{
+   MDFNGameInfo = &EmulatedNGP;
+   MDFNFILE *GameFile = file_open(name);
+
+   if(!GameFile)
+      goto error;
+
+   if(MDFNGameInfo->Load(name, GameFile) <= 0)
+      goto error;
+
+   file_close(GameFile);
+   GameFile     = NULL;
+
+   if(!MDFNGameInfo->name)
+   {
+      unsigned int x;
+      char *tmp;
+
+      MDFNGameInfo->name = (uint8_t*)strdup(GetFNComponent(name));
+
+      for(x=0;x<strlen((char *)MDFNGameInfo->name);x++)
+      {
+         if(MDFNGameInfo->name[x] == '_')
+            MDFNGameInfo->name[x] = ' ';
+      }
+      if((tmp = strrchr((char *)MDFNGameInfo->name, '.')))
+         *tmp = 0;
+   }
+
+   return MDFNGameInfo;
+
+error:
+   if (GameFile)
+      file_close(GameFile);
+   GameFile     = NULL;
+   MDFNGameInfo = NULL;
+   return(0);
+}
+
+static void MDFNI_CloseGame(void)
+{
+   if(!MDFNGameInfo)
+      return;
+
+   MDFNGameInfo->CloseGame();
+
+   if(MDFNGameInfo->name)
+      free(MDFNGameInfo->name);
+   MDFNGameInfo->name = NULL;
+   MDFNGameInfo = NULL;
+}
 
 static void set_basename(const char *path)
 {
