@@ -363,7 +363,6 @@ MDFNGI *MDFNGameInfo = &EmulatedNGP;
 
 static MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
 {
-   MDFNGameInfo = &EmulatedNGP;
    MDFNFILE *GameFile = file_open(name);
 
    if(!GameFile)
@@ -550,9 +549,9 @@ static void check_variables(void)
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
    {
-      if (strcmp(var.value, "japanese") == 0)
+      if (!strcmp(var.value, "japanese"))
          setting_ngp_language = 0;
-      else if (strcmp(var.value, "english") == 0)
+      else if (!strcmp(var.value, "english"))
          setting_ngp_language = 1;    
       retro_reset();
    }
@@ -674,8 +673,7 @@ static void update_input(void)
 
 static uint64_t video_frames, audio_frames;
 
-
-void retro_run()
+void retro_run(void)
 {
    int32 SoundBufMaxSize;
    int32 SoundBufSize;
