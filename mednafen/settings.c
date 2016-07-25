@@ -46,8 +46,6 @@ bool MDFN_GetSettingB(const char *name)
    if (!strcmp("cheats", name))
       return 0;
    /* LIBRETRO */
-   if (!strcmp("libretro.cd_load_into_ram", name))
-      return 0;
    if (!strcmp("ngp.language", name))
       return setting_ngp_language;
    /* FILESYS */
@@ -63,18 +61,6 @@ extern char retro_base_directory[1024];
 
 const char *MDFN_GetSettingS(const char *name)
 {
-#if defined(WANT_GBA_EMU)
-   if (!strcmp("gba.bios", name))
-      return setting_gba_hle ? "" : "gba_bios.bin";
-#elif defined(WANT_PCFX_EMU)
-   if (!strcmp("pcfx.bios", name))
-      return "pcfx.bios";
-   if (!strcmp("pcfx.fxscsi", name))
-      return "pcfx.fxscsi";
-#elif defined(WANT_WSWAN_EMU)
-   if (!strcmp("wswan.name", name))
-      return "Mednafen";
-#endif
    /* FILESYS */
    if (!strcmp("filesys.path_firmware", name))
       return retro_base_directory;
