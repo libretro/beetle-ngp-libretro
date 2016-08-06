@@ -1,10 +1,6 @@
 #ifndef _STATE_H
 #define _STATE_H
 
-#include <stdint.h>
-
-#include <retro_inline.h>
-
 typedef struct
 {
    uint8_t *data;
@@ -19,7 +15,6 @@ typedef struct
 int32_t smem_read(StateMem *st, void *buffer, uint32_t len);
 int32_t smem_write(StateMem *st, void *buffer, uint32_t len);
 int32_t smem_putc(StateMem *st, int value);
-int32_t smem_tell(StateMem *st);
 int32_t smem_seek(StateMem *st, uint32_t offset, int whence);
 int smem_write32le(StateMem *st, uint32_t b);
 int smem_read32le(StateMem *st, uint32_t *b);
@@ -41,12 +36,13 @@ int MDFNSS_LoadSM(void *st, int, int);
 
 #define MDFNSTATE_BOOL		  0x08000000
 
-typedef struct
-{
-   void *v;
-   uint32_t size;
-   uint32_t flags;
-   const char *name;
+typedef struct {
+   void *v;		// Pointer to the variable/array
+   uint32_t size;		// Length, in bytes, of the data to be saved EXCEPT:
+   //  In the case of MDFNSTATE_BOOL, it is the number of bool elements to save(bool is not always 1-byte).
+   // If 0, the subchunk isn't saved.
+   uint32_t flags;	// Flags
+   const char *name;	// Name
 } SFORMAT;
 
 INLINE bool SF_IS_BOOL(bool *) { return(1); }
@@ -91,33 +87,29 @@ INLINE uint32_t SF_FORCE_D(double *) { return(0); }
 
 #define SFEND { 0, 0, 0, 0 }
 
-#ifdef __cplusplus
-
 #include <vector>
 
 // State-Section Descriptor
 class SSDescriptor
 {
- public:
- SSDescriptor(SFORMAT *n_sf, const char *n_name, bool n_optional = 0)
- {
-  sf = n_sf;
-  name = n_name;
-  optional = n_optional;
- }
- ~SSDescriptor(void)
- {
+   public:
+      SSDescriptor(SFORMAT *n_sf, const char *n_name, bool n_optional = 0)
+      {
+         sf = n_sf;
+         name = n_name;
+         optional = n_optional;
+      }
+      ~SSDescriptor(void)
+      {
 
- }
+      }
 
- SFORMAT *sf;
- const char *name;
- bool optional;
+      SFORMAT *sf;
+      const char *name;
+      bool optional;
 };
 
 int MDFNSS_StateAction(void *st, int load, int data_only, std::vector <SSDescriptor> &sections);
 int MDFNSS_StateAction(void *st, int load, int data_only, SFORMAT *sf, const char *name, bool optional = 0);
-
-#endif
 
 #endif
