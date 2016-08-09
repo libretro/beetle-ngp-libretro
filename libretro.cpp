@@ -183,7 +183,7 @@ static void SetInput(int port, const char *type, void *ptr)
       chee = (uint8 *)ptr;
 }
 
-static int StateAction(StateMem *sm, int load, int data_only)
+int StateAction(StateMem *sm, int load, int data_only)
 {
    SFORMAT StateRegs[] =
    {
@@ -316,30 +316,6 @@ static const FileExtensionSpecStruct KnownExtensions[] =
 
 MDFNGI EmulatedNGP =
 {
- "ngp",
- "Neo Geo Pocket (Color)",
- KnownExtensions,
- MODPRIO_INTERNAL_HIGH,
- NULL,
- &InputInfo,
- Load,
- TestMagic,
- NULL,
- NULL,
- CloseGame,
- SetLayerEnableMask,
- "Background Scroll\0Foreground Scroll\0Sprites\0",
- NULL,
- NULL,
- NULL,
- NULL,
- NULL,
- NULL,
- false,
- StateAction,
- Emulate,
- SetInput,
- DoSimpleCommand,
  NGPSettings,
  MDFN_MASTERCLOCK_FIXED(6144000),
  0,
@@ -368,27 +344,11 @@ static MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
    if(!GameFile)
       goto error;
 
-   if(MDFNGameInfo->Load(name, GameFile) <= 0)
+   if(Load(name, GameFile) <= 0)
       goto error;
 
    file_close(GameFile);
    GameFile     = NULL;
-
-   if(!MDFNGameInfo->name)
-   {
-      unsigned int x;
-      char *tmp;
-
-      MDFNGameInfo->name = (uint8_t*)strdup(GetFNComponent(name));
-
-      for(x=0;x<strlen((char *)MDFNGameInfo->name);x++)
-      {
-         if(MDFNGameInfo->name[x] == '_')
-            MDFNGameInfo->name[x] = ' ';
-      }
-      if((tmp = strrchr((char *)MDFNGameInfo->name, '.')))
-         *tmp = 0;
-   }
 
    return MDFNGameInfo;
 
@@ -405,11 +365,7 @@ static void MDFNI_CloseGame(void)
    if(!MDFNGameInfo)
       return;
 
-   MDFNGameInfo->CloseGame();
-
-   if(MDFNGameInfo->name)
-      free(MDFNGameInfo->name);
-   MDFNGameInfo->name = NULL;
+   CloseGame();
    MDFNGameInfo = NULL;
 }
 
@@ -522,7 +478,7 @@ void retro_init(void)
 
 void retro_reset(void)
 {
-   game->DoSimpleCommand(MDFN_MSC_RESET);
+   DoSimpleCommand(MDFN_MSC_RESET);
 }
 
 bool retro_load_game_special(unsigned, const struct retro_game_info *, size_t)
