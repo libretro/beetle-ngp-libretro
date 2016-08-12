@@ -337,7 +337,7 @@ MDFNGI EmulatedNGP =
 
 MDFNGI *MDFNGameInfo = &EmulatedNGP;
 
-static MDFNGI *MDFNI_LoadGame(const char *force_module, const char *name)
+static MDFNGI *MDFNI_LoadGame(const char *name)
 {
    MDFNFILE *GameFile = file_open(name);
 
@@ -552,7 +552,7 @@ bool retro_load_game(const struct retro_game_info *info)
 
    set_basename(info->path);
 
-   game = MDFNI_LoadGame(MEDNAFEN_CORE_NAME_MODULE, info->path);
+   game = MDFNI_LoadGame(info->path);
    if (!game)
       return false;
 
