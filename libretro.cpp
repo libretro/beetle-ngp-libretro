@@ -314,28 +314,29 @@ static const FileExtensionSpecStruct KnownExtensions[] =
  { NULL, NULL }
 };
 
-MDFNGI EmulatedNGP =
-{
- NGPSettings,
- MDFN_MASTERCLOCK_FIXED(6144000),
- 0,
-
- false, // Multires possible?
-
- 160,   // lcm_width
- 152,   // lcm_height
- NULL,  // Dummy
-
- 160,	// Nominal width
- 152,	// Nominal height
-
- 160,	// Framebuffer width
- 152,	// Framebuffer height
-
- 2,     // Number of output sound channels
-};
+MDFNGI EmulatedNGP = {};
 
 MDFNGI *MDFNGameInfo = &EmulatedNGP;
+
+static void MDFNGI_reset(MDFNGI *gameinfo)
+{
+ gameinfo->Settings = NGPSettings;
+ gameinfo->MasterClock = MDFN_MASTERCLOCK_FIXED(6144000);
+ gameinfo->fps = 0;
+ gameinfo->multires = false; // Multires possible?
+
+ gameinfo->lcm_width = 160;
+ gameinfo->lcm_height = 152;
+ gameinfo->dummy_separator = NULL;
+
+ gameinfo->nominal_width = 160;
+ gameinfo->nominal_height = 152;
+
+ gameinfo->fb_width = 160;
+ gameinfo->fb_height = 152;
+
+ gameinfo->soundchan = 2;
+}
 
 static MDFNGI *MDFNI_LoadGame(const char *name)
 {
@@ -356,7 +357,7 @@ error:
    if (GameFile)
       file_close(GameFile);
    GameFile     = NULL;
-   MDFNGameInfo = NULL;
+   MDFNGI_reset(MDFNGameInfo);
    return(0);
 }
 
@@ -366,7 +367,7 @@ static void MDFNI_CloseGame(void)
       return;
 
    CloseGame();
-   MDFNGameInfo = NULL;
+   MDFNGI_reset(MDFNGameInfo);
 }
 
 static void set_basename(const char *path)
@@ -474,6 +475,7 @@ void retro_init(void)
       perf_get_cpu_features_cb = perf_cb.get_cpu_features;
 
    check_system_specs();
+   MDFNGI_reset(MDFNGameInfo);
 }
 
 void retro_reset(void)
