@@ -311,10 +311,10 @@ else
 endif
 
 %.o: %.cpp
-	$(CXX) -c -o $@ $< $(CXXFLAGS)
+	$(CXX) -c -o $@ $< $(CPPFLAGS) $(CXXFLAGS)
 
 %.o: %.c
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -c -o $@ $< $(CPPFLAGS) $(CFLAGS)
 
 clean:
 	rm -f $(TARGET) $(OBJECTS)
