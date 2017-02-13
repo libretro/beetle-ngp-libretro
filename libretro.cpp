@@ -446,7 +446,8 @@ void retro_init(void)
       std::string retro_save_dir_tmp;
 
 	  // If save directory is defined use it, otherwise use system directory
-      retro_save_dir_tmp = *dir ? dir : retro_base_directory;
+      // retro_save_dir_tmp = *dir ? dir : retro_base_directory;
+        retro_save_dir_tmp = dir;
       // Make sure that we don't have any lingering slashes, etc, as they break Windows.
       size_t last = retro_save_dir_tmp.find_last_not_of("/\\");
       if (last != std::string::npos)
