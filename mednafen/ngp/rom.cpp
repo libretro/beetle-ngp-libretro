@@ -18,11 +18,17 @@
 #include "TLCS-900h/TLCS900h_disassemble.h"
 #include "../mednafen.h"
 
-RomInfo ngpc_rom;
-RomHeader* rom_header;
+#ifdef MSB_FIRST
+#define HTOLE16(l)      ((((l)>>8) & 0xff) | (((l)<<8) & 0xff00))
+#else
+#define HTOLE16(l) (l)
+#endif
 
-#define MATCH_CATALOG(c, s)	(rom_header->catalog == htole16(c) \
+#define MATCH_CATALOG(c, s)	(rom_header->catalog == HTOLE16(c) \
 				 && rom_header->subCatalog == (s))
+
+RomInfo ngpc_rom;
+RomHeader* rom_header = NULL;
 
 static void rom_hack(void)
 {
