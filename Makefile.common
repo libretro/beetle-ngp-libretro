@@ -102,6 +102,5 @@ SOURCES_CXX += \
 
 SOURCES_C += \
 	$(MEDNAFEN_DIR)/file.c \
-	$(MEDNAFEN_DIR)/settings.c \
-	$(MEDNAFEN_DIR)/mednafen-endian.c
+	$(MEDNAFEN_DIR)/settings.c
 endif

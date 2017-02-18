@@ -14,7 +14,12 @@
 
 #include <string.h>
 #include "bios.h"
-#include "../mednafen-endian.h"
+
+#ifdef MSB_FIRST
+#define HTOLE32(l) ((((l)>>24) & 0xff) | (((l)>>8) & 0xff00) | (((l)<<8) & 0xff0000) | (((l)<<24) & 0xff000000))
+#else
+#define HTOLE32(l) (l)
+#endif
 
 uint8_t ngpc_bios[0x10000];		/* Holds BIOS program data */
 
@@ -189,7 +194,7 @@ int bios_install(void)
    /* System Call Table, install iBIOSHLE instructions */
    for (i = 0; i <= 0x1A; i++)
    {
-      *(uint32_t*)(ngpc_bios + 0xFE00 + (i * 4)) = htole32(vectable[i]);
+      *(uint32_t*)(ngpc_bios + 0xFE00 + (i * 4)) = HTOLE32(vectable[i]);
       ngpc_bios[vectable[i] & 0xFFFF] = 0x1F;	//iBIOSHLE
    }
 
