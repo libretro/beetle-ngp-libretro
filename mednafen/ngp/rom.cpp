@@ -90,6 +90,7 @@ static void rom_hack(void)
 
 static void rom_display_header(void)
 {
+#if 0
    printf("Name:    %s\n", ngpc_rom.name);
    printf("System:  ");
 
@@ -105,6 +106,7 @@ static void rom_display_header(void)
          rom_header->subCatalog);
 
    printf("Starting PC:  0x%06X\n", le32toh(rom_header->startPC) & 0xFFFFFF);
+#endif
 }
 
 void rom_loaded(void)
