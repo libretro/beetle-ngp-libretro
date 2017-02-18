@@ -56,12 +56,10 @@ ifeq ($(platform), unix)
    ifneq ($(shell uname -p | grep -E '((i.|x)86|amd64)'),)
       IS_X86 = 1
    endif
-   FLAGS += -DHAVE_MKDIR
 else ifeq ($(platform), osx)
    TARGET := $(TARGET_NAME)_libretro.dylib
    fpic := -fPIC
    SHARED := -dynamiclib
-   FLAGS += -DHAVE_MKDIR
 ifeq ($(arch),ppc)
    ENDIANNESS_DEFINES := -DMSB_FIRST
    OLD_GCC := 1
@@ -100,7 +98,6 @@ else ifeq ($(platform), qnx)
    TARGET := $(TARGET_NAME)_libretro_$(platform).so
    fpic := -fPIC
    SHARED := -lcpp -lm -shared -Wl,--no-undefined -Wl,--version-script=link.T
-   FLAGS += -DHAVE_MKDIR
    CC = qcc -Vgcc_ntoarmv7le
    CXX = QCC -Vgcc_ntoarmv7le_cpp
    AR = QCC -Vgcc_ntoarmv7le
@@ -112,7 +109,7 @@ else ifeq ($(platform), ps3)
    AR = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-ar.exe
    ENDIANNESS_DEFINES := -DMSB_FIRST
    OLD_GCC := 1
-   FLAGS += -DHAVE_MKDIR -DARCH_POWERPC_ALTIVEC
+   FLAGS += -DARCH_POWERPC_ALTIVEC
    STATIC_LINKING = 1
 else ifeq ($(platform), sncps3)
    TARGET := $(TARGET_NAME)_libretro_ps3.a
@@ -123,7 +120,7 @@ else ifeq ($(platform), sncps3)
    CXXFLAGS += -Xc+=exceptions
    OLD_GCC := 1
    NO_GCC := 1
-   FLAGS += -DHAVE_MKDIR -DARCH_POWERPC_ALTIVEC
+   FLAGS += -DARCH_POWERPC_ALTIVEC
    STATIC_LINKING = 1
 else ifeq ($(platform), psl1ght)
    TARGET := $(TARGET_NAME)_libretro_$(platform).a
@@ -131,7 +128,6 @@ else ifeq ($(platform), psl1ght)
    CXX = $(PS3DEV)/ppu/bin/ppu-g++$(EXE_EXT)
    AR = $(PS3DEV)/ppu/bin/ppu-ar$(EXE_EXT)
    ENDIANNESS_DEFINES := -DMSB_FIRST
-   FLAGS += -DHAVE_MKDIR
    STATIC_LINKING = 1
 
 # PSP
@@ -141,7 +137,6 @@ else ifeq ($(platform), psp1)
    CXX = psp-g++$(EXE_EXT)
    AR = psp-ar$(EXE_EXT)
    FLAGS += -DPSP -G0
-   FLAGS += -DHAVE_MKDIR
    STATIC_LINKING = 1
 
 # Vita
@@ -150,7 +145,7 @@ else ifeq ($(platform), vita)
 	CC = arm-vita-eabi-gcc$(EXE_EXT)
 	CXX = arm-vita-eabi-g++$(EXE_EXT)
 	AR = arm-vita-eabi-ar$(EXE_EXT)
-   FLAGS += -DVITA -DHAVE_MKDIR
+   FLAGS += -DVITA
    STATIC_LINKING = 1
 
 # CTR (3DS)
@@ -161,7 +156,6 @@ else ifeq ($(platform), ctr)
    AR = $(DEVKITARM)/bin/arm-none-eabi-ar$(EXE_EXT)
    ENDIANNESS_DEFINES := -DLSB_FIRST
    FLAGS += -DARM11 -D_3DS
-   FLAGS += -DHAVE_MKDIR
    FLAGS += -march=armv6k -mtune=mpcore -mfloat-abi=hard
    FLAGS += -mword-relocations
    FLAGS += -fomit-frame-pointer -fstrict-aliasing -ffast-math
@@ -176,7 +170,6 @@ else ifeq ($(platform), xenon)
    CXX = xenon-g++$(EXE_EXT)
    AR = xenon-ar$(EXE_EXT)
    ENDIANNESS_DEFINES += -D__LIBXENON__ -m32 -D__ppc__ -DMSB_FIRST
-   FLAGS += -DHAVE_MKDIR
    STATIC_LINKING = 1
 else ifeq ($(platform), ngc)
    TARGET := $(TARGET_NAME)_libretro_$(platform).a
@@ -187,7 +180,6 @@ else ifeq ($(platform), ngc)
    FLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
 
    EXTRA_INCLUDES := -I$(DEVKITPRO)/libogc/include
-   FLAGS += -DHAVE_MKDIR
    STATIC_LINKING = 1
 
 else ifeq ($(platform), wii)
@@ -199,7 +191,6 @@ else ifeq ($(platform), wii)
    FLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
 
    EXTRA_INCLUDES := -I$(DEVKITPRO)/libogc/include
-   FLAGS += -DHAVE_MKDIR
    STATIC_LINKING = 1
 
 else ifeq ($(platform), wiiu)
@@ -211,7 +202,6 @@ else ifeq ($(platform), wiiu)
    FLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
 
    EXTRA_INCLUDES := -I$(DEVKITPRO)/libogc/include
-   FLAGS += -DHAVE_MKDIR
    STATIC_LINKING = 1
 
 else ifneq (,$(findstring armv,$(platform)))
@@ -219,7 +209,6 @@ else ifneq (,$(findstring armv,$(platform)))
    fpic := -fPIC
    SHARED := -shared -Wl,--no-undefined -Wl,--version-script=link.T
    CC = gcc
-   FLAGS += -DHAVE_MKDIR
    IS_X86 = 0
 ifneq (,$(findstring cortexa8,$(platform)))
    FLAGS += -marm -mcpu=cortex-a8
@@ -253,7 +242,6 @@ else ifeq ($(platform), gcw0)
    AR = /opt/gcw0-toolchain/usr/bin/mipsel-linux-ar
    fpic := -fPIC
    SHARED := -shared -Wl,--no-undefined -Wl,--version-script=link.T
-   FLAGS += -DHAVE_MKDIR
    FLAGS += -ffast-math -march=mips32 -mtune=mips32r2 -mhard-float
 else
    TARGET := $(TARGET_NAME)_libretro.dll
