@@ -43,6 +43,10 @@ WANT_NEW_API = 1
 NEED_STEREO_SOUND = 1
 CORE_DEFINE := -DWANT_NGP_EMU
 
+prefix := /usr
+libdir := $(prefix)/lib
+
+LIBRETRO_DIR := libretro
 TARGET_NAME := mednafen_ngp
 GIT_VERSION := " $(shell git rev-parse --short HEAD || echo unknown)"
 ifneq ($(GIT_VERSION)," unknown")
@@ -306,5 +310,11 @@ endif
 
 clean:
 	rm -f $(TARGET) $(OBJECTS)
+
+install:
+	install -D -m 755 $(TARGET) $(DESTDIR)$(libdir)/$(LIBRETRO_DIR)/$(TARGET)
+
+uninstall:
+	rm $(DESTDIR)$(libdir)/$(LIBRETRO_DIR)/$(TARGET)
 
 .PHONY: clean
