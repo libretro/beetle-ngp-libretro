@@ -28,7 +28,6 @@ LOCAL_CFLAGS   += $(ANDROID_FLAGS)
 CORE_DIR        := ..
 LOCAL_MODULE    := libretro
 
-core = ngp
 NEED_BPP = 16
 NEED_BLIP = 1
 NEED_STEREO_SOUND = 1
