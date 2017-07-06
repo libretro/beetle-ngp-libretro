@@ -213,7 +213,7 @@ void flash_write(uint32_t start_address, uint16_t length)
    block_count++;
 }
 
-static uint8_t *make_flash_commit(int32_t *length)
+uint8_t *make_flash_commit(int32_t *length)
 {
    int i;
    FlashFileHeader header;
@@ -274,52 +274,4 @@ void flash_commit(void)
 
    system_io_flash_write(flashdata, length);
    free(flashdata);
-}
-
-int FLASH_StateAction(void *data, int load, int data_only)
-{
-   int32_t FlashLength = 0;
-   uint8_t *flashdata = NULL;
-
-   if(!load)
-      flashdata = make_flash_commit(&FlashLength);
-
-   SFORMAT FINF_StateRegs[] =
-   {
-      { &FlashLength, sizeof(FlashLength), 0x80000000, "FlashLength" },
-      { 0, 0, 0, 0 }
-   };
-
-   if(!MDFNSS_StateAction(data, load, data_only, FINF_StateRegs, "FINF"))
-      return 0;
-
-   if(!FlashLength) // No flash data to save, OR no flash data to load.
-   {
-      if(flashdata) free(flashdata);
-      return 1;
-   }
-
-   if(load)
-      flashdata = (uint8_t *)malloc(FlashLength);
-
-   SFORMAT FLSH_StateRegs[] =
-   {
-      { flashdata, (uint32_t)FlashLength, 0, "flashdata" },
-      { 0, 0, 0, 0 }
-   };
-
-   if(!MDFNSS_StateAction(data, load, data_only, FLSH_StateRegs, "FLSH"))
-   {
-      free(flashdata);
-      return 0;
-   }
-
-   if(load)
-   {
-      memcpy(ngpc_rom.data, ngpc_rom.orig_data, ngpc_rom.length);
-      do_flash_read(flashdata);
-   }
-
-   free(flashdata);
-   return 1;
 }
