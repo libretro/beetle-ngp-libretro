@@ -92,14 +92,15 @@ extern uint8 parity_table[];
 extern uint64 z80_tstates, last_z80_tstates;
 
 #ifdef __cplusplus
-extern "C" {
-#endif
-void (*z80_writebyte)(uint16 a, uint8 b);
-uint8 (*z80_readbyte)(uint16 a);
-void (*z80_writeport)(uint16 a, uint8 b);
-uint8 (*z80_readport)(uint16 a);
-#ifdef __cplusplus
-}
+extern "C" void (*z80_writebyte)(uint16 a, uint8 b);
+extern "C" uint8 (*z80_readbyte)(uint16 a);
+extern "C" void (*z80_writeport)(uint16 a, uint8 b);
+extern "C" uint8 (*z80_readport)(uint16 a);
+#else
+extern void (*z80_writebyte)(uint16 a, uint8 b);
+extern uint8 (*z80_readbyte)(uint16 a);
+extern void (*z80_writeport)(uint16 a, uint8 b);
+extern uint8 (*z80_readport)(uint16 a);
 #endif
 
 // Ok, I lied, not a macro!
