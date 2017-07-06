@@ -25,7 +25,7 @@ static void hookup_ports(bool force);
 
 static bool initial_ports_hookup = false;
 
-char retro_base_directory[1024];
+extern "C" char retro_base_directory[1024];
 std::string retro_base_name;
 char retro_save_directory[1024];
 
