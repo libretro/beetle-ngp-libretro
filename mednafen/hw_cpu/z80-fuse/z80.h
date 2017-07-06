@@ -80,7 +80,7 @@ int z80_do_opcode(void);
 void z80_enable_interrupts( void );
 
 extern processor z80;
-inline uint16 z80_getpc(void) { return z80.pc.w; }
+static INLINE uint16 z80_getpc(void) { return z80.pc.w; }
 extern const uint8 halfcarry_add_table[];
 extern const uint8 halfcarry_sub_table[];
 extern const uint8 overflow_add_table[];
