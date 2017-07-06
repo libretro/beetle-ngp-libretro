@@ -15,7 +15,7 @@ static uint8_t CurrentDACLeft = 0, CurrentDACRight = 0;
 
 typedef Blip_Synth<blip_good_quality, 0xFF> Synth;
 static Synth synth;
-extern int32_t ngpc_soundTS;
+extern "C" int32_t ngpc_soundTS;
 static bool schipenable = 0;
 
 void MDFNNGPCSOUND_SetEnable(bool set)
