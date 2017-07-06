@@ -29,14 +29,14 @@
 #include <stdint.h>
 #include "z80_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void z80_init( void );
 void z80_reset( void );
 
 void z80_nmi( void );
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 void z80_set_interrupt(int set);
 
@@ -44,26 +44,6 @@ int z80_interrupt( void );
 
 int z80_do_opcode(void);
 
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" processor z80;
-extern "C" const uint8_t overflow_add_table[];
-extern "C" const uint8_t overflow_sub_table[];
-extern "C" const uint8_t halfcarry_add_table[];
-extern "C" const uint8_t halfcarry_sub_table[];
-extern "C" uint64_t last_z80_tstates;
-extern "C" uint8_t sz53_table[0x100]; /* The S, Z, 5 and 3 bits of the index */
-extern "C" uint64_t z80_tstates;
-extern "C" uint8_t parity_table[0x100]; /* The parity of the lookup value */
-extern "C" uint8_t sz53p_table[0x100]; /* OR the above two tables together */
-extern "C" void (*z80_writebyte)(uint16_t a, uint8_t b);
-extern "C" uint8_t (*z80_readbyte)(uint16_t a);
-extern "C" void (*z80_writeport)(uint16_t a, uint8_t b);
-extern "C" uint8_t (*z80_readport)(uint16_t a);
-#else
 extern struct processor z80;
 extern const uint8_t overflow_add_table[];
 extern const uint8_t overflow_sub_table[];
@@ -78,12 +58,10 @@ extern void (*z80_writebyte)(uint16_t a, uint8_t b);
 extern uint8_t (*z80_readbyte)(uint16_t a);
 extern void (*z80_writeport)(uint16_t a, uint8_t b);
 extern uint8_t (*z80_readport)(uint16_t a);
-#endif
 
 void z80_enable_interrupts( void );
 
 static INLINE uint16_t z80_getpc(void) { return z80.pc.w; }
-
 
 // Ok, I lied, not a macro!
 
@@ -115,6 +93,8 @@ static INLINE uint8_t Z80_RP_MACRO(uint16_t A)
  return(z80_readport(A));
 }
 
-int z80_state_action(void *data, int load, int data_only, const char *section_name);
+#ifdef __cplusplus
+}
+#endif
 
 #endif			/* #ifndef FUSE_Z80_H */

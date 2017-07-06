@@ -19,11 +19,61 @@
 #include "TLCS-900h/TLCS900h_registers.h"
 #include "interrupt.h"
 #include "dma.h"
+#include "../hw_cpu/z80-fuse/z80.h"
+#include "../hw_cpu/z80-fuse/z80_macros.h"
 
 #include "../state.h"
 
 static uint8_t CommByte;
 static bool Z80Enabled;
+
+int z80_state_action(void *data, int load, int data_only, const char *section_name)
+{
+   uint8_t r_register;
+
+   SFORMAT StateRegs[] =
+   {
+      { &(z80.af.w), sizeof(z80.af.w), 0x80000000, "AF" },
+      { &(z80.bc.w), sizeof(z80.bc.w), 0x80000000, "BC" },
+      { &(z80.de.w), sizeof(z80.de.w), 0x80000000, "DE" },
+      { &(z80.hl.w), sizeof(z80.hl.w), 0x80000000, "HL" },
+      { &(z80.af_.w), sizeof(z80.af_.w), 0x80000000, "AF_" },
+      { &(z80.bc_.w), sizeof(z80.bc_.w), 0x80000000, "BC_" },
+      { &(z80.de_.w), sizeof(z80.de_.w), 0x80000000, "DE_" },
+      { &(z80.hl_.w), sizeof(z80.hl_.w), 0x80000000, "HL_" },
+      { &(z80.ix.w), sizeof(z80.ix.w), 0x80000000, "IX" },
+      { &(z80.iy.w), sizeof(z80.iy.w), 0x80000000, "IY" },
+      { &(z80.i), sizeof(z80.i), 0x80000000, "I" },
+      { &(z80.sp.w), sizeof(z80.sp.w), 0x80000000, "SP" },
+      { &(z80.pc.w), sizeof(z80.pc.w), 0x80000000, "PC" },
+      { &(z80.iff1), sizeof(z80.iff1), 0x80000000, "IFF1" },
+      { &(z80.iff2), sizeof(z80.iff2), 0x80000000, "IFF2" },
+      { &(z80.im), sizeof(z80.im), 0x80000000, "IM" },
+      { &(r_register), sizeof(r_register), 0x80000000, "R" },
+
+      { &(z80.interrupts_enabled_at), sizeof(z80.interrupts_enabled_at), 0x80000000, "interrupts_enabled_at" },
+      { &(z80.halted), sizeof(z80.halted), 0x80000000, "halted" },
+
+      { &((z80_tstates)), sizeof((z80_tstates)), 0x80000000, "z80_tstates" },
+      { &((last_z80_tstates)), sizeof((last_z80_tstates)), 0x80000000, "last_z80_tstates" },
+
+      { 0, 0, 0, 0 }
+   };
+
+   if(!load)
+      r_register = (z80.r7 & 0x80) | (z80.r & 0x7f);
+
+   if(!MDFNSS_StateAction(data, load, data_only, StateRegs, section_name))
+      return(0);
+
+   if(load)
+   {
+      z80.r7 = r_register & 0x80;
+      z80.r = r_register & 0x7F;
+   }
+
+   return(1);
+}
 
 uint8_t Z80_ReadComm(void)
 {
