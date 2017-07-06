@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <Stdlib.h>
 #include <string.h>
 #include "flash.h"
 #include "system.h"
