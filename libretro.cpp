@@ -68,9 +68,10 @@ uint8 NGPJoyLatch;
 
 static uint8 *chee;
 
-bool NGPFrameSkip;
-int32 ngpc_soundTS = 0;
 static int32 z80_runtime;
+
+extern "C" bool NGPFrameSkip;
+extern int32 ngpc_soundTS;
 
 static void Emulate(EmulateSpecStruct *espec)
 {

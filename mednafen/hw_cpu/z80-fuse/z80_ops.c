@@ -23,8 +23,13 @@
 
 */
 
+#include <boolean.h>
+
 #include "z80.h"
 #include "z80_macros.h"
+
+bool NGPFrameSkip;
+int32 ngpc_soundTS = 0;
 
 int iline = 0;
 
