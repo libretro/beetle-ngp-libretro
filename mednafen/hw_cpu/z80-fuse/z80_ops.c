@@ -25,6 +25,7 @@
 
 #include <boolean.h>
 
+#include "z80_fns.h"
 #include "z80.h"
 #include "z80_macros.h"
 

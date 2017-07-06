@@ -26,11 +26,6 @@
 
 #include "../../state.h"
 
-void (*z80_writebyte)(uint16, uint8);
-uint8 (*z80_readbyte)(uint16);
-void (*z80_writeport)(uint16, uint8);
-uint8 (*z80_readport)(uint16);
-
 /* Whether a half carry occurred or not can be determined by looking at
    the 3rd bit of the two arguments and the result; these are hashed
    into this table in the form r12, where r is the 3rd bit of the
