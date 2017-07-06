@@ -71,7 +71,7 @@ static uint8 *chee;
 static int32 z80_runtime;
 
 extern "C" bool NGPFrameSkip;
-extern int32_t ngpc_soundTS;
+extern "C" int32_t ngpc_soundTS;
 
 static void Emulate(EmulateSpecStruct *espec)
 {
