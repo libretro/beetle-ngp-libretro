@@ -90,7 +90,9 @@
 #define FLAG_C	0x01
 #define FLAG_N	0x02
 #define FLAG_P	0x04
+#ifndef FLAG_V
 #define FLAG_V	FLAG_P
+#endif
 #define FLAG_3	0x08
 #define FLAG_H	0x10
 #define FLAG_5	0x20

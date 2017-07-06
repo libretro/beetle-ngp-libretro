@@ -83,20 +83,27 @@ extern processor z80;
 static INLINE uint16 z80_getpc(void) { return z80.pc.w; }
 extern const uint8 halfcarry_add_table[];
 extern const uint8 halfcarry_sub_table[];
-extern const uint8 overflow_add_table[];
-extern const uint8 overflow_sub_table[];
-extern uint8 sz53_table[];
-extern uint8 sz53p_table[];
-extern uint8 parity_table[];
-
-extern uint64 z80_tstates, last_z80_tstates;
 
 #ifdef __cplusplus
+extern "C" const uint8 overflow_add_table[];
+extern "C" const uint8 overflow_sub_table[];
+extern "C" uint64 last_z80_tstates;
+extern "C" uint8 sz53_table[0x100]; /* The S, Z, 5 and 3 bits of the index */
+extern "C" uint64 z80_tstates;
+extern "C" uint8 parity_table[0x100]; /* The parity of the lookup value */
+extern "C" uint8 sz53p_table[0x100]; /* OR the above two tables together */
 extern "C" void (*z80_writebyte)(uint16 a, uint8 b);
 extern "C" uint8 (*z80_readbyte)(uint16 a);
 extern "C" void (*z80_writeport)(uint16 a, uint8 b);
 extern "C" uint8 (*z80_readport)(uint16 a);
 #else
+extern const uint8 overflow_add_table[];
+extern const uint8 overflow_sub_table[];
+extern uint64 last_z80_tstates;
+extern uint8 sz53_table[0x100]; /* The S, Z, 5 and 3 bits of the index */
+extern uint8 parity_table[0x100]; /* The parity of the lookup value */
+extern uint8 sz53p_table[0x100]; /* OR the above two tables together */
+extern uint64 z80_tstates;
 extern void (*z80_writebyte)(uint16 a, uint8 b);
 extern uint8 (*z80_readbyte)(uint16 a);
 extern void (*z80_writeport)(uint16 a, uint8 b);
