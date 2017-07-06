@@ -26,21 +26,12 @@
 
 #include "../../state.h"
 
-/* Some more tables; initialised in z80_init_tables() */
-
-static void z80_init_tables(void);
-
 /* Set up the z80 emulation */
 void z80_init( void )
 {
-   z80_init_tables();
-}
-
-/* Initialise the tables used to set flags */
-static void z80_init_tables(void)
-{
   int i;
 
+  /* Initialise the tables used to set flags */
   for(i = 0; i < 0x100; i++)
   {
      int j        = i;
@@ -61,7 +52,6 @@ static void z80_init_tables(void)
 
   sz53_table[0]  |= Z80_FLAG_Z;
   sz53p_table[0] |= Z80_FLAG_Z;
-
 }
 
 /* Reset the z80 */
