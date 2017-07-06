@@ -26,22 +26,7 @@
 
 #include "../../state.h"
 
-/* Whether a half carry occurred or not can be determined by looking at
-   the 3rd bit of the two arguments and the result; these are hashed
-   into this table in the form r12, where r is the 3rd bit of the
-   result, 1 is the 3rd bit of the 1st argument and 2 is the
-   third bit of the 2nd argument; the tables differ for add and subtract
-   operations */
-const uint8 halfcarry_add_table[] =
-  { 0, FLAG_H, FLAG_H, FLAG_H, 0, 0, 0, FLAG_H };
-const uint8 halfcarry_sub_table[] =
-  { 0, 0, FLAG_H, 0, FLAG_H, 0, FLAG_H, FLAG_H };
-
-
 /* Some more tables; initialised in z80_init_tables() */
-
-/* This is what everything acts on! */
-processor z80;
 
 static void z80_init_tables(void);
 
@@ -60,9 +45,9 @@ static void z80_init_tables(void)
   {
      int j        = i;
      int k        = 0;
-     uint8 parity = 0;
+     uint8_t parity = 0;
 
-     sz53_table[i]= i & ( FLAG_3 | FLAG_5 | FLAG_S );
+     sz53_table[i]= i & ( Z80_FLAG_3 | Z80_FLAG_5 | Z80_FLAG_S );
 
      for(; k < 8; k++)
      {
@@ -70,12 +55,12 @@ static void z80_init_tables(void)
         j >>=1;
      }
 
-     parity_table[i] = ( parity ? 0 : FLAG_P );
+     parity_table[i] = ( parity ? 0 : Z80_FLAG_P );
      sz53p_table[i]  = sz53_table[i] | parity_table[i];
   }
 
-  sz53_table[0]  |= FLAG_Z;
-  sz53p_table[0] |= FLAG_Z;
+  sz53_table[0]  |= Z80_FLAG_Z;
+  sz53p_table[0] |= Z80_FLAG_Z;
 
 }
 
@@ -130,7 +115,7 @@ int z80_interrupt( void )
          break;
       case 2: 
          {
-            uint16 inttemp=(0x100*I)+0xff;
+            uint16_t inttemp=(0x100*I)+0xff;
             PCL = Z80_RB_MACRO(inttemp++); PCH = Z80_RB_MACRO(inttemp);
             z80_tstates += 7;
             break;
@@ -163,7 +148,7 @@ void z80_nmi(void)
 
 int z80_state_action(void *data, int load, int data_only, const char *section_name)
 {
-   uint8 r_register;
+   uint8_t r_register;
 
    SFORMAT StateRegs[] =
    {
