@@ -9,6 +9,10 @@
 #include "../general.h"
 #include "../state.h"
 
+#ifdef __LIBRETRO__
+#include <streams/file_stream_transforms.h>
+#endif
+
 bool system_comms_read(uint8_t* buffer)
 {
    return 0;
