@@ -91,7 +91,7 @@ else ifneq (,$(findstring ios,$(platform)))
    CXX = c++ -arch armv7 -isysroot $(IOSSDK)
    OSXVER = `sw_vers -productVersion | cut -d. -f 2`
    IPHONEMINVER :=
-   ifeq ($(platform),ios9)
+   ifeq ($(platform),$(filter $(platform),ios9 ios-arm64))
       IPHONEMINVER = -miphoneos-version-min=8.0
    else
       IPHONEMINVER = -miphoneos-version-min=5.0
