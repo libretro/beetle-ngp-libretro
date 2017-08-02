@@ -616,7 +616,8 @@ static void update_input(void)
       input_buf |= map[i] != -1u &&
          input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, map[i]) ? (1 << i) : 0;
 
-#ifdef MSB_FIRST
+//not needed at least for wiiu
+#if 0//def MSB_FIRST
    union {
       uint8_t b[2];
       uint16_t s;
