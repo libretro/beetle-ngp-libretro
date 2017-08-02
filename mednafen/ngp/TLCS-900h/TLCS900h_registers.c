@@ -937,7 +937,12 @@ void changedSP(void)
 
 //=============================================================================
 #ifndef le32toh
+#ifdef MSB_FIRST
+#define le32toh(l)      ((((l)>>24) & 0xff) | (((l)>>8) & 0xff00) \
+  | (((l)<<8) & 0xff0000) | (((l)<<24) & 0xff000000))
+#else
 #define le32toh(x) (x)
+#endif
 #endif
 
 void reset_registers(void)
