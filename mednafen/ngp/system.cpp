@@ -9,6 +9,10 @@
 #include "../general.h"
 #include "../state.h"
 
+#ifdef __LIBRETRO__
+#include <streams/file_stream_transforms.h>
+#endif
+
 bool system_comms_read(uint8_t* buffer)
 {
    return 0;
@@ -25,8 +29,8 @@ void system_comms_write(uint8_t data)
 
 bool system_io_flash_read(uint8_t* buffer, uint32_t bufferLength)
 {
-   const char *path = MDFN_MakeFName(MDFNMKF_SAV, 0, "flash").c_str();
-   FILE *flash_fp = fopen(path, "rb");
+   std::string pathStr = MDFN_MakeFName(MDFNMKF_SAV, 0, "flash");
+   FILE *flash_fp = fopen(pathStr.c_str(), "rb");
 
    if (!flash_fp)
       return 0;
@@ -39,8 +43,8 @@ bool system_io_flash_read(uint8_t* buffer, uint32_t bufferLength)
 
 bool system_io_flash_write(uint8_t *buffer, uint32_t bufferLength)
 {
-   const char *path = MDFN_MakeFName(MDFNMKF_SAV, 0, "flash").c_str();
-   FILE *flash_fp = fopen(path, "wb");
+   std::string pathStr = MDFN_MakeFName(MDFNMKF_SAV, 0, "flash");
+   FILE *flash_fp = fopen(pathStr.c_str(), "wb");
 
    if (!flash_fp)
       return 0;
