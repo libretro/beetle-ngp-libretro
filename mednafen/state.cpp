@@ -21,8 +21,6 @@
 
 #include <vector>
 
-#include <compat/msvc.h>
-
 #include "mednafen.h"
 #include "driver.h"
 #include "general.h"
@@ -226,9 +224,7 @@ static bool SubWrite(StateMem *st, SFORMAT *sf, const char *name_prefix = NULL)
       int32_t bytesize = sf->size;
 
       char nameo[1 + 256];
-      int slen;
-
-      slen = snprintf(nameo + 1, 256, "%s%s", name_prefix ? name_prefix : "", sf->name);
+      int slen = sprintf(nameo + 1, "%s%s", name_prefix ? name_prefix : "", sf->name);
       nameo[0] = slen;
 
       if(slen >= 255)
