@@ -65,17 +65,6 @@ void iBIOSHLE(void)
    switch (pc & 0xffffff)
    {	
       case VECT_SHUTDOWN:
-#ifdef NEOPOP_DEBUG
-         if (filter_bios)
-         {
-            uint32 a = pop32();
-            if (a != 0xBAADC0DE)
-               system_debug_message("VECT_SHUTDOWN: called before %06X", a);
-            push32(a);
-         }
-
-         system_debug_stop();
-#endif
          {
             //Cheap bit of code to stop the message appearing repeatedly.
             uint32 a = pop32();
@@ -86,26 +75,10 @@ void iBIOSHLE(void)
 
          return;	//Don't pop a return address, stay here
       case VECT_CLOCKGEARSET:
-#ifdef NEOPOP_DEBUG
-         if (filter_bios)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_CLOCKGEARSET: called before %06X", a);
-            push32(a);
-         }
-#endif
          break;
 
          //VECT_RTCGET
       case 0xFF1440:
-#ifdef NEOPOP_DEBUG
-         if (filter_bios)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_RTCGET: called before %06X", a);
-            push32(a);
-         }
-#endif
 
          if (rCodeL(0x3C) < 0xC000)
          {
@@ -123,15 +96,6 @@ void iBIOSHLE(void)
 
          //VECT_INTLVSET
       case 0xFF1222:
-#ifdef NEOPOP_DEBUG
-         if (filter_bios)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_INTLVSET: called before %06X", a);
-            push32(a);
-         }
-#endif
-
          {
 
             uint8 level = rCodeB(0x35); //RB3
@@ -199,14 +163,6 @@ void iBIOSHLE(void)
 
          //VECT_SYSFONTSET
       case 0xFF8D8A:
-#ifdef NEOPOP_DEBUG
-         if (filter_bios)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_SYSFONTSET: called before %06X", a);
-            push32(a);
-         }
-#endif
          {
             uint8 c, j;
             uint16 i, dst = 0xA000;
@@ -238,26 +194,12 @@ void iBIOSHLE(void)
 
          //VECT_FLASHWRITE
       case 0xFF6FD8:
-#ifdef NEOPOP_DEBUG
-         if (filter_bios)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_FLASHWRITE: called before %06X", a);
-            push32(a);
-         }
-#endif
          {
             uint32 i, bank = 0x200000;
 
             //Select HI rom?
             if (rCodeB(0x30) == 1)
                bank = 0x800000;
-
-#ifdef NEOPOP_DEBUG
-            if (filter_bios)
-               system_debug_message("VECT_FLASHWRITE: Copy %06X -> %06X,  %d bytes",
-                     rCodeL(0x3C), rCodeL(0x38) + bank, rCodeW(0x34) * 256);
-#endif
 
             memory_flash_error = false;
             memory_unlock_flash_write = true;
@@ -268,10 +210,6 @@ void iBIOSHLE(void)
 
             if (memory_flash_error)
             {
-#ifdef NEOPOP_DEBUG
-               if (filter_bios)
-                  system_debug_message("VECT_FLASHWRITE: Error");
-#endif
                rCodeB(0x30) = 0xFF;	//RA3 = SYS_FAILURE
             }
             else
@@ -293,141 +231,57 @@ void iBIOSHLE(void)
 
          //VECT_FLASHALLERS
       case 0xFF7042:
-#ifdef NEOPOP_DEBUG
-         if (filter_bios)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_FLASHALLERS: called before %06X", a);
-            push32(a);
-         }
-#endif
          //TODO
          rCodeB(0x30) = 0;	//RA3 = SYS_SUCCESS
          break;
 
          //VECT_FLASHERS
       case 0xFF7082:
-#ifdef NEOPOP_DEBUG
-         if (filter_bios)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_FLASHERS: called before %06X", a);
-            push32(a);
-         }
-#endif
-#ifdef NEOPOP_DEBUG
-         if (filter_bios)
-            system_debug_message("VECT_FLASHERS: bank %d, block %d (?)", rCodeB(0x30), rCodeB(0x35));
-#endif
          //TODO
          rCodeB(0x30) = 0;	//RA3 = SYS_SUCCESS
          break;
 
          //VECT_ALARMSET
       case 0xFF149B:
-#ifdef NEOPOP_DEBUG
-         if (filter_bios)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_ALARMSET: called before %06X", a);
-            push32(a);
-         }
-#endif
          //TODO
          rCodeB(0x30) = 0;	//RA3 = SYS_SUCCESS
          break;
 
          //VECT_ALARMDOWNSET
       case 0xFF1487:
-#ifdef NEOPOP_DEBUG
-         if (filter_bios)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_ALARMDOWNSET: called before %06X", a);
-            push32(a);
-         }
-#endif
          //TODO
          rCodeB(0x30) = 0;	//RA3 = SYS_SUCCESS
          break;
 
          //VECT_FLASHPROTECT
       case 0xFF70CA:
-#ifdef NEOPOP_DEBUG
-         if (filter_bios)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_FLASHPROTECT: called before %06X", a);
-            push32(a);
-         }
-#endif
          //TODO
          rCodeB(0x30) = 0;	//RA3 = SYS_SUCCESS
          break;
 
          //VECT_GEMODESET
       case 0xFF17C4:
-#ifdef NEOPOP_DEBUG
-         if (filter_bios)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_GEMODESET: called before %06X", a);
-            push32(a);
-         }
-#endif
          //TODO
          break;
 
          //VECT_COMINIT
       case 0xFF2BBD:
-#ifdef NEOPOP_DEBUG
-         if (filter_comms)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_COMINIT: called before %06X", a);
-            push32(a);
-         }
-#endif
          // Nothing to do.
          rCodeB(0x30) = 0;	//RA3 = COM_BUF_OK
          break;
 
          //VECT_COMSENDSTART
       case 0xFF2C0C:
-#ifdef NEOPOP_DEBUG
-         if (filter_comms)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_COMSENDSTART: called before %06X", a);
-            push32(a);
-         }
-#endif
          // Nothing to do.
          break;
 
          //VECT_COMRECIVESTART
       case 0xFF2C44:
-#ifdef NEOPOP_DEBUG
-         if (filter_comms)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_COMRECIVESTART: called before %06X", a);
-            push32(a);
-         }
-#endif
          // Nothing to do.
          break;
 
          //VECT_COMCREATEDATA
       case 0xFF2C86:
-#ifdef NEOPOP_DEBUG
-         if (filter_comms)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_COMCREATEDATA: called before %06X", a);
-            push32(a);
-         }
-#endif
          {
             //Write the byte
             uint8 data = rCodeB(0x35);
@@ -445,14 +299,6 @@ void iBIOSHLE(void)
 
          //VECT_COMGETDATA
       case 0xFF2CB4:
-#ifdef NEOPOP_DEBUG
-         if (filter_comms)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_COMGETDATA: called before %06X", a);
-            push32(a);
-         }
-#endif
          {
             uint8 data;
 
@@ -479,54 +325,22 @@ void iBIOSHLE(void)
 
          //VECT_COMONRTS
       case 0xFF2D27:
-#ifdef NEOPOP_DEBUG
-         if (filter_comms)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_COMONRTS: called before %06X", a);
-            push32(a);
-         }
-#endif
          storeB(0xB2, 0);
          break;
 
          //VECT_COMOFFRTS
       case 0xFF2D33: 	
-#ifdef NEOPOP_DEBUG
-         if (filter_comms)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_COMOFFRTS: called before %06X", a);
-            push32(a);
-         }
-#endif
          storeB(0xB2, 1);
          break;	
 
          //VECT_COMSENDSTATUS
       case 0xFF2D3A:
-#ifdef NEOPOP_DEBUG
-         if (filter_comms)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_COMSENDSTATUS: called before %06X", a);
-            push32(a);
-         }
-#endif
          // Nothing to do.
          rCodeW(0x30) = 0;	//Send Buffer Count, never any pending data!
          break;
 
          //VECT_COMRECIVESTATUS
       case 0xFF2D4E:
-#ifdef NEOPOP_DEBUG
-         if (filter_comms)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_COMRECIVESTATUS: called before %06X", a);
-            push32(a);
-         }
-#endif
 
          // Receive Buffer Count
          rCodeW(0x30) = system_comms_read(NULL);
@@ -534,14 +348,6 @@ void iBIOSHLE(void)
          break;
 
       case VECT_COMCREATEBUFDATA:
-#ifdef NEOPOP_DEBUG
-         if (filter_comms)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_COMCREATEBUFDATA: called before %06X", a);
-            push32(a);
-         }
-#endif
          pc = pop32();
 
          while(rCodeB(0x35) > 0)
@@ -559,14 +365,6 @@ void iBIOSHLE(void)
          TestIntHDMA(11, 0x18);
          return;
       case VECT_COMGETBUFDATA:
-#ifdef NEOPOP_DEBUG
-         if (filter_comms)
-         {
-            uint32 a = pop32();
-            system_debug_message("VECT_COMGETBUFDATA: called before %06X", a);
-            push32(a);
-         }
-#endif
          pc = pop32();
 
          while(rCodeB(0x35) > 0)
