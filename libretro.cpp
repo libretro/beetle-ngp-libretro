@@ -118,14 +118,6 @@ static void Emulate(EmulateSpecStruct *espec)
          espec->SoundBufMaxSize);
 }
 
-static bool TestMagic(const char *name, MDFNFILE *fp)
-{
-   if(strcasecmp(fp->ext, "ngp") && strcasecmp(fp->ext, "ngpc") && strcasecmp(fp->ext, "ngc") && strcasecmp(fp->ext, "npc"))
-      return false;
-
-   return true;
-}
-
 void reset(void)
 {
    ngpgfx_power(NGPGfx);
