@@ -2,7 +2,7 @@
 #include "mednafen/mempatcher.h"
 #include "mednafen/git.h"
 #include "mednafen/general.h"
-#include "libretro.h"
+#include <libretro.h>
 
 static MDFNGI *game;
 
