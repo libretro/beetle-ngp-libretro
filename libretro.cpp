@@ -772,25 +772,38 @@ static size_t serialize_size;
 size_t retro_serialize_size(void)
 {
    StateMem st;
-   memset(&st, 0, sizeof(st));
+
+   st.data           = NULL;
+   st.loc            = 0;
+   st.len            = 0;
+   st.malloced       = 0;
+   st.initial_malloc = 0;
 
    if (!MDFNSS_SaveSM(&st, 0, 0, NULL, NULL, NULL))
       return 0;
 
    free(st.data);
+
    return serialize_size = st.len;
 }
 
 bool retro_serialize(void *data, size_t size)
 {
    StateMem st;
-   memset(&st, 0, sizeof(st));
+   bool ret          = false;
+   uint8_t *_dat     = (uint8_t*)malloc(size);
 
-   // Mednafen can realloc the buffer so we need to ensure this is safe.
-   st.data     = (uint8_t*)malloc(size);
-   st.malloced = size;
+   if (!_dat)
+      return false;
 
-   bool ret = MDFNSS_SaveSM(&st, 0, 0, NULL, NULL, NULL);
+   /* Mednafen can realloc the buffer so we need to ensure this is safe. */
+   st.data           = _dat;
+   st.loc            = 0;
+   st.len            = 0;
+   st.malloced       = size;
+   st.initial_malloc = 0;
+
+   ret = MDFNSS_SaveSM(&st, 0, 0, NULL, NULL, NULL);
 
    memcpy(data, st.data, size);
    free(st.data);
