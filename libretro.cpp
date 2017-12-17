@@ -114,7 +114,8 @@ static void Emulate(EmulateSpecStruct *espec)
 
 
    espec->MasterCycles = ngpc_soundTS;
-   espec->SoundBufSize = MDFNNGPCSOUND_Flush(espec->SoundBuf, espec->SoundBufMaxSize);
+   espec->SoundBufSize = MDFNNGPCSOUND_Flush(espec->SoundBuf,
+         espec->SoundBufMaxSize);
 }
 
 static bool TestMagic(const char *name, MDFNFILE *fp)
@@ -659,7 +660,7 @@ void retro_run(void)
 
    Emulate(&spec);
 
-   SoundBufSize = spec.SoundBufSize - spec.SoundBufSizeALMS;
+   SoundBufSize    = spec.SoundBufSize - spec.SoundBufSizeALMS;
    SoundBufMaxSize = spec.SoundBufMaxSize - spec.SoundBufSizeALMS;
 
    spec.SoundBufSize = spec.SoundBufSizeALMS + SoundBufSize;
