@@ -381,7 +381,7 @@ static void set_basename(const char *path)
 #define MEDNAFEN_CORE_NAME_MODULE "ngp"
 #define MEDNAFEN_CORE_NAME "Mednafen NeoPop"
 #define MEDNAFEN_CORE_VERSION "v0.9.36.1"
-#define MEDNAFEN_CORE_EXTENSIONS "ngp|ngc"
+#define MEDNAFEN_CORE_EXTENSIONS "ngp|ngc|ngpc"
 #define MEDNAFEN_CORE_TIMING_FPS 60.25
 #define MEDNAFEN_CORE_GEOMETRY_BASE_W 160 
 #define MEDNAFEN_CORE_GEOMETRY_BASE_H 152
