@@ -106,7 +106,5 @@ SOURCES_C += \
 	$(LIBRETRO_COMM_DIR)/vfs/vfs_implementation.c
 endif
 
-SOURCES_C += \
-	$(MEDNAFEN_DIR)/file.c \
-	$(MEDNAFEN_DIR)/settings.c
+SOURCES_C += $(MEDNAFEN_DIR)/settings.c
 endif

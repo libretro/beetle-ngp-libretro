@@ -12,8 +12,6 @@ typedef struct
  const char *description; // Example "iNES Format ROM Image"
 } FileExtensionSpecStruct;
 
-#include "file.h"
-
 enum
 {
  MDFN_ROTATE0 = 0,
