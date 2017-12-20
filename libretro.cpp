@@ -132,13 +132,13 @@ void reset(void)
    reset_dma();
 }
 
-static int Load(const uint8_t *data, int64_t size)
+static int Load(const char *name, MDFNFILE *fp)
 {
-   if(!(ngpc_rom.data = (uint8 *)malloc(size)))
+   if(!(ngpc_rom.data = (uint8 *)malloc(fp->size)))
       return(0);
 
-   ngpc_rom.length = size;
-   memcpy(ngpc_rom.data, data, size);
+   ngpc_rom.length = fp->size;
+   memcpy(ngpc_rom.data, fp->data, fp->size);
 
    rom_loaded();
 
@@ -333,14 +333,25 @@ static void MDFNGI_reset(MDFNGI *gameinfo)
  gameinfo->soundchan = 2;
 }
 
-static MDFNGI *MDFNI_LoadGame(const uint8_t *data, size_t size)
+static MDFNGI *MDFNI_LoadGame(const char *name)
 {
-   if(Load(data, size) <= 0)
+   MDFNFILE *GameFile = file_open(name);
+
+   if(!GameFile)
       goto error;
+
+   if(Load(name, GameFile) <= 0)
+      goto error;
+
+   file_close(GameFile);
+   GameFile     = NULL;
 
    return MDFNGameInfo;
 
 error:
+   if (GameFile)
+      file_close(GameFile);
+   GameFile     = NULL;
    MDFNGI_reset(MDFNGameInfo);
    return(0);
 }
@@ -538,7 +549,7 @@ bool retro_load_game(const struct retro_game_info *info)
 
    set_basename(info->path);
 
-   game = MDFNI_LoadGame((const uint8_t*)info->data, info->size);
+   game = MDFNI_LoadGame(info->path);
    if (!game)
       return false;
 
@@ -669,7 +680,7 @@ void retro_get_system_info(struct retro_system_info *info)
 #define GIT_VERSION ""
 #endif
    info->library_version  = MEDNAFEN_CORE_VERSION GIT_VERSION;
-   info->need_fullpath    = false;
+   info->need_fullpath    = true;
    info->valid_extensions = MEDNAFEN_CORE_EXTENSIONS;
    info->block_extract    = false;
 }
