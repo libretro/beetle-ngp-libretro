@@ -405,7 +405,7 @@ int BIOSHLE_StateAction(void *data, int load, int data_only)
       { 0, 0, 0, 0 }
    };
 
-   if(!MDFNSS_StateAction(data, load, data_only, StateRegs, "BHLE"))
+   if(!MDFNSS_StateAction(data, load, data_only, StateRegs, "BHLE", false))
       return 0;
 
    return 1;

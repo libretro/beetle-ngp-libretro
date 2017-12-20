@@ -595,7 +595,7 @@ int int_timer_StateAction(void *data, int load, int data_only)
       SFVAR(timer2),
       SFEND
    };
-   if(!MDFNSS_StateAction(data, load, data_only, StateRegs, "INTT"))
+   if(!MDFNSS_StateAction(data, load, data_only, StateRegs, "INTT", false))
       return 0;
 
    return 1;

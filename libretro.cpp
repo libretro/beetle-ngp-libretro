@@ -201,10 +201,10 @@ int StateAction(StateMem *sm, int load, int data_only)
       SFEND
    };
 
-   if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "MAIN"))
+   if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "MAIN", false))
       return(0);
 
-   if(!MDFNSS_StateAction(sm, load, data_only, TLCS_StateRegs, "TLCS"))
+   if(!MDFNSS_StateAction(sm, load, data_only, TLCS_StateRegs, "TLCS", false))
       return(0);
 
    if(!MDFNNGPCDMA_StateAction(sm, load, data_only))

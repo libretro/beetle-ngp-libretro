@@ -63,7 +63,7 @@ int z80_state_action(void *data, int load, int data_only, const char *section_na
    if(!load)
       r_register = (z80.r7 & 0x80) | (z80.r & 0x7f);
 
-   if(!MDFNSS_StateAction(data, load, data_only, StateRegs, section_name))
+   if(!MDFNSS_StateAction(data, load, data_only, StateRegs, section_name, false))
       return(0);
 
    if(load)
@@ -191,7 +191,7 @@ int MDFNNGPCZ80_StateAction(void *data, int load, int data_only)
       SFEND
    };
 
-   if(!MDFNSS_StateAction(data, load, data_only, StateRegs, "Z80X"))
+   if(!MDFNSS_StateAction(data, load, data_only, StateRegs, "Z80X", false))
       return 0;
 
    if(!z80_state_action(data, load, data_only, "Z80"))

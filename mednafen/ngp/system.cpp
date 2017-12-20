@@ -69,7 +69,7 @@ int FLASH_StateAction(void *data, int load, int data_only)
       { 0, 0, 0, 0 }
    };
 
-   if(!MDFNSS_StateAction(data, load, data_only, FINF_StateRegs, "FINF"))
+   if(!MDFNSS_StateAction(data, load, data_only, FINF_StateRegs, "FINF", false))
       return 0;
 
    if(!FlashLength) // No flash data to save, OR no flash data to load.
@@ -87,7 +87,7 @@ int FLASH_StateAction(void *data, int load, int data_only)
       { 0, 0, 0, 0 }
    };
 
-   if(!MDFNSS_StateAction(data, load, data_only, FLSH_StateRegs, "FLSH"))
+   if(!MDFNSS_StateAction(data, load, data_only, FLSH_StateRegs, "FLSH", false))
    {
       free(flashdata);
       return 0;
