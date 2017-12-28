@@ -824,14 +824,18 @@ bool retro_unserialize(const void *data, size_t size)
    return MDFNSS_LoadSM(&st, 0, 0);
 }
 
-void *retro_get_memory_data(unsigned)
+void *retro_get_memory_data(unsigned type)
 {
-   return NULL;
+   if(type == RETRO_MEMORY_SYSTEM_RAM)
+      return CPUExRAM;
+   else return NULL;
 }
 
-size_t retro_get_memory_size(unsigned)
+size_t retro_get_memory_size(unsigned type)
 {
-   return 0;
+   if(type == RETRO_MEMORY_SYSTEM_RAM)
+      return 16384;
+   else return 0;
 }
 
 void retro_cheat_reset(void)
