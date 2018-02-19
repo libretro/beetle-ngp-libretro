@@ -53,6 +53,15 @@ ifneq ($(GIT_VERSION)," unknown")
    FLAGS += -DGIT_VERSION=\"$(GIT_VERSION)\"
 endif
 
+SPACE :=
+SPACE := $(SPACE) $(SPACE)
+BACKSLASH :=
+BACKSLASH := \$(BACKSLASH)
+filter_out1 = $(filter-out $(firstword $1),$1)
+filter_out2 = $(call filter_out1,$(call filter_out1,$1))
+unixpath = $(subst \,/,$1)
+unixcygpath = /$(subst :,,$(call unixpath,$1))
+
 # Unix
 ifneq (,$(findstring unix,$(platform)))
    TARGET := $(TARGET_NAME)_libretro.so
@@ -322,18 +331,17 @@ else ifneq (,$(findstring windows_msvc2017,$(platform)))
 # Windows MSVC 2003 Xbox 1
 else ifeq ($(platform), xbox1_msvc2003)
 TARGET := $(TARGET_NAME)_libretro_xdk1.lib
-MSVCBINDIRPREFIX = $(XDK)/xbox/bin/vc71
-CC  = "$(MSVCBINDIRPREFIX)/CL.exe"
-CXX  = "$(MSVCBINDIRPREFIX)/CL.exe"
-LD   = "$(MSVCBINDIRPREFIX)/lib.exe"
+CC  = CL.exe
+CXX  = CL.exe
+LD   = lib.exe
 
 export INCLUDE := $(XDK)/xbox/include
 export LIB := $(XDK)/xbox/lib
+PATH := $(call unixcygpath,$(XDK)/xbox/bin/vc71):$(PATH)
 PSS_STYLE :=2
 CFLAGS   += -D_XBOX -D_XBOX1
 CXXFLAGS += -D_XBOX -D_XBOX1
 STATIC_LINKING=1
-HAS_GCC := 0
 # Windows MSVC 2010 Xbox 360
 else ifeq ($(platform), xbox360_msvc2010)
 TARGET := $(TARGET_NAME)_libretro_xdk360.lib
@@ -349,7 +357,6 @@ ENDIANNESS_DEFINES := -DMSB_FIRST
 CFLAGS   += -D_XBOX -D_XBOX360
 CXXFLAGS += -D_XBOX -D_XBOX360
 STATIC_LINKING=1
-HAS_GCC := 0
 
 # Windows MSVC 2010 x64
 else ifeq ($(platform), windows_msvc2010_x64)
