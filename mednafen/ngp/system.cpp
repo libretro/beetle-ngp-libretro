@@ -9,9 +9,7 @@
 #include "../general.h"
 #include "../state.h"
 
-#ifdef __LIBRETRO__
-#include <streams/file_stream_transforms.h>
-#endif
+#include <streams/file_stream.h>
 
 bool system_comms_read(uint8_t* buffer)
 {
@@ -30,13 +28,14 @@ void system_comms_write(uint8_t data)
 bool system_io_flash_read(uint8_t* buffer, uint32_t bufferLength)
 {
    std::string pathStr = MDFN_MakeFName(MDFNMKF_SAV, 0, "flash");
-   FILE *flash_fp = fopen(pathStr.c_str(), "rb");
+   RFILE     *flash_fp = filestream_open(pathStr.c_str(),
+         RETRO_VFS_FILE_ACCESS_READ, RETRO_VFS_FILE_ACCESS_HINT_NONE);
 
    if (!flash_fp)
       return 0;
 
-   fread(buffer, 1, bufferLength, flash_fp);
-   fclose(flash_fp);
+   filestream_read(flash_fp, buffer, bufferLength);
+   filestream_close(flash_fp);
 
    return 1;
 }
@@ -44,13 +43,15 @@ bool system_io_flash_read(uint8_t* buffer, uint32_t bufferLength)
 bool system_io_flash_write(uint8_t *buffer, uint32_t bufferLength)
 {
    std::string pathStr = MDFN_MakeFName(MDFNMKF_SAV, 0, "flash");
-   FILE *flash_fp = fopen(pathStr.c_str(), "wb");
+   RFILE     *flash_fp = filestream_open(pathStr.c_str(),
+         RETRO_VFS_FILE_ACCESS_WRITE,
+         RETRO_VFS_FILE_ACCESS_HINT_NONE);
 
    if (!flash_fp)
       return 0;
 
-   fwrite(buffer, 1, bufferLength, flash_fp);
-   fclose(flash_fp);
+   filestream_write(flash_fp, buffer, bufferLength);
+   filestream_close(flash_fp);
 
    return 1;
 }

@@ -626,7 +626,6 @@ static uint64_t video_frames, audio_frames;
 
 void retro_run(void)
 {
-   int32 SoundBufMaxSize;
    int32 SoundBufSize;
    unsigned width, height;
    static int16_t sound_buf[0x10000];
@@ -654,7 +653,6 @@ void retro_run(void)
    Emulate(&spec);
 
    SoundBufSize    = spec.SoundBufSize - spec.SoundBufSizeALMS;
-   SoundBufMaxSize = spec.SoundBufMaxSize - spec.SoundBufSizeALMS;
 
    spec.SoundBufSize = spec.SoundBufSizeALMS + SoundBufSize;
 
