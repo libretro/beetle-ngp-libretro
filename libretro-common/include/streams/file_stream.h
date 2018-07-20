@@ -1,4 +1,4 @@
-/* Copyright  (C) 2010-2017 The RetroArch team
+/* Copyright  (C) 2010-2018 The RetroArch team
  *
  * ---------------------------------------------------------------------------------------
  * The following license statement only applies to this file (file_stream.h).
@@ -77,6 +77,8 @@ int64_t filestream_read_file(const char *path, void **buf, int64_t *len);
 char *filestream_gets(RFILE *stream, char *s, size_t len);
 
 int filestream_getc(RFILE *stream);
+
+int filestream_scanf(RFILE *stream, const char* format, ...);
 
 int filestream_eof(RFILE *stream);
 
