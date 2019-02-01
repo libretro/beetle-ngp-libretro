@@ -13,10 +13,12 @@ typedef struct
 {
 	int32_t sq_period[3];
 	int32_t sq_phase[3];
-	int32_t noise_period;
+	uint32_t noise_period;
+	uint32_t noise_period_extra;
 	uint32_t noise_shifter;
 	uint32_t noise_tap;
 
+	int32_t delay[4];
 	int32_t volume_left[4];
 	int32_t volume_right[4];
 	uint8_t latch_left, latch_right;
