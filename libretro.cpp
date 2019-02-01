@@ -132,13 +132,22 @@ void reset(void)
    reset_dma();
 }
 
-static int Load(const char *name, MDFNFILE *fp)
+static int Load(const char *name, MDFNFILE *fp, const uint8_t *data, size_t size)
 {
-   if(!(ngpc_rom.data = (uint8 *)malloc(fp->size)))
-      return(0);
+   if ((data != NULL) && (size != 0)) {
+      if (!(ngpc_rom.data = (uint8 *)malloc(size)))
+         return(0);
+      ngpc_rom.length = size;
+      memcpy(ngpc_rom.data, data, size);
+   }
+   else
+   {
+      if(!(ngpc_rom.data = (uint8 *)malloc(fp->size)))
+         return(0);
 
-   ngpc_rom.length = fp->size;
-   memcpy(ngpc_rom.data, fp->data, fp->size);
+      ngpc_rom.length = fp->size;
+      memcpy(ngpc_rom.data, fp->data, fp->size);
+   }
 
    rom_loaded();
 
@@ -340,7 +349,7 @@ static MDFNGI *MDFNI_LoadGame(const char *name)
    if(!GameFile)
       goto error;
 
-   if(Load(name, GameFile) <= 0)
+   if(Load(name, GameFile, NULL, 0) <= 0)
       goto error;
 
    file_close(GameFile);
@@ -352,6 +361,17 @@ error:
    if (GameFile)
       file_close(GameFile);
    GameFile     = NULL;
+   MDFNGI_reset(MDFNGameInfo);
+   return(0);
+}
+
+static MDFNGI *MDFNI_LoadGameData(const uint8_t *data, size_t size)
+{
+   if(Load("", NULL, data, size) <= 0)
+      goto error;
+   return MDFNGameInfo;
+
+error:
    MDFNGI_reset(MDFNGameInfo);
    return(0);
 }
@@ -549,7 +569,12 @@ bool retro_load_game(const struct retro_game_info *info)
 
    set_basename(info->path);
 
+#ifdef LOAD_FROM_MEMORY
+   game = MDFNI_LoadGameData((const uint8_t *)info->data, info->size);
+#else
    game = MDFNI_LoadGame(info->path);
+#endif
+
    if (!game)
       return false;
 
@@ -677,8 +702,14 @@ void retro_get_system_info(struct retro_system_info *info)
 #ifndef GIT_VERSION
 #define GIT_VERSION ""
 #endif
-   info->library_version  = MEDNAFEN_CORE_VERSION GIT_VERSION;
+
+#ifdef LOAD_FROM_MEMORY
+   info->need_fullpath    = false;
+#else
    info->need_fullpath    = true;
+#endif
+
+   info->library_version  = MEDNAFEN_CORE_VERSION GIT_VERSION;
    info->valid_extensions = MEDNAFEN_CORE_EXTENSIONS;
    info->block_extract    = false;
 }
