@@ -1,5 +1,6 @@
 DEBUG = 0
 FRONTEND_SUPPORTS_RGB565 = 1
+LOAD_FROM_MEMORY = 1
 
 CORE_DIR := .
 
@@ -524,6 +525,10 @@ endif
 
 ifeq ($(NO_GCC),1)
    WARNINGS :=
+endif
+
+ifeq ($(LOAD_FROM_MEMORY),1)
+   FLAGS := -DLOAD_FROM_MEMORY
 endif
 
 ifeq ($(DEBUG), 1)
