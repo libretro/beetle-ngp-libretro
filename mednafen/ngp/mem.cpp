@@ -106,7 +106,7 @@ static void* translate_address_read(uint32 address)
 	if (address >= ROM_START && address <= ROM_END)
 	{
       /* ROM (LOW) */
-		if (address <= ROM_START + ngpc_rom.length)
+		if (address < ROM_START + ngpc_rom.length)
 			return ngpc_rom.data + (address - ROM_START);
       return NULL;
 	}
@@ -114,7 +114,7 @@ static void* translate_address_read(uint32 address)
 	if (address >= HIROM_START && address <= HIROM_END)
 	{
       /* ROM (HIGH) */
-		if (address <= HIROM_START + (ngpc_rom.length - 0x200000))
+		if (address < HIROM_START + (ngpc_rom.length - 0x200000))
 			return ngpc_rom.data + 0x200000 + (address - HIROM_START);
       return NULL;
 	}
@@ -134,7 +134,7 @@ static void *translate_address_write(uint32 address)
       /* ROM (LOW) */
       if (address >= ROM_START && address <= ROM_END)
       {
-         if (address <= ROM_START + ngpc_rom.length)
+         if (address < ROM_START + ngpc_rom.length)
             return ngpc_rom.data + (address - ROM_START);
          return NULL;
       }
@@ -142,7 +142,7 @@ static void *translate_address_write(uint32 address)
       /* ROM (HIGH) */
       if (address >= HIROM_START && address <= HIROM_END)
       {
-         if (address <= HIROM_START + (ngpc_rom.length - 0x200000))
+         if (address < HIROM_START + (ngpc_rom.length - 0x200000))
             return ngpc_rom.data + 0x200000 + (address - HIROM_START);
          return NULL;
       }
@@ -182,7 +182,7 @@ static void *translate_address_write(uint32 address)
             //			system_debug_stop();
 
             //Write to the rom itself.
-            if (address <= ROM_START + ngpc_rom.length)
+            if (address < ROM_START + ngpc_rom.length)
                return ngpc_rom.data + (address - ROM_START);
          }
       }

@@ -63,7 +63,7 @@ void z80_reset( void )
   IFF1=IFF2=IM=0;
   z80.halted=0;
 
-  z80.interrupts_enabled_at = -1;
+  z80.interrupts_enabled_at = 0;
   z80_tstates = last_z80_tstates = 0;
 }
 

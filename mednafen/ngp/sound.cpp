@@ -109,6 +109,7 @@ int MDFNNGPCSOUND_StateAction(void *data, int load, int data_only)
 
       SFVAR(schipenable),
 
+      SFARRAY32N(sn_state->delay, 4, "Delay"),
       SFARRAY32N(sn_state->volume_left, 4, "VolumeLeft"),
       SFARRAY32N(sn_state->volume_right, 4, "VolumeRight"),
       SFARRAY32N(sn_state->sq_period, 3, "SQPeriod"),
@@ -116,6 +117,7 @@ int MDFNNGPCSOUND_StateAction(void *data, int load, int data_only)
       SFVARN(sn_state->noise_period, "NPeriod"),
       SFVARN(sn_state->noise_shifter, "NShifter"),
       SFVARN(sn_state->noise_tap, "NTap"),
+      SFVARN(sn_state->noise_period_extra, "NPeriodExtra"),
       SFVARN(sn_state->latch_left, "LatchLeft"),
       SFVARN(sn_state->latch_right, "LatchRight"),
       SFEND

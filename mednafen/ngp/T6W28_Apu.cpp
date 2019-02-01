@@ -367,6 +367,7 @@ T6W28_ApuState *T6W28_Apu::save_state(void)
 
    for(x = 0; x < 4; x++)
    {
+      ret->delay[x] = oscs[x]->delay;
       ret->volume_left[x] = oscs[x]->volume_left;
       ret->volume_right[x] = oscs[x]->volume_right;
    }
@@ -377,6 +378,7 @@ T6W28_ApuState *T6W28_Apu::save_state(void)
    }
    ret->noise_shifter = noise.shifter;
    ret->noise_tap = noise.tap;
+   ret->noise_period_extra = noise.period_extra;
 
    if(noise.period == &noise_periods[0])
       ret->noise_period = 0;
@@ -386,24 +388,29 @@ T6W28_ApuState *T6W28_Apu::save_state(void)
       ret->noise_period = 2;
    else ret->noise_period = 3;
 
+   ret->latch_left = latch_left;
+   ret->latch_right = latch_right;
+
    return(ret);
 }
 
 void T6W28_Apu::load_state(T6W28_ApuState *state)
 {
-   int x, select;
+   unsigned x, select;
    for(x = 0; x < 4; x++)
    {
+      oscs[x]->delay = state->delay[x];
       oscs[x]->volume_left = state->volume_left[x];
       oscs[x]->volume_right = state->volume_right[x];
    }
    for(x = 0; x < 3; x++)
    {
-      squares[x].period = state->sq_period[x];
+      squares[x].period = state->sq_period[x] & 0x3FFF;
       squares[x].phase = state->sq_phase[x];
    }
    noise.shifter = state->noise_shifter;
-   noise.tap = state->noise_tap = noise.tap;
+   noise.tap = state->noise_tap;
+   noise.period_extra = state->noise_period_extra & 0x3FFF;
 
    select = state->noise_period;
 
@@ -411,5 +418,8 @@ void T6W28_Apu::load_state(T6W28_ApuState *state)
       noise.period = &noise_periods [select];
    else
       noise.period = &noise.period_extra;
+
+   latch_left = state->latch_left;
+   latch_right = state->latch_right;
 }
 
