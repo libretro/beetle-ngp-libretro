@@ -227,6 +227,7 @@ else ifeq ($(platform), ctr)
    FLAGS += -fno-rtti
    FLAGS += -fno-exceptions -DDISABLE_EXCEPTIONS
    STATIC_LINKING = 1
+   LOAD_FROM_MEMORY = 0
 
 # Xbox 360
 else ifeq ($(platform), xenon)
