@@ -53,39 +53,6 @@ static void rom_hack(void)
       /* "Dokodemo Mahjong (J)" */
       ngpc_rom.data[0x23] = 0x00;	// Fix rom header
    }
-
-   if (MATCH_CATALOG(65, 5))
-   {
-      /* "Puyo Pop (V05) (JUE)" */
-      int i;
-      for (i = 0x8F0; i < 0x8FC; i++)
-         ngpc_rom.data[i] = 0;
-   }
-
-   if (MATCH_CATALOG(65, 6))
-   {
-      /* "Puyo Pop (V06) (JUE)" */
-      int i;
-      for (i = 0x8F0; i < 0x8FC; i++)
-         ngpc_rom.data[i] = 0;
-   }
-
-   if (MATCH_CATALOG(97, 4))
-   {
-      /*
-       * "Metal Slug - 2nd Mission (JUE) [!]"
-       * "Metal Slug - 2nd Mission (JUE) [h1]"
-       *
-       * Enable dev-kit code path, because otherwise it doesn't
-       * allow jumping or firing (for some reason!)
-       */
-
-      ngpc_rom.data[0x1f] = 0xFF;
-
-      /* Enables in-game voices ("Pineapple", etc.)
-       * that were aren't supposed to be available in Dev-kit mode. */
-      ngpc_rom.data[0x8DDF8] = 0xF0;	//28DDF7: "RET NZ" -> "RET F"
-   }
 }
 
 static void rom_display_header(void)

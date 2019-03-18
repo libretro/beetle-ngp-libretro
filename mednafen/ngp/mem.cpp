@@ -609,4 +609,20 @@ void reset_memory(void)
 	storeB(0x8402, 0x80);	// Flash cycle = 1.3s
 
 	storeB(0x87E2, loadB(0x6F95) ? 0x00 : 0x80);
+
+	//
+	// Metal Slug - 2nd Mission oddly relies on a specific character RAM pattern.
+	//
+	{
+	 static const uint8 char_data[64] = {
+	 	255, 63, 255, 255, 0, 252, 255, 255, 255, 63, 3, 0, 255, 255, 255, 255, 
+	 	240, 243, 252, 243, 255, 3, 255, 195, 255, 243, 243, 243, 240, 243, 240, 195, 
+		207, 15, 207, 15, 207, 15, 207, 207, 207, 255, 207, 255, 207, 255, 207, 63, 
+		255, 192, 252, 195, 240, 207, 192, 255, 192, 255, 240, 207, 252, 195, 255, 192 };
+
+         for(i = 0; i < 64; i++)
+	 {
+	  storeB(0xA1C0 + i, char_data[i]);
+	 }
+	}
 }
