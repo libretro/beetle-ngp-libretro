@@ -962,6 +962,9 @@ void reset_registers(void)
 
 	rErr = RERR_VALUE;
 
+	gpr[0] = 0xff23c3;
+	gpr[1] = 0xff23df;
+	gpr[2] = 0x006480;
 	REGXSP = 0x00006C00; //Confirmed from BIOS, 
 						//immediately changes value from default of 0x100
 }
