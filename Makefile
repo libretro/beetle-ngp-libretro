@@ -529,7 +529,7 @@ ifeq ($(NO_GCC),1)
 endif
 
 ifeq ($(LOAD_FROM_MEMORY),1)
-   FLAGS := -DLOAD_FROM_MEMORY
+   FLAGS += -DLOAD_FROM_MEMORY
 endif
 
 ifeq ($(DEBUG), 1)
