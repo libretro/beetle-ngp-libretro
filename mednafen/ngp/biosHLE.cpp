@@ -237,8 +237,30 @@ void iBIOSHLE(void)
 
          //VECT_FLASHERS
       case 0xFF7082:
-         //TODO
-         rCodeB(0x30) = 0;	//RA3 = SYS_SUCCESS
+         {
+            uint32 i, bank = 0x200000, size = 0x10000, dst;
+
+            //Select HI rom?
+            if (rCodeB(0x30) == 1)
+               bank = 0x800000;
+
+            //TODO:check rom size to determine final dst block
+            // 4 MBit - block  7, 270000-27FFFF
+            // 8 MBit - block 15, 2F0000-2FFFFF
+            //16 MBit - block 31, 3F0000-3F7FFF
+            if (rCodeB(0x35) == 31)
+               size = 0x8000;
+            dst = rCodeB(0x35) * 0x10000;
+
+            memory_flash_error = false;
+            memory_unlock_flash_write = true;
+            //Copy as 32 bit values for speed
+            for (i = 0; i < size / 4; i++)
+               storeL(bank + dst + (i * 4), 0xFFFFFFFF);
+            memory_unlock_flash_write = false;
+
+            rCodeB(0x30) = 0;	//RA3 = SYS_SUCCESS
+         }
          break;
 
          //VECT_ALARMSET
