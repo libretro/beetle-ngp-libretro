@@ -8,6 +8,7 @@ NEED_BPP                 := 16
 NEED_BLIP                := 1
 NEED_STEREO_SOUND        := 1
 IS_X86                   := 0
+LOAD_FROM_MEMORY         := 1
 FLAGS                    :=
 
 ifeq ($(TARGET_ARCH),x86)
@@ -22,6 +23,10 @@ COREFLAGS += -DWANT_NGP_EMU
 GIT_VERSION := " $(shell git rev-parse --short HEAD || echo unknown)"
 ifneq ($(GIT_VERSION)," unknown")
   COREFLAGS += -DGIT_VERSION=\"$(GIT_VERSION)\"
+endif
+
+ifeq ($(LOAD_FROM_MEMORY),1)
+   COREFLAGS += -DLOAD_FROM_MEMORY
 endif
 
 include $(CLEAR_VARS)
