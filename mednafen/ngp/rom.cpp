@@ -30,6 +30,8 @@
 RomInfo ngpc_rom;
 RomHeader* rom_header = NULL;
 
+extern "C" bool ogre_battle_dac_hack = false;
+
 static void rom_hack(void)
 {
    //=============================
@@ -52,6 +54,12 @@ static void rom_hack(void)
    {
       /* "Dokodemo Mahjong (J)" */
       ngpc_rom.data[0x23] = 0x00;	// Fix rom header
+   }
+
+   if (MATCH_CATALOG(133, 8))
+   {
+      /* "Densetsu no Ogre Battle Gaiden - Zenobia no Ouji (Japan).ngc" */
+      ogre_battle_dac_hack = true;	// Speech playback
    }
 }
 
