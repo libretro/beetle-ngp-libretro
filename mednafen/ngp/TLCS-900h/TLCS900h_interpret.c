@@ -717,7 +717,8 @@ static void ExR32(void)
 	//Undocumented mode!
 	if (data == 0x13)
 	{
-		mem = pc + (int16)fetch16();
+		int16 disp = fetch16();
+		mem = pc + disp;
 		cycles_extra = 8;	//Unconfirmed... doesn't make much difference
 		return;
 	}
