@@ -484,6 +484,14 @@ void storeW(uint32 address, uint16_t data)
 
 void storeL(uint32 address, uint32 data)
 {
+   extern bool ogre_battle_dac_hack;
+   if (ogre_battle_dac_hack)
+   {
+      // 6e8c = raw pcm data, 6e90 = pcm length
+      if (address == 0x6e8c && data < 0x2b0000) return;
+      if (address == 0x6e90 && data > 0x7000) return;
+   }
+
    storeW(address, data & 0xFFFF);
    storeW(address + 2, data >> 16);
 }
