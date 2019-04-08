@@ -148,7 +148,7 @@ void DMA_update(int channel)
 	dmaC[channel] --;
 	if (dmaC[channel] == 0)
 	{
-		interrupt(14 + channel);
+		set_interrupt(14 + channel, true);
 		storeB(0x7C + channel, 0);
 	}
 }

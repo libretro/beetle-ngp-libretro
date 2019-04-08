@@ -54,14 +54,14 @@ static bool h_int, timer0, timer2;
 
 // FIXME in the future if we ever add real bios support?
 
-void interrupt(uint8_t index)
+void interrupt(uint8_t index, uint8_t level)
 {
    push32(pc);
    push16(sr);
 
    //Up the IFF
-   if (((sr & 0x7000) >> 12) < 7)
-      setStatusIFF(((sr & 0x7000) >> 12) + 1);
+   if (level < 7) level++;
+   setStatusIFF(level);
 
    //Access the interrupt vector table to find the jump destination
    pc = loadL(0x6FB8 + index * 4);
@@ -85,77 +85,54 @@ void int_check_pending(void)
     * pending flag by writing with IxxC set to "0", but
     * we'll actually need to implement a BIOS to do that! */
 
-   uint8_t prio = IntPrio[0x1] & 0x07;     // INT4
+   #define NGP_IRQ_1(x, y) \
+       prio = (y); \
+       if (ipending[x] && curIFF <= prio && prio && prio != 7) \
+       { \
+           ipending[x] = 0; \
+           interrupt(x, prio); \
+           return; \
+       }
+   
+   #define NGP_IRQ_2(x, y, z) \
+       if (0) {} \
+       else if (z == 0) NGP_IRQ_1(x, IntPrio[y] & 0x07) \
+       else if (z == 1) NGP_IRQ_1(x, (IntPrio[y] & 0x70) >> 4)
 
-   if(ipending[5] && curIFF <= prio && prio && prio != 7)
-   {
-      ipending[5] = 0;
-      interrupt(5);
-      return;
-   }
 
-   prio = (IntPrio[0x1] & 0x70) >> 4;	// INT5 (Z80)
-   if(ipending[6] && curIFF <= prio && prio && prio != 7)
-   {
-      ipending[6] = 0;
-      interrupt(6);
-      return;
-   }
+   uint8_t prio;
 
-   prio = IntPrio[0x3] & 0x07;	// INTT0
-   if(ipending[7] && curIFF <= prio && prio && prio != 7)
-   {
-      ipending[7] = 0;
-      interrupt(7);  
-      return;
-   }
-
-   prio = (IntPrio[0x3] & 0x70) >> 4;	// INTT1
-   if(ipending[8] && curIFF <= prio && prio && prio != 7)
-   {
-      ipending[8] = 0;
-      interrupt(8);
-      return;
-   }
-
-   prio = (IntPrio[0x4] & 0x07);	// INTT2
-   if(ipending[9] && curIFF <= prio && prio && prio != 7)
-   {
-      ipending[9] = 0;
-      interrupt(9);
-      return;
-   }
-
-   prio = ((IntPrio[0x4] & 0x70) >> 4); // INTT3
-   if(ipending[10] && curIFF <= prio && prio && prio != 7)
-   {
-      ipending[10] = 0;
-      interrupt(10);
-      return;
-   }
-
-   prio = (IntPrio[0x7] & 0x07); // INTRX0
-   if(ipending[11] && curIFF <= prio && prio && prio != 7)
-   {
-      ipending[11] = 0;
-      interrupt(11);
-      return;
-   }
-
-   prio = ((IntPrio[0x7] & 0x70) >> 4); // INTTX0
-   if(ipending[12] && curIFF <= prio && prio && prio != 7)
-   {
-      ipending[12] = 0;
-      interrupt(12);
-      return;
-   }
-
+   NGP_IRQ_1(0, 6)       // INT0  (SWI3)
+   NGP_IRQ_1(1, 6)       // INT1  (SWI4)
+   NGP_IRQ_1(2, 6)       // INT2  (SWI5)
+   NGP_IRQ_1(3, 6)       // INT3  (SWI6)
+   NGP_IRQ_2(4, 0, 0)    // INT4  (RTC)
+   NGP_IRQ_2(5, 1, 0)    // INT5  (VBlank)
+   NGP_IRQ_2(6, 1, 1)    // INT6  (Z80)
+   NGP_IRQ_2(7, 3, 0)    // INT7  (T0)
+   NGP_IRQ_2(8, 3, 1)    // INT8  (T1)
+   NGP_IRQ_2(9, 4, 0)    // INT9  (T2)
+   NGP_IRQ_2(10, 4, 1)   // INT10 (T3)
+   NGP_IRQ_2(11, 7, 0)   // INT11 (RX0)
+   NGP_IRQ_2(12, 7, 1)   // INT12 (TX0)
+   NGP_IRQ_1(13, 6)      // INT13 (RESERVED)
+   NGP_IRQ_2(14, 9, 0)   // INT14 (DMA0)
+   NGP_IRQ_2(15, 9, 1)   // INT15 (DMA1)
+   NGP_IRQ_2(16, 10, 0)  // INT16 (DMA2)
+   NGP_IRQ_2(17, 10, 1)  // INT17 (DMA3)
+      
+   #undef NGP_IRQ_1
+   #undef NGP_IRQ_2
 }
 
 void int_write8(uint32_t address, uint8_t data)
 {
    switch(address)
    {
+      case 0x70:
+         if(!(data & 0x08))
+            ipending[4] = 0;
+         break;
       case 0x71:
          if(!(data & 0x08))
             ipending[5] = 0;
@@ -205,6 +182,8 @@ uint8_t int_read8(uint32_t address)
 {
    switch(address)
    {
+      case 0x70:
+         return (ipending[4] ? 0x08 : 0x00);
       case 0x71:
          return ((ipending[5] ? 0x08 : 0x00) | (ipending[6] ? 0x80 : 0x00));
       case 0x73:
