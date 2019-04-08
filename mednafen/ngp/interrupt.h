@@ -34,7 +34,8 @@ extern "C" {
 /* Set this value to fix problems with glitching extra lines. */
 extern bool gfx_hack;
 
-void interrupt(uint8_t index);
+void interrupt(uint8_t index, uint8_t level);
+void set_interrupt(uint8_t index, bool set);
 
 void reset_timers(void);
 void reset_int(void);

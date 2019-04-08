@@ -400,25 +400,17 @@ void sngSWI()
 	printf("SWI: %02x\n", first & 0x7);
 	switch(first & 7)
 	{
-		//System Call
+	//System Call
 	case 1: push32(pc);
-			pc = loadL(0xFFFE00 + ((rCodeB(0x31) & 0x1F) << 2));
-			break;
-
-	case 3: interrupt(0);	//SWI 3
-			break;
-
-	case 4:	interrupt(1);	//SWI 4
-			break;
-
-	case 5: interrupt(2);	//SWI 5
-			break;
-
-	case 6: interrupt(3);	//SWI 6
-			break;
-
-	default:	instruction_error("SWI %d is not valid.", first & 7);
+		pc = loadL(0xFFFE00 + ((rCodeB(0x31) & 0x1F) << 2));
 		break;
+
+	case 3: set_interrupt(0, true); break;  //SWI 3
+	case 4: set_interrupt(1, true); break;  //SWI 4
+	case 5: set_interrupt(2, true); break;  //SWI 5
+	case 6: set_interrupt(3, true); break;  //SWI 6
+
+	default: instruction_error("SWI %d is not valid.", first & 7); break;
 	}
 }
 //=============================================================================
