@@ -27,11 +27,6 @@ SOURCES_CXX += \
 
 SOURCES_C += \
 	$(CORE_EMU_DIR)/bios.c \
-	$(CORE_EMU_DIR)/TLCS-900h/TLCS900h_disassemble.c \
-	$(CORE_EMU_DIR)/TLCS-900h/TLCS900h_disassemble_extra.c \
-	$(CORE_EMU_DIR)/TLCS-900h/TLCS900h_disassemble_reg.c \
-	$(CORE_EMU_DIR)/TLCS-900h/TLCS900h_disassemble_dst.c \
-	$(CORE_EMU_DIR)/TLCS-900h/TLCS900h_disassemble_src.c \
 	$(CORE_EMU_DIR)/TLCS-900h/TLCS900h_interpret.c \
 	$(CORE_EMU_DIR)/TLCS-900h/TLCS900h_interpret_dst.c \
 	$(CORE_EMU_DIR)/TLCS-900h/TLCS900h_interpret_reg.c \
