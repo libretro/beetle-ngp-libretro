@@ -22,6 +22,8 @@ static MDFN_Surface *surf;
 
 static bool failed_init;
 
+static bool libretro_supports_bitmasks = false;
+
 static void hookup_ports(bool force);
 
 static bool initial_ports_hookup = false;
@@ -489,6 +491,9 @@ void retro_init(void)
    if (environ_cb(RETRO_ENVIRONMENT_GET_PERF_INTERFACE, &perf_cb))
       perf_get_cpu_features_cb = perf_cb.get_cpu_features;
 
+   if (environ_cb(RETRO_ENVIRONMENT_GET_INPUT_BITMASKS, NULL))
+      libretro_supports_bitmasks = true;
+
    check_system_specs();
    MDFNGI_reset(MDFNGameInfo);
 }
@@ -619,8 +624,6 @@ void retro_unload_game(void)
 
 static void update_input(void)
 {
-   input_buf = 0;
-
    static unsigned map[] = {
       RETRO_DEVICE_ID_JOYPAD_UP, //X Cursor horizontal-layout games
       RETRO_DEVICE_ID_JOYPAD_DOWN, //X Cursor horizontal-layout games
@@ -630,21 +633,22 @@ static void update_input(void)
       RETRO_DEVICE_ID_JOYPAD_A,
       RETRO_DEVICE_ID_JOYPAD_START,
    };
+   unsigned i, j;
+   int16_t ret = 0;
+   input_buf   = 0;
 
-   for (unsigned i = 0; i < MAX_BUTTONS; i++)
-      input_buf |= map[i] != -1u &&
-         input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, map[i]) ? (1 << i) : 0;
+   if (libretro_supports_bitmasks)
+      ret = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
+   else
+   {
+      for (j = 0; j < (RETRO_DEVICE_ID_JOYPAD_R3+1); j++)
+         if (input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, j))
+            ret |= (1 << j);
+   }
 
-//not needed at least for wiiu
-#if 0//def MSB_FIRST
-   union {
-      uint8_t b[2];
-      uint16_t s;
-   } u;
-   u.s = input_buf;
-   input_buf = u.b[0] | u.b[1] << 8;
-#endif
-
+   for (i = 0; i < MAX_BUTTONS; i++)
+      if ((map[i] != -1u) && (ret & (1 << map[i])))
+         input_buf |= (1 << i);
 }
 
 static uint64_t video_frames, audio_frames;
@@ -739,6 +743,8 @@ void retro_deinit(void)
       log_cb(RETRO_LOG_INFO, "[%s]: Estimated FPS: %.5f\n",
             mednafen_core_str, (double)video_frames * 44100 / audio_frames);
    }
+
+   libretro_supports_bitmasks = false;
 }
 
 unsigned retro_get_region(void)
