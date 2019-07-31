@@ -768,10 +768,6 @@ void retro_set_environment(retro_environment_t cb)
    struct retro_vfs_interface_info vfs_iface_info;
    environ_cb = cb;
 
-   static const struct retro_variable vars[] = {
-      { "ngp_language", "Language (restart); english|japanese" },
-      { NULL, NULL },
-   };
    libretro_set_core_options(environ_cb);
 
    vfs_iface_info.required_interface_version = 1;
