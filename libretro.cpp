@@ -5,6 +5,8 @@
 #include <libretro.h>
 #include <streams/file_stream.h>
 
+#include "libretro_core_options.h"
+
 static MDFNGI *game;
 
 struct retro_perf_callback perf_cb;
@@ -770,7 +772,7 @@ void retro_set_environment(retro_environment_t cb)
       { "ngp_language", "Language (restart); english|japanese" },
       { NULL, NULL },
    };
-   cb(RETRO_ENVIRONMENT_SET_VARIABLES, (void*)vars);
+   libretro_set_core_options(environ_cb);
 
    vfs_iface_info.required_interface_version = 1;
    vfs_iface_info.iface                      = NULL;
