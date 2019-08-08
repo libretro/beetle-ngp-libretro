@@ -138,8 +138,13 @@ else ifneq (,$(findstring ios,$(platform)))
    ifeq ($(IOSSDK),)
       IOSSDK := $(shell xcodebuild -version -sdk iphoneos Path)
    endif
-   CC = cc -arch armv7 -isysroot $(IOSSDK)
-   CXX = c++ -arch armv7 -isysroot $(IOSSDK)
+   ifeq ($(platform),ios-arm64)
+      CC = cc -arch arm64 -isysroot $(IOSSDK)
+      CXX = c++ -arch arm64 -isysroot $(IOSSDK)
+   else
+      CC = cc -arch armv7 -isysroot $(IOSSDK)
+      CXX = c++ -arch armv7 -isysroot $(IOSSDK)
+   endif
    OSXVER = `sw_vers -productVersion | cut -d. -f 2`
    IPHONEMINVER :=
    ifeq ($(platform),$(filter $(platform),ios9 ios-arm64))
