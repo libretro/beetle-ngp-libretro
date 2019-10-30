@@ -238,28 +238,31 @@ void iBIOSHLE(void)
          //VECT_FLASHERS
       case 0xFF7082:
          {
-            uint32 i, bank = 0x200000, size = 0x10000, dst;
+		    const uint8 bank = rCodeB(0x30);
+		    const uint8 flash_block = rCodeB(0x35);
 
-            //Select HI rom?
-            if (rCodeB(0x30) == 1)
-               bank = 0x800000;
+		    //printf("flash erase: %d 0x%02x\n", bank, flash_block);
 
-            //TODO:check rom size to determine final dst block
-            // 4 MBit - block  7, 270000-27FFFF
-            // 8 MBit - block 15, 2F0000-2FFFFF
-            //16 MBit - block 31, 3F0000-3F7FFF
-            if (rCodeB(0x35) == 31)
-               size = 0x8000;
-            dst = rCodeB(0x35) * 0x10000;
+		    if((ngpc_rom.length & ~0x1FFF) == 0x200000 && bank == 0 && flash_block == 31)
+		    {
+		       const uint32 addr = 0x3F0000;
+		       const uint32 size = 0x008000;
 
-            memory_flash_error = false;
-            memory_unlock_flash_write = true;
-            //Copy as 32 bit values for speed
-            for (i = 0; i < size / 4; i++)
-               storeL(bank + dst + (i * 4), 0xFFFFFFFF);
-            memory_unlock_flash_write = false;
+		       flash_optimise_blocks();
+		       flash_write(addr, size);
+		       flash_optimise_blocks();
 
-            rCodeB(0x30) = 0;	//RA3 = SYS_SUCCESS
+		       memory_flash_error = false;
+		       memory_unlock_flash_write = true;
+		       for(uint32 i = 0; i < size; i += 4)
+		       {
+		        storeL(addr + i, 0xFFFFFFFF);
+		       }
+		       memory_unlock_flash_write = false;
+		    }
+
+		    rCodeB(0x30) = 0;	//RA3 = SYS_SUCCESS
+		    //rCodeB(0x30) = 0xFF;	//RA3 = SYS_FAILURE
          }
          break;
 
@@ -387,6 +390,7 @@ void iBIOSHLE(void)
          TestIntHDMA(11, 0x18);
          return;
       case VECT_COMGETBUFDATA:
+	  {
          pc = pop32();
 
          while(rCodeB(0x35) > 0)
@@ -405,10 +409,13 @@ void iBIOSHLE(void)
                TestIntHDMA(12, 0x19);
                return;
             }
-            break;
+            else
+               break;
          }
 
-         return;
+      }
+
+      return;
    }
 
    //RET
