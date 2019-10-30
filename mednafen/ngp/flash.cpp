@@ -58,7 +58,7 @@ typedef struct
 static FlashFileBlockHeader	blocks[256];
 static uint16_t block_count;
 
-static void optimise_blocks(void)
+void flash_optimise_blocks(void)
 {
    int i, j;
 
@@ -96,6 +96,7 @@ static void optimise_blocks(void)
          blocks[i].data_length = 
             (uint16_t)((blocks[i+1].start_address + blocks[i+1].data_length) - 
                   blocks[i].start_address);
+         //FIXME: std::max
 
          //Remove the next one.
          for (j = i+2; j < block_count; j++)
@@ -145,7 +146,7 @@ void do_flash_read(uint8_t *flashdata)
    }
    memory_unlock_flash_write = PREV_memory_unlock_flash_write;
 
-   optimise_blocks();		//Optimise
+   flash_optimise_blocks();		//Optimise
 
 
    //Output block list...
@@ -224,7 +225,7 @@ uint8_t *make_flash_commit(int32_t *length)
       return NULL;
 
    /* Optimize before writing */
-   optimise_blocks();
+   flash_optimise_blocks();
 
    /* Build a header */
    header.valid_flash_id    = FLASH_VALID_ID;
