@@ -23,6 +23,7 @@ uint8_t *make_flash_commit(int32_t *length);
 
 /* Marks flash blocks for saving. */
 void flash_write(uint32_t start_address, uint16_t length);
+void flash_optimise_blocks(void);
 
 /* Stores the flash data */
 void flash_commit(void);
