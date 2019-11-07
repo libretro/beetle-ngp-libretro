@@ -16,92 +16,37 @@
 #include "mem.h"
 #include "sound.h"
 #include "Z80_interface.h"
-#include "TLCS-900h/TLCS900h_registers.h"
 #include "interrupt.h"
 #include "dma.h"
-#include "../hw_cpu/z80-fuse/z80.h"
-#include "../hw_cpu/z80-fuse/z80_macros.h"
 
-#include "../state.h"
-
-static uint8_t CommByte;
+static uint8 CommByte;
 static bool Z80Enabled;
 
-int z80_state_action(void *data, int load, int data_only, const char *section_name)
+uint8 Z80_ReadComm(void)
 {
-   uint8_t r_register;
-
-   SFORMAT StateRegs[] =
-   {
-      { &(z80.af.w), sizeof(z80.af.w), 0x80000000, "AF" },
-      { &(z80.bc.w), sizeof(z80.bc.w), 0x80000000, "BC" },
-      { &(z80.de.w), sizeof(z80.de.w), 0x80000000, "DE" },
-      { &(z80.hl.w), sizeof(z80.hl.w), 0x80000000, "HL" },
-      { &(z80.af_.w), sizeof(z80.af_.w), 0x80000000, "AF_" },
-      { &(z80.bc_.w), sizeof(z80.bc_.w), 0x80000000, "BC_" },
-      { &(z80.de_.w), sizeof(z80.de_.w), 0x80000000, "DE_" },
-      { &(z80.hl_.w), sizeof(z80.hl_.w), 0x80000000, "HL_" },
-      { &(z80.ix.w), sizeof(z80.ix.w), 0x80000000, "IX" },
-      { &(z80.iy.w), sizeof(z80.iy.w), 0x80000000, "IY" },
-      { &(z80.i), sizeof(z80.i), 0x80000000, "I" },
-      { &(z80.sp.w), sizeof(z80.sp.w), 0x80000000, "SP" },
-      { &(z80.pc.w), sizeof(z80.pc.w), 0x80000000, "PC" },
-      { &(z80.iff1), sizeof(z80.iff1), 0x80000000, "IFF1" },
-      { &(z80.iff2), sizeof(z80.iff2), 0x80000000, "IFF2" },
-      { &(z80.im), sizeof(z80.im), 0x80000000, "IM" },
-      { &(r_register), sizeof(r_register), 0x80000000, "R" },
-
-      { &(z80.interrupts_enabled_at), sizeof(z80.interrupts_enabled_at), 0x80000000, "interrupts_enabled_at" },
-      { &(z80.halted), sizeof(z80.halted), 0x80000000, "halted" },
-
-      { &((z80_tstates)), sizeof((z80_tstates)), 0x80000000, "z80_tstates" },
-      { &((last_z80_tstates)), sizeof((last_z80_tstates)), 0x80000000, "last_z80_tstates" },
-
-      { 0, 0, 0, 0 }
-   };
-
-   if(!load)
-      r_register = (z80.r7 & 0x80) | (z80.r & 0x7f);
-
-   if(!MDFNSS_StateAction(data, load, data_only, StateRegs, section_name, false))
-      return(0);
-
-   if(load)
-   {
-      z80.r7 = r_register & 0x80;
-      z80.r = r_register & 0x7F;
-   }
-
-   return(1);
+   return (CommByte);
 }
 
-uint8_t Z80_ReadComm(void)
-{
-   return CommByte;
-}
-
-void Z80_WriteComm(uint8_t data)
+void Z80_WriteComm(uint8 data)
 {
    CommByte = data;
 }
 
-static uint8_t NGP_z80_readbyte(uint16_t address)
+static uint8 NGP_z80_readbyte(uint16 address)
 {
    if (address <= 0xFFF)
       return loadB(0x7000 + address);
 
-   switch (address)
+   if (address == 0x8000)
    {
-      case 0x8000:
-         return CommByte;
-      default:
-         break;
+      return CommByte;
    }
-
    return 0;
 }
 
-static void NGP_z80_writebyte(uint16_t address, uint8_t value)
+//=============================================================================
+
+static void NGP_z80_writebyte(uint16 address, uint8 value)
 {
    if (address <= 0x0FFF)
    {
@@ -109,31 +54,30 @@ static void NGP_z80_writebyte(uint16_t address, uint8_t value)
       return;
    }
 
-   switch (address)
+   if (address == 0x8000)
    {
-      case 0x8000:
-         CommByte = value;
-         break;
-      case 0x4001:
-         Write_SoundChipLeft(value);
-         break;
-      case 0x4000:
-         Write_SoundChipRight(value);
-         break;
-      case 0xC000:
-         TestIntHDMA(6, 0x0C);
-         break;
+      CommByte = value;
+      return;
    }
 
+   if (address == 0x4001) { Write_SoundChipLeft(value); return; }
+   if (address == 0x4000) { Write_SoundChipRight(value); return; }
+
+   if (address == 0xC000)
+   {
+      TestIntHDMA(6, 0x0C);
+   }
 }
 
-static void NGP_z80_writeport(uint16_t port, uint8_t value)
+//=============================================================================
+
+static void NGP_z80_writeport(uint16 port, uint8 value)
 {
 	//printf("Portout: %04x %02x\n", port, value);
 	z80_set_interrupt(0);
 }
 
-static uint8_t NGP_z80_readport(uint16_t port)
+static uint8 NGP_z80_readport(uint16 port)
 {
 	//printf("Portin: %04x\n", port);
 	return 0;
@@ -149,6 +93,10 @@ void Z80_irq(void)
 	z80_set_interrupt(1);
 }
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void Z80_reset(void)
 {
 	Z80Enabled = 0;
@@ -161,6 +109,10 @@ void Z80_reset(void)
 	z80_init();
 	z80_reset();
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 void Z80_SetEnable(bool set)
 {
@@ -177,12 +129,12 @@ bool Z80_IsEnabled(void)
 int Z80_RunOP(void)
 {
    if(!Z80Enabled)
-      return -1;
+      return (-1);
 
    return(z80_do_opcode());
 }
 
-int MDFNNGPCZ80_StateAction(void *data, int load, int data_only)
+int MDFNNGPCZ80_StateAction(StateMem *sm, const unsigned load, const bool data_only)
 {
    SFORMAT StateRegs[] =
    {
@@ -191,11 +143,64 @@ int MDFNNGPCZ80_StateAction(void *data, int load, int data_only)
       SFEND
    };
 
-   if(!MDFNSS_StateAction(data, load, data_only, StateRegs, "Z80X", false))
+   if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "Z80X", false))
       return 0;
 
-   if(!z80_state_action(data, load, data_only, "Z80"))
+   if(!z80_state_action(sm, load, data_only, "Z80"))
       return 0;
 
    return 1;
+}
+
+int z80_state_action(StateMem *sm, const unsigned load, const bool data_only, const char *section_name)
+{
+  uint8 r_register = (z80.r7 & 0x80) | (z80.r & 0x7f);
+
+  SFORMAT StateRegs[] =
+  {
+    SFVARN(z80.af.w, "AF"),
+    SFVARN(z80.bc.w, "BC"),
+    SFVARN(z80.de.w, "DE"),
+    SFVARN(z80.hl.w, "HL"),
+    SFVARN(z80.af_.w, "AF_"),
+    SFVARN(z80.bc_.w, "BC_"),
+    SFVARN(z80.de_.w, "DE_"),
+    SFVARN(z80.hl_.w, "HL_"),
+    SFVARN(z80.ix.w, "IX"),
+    SFVARN(z80.iy.w, "IY"),
+    SFVARN(z80.i, "I"),
+    SFVARN(z80.sp.w, "SP"),
+    SFVARN(z80.pc.w, "PC"),
+    SFVARN(z80.iff1, "IFF1"),
+    SFVARN(z80.iff2, "IFF2"),
+    SFVARN(z80.im, "IM"),
+    SFVARN(r_register, "R"),
+
+    SFVARN(z80.interrupts_enabled_at, "interrupts_enabled_at"),
+    SFVARN(z80.halted, "halted"),
+
+    SFVAR(z80_tstates),
+    SFVAR(last_z80_tstates),
+    SFVAR(z80_iline),
+
+    SFEND
+  };
+
+  if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, section_name, false))
+    return 0;
+
+  if(load)
+  {
+    if(load < 0x00093902)
+      z80.interrupts_enabled_at = z80_tstates;
+
+    // TODO: Maybe adjust this check if we ever add emulation of a Z80-utilizing system with long wait-stating.
+    if((z80_tstates - last_z80_tstates) > 1000)
+      last_z80_tstates = z80_tstates - 1000;
+
+    z80.r7 = r_register & 0x80;
+    z80.r = r_register & 0x7F;
+  }
+
+  return 1;
 }

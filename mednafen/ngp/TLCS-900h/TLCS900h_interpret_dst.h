@@ -41,91 +41,91 @@ extern "C" {
 #endif
 
 //===== LD (mem),#
-void DST_dstLDBi(void);
+void dstLDBi(void);
 
 //===== LD (mem),#
-void DST_dstLDWi(void);
+void dstLDWi(void);
 
 //===== POP (mem)
-void DST_dstPOPB(void);
+void dstPOPB(void);
 
 //===== POP (mem)
-void DST_dstPOPW(void);
+void dstPOPW(void);
 
 //===== LD (mem),(nn)
-void DST_dstLDBm16(void);
+void dstLDBm16(void);
 
 //===== LD (mem),(nn)
-void DST_dstLDWm16(void);
+void dstLDWm16(void);
 
 //===== LDA R,mem
-void DST_dstLDAW(void);
+void dstLDAW(void);
 
 //===== LDA R,mem
-void DST_dstLDAL(void);
+void dstLDAL(void);
 
 //===== ANDCF A,(mem)
-void DST_dstANDCFA(void);
+void dstANDCFA(void);
 
 //===== ORCF A,(mem)
-void DST_dstORCFA(void);
+void dstORCFA(void);
 
 //===== XORCF A,(mem)
-void DST_dstXORCFA(void);
+void dstXORCFA(void);
 
 //===== LDCF A,(mem)
-void DST_dstLDCFA(void);
+void dstLDCFA(void);
 
 //===== STCF A,(mem)
-void DST_dstSTCFA(void);
+void dstSTCFA(void);
 
 //===== LD (mem),R
-void DST_dstLDBR(void);
+void dstLDBR(void);
 
 //===== LD (mem),R
-void DST_dstLDWR(void);
+void dstLDWR(void);
 
 //===== LD (mem),R
-void DST_dstLDLR(void);
+void dstLDLR(void);
 
 //===== ANDCF #3,(mem)
-void DST_dstANDCF(void);
+void dstANDCF(void);
 
 //===== ORCF #3,(mem)
-void DST_dstORCF(void);
+void dstORCF(void);
 
 //===== XORCF #3,(mem)
-void DST_dstXORCF(void);
+void dstXORCF(void);
 
 //===== LDCF #3,(mem)
-void DST_dstLDCF(void);
+void dstLDCF(void);
 
 //===== STCF #3,(mem)
-void DST_dstSTCF(void);
+void dstSTCF(void);
 
 //===== TSET #3,(mem)
-void DST_dstTSET(void);
+void dstTSET(void);
 
 //===== RES #3,(mem)
-void DST_dstRES(void);
+void dstRES(void);
 
 //===== SET #3,(mem)
-void DST_dstSET(void);
+void dstSET(void);
 
 //===== CHG #3,(mem)
-void DST_dstCHG(void);
+void dstCHG(void);
 
 //===== BIT #3,(mem)
-void DST_dstBIT(void);
+void dstBIT(void);
 
 //===== JP cc,mem
-void DST_dstJP(void);
+void dstJP(void);
 
 //===== CALL cc,mem
-void DST_dstCALL(void);
+void dstCALL(void);
 
 //===== RET cc
-void DST_dstRET(void);
+void dstRET(void);
 
 #ifdef __cplusplus
 }

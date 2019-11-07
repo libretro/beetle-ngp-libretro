@@ -2,6 +2,9 @@
 #define __MDFN_MEMPATCHER_H
 
 #include "mempatcher-driver.h"
+
+
+#ifdef __cplusplus
 #include <vector>
 
 typedef struct __SUBCHEAT
@@ -13,6 +16,8 @@ typedef struct __SUBCHEAT
 
 extern std::vector<SUBCHEAT> SubCheats[8];
 extern bool SubCheatsOn;
+#endif
+
 
 bool MDFNMP_Init(uint32 ps, uint32 numpages);
 void MDFNMP_AddRAM(uint32 size, uint32 address, uint8 *RAM);

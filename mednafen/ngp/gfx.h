@@ -12,10 +12,9 @@
 //	additional informations.
 //---------------------------------------------------------------------------
 
-#ifndef __GFX__
-#define __GFX__
-
-#include <stdint.h>
+#ifndef __NEOPOP_GFX__
+#define __NEOPOP_GFX__
+//=============================================================================
 
 #define ZDEPTH_BACK_SPRITE          2
 #define ZDEPTH_BACKGROUND_SCROLL    3
@@ -23,66 +22,82 @@
 #define ZDEPTH_FOREGROUND_SCROLL    5
 #define ZDEPTH_FRONT_SPRITE			6
 
-extern uint16_t cfb_scanline[256];	// __attribute__ ((aligned (8)));
 
-typedef struct ngpgfx
+typedef struct NGPGfx NGPGfx_t;
+
+void NGPGfx_write8(uint32 address, uint8 data);
+void NGPGfx_write16(uint32 address, uint16 data);
+
+uint8 NGPGfx_read8(uint32 address);
+uint16 NGPGfx_read16(uint32 address);
+
+int NGPGfx_StateAction(StateMem *sm, int load, int data_only);
+void NGPGfx_SetLayerEnableMask(uint64 mask);
+void NGPGfx_set_pixel_format(void);
+
+bool NGPGfx_draw(MDFN_Surface *surface, bool skip);
+bool NGPGfx_hint(void);
+
+void NGPGfx_power(void);
+
+
+typedef struct NGPGfx
 {
-   uint8_t winx, winw;
-   uint8_t winy, winh;
-   uint8_t scroll1x, scroll1y;
-   uint8_t scroll2x, scroll2y;
-   uint8_t scrollsprx, scrollspry;
-   uint8_t planeSwap;
-   uint8_t bgc, oowc, negative;
+   // TODO: Alignment for faster memset
+   uint8 zbuffer[256];  //  __attribute__ ((aligned (8)));	//Line z-buffer
+   uint16 cfb_scanline[256];  // __attribute__ ((aligned (8)));
 
-   uint8_t ScrollVRAM[4096];       /* 9000-9fff */
-   uint8_t CharacterRAM[8192];     /* a000-bfff */
-   uint8_t SpriteVRAM[256];        /* 8800-88ff */
-   uint8_t SpriteVRAMColor[0x40];  /* 8C00-8C3F */
-   uint8_t ColorPaletteRAM[0x200]; /* 8200-83ff */
+   uint8 winx, winw;
+   uint8 winy, winh;
+   uint8 scroll1x, scroll1y;
+   uint8 scroll2x, scroll2y;
+   uint8 scrollsprx, scrollspry;
+   uint8 planeSwap;
+   uint8 bgc, oowc, negative;
 
-   uint8_t SPPLT[6];
-   uint8_t SCRP1PLT[6];
-   uint8_t SCRP2PLT[6];
+   uint8 ScrollVRAM[4096];       // 9000-9fff
+   uint8 CharacterRAM[8192];     // a000-bfff
+   uint8 SpriteVRAM[256];        // 8800-88ff
+   uint8 SpriteVRAMColor[0x40];  // 8C00-8C3F
+   uint8 ColorPaletteRAM[0x200]; // 8200-83ff
 
-   uint8_t raster_line;
-   uint8_t S1SO_H, S1SO_V, S2SO_H, S2SO_V;
-   uint8_t WBA_H, WBA_V, WSI_H, WSI_V;
+   uint8 SPPLT[6];
+   uint8 SCRP1PLT[6];
+   uint8 SCRP2PLT[6];
+
+   uint8 raster_line;
+   uint8 S1SO_H, S1SO_V, S2SO_H, S2SO_V;
+   uint8 WBA_H, WBA_V, WSI_H, WSI_V;
    bool C_OVR, BLNK;
-   uint8_t PO_H, PO_V;
-   uint8_t P_F;
-   uint8_t BG_COL;
-   uint8_t CONTROL_2D;
-   uint8_t CONTROL_INT;
-   uint8_t SCREEN_PERIOD;
-   uint8_t K2GE_MODE;
+   uint8 PO_H, PO_V;
+   uint8 P_F;
+   uint8 BG_COL;
+   uint8 CONTROL_2D;
+   uint8 CONTROL_INT;
+   uint8 SCREEN_PERIOD;
+   uint8 K2GE_MODE;
 
-   uint16_t ColorMap[4096];
+   uint16 ColorMap[4096];
 
-   int layer_enable;
-} ngpgfx_t;
+   int layer_enable_setting;
+} NGPGfx_t;
 
-void ngpgfx_set_pixel_format(ngpgfx_t *fx);
 
-void ngpgfx_SetLayerEnableMask(ngpgfx_t *gfx, uint64_t mask);
+void NGPGfx_reset(void);
+void NGPGfx_delayed_settings(void);
 
-int ngpgfx_StateAction(ngpgfx_t *gfx, void *data, int load, int data_only);
+void NGPGfx_draw_scanline_colour(int, int);
+void NGPGfx_drawColourPattern(uint8 screenx, uint16 tile, uint8 tiley, uint16 mirror,
+                              uint16* palette_ptr, uint8 pal, uint8 depth);
+void NGPGfx_draw_colour_scroll1(uint8 depth, int ngpc_scanline);
+void NGPGfx_draw_colour_scroll2(uint8 depth, int ngpc_scanline);
 
-void ngpgfx_power(ngpgfx_t *gfx);
+void NGPGfx_draw_scanline_mono(int, int);
+void NGPGfx_MonoPlot(uint8 x, uint8* palette_ptr, uint16 pal_hi, uint8 index, uint8 depth);
+void NGPGfx_drawMonoPattern(uint8 screenx, uint16 tile, uint8 tiley, uint16 mirror,
+                            uint8* palette_ptr, uint16 pal, uint8 depth);
+void NGPGfx_draw_mono_scroll1(uint8 depth, int ngpc_scanline);
+void NGPGfx_draw_mono_scroll2(uint8 depth, int ngpc_scanline);
 
-bool ngpgfx_hint(ngpgfx_t *gfx);
-
-bool ngpgfx_draw(ngpgfx_t *gfx, void *data, bool skip);
-
-uint8_t ngpgfx_read8(ngpgfx_t *gfx, uint32_t address);
-
-uint16_t ngpgfx_read16(ngpgfx_t *gfx, uint32_t address);
-
-void ngpgfx_write16(ngpgfx_t *gfx, uint32_t address, uint16_t data);
-
-void ngpgfx_write8(ngpgfx_t *gfx, uint32_t address, uint8_t data);
-
-extern ngpgfx_t *NGPGfx;
 
 #endif
-

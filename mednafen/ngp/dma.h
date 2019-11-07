@@ -12,31 +12,54 @@
 //	additional informations.
 //---------------------------------------------------------------------------
 
-#ifndef __DMA__
-#define __DMA__
+/*
+//---------------------------------------------------------------------------
+//=========================================================================
 
-#include <stdint.h>
+	dma.h
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+//=========================================================================
+//---------------------------------------------------------------------------
+
+  History of changes:
+  ===================
+
+20 JUL 2002 - neopop_uk
+=======================================
+- Cleaned and tidied up for the source release
+
+25 JUL 2002 - neopop_uk
+=======================================
+- Added function prototype for DMA_update
+
+//---------------------------------------------------------------------------
+*/
+
+#ifndef __NEOPOP_DMA__
+#define __NEOPOP_DMA__
+//=============================================================================
 
 void reset_dma(void);
 
 void DMA_update(int channel);
 
-uint8_t  dmaLoadB(uint8_t cr);
-uint16_t dmaLoadW(uint8_t cr);
-uint32_t dmaLoadL(uint8_t cr);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-void dmaStoreB(uint8_t cr, uint8_t data);
-void dmaStoreW(uint8_t cr, uint16_t data);
-void dmaStoreL(uint8_t cr, uint32_t data);
+uint8  dmaLoadB(uint8 cr);
+uint16 dmaLoadW(uint8 cr);
+uint32 dmaLoadL(uint8 cr);
 
-int MDFNNGPCDMA_StateAction(void *data, int load, int data_only);
+void dmaStoreB(uint8 cr, uint8 data);
+void dmaStoreW(uint8 cr, uint16 data);
+void dmaStoreL(uint8 cr, uint32 data);
 
 #ifdef __cplusplus
 }
 #endif
 
+int MDFNNGPCDMA_StateAction(StateMem *sm, int load, int data_only);
+
+//=============================================================================
 #endif

@@ -14,67 +14,69 @@
 
 #include "neopop.h"
 #include "bios.h"
-#include "TLCS-900h/TLCS900h_registers.h"
-#include "TLCS-900h/TLCS900h_interpret.h"
 #include "mem.h"
 #include "flash.h"
+#include "dma.h"
 #include "interrupt.h"
-#include "../state.h"
 
-#include <boolean.h>
+static uint8 CacheIntPrio[0xB]; // Iinterrupt prio registers at 0x0070-0x007a don't have priority readable.
+	 		                    // This should probably be stored in BIOS work RAM somewhere instead of a separate array, but I don't know where!
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/* Interrupt prio registers at 0x0070-0x007a don't have priority readable. */
-/* This should probably be stored in BIOS work RAM somewhere instead of a 
- * separate array, but I don't know where! */
-static uint8 CacheIntPrio[0xB]; 
 
 void BIOSHLE_Reset(void)
 {
-   int x;
-
    memset(CacheIntPrio, 0, sizeof(CacheIntPrio));
    CacheIntPrio[0] = 0x02;
    CacheIntPrio[1] = 0x32;
 
-   for(x = 0; x < 0xB; x++)
+   for(int x = 0; x < 0xB; x++)
       storeB(0x70 + x, CacheIntPrio[x]);
 }
-
-#define VECT_SHUTDOWN         0xFF27A2
-#define VECT_CLOCKGEARSET     0xFF1030
-#define VECT_COMGETBUFDATA    0xFF2D85
-#define VECT_COMCREATEBUFDATA 0xFF2D6C
 
 /* This is the custom HLE instruction. I considered it was the fastest and
 most streamlined way of intercepting a bios call. The operation performed
 is dependant on the current program counter. */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void iBIOSHLE(void)
 {
-   /* Only works within the bios */
+   //Only works within the bios
    if ((pc & 0xFF0000) != 0xFF0000)
       return;
 
-   pc      --;	    /* Compensate for processing this instruction. */
-   cycles = 8;		/* TODO: Correct cycle counts (or approx?) */
+   pc      --;	    //Compensate for processing this instruction.
+
+   cycles = 8;		// TODO: Correct cycle counts (or approx?)
+
+   //if(pc != 0xff1222)
+   //printf("SPOON: %08x\n", pc);
 
    switch (pc & 0xffffff)
-   {	
-      case VECT_SHUTDOWN:
+   {
+
+      //default: printf("SPOON: %08x\n", pc); break;
+         //VECT_SHUTDOWN
+      case 0xFF27A2:
          {
             //Cheap bit of code to stop the message appearing repeatedly.
             uint32 a = pop32();
             if (a != 0xBAADC0DE)
-               printf("IDS_POWER");
+               MDFN_printf("IDS_POWER");
             push32(0xBAADC0DE); //Sure is!
          }
 
          return;	//Don't pop a return address, stay here
-      case VECT_CLOCKGEARSET:
+
+         //VECT_CLOCKGEARSET
+      case 0xFF1030:
+		 //MDFN_printf("%d\n", rCodeB(0x35));
+		 //TODO
+	     //if (rCodeB(0x35) > 0)
+	     //   system_message("Unsupported clock gear %d set\nPlease inform the author", rCodeB(0x35));
+
          break;
 
          //VECT_RTCGET
@@ -94,6 +96,10 @@ void iBIOSHLE(void)
 
          break; 
 
+         //?
+      //case 0xFF12B4:
+      //   break;
+	
          //VECT_INTLVSET
       case 0xFF1222:
          {
@@ -114,49 +120,46 @@ void iBIOSHLE(void)
 
             switch(interrupt)
             {
-               case 0x00:
-                  CacheIntPrio[0x0] = (CacheIntPrio[0x0] & 0xf0) |  (level & 0x07);
-                  storeB(0x70, CacheIntPrio[0x0]);
-                  break;
-               case 0x01:
-                  CacheIntPrio[0x1] = (CacheIntPrio[0x1] & 0x0f) | ((level & 0x07)<<4);
-                  storeB(0x71, CacheIntPrio[0x1]);
-                  break;
-               case 0x02:
-                  CacheIntPrio[0x3] = (CacheIntPrio[0x3] & 0xf0) |  (level & 0x07);
-                  storeB(0x73, CacheIntPrio[0x3]);
-                  break;
-               case 0x03:
-                  CacheIntPrio[0x3] = (CacheIntPrio[0x3] & 0x0f) | ((level & 0x07)<<4);
-                  storeB(0x73, CacheIntPrio[0x3]);
-                  break;
-               case 0x04:
-                  CacheIntPrio[0x4] = (CacheIntPrio[0x4] & 0xf0) |  (level & 0x07);
-                  storeB(0x74, CacheIntPrio[0x4]);
-                  break;
-               case 0x05:
-                  CacheIntPrio[0x4] = (CacheIntPrio[0x4] & 0x0f) | ((level & 0x07)<<4);
-                  storeB(0x74, CacheIntPrio[0x4]);
-                  break;
-               case 0x06:
-                  CacheIntPrio[0x9] = (CacheIntPrio[0x9] & 0xf0) |  (level & 0x07);
-                  storeB(0x79, CacheIntPrio[0x9]);
-                  break;
-               case 0x07:
-                  CacheIntPrio[0x9] = (CacheIntPrio[0x9] & 0x0f) | ((level & 0x07)<<4);
-                  storeB(0x79, CacheIntPrio[0x9]);
-                  break;
-               case 0x08:
-                  CacheIntPrio[0xa] = (CacheIntPrio[0xa] & 0xf0) |  (level & 0x07);
-                  storeB(0x7a, CacheIntPrio[0xa]);
-                  break;
-               case 0x09:
-                  CacheIntPrio[0xa] = (CacheIntPrio[0xa] & 0x0f) | ((level & 0x07)<<4);
-                  storeB(0x7a, CacheIntPrio[0xa]);
-                  break;
-               default: 
-                  puts("DOH");
-                  break;
+               case 0x00: CacheIntPrio[0x0] = (CacheIntPrio[0x0] & 0xf0) |  (level & 0x07);
+                          storeB(0x70, CacheIntPrio[0x0]);
+                          break;
+
+               case 0x01: CacheIntPrio[0x1] = (CacheIntPrio[0x1] & 0x0f) | ((level & 0x07)<<4);
+                          storeB(0x71, CacheIntPrio[0x1]);
+                          break;
+
+               case 0x02: CacheIntPrio[0x3] = (CacheIntPrio[0x3] & 0xf0) |  (level & 0x07);
+                          storeB(0x73, CacheIntPrio[0x3]);
+                          break;
+
+               case 0x03: CacheIntPrio[0x3] = (CacheIntPrio[0x3] & 0x0f) | ((level & 0x07)<<4);
+                          storeB(0x73, CacheIntPrio[0x3]);
+                          break;
+
+               case 0x04: CacheIntPrio[0x4] = (CacheIntPrio[0x4] & 0xf0) |  (level & 0x07);
+                          storeB(0x74, CacheIntPrio[0x4]);
+                          break;
+
+               case 0x05: CacheIntPrio[0x4] = (CacheIntPrio[0x4] & 0x0f) | ((level & 0x07)<<4);
+                          storeB(0x74, CacheIntPrio[0x4]);
+                          break;
+
+               case 0x06: CacheIntPrio[0x9] = (CacheIntPrio[0x9] & 0xf0) |  (level & 0x07);
+                          storeB(0x79, CacheIntPrio[0x9]);
+                          break;
+
+               case 0x07: CacheIntPrio[0x9] = (CacheIntPrio[0x9] & 0x0f) | ((level & 0x07)<<4);
+                          storeB(0x79, CacheIntPrio[0x9]);
+                          break;
+
+               case 0x08: CacheIntPrio[0xa] = (CacheIntPrio[0xa] & 0xf0) |  (level & 0x07);
+                          storeB(0x7a, CacheIntPrio[0xa]);
+                          break;
+
+               case 0x09: CacheIntPrio[0xa] = (CacheIntPrio[0xa] & 0x0f) | ((level & 0x07)<<4);
+                          storeB(0x7a, CacheIntPrio[0xa]);
+                          break;
+               default: puts("DOH"); break;
             }
          }
          break;	
@@ -164,11 +167,11 @@ void iBIOSHLE(void)
          //VECT_SYSFONTSET
       case 0xFF8D8A:
          {
-            uint8 c, j;
+            uint8 a,b,c, j;
             uint16 i, dst = 0xA000;
 
-            uint8 b = rCodeB(0x30) >> 4;
-            uint8 a = rCodeB(0x30) & 3;
+            b = rCodeB(0x30) >> 4;
+            a = rCodeB(0x30) & 3;
 
             for (i = 0; i < 0x800; i++)
             {
@@ -272,12 +275,18 @@ void iBIOSHLE(void)
          rCodeB(0x30) = 0;	//RA3 = SYS_SUCCESS
          break;
 
+         //?
+      //case 0xFF1033: break;
+	
          //VECT_ALARMDOWNSET
       case 0xFF1487:
          //TODO
          rCodeB(0x30) = 0;	//RA3 = SYS_SUCCESS
          break;
 
+         //?
+      //case 0xFF731F: break;
+	
          //VECT_FLASHPROTECT
       case 0xFF70CA:
          //TODO
@@ -289,6 +298,9 @@ void iBIOSHLE(void)
          //TODO
          break;
 
+         //?
+      //case 0xFF1032: break;
+	
          //VECT_COMINIT
       case 0xFF2BBD:
          // Nothing to do.
@@ -372,7 +384,8 @@ void iBIOSHLE(void)
 
          break;
 
-      case VECT_COMCREATEBUFDATA:
+         //VECT_COMCREATEBUFDATA
+      case 0xFF2D6C:
          pc = pop32();
 
          while(rCodeB(0x35) > 0)
@@ -389,7 +402,9 @@ void iBIOSHLE(void)
 
          TestIntHDMA(11, 0x18);
          return;
-      case VECT_COMGETBUFDATA:
+
+         //VECT_COMGETBUFDATA
+      case 0xFF2D85:
 	  {
          pc = pop32();
 
@@ -426,16 +441,17 @@ void iBIOSHLE(void)
 }
 #endif
 
-int BIOSHLE_StateAction(void *data, int load, int data_only)
+int BIOSHLE_StateAction(StateMem *sm, int load, int data_only)
 {
    SFORMAT StateRegs[] =
    {
-      { CacheIntPrio, (uint32_t)((0xB)), 0, "CacheIntPrio" },
-      { 0, 0, 0, 0 }
+      SFVAR(CacheIntPrio),
+      SFEND
    };
+   if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "BHLE", false))
+      return (0);
 
-   if(!MDFNSS_StateAction(data, load, data_only, StateRegs, "BHLE", false))
-      return 0;
-
-   return 1;
+   return (1);
 }
+
+//=============================================================================

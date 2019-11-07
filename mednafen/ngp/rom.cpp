@@ -15,108 +15,109 @@
 #include "neopop.h"
 #include "flash.h"
 #include "interrupt.h"
-#include "TLCS-900h/TLCS900h_disassemble.h"
-#include "../mednafen.h"
 
-#ifdef MSB_FIRST
-#define HTOLE16(l)      ((((l)>>8) & 0xff) | (((l)<<8) & 0xff00))
-#else
-#define HTOLE16(l) (l)
-#endif
-
-#define MATCH_CATALOG(c, s)	(rom_header->catalog == HTOLE16(c) \
-				 && rom_header->subCatalog == (s))
+//=============================================================================
 
 RomInfo ngpc_rom;
-RomHeader* rom_header = NULL;
+RomHeader* rom_header;
 
+#define MATCH_CATALOG(c, s)	(MDFN_de16lsb(rom_header->catalog) == (c) && rom_header->subCatalog == (s))
+
+//=============================================================================
 static void rom_hack(void)
 {
    //=============================
    // SPECIFIC ROM HACKS !
    //=============================
 
+   //"Neo-Neo! V1.0 (PD)"
    if (MATCH_CATALOG(0, 16))
    {
-      /* "Neo-Neo! V1.0 (PD)" */
       ngpc_rom.data[0x23] = 0x10;	// Fix rom header
+
+      MDFN_printf("HACK: \"Neo-Neo! V1.0 (PD)\"\n");
    }
 
+   //"Cool Cool Jam SAMPLE (U)"
    if (MATCH_CATALOG(4660, 161))
    {
-      /* "Cool Cool Jam SAMPLE (U)" */
       ngpc_rom.data[0x23] = 0x10;	// Fix rom header
+
+      MDFN_printf("HACK: \"Cool Cool Jam SAMPLE (U)\"\n");
    }
 
+   //"Dokodemo Mahjong (J)"
    if (MATCH_CATALOG(51, 33))
    {
-      /* "Dokodemo Mahjong (J)" */
       ngpc_rom.data[0x23] = 0x00;	// Fix rom header
+
+      MDFN_printf("HACK: \"Dokodemo Mahjong (J)\"\n");
    }
 }
+
+//=============================================================================
 
 static void rom_display_header(void)
 {
-#if 0
-   printf("Name:    %s\n", ngpc_rom.name);
-   printf("System:  ");
+   MDFN_printf("Name:    %s\n", ngpc_rom.name);
+   MDFN_printf("System:  ");
 
    if(rom_header->mode & 0x10)
-      printf("Color");
+      MDFN_printf("Color");
    else
-      printf("Greyscale");
+      MDFN_printf("Greyscale");
 
-   printf("\n");
+   MDFN_printf("\n");
 
-   printf("Catalog:  %d (sub %d)\n",
-         le16toh(rom_header->catalog),
+   MDFN_printf("Catalog:  %u (sub %u)\n",
+         MDFN_de16lsb(rom_header->catalog),
          rom_header->subCatalog);
 
-   printf("Starting PC:  0x%06X\n", le32toh(rom_header->startPC) & 0xFFFFFF);
-#endif
+   //Starting PC
+   MDFN_printf("Starting PC:  0x%06X\n", MDFN_de32lsb(rom_header->startPC) & 0xFFFFFF);
 }
 
+//=============================================================================
+
+//-----------------------------------------------------------------------------
+// rom_loaded()
+//-----------------------------------------------------------------------------
 void rom_loaded(void)
 {
-   int i;
-
-   ngpc_rom.orig_data = (uint8 *)malloc(ngpc_rom.length);
-   memcpy(ngpc_rom.orig_data, ngpc_rom.data, ngpc_rom.length);
-
-   /* Extract the header */
+   //Extract the header
    rom_header = (RomHeader*)(ngpc_rom.data);
 
-   /* ROM Name */
-   for(i = 0; i < 12; i++)
+   // Rom Name
+   for(int i = 0; i < 12; i++)
    {
-      ngpc_rom.name[i] = ' ';
       if (rom_header->name[i] >= 32 && rom_header->name[i] < 128)
          ngpc_rom.name[i] = rom_header->name[i];
+      else
+         ngpc_rom.name[i] = ' ';
    }
-   ngpc_rom.name[i] = 0;
+   ngpc_rom.name[12] = 0;
 
-   /* Apply a hack if required! */
-   rom_hack();	
+   rom_hack(); // Apply a hack if required!
 
    rom_display_header();
 
-   flash_read();
+   ngpc_rom.orig_data = (uint8 *)malloc(ngpc_rom.length);
+   memcpy(ngpc_rom.orig_data, ngpc_rom.data, ngpc_rom.length);
 }
 
+//-----------------------------------------------------------------------------
+// rom_unload()
+//-----------------------------------------------------------------------------
 void rom_unload(void)
 {
    if (ngpc_rom.data)
    {
-      int i;
-
-      flash_commit();
-
       free(ngpc_rom.data);
       ngpc_rom.data = NULL;
       ngpc_rom.length = 0;
       rom_header = 0;
 
-      for (i = 0; i < 16; i++)
+      for (int i = 0; i < 16; i++)
          ngpc_rom.name[i] = 0;
    }		
 
@@ -126,3 +127,5 @@ void rom_unload(void)
       ngpc_rom.orig_data = NULL;
    }
 }
+
+//=============================================================================

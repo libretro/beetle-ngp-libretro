@@ -46,7 +46,7 @@
 //---------------------------------------------------------------------------
 */
 
-#include <stdio.h>
+#include "../neopop.h"
 #include "TLCS900h_interpret.h"
 #include "TLCS900h_registers.h"
 #include "../mem.h"
@@ -91,7 +91,7 @@ void sngMAX()
 //===== HALT
 void sngHALT()
 {
-	//MDFN_printf("CPU halt requested and ignored.\nPlease send me a saved state.");
+	MDFN_printf("CPU halt requested and ignored.\nPlease send me a saved state.");
 	cycles = 8;
 }
 
@@ -397,7 +397,7 @@ void sngSWI()
 {
 	cycles = 16;
 
-	printf("SWI: %02x\n", first & 0x7);
+	//printf("SWI: %02x\n", first & 0x7);
 	switch(first & 7)
 	{
 	//System Call
@@ -405,12 +405,20 @@ void sngSWI()
 		pc = loadL(0xFFFE00 + ((rCodeB(0x31) & 0x1F) << 2));
 		break;
 
-	case 3: set_interrupt(0, true); break;  //SWI 3
-	case 4: set_interrupt(1, true); break;  //SWI 4
-	case 5: set_interrupt(2, true); break;  //SWI 5
-	case 6: set_interrupt(3, true); break;  //SWI 6
+	case 3: interrupt(0, -1);	//SWI 3
+			break;
 
-	default: instruction_error("SWI %d is not valid.", first & 7); break;
+	case 4:	interrupt(1, -1);	//SWI 4
+			break;
+
+	case 5: interrupt(2, -1);	//SWI 5
+			break;
+
+	case 6: interrupt(3, -1);	//SWI 6
+			break;
+
+	default:	instruction_error("SWI %d is not valid.", first & 7);
+		break;
 	}
 }
 //=============================================================================

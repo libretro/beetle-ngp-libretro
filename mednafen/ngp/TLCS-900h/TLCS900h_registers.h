@@ -39,8 +39,6 @@
 #define __TLCS900H_REGISTERS__
 //=============================================================================
 
-#include "../../mednafen-types.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif

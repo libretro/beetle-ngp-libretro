@@ -49,6 +49,7 @@
 //---------------------------------------------------------------------------
 */
 
+#include "../neopop.h"
 #include "TLCS900h_interpret.h"
 #include "TLCS900h_registers.h"
 #include "../mem.h"
@@ -56,63 +57,63 @@
 //=========================================================================
 
 //===== LD (mem),#
-void DST_dstLDBi(void)
+void dstLDBi()
 {
 	storeB(mem, FETCH8);
 	cycles = 5;
 }
 
 //===== LD (mem),#
-void DST_dstLDWi(void)
+void dstLDWi()
 {
 	storeW(mem, fetch16());
 	cycles = 6;
 }
 
 //===== POP (mem)
-void DST_dstPOPB(void)
+void dstPOPB()
 {
 	storeB(mem, pop8());
 	cycles = 6;
 }
 
 //===== POP (mem)
-void DST_dstPOPW(void)
+void dstPOPW()
 {
 	storeW(mem, pop16());
 	cycles = 6;
 }
 
 //===== LD (mem),(nn)
-void DST_dstLDBm16(void)
+void dstLDBm16()
 {
 	storeB(mem, loadB(fetch16()));
 	cycles = 8;
 }
 
 //===== LD (mem),(nn)
-void DST_dstLDWm16(void)
+void dstLDWm16()
 {
 	storeW(mem, loadW(fetch16()));
 	cycles = 8;
 }
 
 //===== LDA R,mem
-void DST_dstLDAW(void)
+void dstLDAW()
 {
 	regW(R) = (uint16)mem;
 	cycles = 4;
 }
 
 //===== LDA R,mem
-void DST_dstLDAL(void)
+void dstLDAL()
 {
 	regL(R) = (uint32)mem;
 	cycles = 4;
 }
 
 //===== ANDCF A,(mem)
-void DST_dstANDCFA(void)
+void dstANDCFA()
 {
 	uint8 bit = REGA & 0xF;
 	uint8 mbit = (loadB(mem) >> bit) & 1;
@@ -121,7 +122,7 @@ void DST_dstANDCFA(void)
 }
 
 //===== ORCF A,(mem)
-void DST_dstORCFA(void)
+void dstORCFA()
 {
 	uint8 bit = REGA & 0xF;
 	uint8 mbit = (loadB(mem) >> bit) & 1;
@@ -130,7 +131,7 @@ void DST_dstORCFA(void)
 }
 
 //===== XORCF A,(mem)
-void DST_dstXORCFA(void)
+void dstXORCFA()
 {
 	uint8 bit = REGA & 0xF;
 	uint8 mbit = (loadB(mem) >> bit) & 1;
@@ -139,7 +140,7 @@ void DST_dstXORCFA(void)
 }
 
 //===== LDCF A,(mem)
-void DST_dstLDCFA(void)
+void dstLDCFA()
 {
 	uint8 bit = REGA & 0xF;
 	uint8 mask = (1 << bit);
@@ -148,7 +149,7 @@ void DST_dstLDCFA(void)
 }
 
 //===== STCF A,(mem)
-void DST_dstSTCFA(void)
+void dstSTCFA()
 {
 	uint8 bit = REGA & 0xF;
 	uint8 cmask = ~(1 << bit);
@@ -158,28 +159,28 @@ void DST_dstSTCFA(void)
 }
 
 //===== LD (mem),R
-void DST_dstLDBR(void)
+void dstLDBR()
 {
 	storeB(mem, regB(R));
 	cycles = 4;
 }
 
 //===== LD (mem),R
-void DST_dstLDWR(void)
+void dstLDWR()
 {
 	storeW(mem, regW(R));
 	cycles = 4;
 }
 
 //===== LD (mem),R
-void DST_dstLDLR(void)
+void dstLDLR()
 {
 	storeL(mem, regL(R));
 	cycles = 6;
 }
 
 //===== ANDCF #3,(mem)
-void DST_dstANDCF(void)
+void dstANDCF()
 {
 	uint8 bit = R;
 	uint8 mbit = (loadB(mem) >> bit) & 1;
@@ -188,7 +189,7 @@ void DST_dstANDCF(void)
 }
 
 //===== ORCF #3,(mem)
-void DST_dstORCF(void)
+void dstORCF()
 {
 	uint8 bit = R;
 	uint8 mbit = (loadB(mem) >> bit) & 1;
@@ -197,7 +198,7 @@ void DST_dstORCF(void)
 }
 
 //===== XORCF #3,(mem)
-void DST_dstXORCF(void)
+void dstXORCF()
 {
 	uint8 bit = R;
 	uint8 mbit = (loadB(mem) >> bit) & 1;
@@ -206,7 +207,7 @@ void DST_dstXORCF(void)
 }
 
 //===== LDCF #3,(mem)
-void DST_dstLDCF(void)
+void dstLDCF()
 {
 	uint8 bit = R;
 	uint32 mask = (1 << bit);
@@ -215,7 +216,7 @@ void DST_dstLDCF(void)
 }
 
 //===== STCF #3,(mem)
-void DST_dstSTCF(void)
+void dstSTCF()
 {
 	uint8 bit = R;
 	uint8 cmask = ~(1 << bit);
@@ -225,7 +226,7 @@ void DST_dstSTCF(void)
 }
 
 //===== TSET #3,(mem)
-void DST_dstTSET(void)
+void dstTSET()
 {
 	SETFLAG_Z(! (loadB(mem) & (1 << R)) );
 	storeB(mem, loadB(mem) | (1 << R));
@@ -236,28 +237,28 @@ void DST_dstTSET(void)
 }
 
 //===== RES #3,(mem)
-void DST_dstRES(void)
+void dstRES()
 {
 	storeB(mem, loadB(mem) & (~(1 << R)));
 	cycles = 8;
 }
 
 //===== SET #3,(mem)
-void DST_dstSET(void)
+void dstSET()
 {
 	storeB(mem, loadB(mem) | (1 << R));
 	cycles = 8;
 }
 
 //===== CHG #3,(mem)
-void DST_dstCHG(void)
+void dstCHG()
 {
 	storeB(mem, loadB(mem) ^ (1 << R));
 	cycles = 8;
 }
 
 //===== BIT #3,(mem)
-void DST_dstBIT(void)
+void dstBIT()
 {
    SETFLAG_Z(! (loadB(mem) & (1 << R)) );
    SETFLAG_H1;
@@ -266,36 +267,45 @@ void DST_dstBIT(void)
 }
 
 //===== JP cc,mem
-void DST_dstJP(void)
+void dstJP()
 {
-   cycles = 6;
    if (conditionCode(second & 0xF))
    {
       pc = mem;
-      cycles += 3;
+      cycles = 9;
+   }
+   else
+   {
+      cycles = 6;
    }
 }
 
 //===== CALL cc,mem
-void DST_dstCALL(void)
+void dstCALL()
 {
-   cycles = 6;
    if (conditionCode(second & 0xF))
    {
       push32(pc);
       pc = mem;
-      cycles += 6;
+      cycles = 12;
+   }
+   else
+   {
+      cycles = 6;
    }
 }
 
 //===== RET cc
-void DST_dstRET(void)
+void dstRET()
 {
-   cycles = 6;
    if (conditionCode(second & 0xF))
    {
       pc = pop32();
-      cycles += 6;
+      cycles = 12;
+   }
+   else
+   {
+      cycles = 6;
    }
 }
 

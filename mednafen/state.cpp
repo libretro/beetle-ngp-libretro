@@ -28,33 +28,20 @@
 
 #define RLSB 		MDFNSTATE_RLSB	//0x80000000
 
-static inline void MDFN_en32lsb(uint8_t *buf, uint32_t morp)
-{
-   buf[0]=morp;
-   buf[1]=morp>>8;
-   buf[2]=morp>>16;
-   buf[3]=morp>>24;
-}
-
-static inline uint32_t MDFN_de32lsb(const uint8_t *morp)
-{
-   return(morp[0]|(morp[1]<<8)|(morp[2]<<16)|(morp[3]<<24));
-}
-
 #ifdef MSB_FIRST
-static inline void Endian_A64_Swap(void *src, uint32_t nelements)
+INLINE void Endian_A64_Swap(void *src, uint32 nelements)
 {
-   uint32_t i;
-   uint8_t *nsrc = (uint8_t *)src;
+   uint32 i;
+   uint8 *nsrc = (uint8 *)src;
 
    for(i = 0; i < nelements; i++)
    {
       unsigned z;
-      uint8_t *base = &nsrc[i * 8];
+      uint8 *base = &nsrc[i * 8];
 
       for(z = 0; z < 4; z++)
       {
-         uint8_t tmp = base[z];
+         uint8 tmp = base[z];
 
          base[z] = base[7 - z];
          base[7 - z] = tmp;
@@ -62,15 +49,15 @@ static inline void Endian_A64_Swap(void *src, uint32_t nelements)
    }
 }
 
-static inline void Endian_A32_Swap(void *src, uint32_t nelements)
+INLINE void Endian_A32_Swap(void *src, uint32 nelements)
 {
-   uint32_t i;
-   uint8_t *nsrc = (uint8_t *)src;
+   uint32 i;
+   uint8 *nsrc = (uint8 *)src;
 
    for(i = 0; i < nelements; i++)
    {
-      uint8_t tmp1 = nsrc[i * 4];
-      uint8_t tmp2 = nsrc[i * 4 + 1];
+      uint8 tmp1 = nsrc[i * 4];
+      uint8 tmp2 = nsrc[i * 4 + 1];
 
       nsrc[i * 4] = nsrc[i * 4 + 3];
       nsrc[i * 4 + 1] = nsrc[i * 4 + 2];
@@ -80,24 +67,24 @@ static inline void Endian_A32_Swap(void *src, uint32_t nelements)
    }
 }
 
-void Endian_A16_Swap(void *src, uint32_t nelements)
+INLINE void Endian_A16_Swap(void *src, uint32 nelements)
 {
-   uint32_t i;
-   uint8_t *nsrc = (uint8_t *)src;
+   uint32 i;
+   uint8 *nsrc = (uint8 *)src;
 
    for(i = 0; i < nelements; i++)
    {
-      uint8_t tmp = nsrc[i * 2];
+      uint8 tmp = nsrc[i * 2];
 
       nsrc[i * 2] = nsrc[i * 2 + 1];
       nsrc[i * 2 + 1] = tmp;
    }
 }
 
-static inline void FlipByteOrder(uint8_t *src, uint32_t count)
+INLINE void FlipByteOrder(uint8 *src, uint32 count)
 {
-   uint8_t *start=src;
-   uint8_t *end=src+count-1;
+   uint8 *start=src;
+   uint8 *end=src+count-1;
 
    if((count&1) || !count)
       return;         /* This shouldn't happen. */
@@ -106,7 +93,7 @@ static inline void FlipByteOrder(uint8_t *src, uint32_t count)
 
    while(count--)
    {
-      uint8_t tmp;
+      uint8 tmp;
 
       tmp=*end;
       *end=*start;
@@ -117,7 +104,7 @@ static inline void FlipByteOrder(uint8_t *src, uint32_t count)
 }
 #endif
 
-int32_t smem_read(StateMem *st, void *buffer, uint32_t len)
+int32 smem_read(StateMem *st, void *buffer, uint32 len)
 {
    if ((len + st->loc) > st->len)
       return 0;
@@ -128,15 +115,15 @@ int32_t smem_read(StateMem *st, void *buffer, uint32_t len)
    return(len);
 }
 
-int32_t smem_write(StateMem *st, void *buffer, uint32_t len)
+int32 smem_write(StateMem *st, void *buffer, uint32 len)
 {
    if ((len + st->loc) > st->malloced)
    {
-      uint32_t newsize = (st->malloced >= 32768) ? st->malloced : (st->initial_malloc ? st->initial_malloc : 32768);
+      uint32 newsize = (st->malloced >= 32768) ? st->malloced : (st->initial_malloc ? st->initial_malloc : 32768);
 
       while(newsize < (len + st->loc))
          newsize *= 2;
-      st->data = (uint8_t *)realloc(st->data, newsize);
+      st->data = (uint8 *)realloc(st->data, newsize);
       st->malloced = newsize;
    }
    memcpy(st->data + st->loc, buffer, len);
@@ -148,15 +135,15 @@ int32_t smem_write(StateMem *st, void *buffer, uint32_t len)
    return(len);
 }
 
-int32_t smem_putc(StateMem *st, int value)
+int32 smem_putc(StateMem *st, int value)
 {
-   uint8_t tmpval = value;
+   uint8 tmpval = value;
    if(smem_write(st, &tmpval, 1) != 1)
       return(-1);
    return(1);
 }
 
-int32_t smem_seek(StateMem *st, uint32_t offset, int whence)
+int32 smem_seek(StateMem *st, uint32 offset, int whence)
 {
    switch(whence)
    {
@@ -180,9 +167,9 @@ int32_t smem_seek(StateMem *st, uint32_t offset, int whence)
    return(0);
 }
 
-int smem_write32le(StateMem *st, uint32_t b)
+int smem_write32le(StateMem *st, uint32 b)
 {
-   uint8_t s[4];
+   uint8 s[4];
    s[0]=b;
    s[1]=b>>8;
    s[2]=b>>16;
@@ -190,9 +177,9 @@ int smem_write32le(StateMem *st, uint32_t b)
    return((smem_write(st, s, 4)<4)?0:4);
 }
 
-int smem_read32le(StateMem *st, uint32_t *b)
+int smem_read32le(StateMem *st, uint32 *b)
 {
-   uint8_t s[4];
+   uint8 s[4];
 
    if(smem_read(st, s, 4) < 4)
       return(0);
@@ -212,7 +199,7 @@ static bool SubWrite(StateMem *st, SFORMAT *sf, const char *name_prefix = NULL)
          continue;
       }
 
-      if(sf->size == (uint32_t)~0)		/* Link to another struct.	*/
+      if(sf->size == (uint32)~0)		/* Link to another struct.	*/
       {
          if(!SubWrite(st, (SFORMAT *)sf->v, name_prefix))
             return(0);
@@ -221,7 +208,7 @@ static bool SubWrite(StateMem *st, SFORMAT *sf, const char *name_prefix = NULL)
          continue;
       }
 
-      int32_t bytesize = sf->size;
+      int32 bytesize = sf->size;
 
       char nameo[1 + 256];
       int slen = sprintf(nameo + 1, "%s%s", name_prefix ? name_prefix : "", sf->name);
@@ -243,28 +230,28 @@ static bool SubWrite(StateMem *st, SFORMAT *sf, const char *name_prefix = NULL)
 
       }
       else if(sf->flags & MDFNSTATE_RLSB64)
-         Endian_A64_Swap(sf->v, bytesize / sizeof(uint64_t));
+         Endian_A64_Swap(sf->v, bytesize / sizeof(uint64));
       else if(sf->flags & MDFNSTATE_RLSB32)
-         Endian_A32_Swap(sf->v, bytesize / sizeof(uint32_t));
+         Endian_A32_Swap(sf->v, bytesize / sizeof(uint32));
       else if(sf->flags & MDFNSTATE_RLSB16)
-         Endian_A16_Swap(sf->v, bytesize / sizeof(uint16_t));
+         Endian_A16_Swap(sf->v, bytesize / sizeof(uint16));
       else if(sf->flags & RLSB)
-         FlipByteOrder((uint8_t*)sf->v, bytesize);
+         FlipByteOrder((uint8*)sf->v, bytesize);
 #endif
 
       // Special case for the evil bool type, to convert bool to 1-byte elements.
       // Don't do it if we're only saving the raw data.
       if(sf->flags & MDFNSTATE_BOOL)
       {
-         for(int32_t bool_monster = 0; bool_monster < bytesize; bool_monster++)
+         for(int32 bool_monster = 0; bool_monster < bytesize; bool_monster++)
          {
-            uint8_t tmp_bool = ((bool *)sf->v)[bool_monster];
+            uint8 tmp_bool = ((bool *)sf->v)[bool_monster];
             //printf("Bool write: %.31s\n", sf->name);
             smem_write(st, &tmp_bool, 1);
          }
       }
       else
-         smem_write(st, (uint8_t *)sf->v, bytesize);
+         smem_write(st, (uint8 *)sf->v, bytesize);
 
 #ifdef MSB_FIRST
       /* Now restore the original byte order. */
@@ -273,13 +260,13 @@ static bool SubWrite(StateMem *st, SFORMAT *sf, const char *name_prefix = NULL)
 
       }
       else if(sf->flags & MDFNSTATE_RLSB64)
-         Endian_A64_Swap(sf->v, bytesize / sizeof(uint64_t));
+         Endian_A64_Swap(sf->v, bytesize / sizeof(uint64));
       else if(sf->flags & MDFNSTATE_RLSB32)
-         Endian_A32_Swap(sf->v, bytesize / sizeof(uint32_t));
+         Endian_A32_Swap(sf->v, bytesize / sizeof(uint32));
       else if(sf->flags & MDFNSTATE_RLSB16)
-         Endian_A16_Swap(sf->v, bytesize / sizeof(uint16_t));
+         Endian_A16_Swap(sf->v, bytesize / sizeof(uint16));
       else if(sf->flags & RLSB)
-         FlipByteOrder((uint8_t*)sf->v, bytesize);
+         FlipByteOrder((uint8*)sf->v, bytesize);
 #endif
       sf++; 
    }
@@ -289,10 +276,10 @@ static bool SubWrite(StateMem *st, SFORMAT *sf, const char *name_prefix = NULL)
 
 static int WriteStateChunk(StateMem *st, const char *sname, SFORMAT *sf)
 {
-   int32_t data_start_pos;
-   int32_t end_pos;
+   int32 data_start_pos;
+   int32 end_pos;
 
-   uint8_t sname_tmp[32];
+   uint8 sname_tmp[32];
 
    memset(sname_tmp, 0, sizeof(sname_tmp));
    strncpy((char *)sname_tmp, sname, 32);
@@ -358,7 +345,7 @@ static void DOReadChunk(StateMem *st, SFORMAT *sf)
 
    while(sf->size || sf->name)       
    {
-      int32_t bytesize;
+      int32 bytesize;
 
       if(!sf->size || !sf->v)
       {
@@ -366,7 +353,7 @@ static void DOReadChunk(StateMem *st, SFORMAT *sf)
          continue;
       }
 
-      if(sf->size == (uint32_t) ~0) // Link to another SFORMAT struct
+      if(sf->size == (uint32) ~0) // Link to another SFORMAT struct
       {
          DOReadChunk(st, (SFORMAT *)sf->v);
          sf++;
@@ -385,7 +372,7 @@ static void DOReadChunk(StateMem *st, SFORMAT *sf)
       if(sf->flags & MDFNSTATE_BOOL)
          bytesize *= sizeof(bool);
 
-      smem_read(st, (uint8_t *)sf->v, bytesize);
+      smem_read(st, (uint8 *)sf->v, bytesize);
       sf++;
    }
 }
@@ -399,8 +386,8 @@ static int ReadStateChunk(StateMem *st, SFORMAT *sf, int size)
       /* Don't change to char unless cast 
        * toa[0] to unsigned to smem_read() 
        * and other places. */
-      uint8_t toa[1 + 256];	
-      uint32_t recorded_size = 0;	/* In bytes */
+      uint8 toa[1 + 256];	
+      uint32 recorded_size = 0;	/* In bytes */
       SFORMAT *tmp           = NULL;
 
       if(smem_read(st, toa, 1) != 1)
@@ -423,7 +410,7 @@ static int ReadStateChunk(StateMem *st, SFORMAT *sf, int size)
 
       if(tmp)
       {
-         uint32_t expected_size = tmp->size;	/* In bytes */
+         uint32 expected_size = tmp->size;	/* In bytes */
 
          if(recorded_size != expected_size)
          {
@@ -437,26 +424,26 @@ static int ReadStateChunk(StateMem *st, SFORMAT *sf, int size)
          }
          else
          {
-            smem_read(st, (uint8_t *)tmp->v, expected_size);
+            smem_read(st, (uint8 *)tmp->v, expected_size);
 
             if(tmp->flags & MDFNSTATE_BOOL)
             {
-               int32_t bool_monster;
+               int32 bool_monster;
                /* Converting downwards is necessary 
                 * for the case of sizeof(bool) > 1 */
                for(bool_monster = expected_size - 1; bool_monster >= 0; bool_monster--)
-                  ((bool *)tmp->v)[bool_monster] = ((uint8_t *)tmp->v)[bool_monster];
+                  ((bool *)tmp->v)[bool_monster] = ((uint8 *)tmp->v)[bool_monster];
             }
 
 #ifdef MSB_FIRST
             if(tmp->flags & MDFNSTATE_RLSB64)
-               Endian_A64_Swap(tmp->v, expected_size / sizeof(uint64_t));
+               Endian_A64_Swap(tmp->v, expected_size / sizeof(uint64));
             else if(tmp->flags & MDFNSTATE_RLSB32)
-               Endian_A32_Swap(tmp->v, expected_size / sizeof(uint32_t));
+               Endian_A32_Swap(tmp->v, expected_size / sizeof(uint32));
             else if(tmp->flags & MDFNSTATE_RLSB16)
-               Endian_A16_Swap(tmp->v, expected_size / sizeof(uint16_t));
+               Endian_A16_Swap(tmp->v, expected_size / sizeof(uint16));
             else if(tmp->flags & RLSB)
-               FlipByteOrder((uint8_t*)tmp->v, expected_size);
+               FlipByteOrder((uint8*)tmp->v, expected_size);
 #endif
          }
       }
@@ -481,11 +468,11 @@ static int MDFNSS_StateAction_internal(StateMem *st, int load, int data_only,
    {
       char sname[32];
 
-      uint32_t tmp_size = 0;
+      uint32 tmp_size = 0;
       int found         = 0;
-      uint32_t total    = 0;
+      uint32 total    = 0;
 
-      while(smem_read(st, (uint8_t *)sname, 32) == 32)
+      while(smem_read(st, (uint8 *)sname, 32) == 32)
       {
          if(smem_read32le(st, &tmp_size) != 4)
             return(0);
@@ -534,7 +521,7 @@ static int MDFNSS_StateAction_internal(StateMem *st, int load, int data_only,
    return(1);
 }
 
-int MDFNSS_StateAction(void *st_p, int load, int data_only, SFORMAT *sf, const char *name, bool optional)
+int MDFNSS_StateAction(StateMem *st_p, int load, int data_only, SFORMAT *sf, const char *name, bool optional = false)
 {
    SSDescriptor love;
    StateMem *st = (StateMem*)st_p;
@@ -548,7 +535,7 @@ int MDFNSS_StateAction(void *st_p, int load, int data_only, SFORMAT *sf, const c
 
 int MDFNSS_SaveSM(void *st_p, int, int, const void*, const void*, const void*)
 {
-   uint8_t header[32];
+   uint8 header[32];
    StateMem *st = (StateMem*)st_p;
    static const char *header_magic = "MDFNSVST";
    int neowidth = 0, neoheight = 0;
@@ -564,7 +551,7 @@ int MDFNSS_SaveSM(void *st_p, int, int, const void*, const void*, const void*)
    if(!StateAction(st, 0, 0))
       return(0);
 
-   uint32_t sizy = st->loc;
+   uint32 sizy = st->loc;
    smem_seek(st, 16 + 4, SEEK_SET);
    smem_write32le(st, sizy);
 
@@ -573,8 +560,8 @@ int MDFNSS_SaveSM(void *st_p, int, int, const void*, const void*, const void*)
 
 int MDFNSS_LoadSM(void *st_p, int, int)
 {
-   uint8_t header[32];
-   uint32_t stateversion;
+   uint8 header[32];
+   uint32 stateversion;
    StateMem *st = (StateMem*)st_p;
 
    smem_read(st, header, 32);

@@ -12,29 +12,49 @@
 //	additional informations.
 //---------------------------------------------------------------------------
 
-#ifndef __BIOS__
-#define __BIOS__
+/*
+//---------------------------------------------------------------------------
+//=========================================================================
 
-#include <stdint.h>
+	bios.h
+
+//=========================================================================
+//---------------------------------------------------------------------------
+
+  History of changes:
+  ===================
+
+20 JUL 2002 - neopop_uk
+=======================================
+- Cleaned and tidied up for the source release
+
+18 AUG 2002 - neopop_uk
+=======================================
+- Moved reset() and biosInstall() to neopop.h
+
+//---------------------------------------------------------------------------
+*/
+
+#ifndef __NEOPOP_BIOS__
+#define __NEOPOP_BIOS__
+//=============================================================================
+
+extern uint8 ngpc_bios[0x10000];
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-extern uint8_t ngpc_bios[0x10000];
-
 void iBIOSHLE(void);
-
-/* Fill the bios rom area with a bios. call once at program start */
-int bios_install(void);
-
-void biosDecode(int function);
-void BIOSHLE_Reset(void);
-int BIOSHLE_StateAction(void *data, int load, int data_only);
 
 #ifdef __cplusplus
 }
 #endif
 
+void biosDecode(int function);
+void BIOSHLE_Reset(void);
+int BIOSHLE_StateAction(StateMem *sm, int load, int data_only);
+
+//=============================================================================
 #endif
 

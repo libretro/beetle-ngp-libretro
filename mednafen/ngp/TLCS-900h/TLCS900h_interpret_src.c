@@ -65,6 +65,7 @@
 //---------------------------------------------------------------------------
 */
 
+#include "../neopop.h"
 #include "TLCS900h_interpret.h"
 #include "TLCS900h_registers.h"
 #include "../mem.h"
@@ -72,22 +73,18 @@
 //=========================================================================
 
 //===== PUSH (mem)
-void srcPUSH(void)
+void srcPUSH()
 {
    switch(size)
    {
-      case 0:
-         push8(loadB(mem));
-         break;
-      case 1:
-         push16(loadW(mem));
-         break;
+	  case 0: push8(loadB(mem)); break;
+	  case 1: push16(loadW(mem)); break;
    }
    cycles = 7;
 }
 
 //===== RLD A,(mem)
-void srcRLD(void)
+void srcRLD()
 {
 	uint8 al = REGA & 0xF, m, mh, ml;
 
@@ -132,11 +129,7 @@ void srcRRD()
 void srcLDI()
 {
    uint8 dst = 2/*XDE*/, src = 3/*XHL*/;
-   if ((first & 0xF) == 5)
-   {
-      dst = 4/*XIX*/;
-      src = 5/*XIY*/;
-   }
+   if ((first & 0xF) == 5) { dst = 4/*XIX*/; src = 5/*XIY*/; }
 
    switch(size)
    {
@@ -165,11 +158,7 @@ void srcLDI()
 void srcLDIR()
 {
    uint8 dst = 2/*XDE*/, src = 3/*XHL*/;
-   if ((first & 0xF) == 5)
-   {
-      dst = 4/*XIX*/;
-      src = 5/*XIY*/;
-   }
+   if ((first & 0xF) == 5) { dst = 4/*XIX*/; src = 5/*XIY*/; }
 
    cycles = 10;
 
@@ -177,15 +166,14 @@ void srcLDIR()
    {
       switch(size)
       {
-         case 0:
-            if (debug_abort_memory == false)
-               storeB(regL(dst), loadB(regL(src)));
+         case 0: if (debug_abort_memory == false)
+                    storeB(regL(dst), loadB(regL(src)));
             regL(dst) += 1;
             regL(src) += 1;
             break;
-         case 1:
-            if (debug_abort_memory == false)
-               storeW(regL(dst), loadW(regL(src)));
+
+         case 1: if (debug_abort_memory == false)
+                    storeW(regL(dst), loadW(regL(src)));
             regL(dst) += 2;
             regL(src) += 2;
             break;
@@ -272,15 +260,15 @@ void srcLDDR()
 //===== CPI
 void srcCPI()
 {
-	uint8 R = first & 7;
+	uint8 R_local = first & 7;
 
 	switch(size)
 	{
-	case 0: generic_SUB_B(REGA, loadB(regL(R)));
-			regL(R) ++; break;
+	case 0: generic_SUB_B(REGA, loadB(regL(R_local)));
+			regL(R_local) ++; break;
 
-	case 1:	generic_SUB_W(REGWA, loadW(regL(R)));
-			regL(R) += 2; break;
+	case 1:	generic_SUB_W(REGWA, loadW(regL(R_local)));
+			regL(R_local) += 2; break;
 	}
 
 	REGBC --;
@@ -292,7 +280,7 @@ void srcCPI()
 //===== CPIR
 void srcCPIR()
 {
-	uint8 R = first & 7;
+	uint8 R_local = first & 7;
 
 	cycles = 10;
 
@@ -301,12 +289,12 @@ void srcCPIR()
 		switch(size)
 		{
 		case 0:	if (debug_abort_memory == false)
-					generic_SUB_B(REGA, loadB(regL(R)));
-				regL(R) ++; break;
+					generic_SUB_B(REGA, loadB(regL(R_local)));
+				regL(R_local) ++; break;
 
 		case 1:	if (debug_abort_memory == false)
-					generic_SUB_W(REGWA, loadW(regL(R)));
-				regL(R) += 2; break;
+					generic_SUB_W(REGWA, loadW(regL(R_local)));
+				regL(R_local) += 2; break;
 		}
 
 		REGBC --;
@@ -320,15 +308,15 @@ void srcCPIR()
 //===== CPD
 void srcCPD()
 {
-	uint8 R = first & 7;
+	uint8 R_local = first & 7;
 
 	switch(size)
 	{
-	case 0:	generic_SUB_B(REGA, loadB(regL(R)));
-			regL(R) --;	break;
+	case 0:	generic_SUB_B(REGA, loadB(regL(R_local)));
+			regL(R_local) --;	break;
 
-	case 1:	generic_SUB_W(REGWA, loadW(regL(R)));
-			regL(R) -= 2; break;
+	case 1:	generic_SUB_W(REGWA, loadW(regL(R_local)));
+			regL(R_local) -= 2; break;
 	}
 
 	REGBC --;
@@ -340,7 +328,7 @@ void srcCPD()
 //===== CPDR
 void srcCPDR()
 {
-	uint8 R = first & 7;
+	uint8 R_local = first & 7;
 
 	cycles = 10;
 
@@ -349,12 +337,12 @@ void srcCPDR()
 		switch(size)
 		{
 		case 0:	if (debug_abort_memory == false)
-					generic_SUB_B(REGA, loadB(regL(R)));
-				regL(R) -= 1; break;
+					generic_SUB_B(REGA, loadB(regL(R_local)));
+				regL(R_local) -= 1; break;
 
 		case 1: if (debug_abort_memory == false)
-					generic_SUB_W(REGWA, loadW(regL(R)));
-				regL(R) -= 2; break;
+					generic_SUB_W(REGWA, loadW(regL(R_local)));
+				regL(R_local) -= 2; break;
 		}
 
 		REGBC --;
@@ -1249,39 +1237,24 @@ void srcORmR()
 }
 
 //===== CP R,(mem)
-void srcCPRm(void)
+void srcCPRm()
 {
    switch(size)
    {
-      case 0:
-         generic_SUB_B(regB(R), loadB(mem));
-         cycles = 4;
-         break;
-      case 1:
-         generic_SUB_W(regW(R), loadW(mem));
-         cycles = 4;
-         break;
-      case 2:
-         generic_SUB_L(regL(R), loadL(mem));
-         cycles = 6;
-         break;
+      case 0: generic_SUB_B(regB(R), loadB(mem)); cycles = 4; break;
+      case 1: generic_SUB_W(regW(R), loadW(mem)); cycles = 4; break;
+      case 2: generic_SUB_L(regL(R), loadL(mem)); cycles = 6; break;
    }
 }
 
 //===== CP (mem),R
-void srcCPmR(void)
+void srcCPmR()
 {
    switch(size)
    {
-      case 0:
-         generic_SUB_B(loadB(mem), regB(R));
-         break;
-      case 1:
-         generic_SUB_W(loadW(mem), regW(R));
-         break;
-      case 2:
-         generic_SUB_L(loadL(mem), regL(R));
-         break;
+      case 0: generic_SUB_B(loadB(mem), regB(R)); break;
+      case 1: generic_SUB_W(loadW(mem), regW(R)); break;
+      case 2: generic_SUB_L(loadL(mem), regL(R)); break;
    }
 
    cycles = 6;

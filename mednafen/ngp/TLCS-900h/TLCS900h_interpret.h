@@ -43,9 +43,6 @@
 #ifndef __TLCS900H_INTERPRET__
 #define __TLCS900H_INTERPRET__
 
-#include <boolean.h>
-#include "../../mednafen-types.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif

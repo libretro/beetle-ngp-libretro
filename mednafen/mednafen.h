@@ -20,5 +20,13 @@ void MDFN_LoadGameCheats(void *override);
 void MDFN_FlushGameCheats(int nosave);
 
 #include "mednafen-driver.h"
+#include "mempatcher.h"
+#include "general.h"
+#include "mednafen-endian.h"
+
+extern void MDFN_PrintError(const char *format, ...);
+extern void MDFN_Notify(const char *format, ...);
+
+#define MDFN_NOTICE_ERROR 0
 
 #endif

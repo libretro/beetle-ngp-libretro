@@ -14,15 +14,22 @@
 
 #ifndef __Z80_CONTROL__
 #define __Z80_CONTROL__
+//=============================================================================
 
-#include <stdint.h>
+#include "mednafen/hw_cpu/z80-fuse/z80.h"
 
-#include "../hw_cpu/z80-fuse/z80.h"
+uint8 Z80_ReadComm(void);
+void Z80_WriteComm(uint8 data);
 
-uint8_t Z80_ReadComm(void);
-void Z80_WriteComm(uint8_t data);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 void Z80_reset(void);	// z80 reset
+
+#ifdef __cplusplus
+}
+#endif
 
 void Z80_irq(void);		// Cause an interrupt
 void Z80_nmi(void);		// Cause an NMI
@@ -30,6 +37,7 @@ void Z80_SetEnable(bool set);
 bool Z80_IsEnabled(void);
 int Z80_RunOP(void);
 
-int MDFNNGPCZ80_StateAction(void *data, int load, int data_only);
+int MDFNNGPCZ80_StateAction(StateMem *sm, const unsigned load, const bool data_only);
+int z80_state_action(StateMem *sm, const unsigned load, const bool data_only, const char *section_name);
 
 #endif

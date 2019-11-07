@@ -2,16 +2,29 @@
 #define __MDFN_MEDNAFEN_DRIVER_H
 
 #include <stdio.h>
-#include <vector>
-#include <string>
 
 #include "settings-common.h"
 
+#ifdef __cplusplus
+#include <vector>
+#include <string>
 extern std::vector<MDFNGI *>MDFNSystems;
+#endif
 
 /* Indent stdout newlines +- "indent" amount */
 void MDFN_indent(int indent);
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void MDFN_printf(const char *format, ...);
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #define MDFNI_printf MDFN_printf
 
