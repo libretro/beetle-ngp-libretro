@@ -12,24 +12,17 @@
 //	additional informations.
 //---------------------------------------------------------------------------
 
-#ifndef __FLASH__
-#define __FLASH__
+#ifndef __NEOPOP_FLASH__
+#define __NEOPOP_FLASH__
+//=============================================================================
 
-#include <stdint.h>
-
-void flash_read(void);
-
-uint8_t *make_flash_commit(int32_t *length);
-
-/* Marks flash blocks for saving. */
-void flash_write(uint32_t start_address, uint16_t length);
+// Marks flash blocks for saving.
+void flash_write(uint32 start_address, uint16 length);
 void flash_optimise_blocks(void);
 
-/* Stores the flash data */
-void flash_commit(void);
+void FLASH_LoadNV(void);
+void FLASH_SaveNV(void);
+int FLASH_StateAction(StateMem *sm, const unsigned load, const bool data_only);
 
-int FLASH_StateAction(void *data, int load, int data_only);
-
-void do_flash_read(uint8_t *flashdata);
-
+//=============================================================================
 #endif

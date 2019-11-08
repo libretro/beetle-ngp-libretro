@@ -34,7 +34,7 @@
 #ifndef __TLCS900H_DISASSEMBLE__
 #define __TLCS900H_DISASSEMBLE__
 
-#include "../../mednafen-types.h"
+#include "mednafen/mednafen-types.h"
 
 #ifdef __cplusplus
 extern "C" {

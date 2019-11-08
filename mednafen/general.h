@@ -1,11 +1,15 @@
 #ifndef _GENERAL_H
 #define _GENERAL_H
 
-#include <string>
 
 void GetFileBase(const char *f);
 
+
+#ifdef __cplusplus
+#include <string>
+
 std::string MDFN_MakeFName(int type, int id1, const char *cd1);
+
 
 typedef enum
 {
@@ -23,5 +27,7 @@ typedef enum
 } MakeFName_Type;
 
 std::string MDFN_MakeFName(MakeFName_Type type, int id1, const char *cd1);
+#endif
+
 
 #endif

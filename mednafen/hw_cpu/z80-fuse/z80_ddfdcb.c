@@ -62,7 +62,7 @@
        break;
     case 0x06:		/* RLC (REGISTER+dd) */
        {
-          uint8_t bytetemp = Z80_RB_MACRO(tempaddr);
+          uint8 bytetemp = Z80_RB_MACRO(tempaddr);
           contend_read_no_mreq( tempaddr, 1 );
           RLC(bytetemp);
           Z80_WB_MACRO(tempaddr,bytetemp);
@@ -112,7 +112,7 @@
        break;
     case 0x0e:		/* RRC (REGISTER+dd) */
        {
-          uint8_t bytetemp = Z80_RB_MACRO(tempaddr);
+          uint8 bytetemp = Z80_RB_MACRO(tempaddr);
           contend_read_no_mreq( tempaddr, 1 );
           RRC(bytetemp);
           Z80_WB_MACRO(tempaddr,bytetemp);
@@ -162,7 +162,7 @@
        break;
     case 0x16:		/* RL (REGISTER+dd) */
        {
-          uint8_t bytetemp = Z80_RB_MACRO(tempaddr);
+          uint8 bytetemp = Z80_RB_MACRO(tempaddr);
           contend_read_no_mreq( tempaddr, 1 );
           RL(bytetemp);
           Z80_WB_MACRO(tempaddr,bytetemp);
@@ -212,7 +212,7 @@
        break;
     case 0x1e:		/* RR (REGISTER+dd) */
        {
-          uint8_t bytetemp = Z80_RB_MACRO(tempaddr);
+          uint8 bytetemp = Z80_RB_MACRO(tempaddr);
           contend_read_no_mreq( tempaddr, 1 );
           RR(bytetemp);
           Z80_WB_MACRO(tempaddr,bytetemp);
@@ -262,7 +262,7 @@
        break;
     case 0x26:		/* SLA (REGISTER+dd) */
        {
-          uint8_t bytetemp = Z80_RB_MACRO(tempaddr);
+          uint8 bytetemp = Z80_RB_MACRO(tempaddr);
           contend_read_no_mreq( tempaddr, 1 );
           SLA(bytetemp);
           Z80_WB_MACRO(tempaddr,bytetemp);
@@ -312,7 +312,7 @@
        break;
     case 0x2e:		/* SRA (REGISTER+dd) */
        {
-          uint8_t bytetemp = Z80_RB_MACRO(tempaddr);
+          uint8 bytetemp = Z80_RB_MACRO(tempaddr);
           contend_read_no_mreq( tempaddr, 1 );
           SRA(bytetemp);
           Z80_WB_MACRO(tempaddr,bytetemp);
@@ -362,7 +362,7 @@
        break;
     case 0x36:		/* SLL (REGISTER+dd) */
        {
-          uint8_t bytetemp = Z80_RB_MACRO(tempaddr);
+          uint8 bytetemp = Z80_RB_MACRO(tempaddr);
           contend_read_no_mreq( tempaddr, 1 );
           SLL(bytetemp);
           Z80_WB_MACRO(tempaddr,bytetemp);
@@ -412,7 +412,7 @@
        break;
     case 0x3e:		/* SRL (REGISTER+dd) */
        {
-          uint8_t bytetemp = Z80_RB_MACRO(tempaddr);
+          uint8 bytetemp = Z80_RB_MACRO(tempaddr);
           contend_read_no_mreq( tempaddr, 1 );
           SRL(bytetemp);
           Z80_WB_MACRO(tempaddr,bytetemp);
@@ -433,7 +433,7 @@
     case 0x46:
     case 0x47:		/* BIT 0,(REGISTER+dd) */
        {
-          uint8_t bytetemp = Z80_RB_MACRO( tempaddr );
+          uint8 bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           BIT_I( 0, bytetemp, tempaddr );
        }
@@ -447,7 +447,7 @@
     case 0x4e:
     case 0x4f:		/* BIT 1,(REGISTER+dd) */
        {
-          uint8_t bytetemp = Z80_RB_MACRO( tempaddr );
+          uint8 bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           BIT_I( 1, bytetemp, tempaddr );
        }
@@ -461,7 +461,7 @@
     case 0x56:
     case 0x57:		/* BIT 2,(REGISTER+dd) */
        {
-          uint8_t bytetemp = Z80_RB_MACRO( tempaddr );
+          uint8 bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           BIT_I( 2, bytetemp, tempaddr );
        }
@@ -475,7 +475,7 @@
     case 0x5e:
     case 0x5f:		/* BIT 3,(REGISTER+dd) */
        {
-          uint8_t bytetemp = Z80_RB_MACRO( tempaddr );
+          uint8 bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           BIT_I( 3, bytetemp, tempaddr );
        }
@@ -489,7 +489,7 @@
     case 0x66:
     case 0x67:		/* BIT 4,(REGISTER+dd) */
        {
-          uint8_t bytetemp = Z80_RB_MACRO( tempaddr );
+          uint8 bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           BIT_I( 4, bytetemp, tempaddr );
        }
@@ -503,7 +503,7 @@
     case 0x6e:
     case 0x6f:		/* BIT 5,(REGISTER+dd) */
        {
-          uint8_t bytetemp = Z80_RB_MACRO( tempaddr );
+          uint8 bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           BIT_I( 5, bytetemp, tempaddr );
        }
@@ -517,7 +517,7 @@
     case 0x76:
     case 0x77:		/* BIT 6,(REGISTER+dd) */
        {
-          uint8_t bytetemp = Z80_RB_MACRO( tempaddr );
+          uint8 bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           BIT_I( 6, bytetemp, tempaddr );
        }
@@ -531,7 +531,7 @@
     case 0x7e:
     case 0x7f:		/* BIT 7,(REGISTER+dd) */
        {
-          uint8_t bytetemp = Z80_RB_MACRO( tempaddr );
+          uint8 bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           BIT_I( 7, bytetemp, tempaddr );
        }
@@ -568,7 +568,7 @@
        break;
     case 0x86:		/* RES 0,(REGISTER+dd) */
        {
-          uint8_t bytetemp;
+          uint8 bytetemp;
           bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           Z80_WB_MACRO( tempaddr, bytetemp & 0xfe );
@@ -611,7 +611,7 @@
        break;
     case 0x8e:		/* RES 1,(REGISTER+dd) */
        {
-          uint8_t bytetemp;
+          uint8 bytetemp;
           bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           Z80_WB_MACRO( tempaddr, bytetemp & 0xfd );
@@ -654,7 +654,7 @@
        break;
     case 0x96:		/* RES 2,(REGISTER+dd) */
        {
-          uint8_t bytetemp;
+          uint8 bytetemp;
           bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           Z80_WB_MACRO( tempaddr, bytetemp & 0xfb );
@@ -697,7 +697,7 @@
        break;
     case 0x9e:		/* RES 3,(REGISTER+dd) */
        {
-          uint8_t bytetemp;
+          uint8 bytetemp;
           bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           Z80_WB_MACRO( tempaddr, bytetemp & 0xf7 );
@@ -740,7 +740,7 @@
        break;
     case 0xa6:		/* RES 4,(REGISTER+dd) */
        {
-          uint8_t bytetemp;
+          uint8 bytetemp;
           bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           Z80_WB_MACRO( tempaddr, bytetemp & 0xef );
@@ -783,7 +783,7 @@
        break;
     case 0xae:		/* RES 5,(REGISTER+dd) */
        {
-          uint8_t bytetemp;
+          uint8 bytetemp;
           bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           Z80_WB_MACRO( tempaddr, bytetemp & 0xdf );
@@ -826,7 +826,7 @@
        break;
     case 0xb6:		/* RES 6,(REGISTER+dd) */
        {
-          uint8_t bytetemp;
+          uint8 bytetemp;
           bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           Z80_WB_MACRO( tempaddr, bytetemp & 0xbf );
@@ -869,7 +869,7 @@
        break;
     case 0xbe:		/* RES 7,(REGISTER+dd) */
        {
-          uint8_t bytetemp;
+          uint8 bytetemp;
           bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           Z80_WB_MACRO( tempaddr, bytetemp & 0x7f );
@@ -912,7 +912,7 @@
        break;
     case 0xc6:		/* SET 0,(REGISTER+dd) */
        {
-          uint8_t bytetemp;
+          uint8 bytetemp;
           bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           Z80_WB_MACRO( tempaddr, bytetemp | 0x01 );
@@ -955,7 +955,7 @@
        break;
     case 0xce:		/* SET 1,(REGISTER+dd) */
        {
-          uint8_t bytetemp;
+          uint8 bytetemp;
           bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           Z80_WB_MACRO( tempaddr, bytetemp | 0x02 );
@@ -998,7 +998,7 @@
        break;
     case 0xd6:		/* SET 2,(REGISTER+dd) */
        {
-          uint8_t bytetemp;
+          uint8 bytetemp;
           bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           Z80_WB_MACRO( tempaddr, bytetemp | 0x04 );
@@ -1041,7 +1041,7 @@
        break;
     case 0xde:		/* SET 3,(REGISTER+dd) */
        {
-          uint8_t bytetemp;
+          uint8 bytetemp;
           bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           Z80_WB_MACRO( tempaddr, bytetemp | 0x08 );
@@ -1084,7 +1084,7 @@
        break;
     case 0xe6:		/* SET 4,(REGISTER+dd) */
        {
-          uint8_t bytetemp;
+          uint8 bytetemp;
           bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           Z80_WB_MACRO( tempaddr, bytetemp | 0x10 );
@@ -1127,7 +1127,7 @@
        break;
     case 0xee:		/* SET 5,(REGISTER+dd) */
        {
-          uint8_t bytetemp;
+          uint8 bytetemp;
           bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           Z80_WB_MACRO( tempaddr, bytetemp | 0x20 );
@@ -1170,7 +1170,7 @@
        break;
     case 0xf6:		/* SET 6,(REGISTER+dd) */
        {
-          uint8_t bytetemp;
+          uint8 bytetemp;
           bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           Z80_WB_MACRO( tempaddr, bytetemp | 0x40 );
@@ -1213,7 +1213,7 @@
        break;
     case 0xfe:		/* SET 7,(REGISTER+dd) */
        {
-          uint8_t bytetemp;
+          uint8 bytetemp;
           bytetemp = Z80_RB_MACRO( tempaddr );
           contend_read_no_mreq( tempaddr, 1 );
           Z80_WB_MACRO( tempaddr, bytetemp | 0x80 );

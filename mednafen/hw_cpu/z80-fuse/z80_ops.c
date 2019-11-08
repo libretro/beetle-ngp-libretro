@@ -23,38 +23,37 @@
 
 */
 
-#include <boolean.h>
-
 #include "z80.h"
+
 #include "z80_macros.h"
-#include "z80_fns.h"
-
-bool NGPFrameSkip;
-int32_t ngpc_soundTS = 0;
-
-int iline = 0;
 
 void z80_set_interrupt(int set)
 {
-   iline = set;
+   z80_iline = set;
 }
 
 int z80_do_opcode( void )
 {
    int ret;
-   uint8_t opcode;
+   uint8 opcode;
 
-   if(iline)
+   if(z80_iline)
    {
       if(z80_interrupt())
       {
          int ret = z80_tstates - last_z80_tstates;
          last_z80_tstates = z80_tstates;
-         return ret;
+         return (ret);
       }
    }
 
+   /* Check to see if M1 cycles happen on even z80_tstates */
+   //if( z80_tstates & 1 )
+   // z80_tstates++;
+   //uint16 lastpc = PC;
+
    opcode = Z80_RB_MACRO( PC ); 
+   //printf("Z80-op: %04x, %02x\n", PC, opcode);
    z80_tstates++;
 
    PC++; 
@@ -65,10 +64,10 @@ int z80_do_opcode( void )
      #include "opcodes_base.c"
    }
 
-   ret              = z80_tstates - last_z80_tstates;
+   ret = z80_tstates - last_z80_tstates;
    last_z80_tstates = z80_tstates;
 
    //printf("PC: %04x, %02x, time=%d\n", lastpc, opcode, ret);
 
-   return ret;
+   return (ret);
 }

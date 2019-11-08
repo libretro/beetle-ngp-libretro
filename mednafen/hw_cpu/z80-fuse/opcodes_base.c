@@ -49,8 +49,8 @@
          break;
       case 0x07:		/* RLCA */
          A = ( A << 1 ) | ( A >> 7 );
-         F = ( F & ( Z80_FLAG_P | Z80_FLAG_Z | Z80_FLAG_S ) ) |
-            ( A & ( Z80_FLAG_C | Z80_FLAG_3 | Z80_FLAG_5 ) );
+         F = ( F & ( FLAG_P | FLAG_Z | FLAG_S ) ) |
+            ( A & ( FLAG_C | FLAG_3 | FLAG_5 ) );
          break;
       case 0x08:		/* EX AF,AF' */
          {
@@ -85,9 +85,9 @@
          C = Z80_RB_MACRO( PC++ );
          break;
       case 0x0f:		/* RRCA */
-         F = ( F & ( Z80_FLAG_P | Z80_FLAG_Z | Z80_FLAG_S ) ) | ( A & Z80_FLAG_C );
+         F = ( F & ( FLAG_P | FLAG_Z | FLAG_S ) ) | ( A & FLAG_C );
          A = ( A >> 1) | ( A << 7 );
-         F |= ( A & ( Z80_FLAG_3 | Z80_FLAG_5 ) );
+         F |= ( A & ( FLAG_3 | FLAG_5 ) );
          break;
       case 0x10:		/* DJNZ offset */
          contend_read_no_mreq( IR, 1 );
@@ -122,10 +122,10 @@
          break;
       case 0x17:		/* RLA */
          {
-            uint8_t bytetemp = A;
-            A = ( A << 1 ) | ( F & Z80_FLAG_C );
-            F = ( F & ( Z80_FLAG_P | Z80_FLAG_Z | Z80_FLAG_S ) ) |
-               ( A & ( Z80_FLAG_3 | Z80_FLAG_5 ) ) | ( bytetemp >> 7 );
+            uint8 bytetemp = A;
+            A = ( A << 1 ) | ( F & FLAG_C );
+            F = ( F & ( FLAG_P | FLAG_Z | FLAG_S ) ) |
+               ( A & ( FLAG_3 | FLAG_5 ) ) | ( bytetemp >> 7 );
          }
          break;
       case 0x18:		/* JR offset */
@@ -161,14 +161,14 @@
          break;
       case 0x1f:		/* RRA */
          {
-            uint8_t bytetemp = A;
+            uint8 bytetemp = A;
             A = ( A >> 1 ) | ( F << 7 );
-            F = ( F & ( Z80_FLAG_P | Z80_FLAG_Z | Z80_FLAG_S ) ) |
-               ( A & ( Z80_FLAG_3 | Z80_FLAG_5 ) ) | ( bytetemp & Z80_FLAG_C ) ;
+            F = ( F & ( FLAG_P | FLAG_Z | FLAG_S ) ) |
+               ( A & ( FLAG_3 | FLAG_5 ) ) | ( bytetemp & FLAG_C ) ;
          }
          break;
       case 0x20:		/* JR NZ,offset */
-         if( ! ( F & Z80_FLAG_Z ) ) {
+         if( ! ( F & FLAG_Z ) ) {
             JR();
          } else {
             contend_read( PC, 3 );
@@ -198,20 +198,20 @@
          break;
       case 0x27:		/* DAA */
          {
-            uint8_t add = 0, carry = ( F & Z80_FLAG_C );
-            if( ( F & Z80_FLAG_H ) || ( ( A & 0x0f ) > 9 ) ) add = 6;
+            uint8 add = 0, carry = ( F & FLAG_C );
+            if( ( F & FLAG_H ) || ( ( A & 0x0f ) > 9 ) ) add = 6;
             if( carry || ( A > 0x99 ) ) add |= 0x60;
-            if( A > 0x99 ) carry = Z80_FLAG_C;
-            if( F & Z80_FLAG_N ) {
+            if( A > 0x99 ) carry = FLAG_C;
+            if( F & FLAG_N ) {
                SUB(add);
             } else {
                ADD(add);
             }
-            F = ( F & ~( Z80_FLAG_C | Z80_FLAG_P ) ) | carry | parity_table[A];
+            F = ( F & ~( FLAG_C | FLAG_P ) ) | carry | parity_table[A];
          }
          break;
       case 0x28:		/* JR Z,offset */
-         if( F & Z80_FLAG_Z ) {
+         if( F & FLAG_Z ) {
             JR();
          } else {
             contend_read( PC, 3 );
@@ -247,11 +247,11 @@
          break;
       case 0x2f:		/* CPL */
          A ^= 0xff;
-         F = ( F & ( Z80_FLAG_C | Z80_FLAG_P | Z80_FLAG_Z | Z80_FLAG_S ) ) |
-            ( A & ( Z80_FLAG_3 | Z80_FLAG_5 ) ) | ( Z80_FLAG_N | Z80_FLAG_H );
+         F = ( F & ( FLAG_C | FLAG_P | FLAG_Z | FLAG_S ) ) |
+            ( A & ( FLAG_3 | FLAG_5 ) ) | ( FLAG_N | FLAG_H );
          break;
       case 0x30:		/* JR NC,offset */
-         if( ! ( F & Z80_FLAG_C ) ) {
+         if( ! ( F & FLAG_C ) ) {
             JR();
          } else {
             contend_read( PC, 3 );
@@ -276,7 +276,7 @@
          break;
       case 0x34:		/* INC (HL) */
          {
-            uint8_t bytetemp = Z80_RB_MACRO( HL );
+            uint8 bytetemp = Z80_RB_MACRO( HL );
             contend_read_no_mreq( HL, 1 );
             INC(bytetemp);
             Z80_WB_MACRO(HL,bytetemp);
@@ -284,7 +284,7 @@
          break;
       case 0x35:		/* DEC (HL) */
          {
-            uint8_t bytetemp = Z80_RB_MACRO( HL );
+            uint8 bytetemp = Z80_RB_MACRO( HL );
             contend_read_no_mreq( HL, 1 );
             DEC(bytetemp);
             Z80_WB_MACRO(HL,bytetemp);
@@ -294,12 +294,12 @@
          Z80_WB_MACRO(HL,Z80_RB_MACRO(PC++));
          break;
       case 0x37:		/* SCF */
-         F = ( F & ( Z80_FLAG_P | Z80_FLAG_Z | Z80_FLAG_S ) ) |
-            ( A & ( Z80_FLAG_3 | Z80_FLAG_5          ) ) |
-            Z80_FLAG_C;
+         F = ( F & ( FLAG_P | FLAG_Z | FLAG_S ) ) |
+            ( A & ( FLAG_3 | FLAG_5          ) ) |
+            FLAG_C;
          break;
       case 0x38:		/* JR C,offset */
-         if( F & Z80_FLAG_C ) {
+         if( F & FLAG_C ) {
             JR();
          } else {
             contend_read( PC, 3 );
@@ -339,8 +339,8 @@
          A = Z80_RB_MACRO( PC++ );
          break;
       case 0x3f:		/* CCF */
-         F = ( F & ( Z80_FLAG_P | Z80_FLAG_Z | Z80_FLAG_S ) ) |
-            ( ( F & Z80_FLAG_C ) ? Z80_FLAG_H : Z80_FLAG_C ) | ( A & ( Z80_FLAG_3 | Z80_FLAG_5 ) );
+         F = ( F & ( FLAG_P | FLAG_Z | FLAG_S ) ) |
+            ( ( F & FLAG_C ) ? FLAG_H : FLAG_C ) | ( A & ( FLAG_3 | FLAG_5 ) );
          break;
       case 0x40:		/* LD B,B */
          break;
@@ -548,7 +548,7 @@
          break;
       case 0x86:		/* ADD A,(HL) */
          {
-            uint8_t bytetemp = Z80_RB_MACRO( HL );
+            uint8 bytetemp = Z80_RB_MACRO( HL );
             ADD(bytetemp);
          }
          break;
@@ -575,7 +575,7 @@
          break;
       case 0x8e:		/* ADC A,(HL) */
          {
-            uint8_t bytetemp = Z80_RB_MACRO( HL );
+            uint8 bytetemp = Z80_RB_MACRO( HL );
             ADC(bytetemp);
          }
          break;
@@ -602,7 +602,7 @@
          break;
       case 0x96:		/* SUB A,(HL) */
          {
-            uint8_t bytetemp = Z80_RB_MACRO( HL );
+            uint8 bytetemp = Z80_RB_MACRO( HL );
             SUB(bytetemp);
          }
          break;
@@ -629,7 +629,7 @@
          break;
       case 0x9e:		/* SBC A,(HL) */
          {
-            uint8_t bytetemp = Z80_RB_MACRO( HL );
+            uint8 bytetemp = Z80_RB_MACRO( HL );
             SBC(bytetemp);
          }
          break;
@@ -656,7 +656,7 @@
          break;
       case 0xa6:		/* AND A,(HL) */
          {
-            uint8_t bytetemp = Z80_RB_MACRO( HL );
+            uint8 bytetemp = Z80_RB_MACRO( HL );
             AND(bytetemp);
          }
          break;
@@ -683,7 +683,7 @@
          break;
       case 0xae:		/* XOR A,(HL) */
          {
-            uint8_t bytetemp = Z80_RB_MACRO( HL );
+            uint8 bytetemp = Z80_RB_MACRO( HL );
             XOR(bytetemp);
          }
          break;
@@ -710,7 +710,7 @@
          break;
       case 0xb6:		/* OR A,(HL) */
          {
-            uint8_t bytetemp = Z80_RB_MACRO( HL );
+            uint8 bytetemp = Z80_RB_MACRO( HL );
             OR(bytetemp);
          }
          break;
@@ -737,7 +737,7 @@
          break;
       case 0xbe:		/* CP (HL) */
          {
-            uint8_t bytetemp = Z80_RB_MACRO( HL );
+            uint8 bytetemp = Z80_RB_MACRO( HL );
             CP(bytetemp);
          }
          break;
@@ -746,13 +746,13 @@
          break;
       case 0xc0:		/* RET NZ */
          contend_read_no_mreq( IR, 1 );
-         if( ! ( F & Z80_FLAG_Z ) ) { RET(); }
+         if( ! ( F & FLAG_Z ) ) { RET(); }
          break;
       case 0xc1:		/* POP BC */
          POP16(C,B);
          break;
       case 0xc2:		/* JP NZ,nnnn */
-         if( ! ( F & Z80_FLAG_Z ) ) {
+         if( ! ( F & FLAG_Z ) ) {
             JP();
          } else {
             contend_read( PC, 3 ); contend_read( PC + 1, 3 ); PC += 2;
@@ -762,7 +762,7 @@
          JP();
          break;
       case 0xc4:		/* CALL NZ,nnnn */
-         if( ! ( F & Z80_FLAG_Z ) ) {
+         if( ! ( F & FLAG_Z ) ) {
             CALL();
          } else {
             contend_read( PC, 3 ); contend_read( PC + 1, 3 ); PC += 2;
@@ -774,7 +774,7 @@
          break;
       case 0xc6:		/* ADD A,nn */
          {
-            uint8_t bytetemp = Z80_RB_MACRO( PC++ );
+            uint8 bytetemp = Z80_RB_MACRO( PC++ );
             ADD(bytetemp);
          }
          break;
@@ -784,13 +784,13 @@
          break;
       case 0xc8:		/* RET Z */
          contend_read_no_mreq( IR, 1 );
-         if( F & Z80_FLAG_Z ) { RET(); }
+         if( F & FLAG_Z ) { RET(); }
          break;
       case 0xc9:		/* RET */
          RET();
          break;
       case 0xca:		/* JP Z,nnnn */
-         if( F & Z80_FLAG_Z ) {
+         if( F & FLAG_Z ) {
             JP();
          } else {
             contend_read( PC, 3 ); contend_read( PC + 1, 3 ); PC += 2;
@@ -798,19 +798,18 @@
          break;
       case 0xcb:		/* shift CB */
          {
-            uint8_t opcode2;
+            uint8 opcode2;
             opcode2 = Z80_RB_MACRO( PC );
             z80_tstates++;
             PC++;
             R++;
-            switch(opcode2)
-            {
+            switch(opcode2) {
 #include "z80_cb.c"
             }
          }
          break;
       case 0xcc:		/* CALL Z,nnnn */
-         if( F & Z80_FLAG_Z ) {
+         if( F & FLAG_Z ) {
             CALL();
          } else {
             contend_read( PC, 3 ); contend_read( PC + 1, 3 ); PC += 2;
@@ -821,7 +820,7 @@
          break;
       case 0xce:		/* ADC A,nn */
          {
-            uint8_t bytetemp = Z80_RB_MACRO( PC++ );
+            uint8 bytetemp = Z80_RB_MACRO( PC++ );
             ADC(bytetemp);
          }
          break;
@@ -831,13 +830,13 @@
          break;
       case 0xd0:		/* RET NC */
          contend_read_no_mreq( IR, 1 );
-         if( ! ( F & Z80_FLAG_C ) ) { RET(); }
+         if( ! ( F & FLAG_C ) ) { RET(); }
          break;
       case 0xd1:		/* POP DE */
          POP16(E,D);
          break;
       case 0xd2:		/* JP NC,nnnn */
-         if( ! ( F & Z80_FLAG_C ) ) {
+         if( ! ( F & FLAG_C ) ) {
             JP();
          } else {
             contend_read( PC, 3 ); contend_read( PC + 1, 3 ); PC += 2;
@@ -851,7 +850,7 @@
          }
          break;
       case 0xd4:		/* CALL NC,nnnn */
-         if( ! ( F & Z80_FLAG_C ) ) {
+         if( ! ( F & FLAG_C ) ) {
             CALL();
          } else {
             contend_read( PC, 3 ); contend_read( PC + 1, 3 ); PC += 2;
@@ -863,7 +862,7 @@
          break;
       case 0xd6:		/* SUB nn */
          {
-            uint8_t bytetemp = Z80_RB_MACRO( PC++ );
+            uint8 bytetemp = Z80_RB_MACRO( PC++ );
             SUB(bytetemp);
          }
          break;
@@ -873,7 +872,7 @@
          break;
       case 0xd8:		/* RET C */
          contend_read_no_mreq( IR, 1 );
-         if( F & Z80_FLAG_C ) { RET(); }
+         if( F & FLAG_C ) { RET(); }
          break;
       case 0xd9:		/* EXX */
          {
@@ -884,7 +883,7 @@
          }
          break;
       case 0xda:		/* JP C,nnnn */
-         if( F & Z80_FLAG_C ) {
+         if( F & FLAG_C ) {
             JP();
          } else {
             contend_read( PC, 3 ); contend_read( PC + 1, 3 ); PC += 2;
@@ -898,7 +897,7 @@
          }
          break;
       case 0xdc:		/* CALL C,nnnn */
-         if( F & Z80_FLAG_C ) {
+         if( F & FLAG_C ) {
             CALL();
          } else {
             contend_read( PC, 3 ); contend_read( PC + 1, 3 ); PC += 2;
@@ -906,7 +905,7 @@
          break;
       case 0xdd:		/* shift DD */
          {
-            uint8_t opcode2;
+            uint8 opcode2;
             opcode2 = Z80_RB_MACRO( PC );
             z80_tstates++;
             PC++;
@@ -924,7 +923,7 @@
          break;
       case 0xde:		/* SBC A,nn */
          {
-            uint8_t bytetemp = Z80_RB_MACRO( PC++ );
+            uint8 bytetemp = Z80_RB_MACRO( PC++ );
             SBC(bytetemp);
          }
          break;
@@ -934,13 +933,13 @@
          break;
       case 0xe0:		/* RET PO */
          contend_read_no_mreq( IR, 1 );
-         if( ! ( F & Z80_FLAG_P ) ) { RET(); }
+         if( ! ( F & FLAG_P ) ) { RET(); }
          break;
       case 0xe1:		/* POP HL */
          POP16(L,H);
          break;
       case 0xe2:		/* JP PO,nnnn */
-         if( ! ( F & Z80_FLAG_P ) ) {
+         if( ! ( F & FLAG_P ) ) {
             JP();
          } else {
             contend_read( PC, 3 ); contend_read( PC + 1, 3 ); PC += 2;
@@ -948,7 +947,7 @@
          break;
       case 0xe3:		/* EX (SP),HL */
          {
-            uint8_t bytetempl, bytetemph;
+            uint8 bytetempl, bytetemph;
             bytetempl = Z80_RB_MACRO( SP );
             bytetemph = Z80_RB_MACRO( SP + 1 ); contend_read_no_mreq( SP + 1, 1 );
             Z80_WB_MACRO( SP + 1, H );
@@ -958,7 +957,7 @@
          }
          break;
       case 0xe4:		/* CALL PO,nnnn */
-         if( ! ( F & Z80_FLAG_P ) ) {
+         if( ! ( F & FLAG_P ) ) {
             CALL();
          } else {
             contend_read( PC, 3 ); contend_read( PC + 1, 3 ); PC += 2;
@@ -970,7 +969,7 @@
          break;
       case 0xe6:		/* AND nn */
          {
-            uint8_t bytetemp = Z80_RB_MACRO( PC++ );
+            uint8 bytetemp = Z80_RB_MACRO( PC++ );
             AND(bytetemp);
          }
          break;
@@ -980,13 +979,13 @@
          break;
       case 0xe8:		/* RET PE */
          contend_read_no_mreq( IR, 1 );
-         if( F & Z80_FLAG_P ) { RET(); }
+         if( F & FLAG_P ) { RET(); }
          break;
       case 0xe9:		/* JP HL */
          PC=HL;		/* NB: NOT INDIRECT! */
          break;
       case 0xea:		/* JP PE,nnnn */
-         if( F & Z80_FLAG_P ) {
+         if( F & FLAG_P ) {
             JP();
          } else {
             contend_read( PC, 3 ); contend_read( PC + 1, 3 ); PC += 2;
@@ -998,7 +997,7 @@
          }
          break;
       case 0xec:		/* CALL PE,nnnn */
-         if( F & Z80_FLAG_P ) {
+         if( F & FLAG_P ) {
             CALL();
          } else {
             contend_read( PC, 3 ); contend_read( PC + 1, 3 ); PC += 2;
@@ -1006,20 +1005,19 @@
          break;
       case 0xed:		/* shift ED */
          {
-            uint8_t opcode2;
+            uint8 opcode2;
             opcode2 = Z80_RB_MACRO( PC );
             z80_tstates++;
             PC++;
             R++;
-            switch(opcode2)
-            {
+            switch(opcode2) {
 #include "z80_ed.c"
             }
          }
          break;
       case 0xee:		/* XOR A,nn */
          {
-            uint8_t bytetemp = Z80_RB_MACRO( PC++ );
+            uint8 bytetemp = Z80_RB_MACRO( PC++ );
             XOR(bytetemp);
          }
          break;
@@ -1029,13 +1027,13 @@
          break;
       case 0xf0:		/* RET P */
          contend_read_no_mreq( IR, 1 );
-         if( ! ( F & Z80_FLAG_S ) ) { RET(); }
+         if( ! ( F & FLAG_S ) ) { RET(); }
          break;
       case 0xf1:		/* POP AF */
          POP16(F,A);
          break;
       case 0xf2:		/* JP P,nnnn */
-         if( ! ( F & Z80_FLAG_S ) ) {
+         if( ! ( F & FLAG_S ) ) {
             JP();
          } else {
             contend_read( PC, 3 ); contend_read( PC + 1, 3 ); PC += 2;
@@ -1045,7 +1043,7 @@
          IFF1=IFF2=0;
          break;
       case 0xf4:		/* CALL P,nnnn */
-         if( ! ( F & Z80_FLAG_S ) ) {
+         if( ! ( F & FLAG_S ) ) {
             CALL();
          } else {
             contend_read( PC, 3 ); contend_read( PC + 1, 3 ); PC += 2;
@@ -1057,7 +1055,7 @@
          break;
       case 0xf6:		/* OR nn */
          {
-            uint8_t bytetemp = Z80_RB_MACRO( PC++ );
+            uint8 bytetemp = Z80_RB_MACRO( PC++ );
             OR(bytetemp);
          }
          break;
@@ -1067,7 +1065,7 @@
          break;
       case 0xf8:		/* RET M */
          contend_read_no_mreq( IR, 1 );
-         if( F & Z80_FLAG_S ) { RET(); }
+         if( F & FLAG_S ) { RET(); }
          break;
       case 0xf9:		/* LD SP,HL */
          contend_read_no_mreq( IR, 1 );
@@ -1075,7 +1073,7 @@
          SP = HL;
          break;
       case 0xfa:		/* JP M,nnnn */
-         if( F & Z80_FLAG_S ) {
+         if( F & FLAG_S ) {
             JP();
          } else {
             contend_read( PC, 3 ); contend_read( PC + 1, 3 ); PC += 2;
@@ -1089,7 +1087,7 @@
             //event_add( z80_tstates + 1, z80_interrupt_event );
             break;
       case 0xfc:		/* CALL M,nnnn */
-            if( F & Z80_FLAG_S ) {
+            if( F & FLAG_S ) {
                CALL();
             } else {
                contend_read( PC, 3 ); contend_read( PC + 1, 3 ); PC += 2;
@@ -1097,7 +1095,7 @@
             break;
       case 0xfd:		/* shift FD */
             {
-               uint8_t opcode2;
+               uint8 opcode2;
                opcode2 = Z80_RB_MACRO( PC );
                z80_tstates++;
                PC++;
@@ -1115,7 +1113,7 @@
             break;
       case 0xfe:		/* CP nn */
             {
-               uint8_t bytetemp = Z80_RB_MACRO( PC++ );
+               uint8 bytetemp = Z80_RB_MACRO( PC++ );
                CP(bytetemp);
             }
             break;

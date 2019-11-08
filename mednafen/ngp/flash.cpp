@@ -1,3 +1,10 @@
+/*
+ FIXME:
+  File format is not endian-safe.
+
+  Still possible for corrupt/malicious save game data to cause a crash, from blindly reading past the end of the buffer.
+*/
+
 //---------------------------------------------------------------------------
 // NEOPOP : Emulator as in Dreamland
 //
@@ -12,15 +19,9 @@
 //	additional informations.
 //---------------------------------------------------------------------------
 
-#include <stdlib.h>
-#include <string.h>
-
+#include "neopop.h"
 #include "flash.h"
 #include "mem.h"
-#include "rom.h"
-#include "system.h"
-
-#include "../state.h"
 
 //-----------------------------------------------------------------------------
 // Local Definitions
@@ -37,27 +38,34 @@
 typedef struct
 {
    //Flash Id
-   uint16_t valid_flash_id;		// = FLASH_VALID_ID
+   uint16 valid_flash_id;		// = FLASH_VALID_ID
 
-   uint16_t block_count;			//Number of flash data blocks
+   uint16 block_count;			//Number of flash data blocks
 
-   uint32_t total_file_length;		// header + block[0 - block_count]
+   uint32 total_file_length;		// header + block[0 - block_count]
 
 } FlashFileHeader;
 
 typedef struct
 {
-	uint32_t start_address;		// 24 bit address
-	uint16_t data_length;		// length of following data
+   uint32 start_address;		// 24 bit address
+   uint16 data_length;		// length of following data
 
-	//Followed by data_length bytes of the actual data.
+   //Followed by data_length bytes of the actual data.
 
 } FlashFileBlockHeader;
 
-/* Local Data */
-static FlashFileBlockHeader	blocks[256];
-static uint16_t block_count;
+//-----------------------------------------------------------------------------
+// Local Data
+//-----------------------------------------------------------------------------
+static FlashFileBlockHeader	blocks[FLASH_MAX_BLOCKS];
+static uint16 block_count;
 
+//=============================================================================
+
+//-----------------------------------------------------------------------------
+// optimise_blocks()
+//-----------------------------------------------------------------------------
 void flash_optimise_blocks(void)
 {
    int i, j;
@@ -70,9 +78,10 @@ void flash_optimise_blocks(void)
          //Swap?
          if (blocks[i].start_address > blocks[j].start_address)
          {
-            uint16_t temp16;
-            uint32_t temp32 = blocks[i].start_address;
+            uint32 temp32;
+            uint16 temp16;
 
+            temp32 = blocks[i].start_address;
             blocks[i].start_address = blocks[j].start_address;
             blocks[j].start_address = temp32;
 
@@ -93,10 +102,8 @@ void flash_optimise_blocks(void)
             (blocks[i].start_address + blocks[i].data_length))
       {
          //Extend the first block
-         blocks[i].data_length = 
-            (uint16_t)((blocks[i+1].start_address + blocks[i+1].data_length) - 
-                  blocks[i].start_address);
-         //FIXME: std::max
+         blocks[i].data_length = (uint16)(MAX(blocks[i + 0].start_address + blocks[i + 0].data_length,
+									          blocks[i + 1].start_address + blocks[i + 1].data_length) - blocks[i].start_address);
 
          //Remove the next one.
          for (j = i+2; j < block_count; j++)
@@ -111,24 +118,32 @@ void flash_optimise_blocks(void)
          i++;	// Try the next block
       }
    }
+
+   //for(i = 0; i < block_count; i++)
+   // printf("block: 0x%08x 0x%04x\n", blocks[i].start_address, blocks[i].data_length);
 }
 
-void do_flash_read(uint8_t *flashdata)
+static void do_flash_read(const uint8 *flashdata)
 {
    FlashFileHeader header;
-   uint8_t *fileptr;
-   uint16_t i;
-   uint32_t j;
+   const uint8 *fileptr;
+   uint16 i;
+   uint32 j;
    bool PREV_memory_unlock_flash_write = memory_unlock_flash_write; // kludge, hack, FIXME
 
    memcpy(&header, flashdata, sizeof(header));
+
+   if(header.block_count > FLASH_MAX_BLOCKS)
+   {
+      MDFN_PrintError("FLASH header block_count(%u) > FLASH_MAX_BLOCKS!", header.block_count);
+   }
 
    //Read header
    block_count = header.block_count;
    fileptr = flashdata + sizeof(FlashFileHeader);
 
    //Copy blocks
-   memory_unlock_flash_write = 1;
+   memory_unlock_flash_write = true;
    for (i = 0; i < block_count; i++)
    {
       FlashFileBlockHeader* current = (FlashFileBlockHeader*)fileptr;
@@ -148,34 +163,40 @@ void do_flash_read(uint8_t *flashdata)
 
    flash_optimise_blocks();		//Optimise
 
-
-   //Output block list...
-   /*	for (i = 0; i < block_count; i++)
-      system_debug_message("flash block: %06X, %d bytes", 
-      blocks[i].start_address, blocks[i].data_length);*/
+#if 0
+	//Output block list...
+	for (i = 0; i < block_count; i++)
+		printf("flash block: %06X, %d bytes\n", 
+			blocks[i].start_address, blocks[i].data_length);
+#endif
 }
 
-void flash_read(void)
+
+void FLASH_LoadNV(void)
 {
    FlashFileHeader header;
-   uint8_t* flashdata;
+   uint8* flashdata;
 
    //Initialise the internal flash configuration
    block_count = 0;
 
    //Read flash buffer header
-   if (system_io_flash_read((uint8_t*)&header, sizeof(FlashFileHeader)) == 0)
+   if (system_io_flash_read((uint8*)&header, sizeof(FlashFileHeader)) == false)
       return; //Silent failure - no flash data yet.
 
    //Verify correct flash id
    if (header.valid_flash_id != FLASH_VALID_ID)
    {
-      //MDFN_PrintError("IDS_BADFLASH");
-      return;
+      MDFN_PrintError("IDS_BADFLASH");
+   }
+
+   if(header.total_file_length < sizeof(FlashFileHeader) || header.total_file_length > 16384 * 1024)
+   {
+      MDFN_PrintError("FLASH header total_file_length is bad!");
    }
 
    //Read the flash data
-   flashdata = (uint8_t*)malloc(header.total_file_length * sizeof(uint8_t));
+   flashdata = (uint8*)malloc(header.total_file_length * sizeof(uint8));
    system_io_flash_read(flashdata, header.total_file_length);
 
    do_flash_read(flashdata);
@@ -183,12 +204,17 @@ void flash_read(void)
    free(flashdata);
 }
 
-void flash_write(uint32_t start_address, uint16_t length)
+//-----------------------------------------------------------------------------
+// flash_write()
+//-----------------------------------------------------------------------------
+void flash_write(uint32 start_address, uint16 length)
 {
-   uint16_t i;
+   uint16 i;
+
+   //printf("flash_write 0x%08x 0x%04x\n", start_address, length);
 
    //Now we need a new flash command before the next flash write will work!
-   memory_flash_command = 0;
+   memory_flash_command = false;
 
    //	system_debug_message("flash write: %06X, %d bytes", start_address, length);
 
@@ -197,7 +223,9 @@ void flash_write(uint32_t start_address, uint16_t length)
       //Got this block with enough bytes to cover it
       if (blocks[i].start_address == start_address &&
             blocks[i].data_length >= length)
+      {
          return; //Nothing to do, block already registered.
+	  }
 
       //Got this block with but it's length is too short
       if (blocks[i].start_address == start_address &&
@@ -208,71 +236,133 @@ void flash_write(uint32_t start_address, uint16_t length)
       }
    }
 
-   // New block needs to be added
-   blocks[block_count].start_address = start_address;
-   blocks[block_count].data_length = length;
-   block_count++;
+   if(block_count >= FLASH_MAX_BLOCKS)
+   {
+      MDFN_Notify(MDFN_NOTICE_ERROR, "[FLASH] Block list overflow!");
+      return;
+   }
+   else
+   {
+      // New block needs to be added
+      blocks[block_count].start_address = start_address;
+      blocks[block_count].data_length = length;
+      block_count++;
+   }
 }
 
-uint8_t *make_flash_commit(int32_t *length)
+static void make_flash_commit(uint8 **flashdata, uint32 *length)
 {
-   int i;
    FlashFileHeader header;
-   uint8_t *flashdata, *fileptr;
+   uint8 *fileptr;
 
-   /* No flash data? */
+   *flashdata = NULL;
+
+   // No flash data?
    if (block_count == 0)
-      return NULL;
+      return;
 
-   /* Optimize before writing */
+   //Optimise before writing
    flash_optimise_blocks();
 
-   /* Build a header */
+   // Build a header;
    header.valid_flash_id    = FLASH_VALID_ID;
    header.block_count       = block_count;
    header.total_file_length = sizeof(FlashFileHeader);
-
-   for (i = 0; i < block_count; i++)
+   for (int i = 0; i < block_count; i++)
    {
       header.total_file_length += sizeof(FlashFileBlockHeader);
       header.total_file_length += blocks[i].data_length;
    }
 
-   /* Write the flash data */
-   flashdata = (uint8_t*)malloc(header.total_file_length * sizeof(uint8_t));
+   // Write the flash data
+   *flashdata = (uint8*)malloc(header.total_file_length * sizeof(uint8_t));
+   *length = header.total_file_length;
 
-   /* Copy header */
-   memcpy(flashdata, &header, sizeof(FlashFileHeader));
-   fileptr = flashdata + sizeof(FlashFileHeader);
+   // Copy header
+   memcpy(*flashdata, &header, sizeof(FlashFileHeader));
+   fileptr = *flashdata + sizeof(FlashFileHeader);
 
-   /* Copy blocks */
-   for (i = 0; i < block_count; i++)
+   // Copy blocks
+   for (int i = 0; i < block_count; i++)
    {
-      uint32_t j;
-
       memcpy(fileptr, &blocks[i], sizeof(FlashFileBlockHeader));
       fileptr += sizeof(FlashFileBlockHeader);
 
-      /* Copy data */
-      for (j = 0; j < blocks[i].data_length; j++)
+      // Copy data
+      for (uint32 j = 0; j < blocks[i].data_length; j++)
       {
          *fileptr = loadB(blocks[i].start_address + j);
          fileptr++;
       }
    }
-
-   *length = header.total_file_length;
-   return flashdata;
 }
 
-void flash_commit(void)
+void FLASH_SaveNV(void)
 {
-   int32_t length = 0;
-   uint8_t *flashdata = make_flash_commit(&length);
+   uint32 FlashLength = 0;
+   uint8 *flashdata = NULL;
 
-   if (!flashdata)
-      return;
+   make_flash_commit(&flashdata, &FlashLength);
 
-   system_io_flash_write(flashdata, length);
+   if(FlashLength > 0)
+   {
+      system_io_flash_write(flashdata, FlashLength);
+      free(flashdata);
+   }
+}
+
+int FLASH_StateAction(StateMem *sm, const unsigned load, const bool data_only)
+{
+   uint32 FlashLength = 0;
+   uint8 *flashdata = NULL;
+
+   if(!load)
+   {
+      make_flash_commit(&flashdata, &FlashLength);
+   }
+
+   SFORMAT FINF_StateRegs[] =
+   {
+      SFVAR(FlashLength),
+      SFEND
+   };
+
+   if(!MDFNSS_StateAction(sm, load, data_only, FINF_StateRegs, "FINF", false))
+      return 0;
+
+   if(!FlashLength) // No flash data to save, OR no flash data to load.
+   {
+      if(flashdata) free(flashdata);
+      return 1;
+   }
+
+   if(load)
+   {
+      if(FlashLength > 16384 * 1024)
+         FlashLength = 16384 * 1024;
+
+      flashdata = (uint8*)malloc(FlashLength);
+      memset(flashdata, 0, FlashLength);
+   }
+
+   SFORMAT FLSH_StateRegs[] =
+   {
+      SFARRAYN(flashdata, FlashLength, "flashdata"),
+      SFEND
+   };
+
+   if(!MDFNSS_StateAction(sm, load, data_only, FLSH_StateRegs, "FLSH", false))
+   {
+      free(flashdata);
+      return 0;
+   }
+
+   if(load)
+   {
+      memcpy(ngpc_rom.data, ngpc_rom.orig_data, ngpc_rom.length);	// Restore FLASH/ROM data to its state before any writes to FLASH the game made(or were loaded from file).
+      do_flash_read(flashdata);
+   }
+
    free(flashdata);
+   return 1;
 }

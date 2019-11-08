@@ -52,7 +52,7 @@
     case 0x74:
     case 0x7c:		/* NEG */
        {
-          uint8_t bytetemp=A;
+          uint8 bytetemp=A;
           A=0;
           SUB(bytetemp);
        }
@@ -127,7 +127,7 @@
     case 0x57:		/* LD A,I */
        contend_read_no_mreq( IR, 1 );
        A=I;
-       F = ( F & Z80_FLAG_C ) | sz53_table[A] | ( IFF2 ? Z80_FLAG_V : 0 );
+       F = ( F & FLAG_C ) | sz53_table[A] | ( IFF2 ? FLAG_V : 0 );
        break;
     case 0x58:		/* IN E,(C) */
        Z80_IN( E, BC );
@@ -155,7 +155,7 @@
     case 0x5f:		/* LD A,R */
        contend_read_no_mreq( IR, 1 );
        A=(R&0x7f) | (R7&0x80);
-       F = ( F & Z80_FLAG_C ) | sz53_table[A] | ( IFF2 ? Z80_FLAG_V : 0 );
+       F = ( F & FLAG_C ) | sz53_table[A] | ( IFF2 ? FLAG_V : 0 );
        break;
     case 0x60:		/* IN H,(C) */
        Z80_IN( H, BC );
@@ -178,12 +178,12 @@
        break;
     case 0x67:		/* RRD */
        {
-          uint8_t bytetemp = Z80_RB_MACRO( HL );
+          uint8 bytetemp = Z80_RB_MACRO( HL );
           contend_read_no_mreq( HL, 1 ); contend_read_no_mreq( HL, 1 );
           contend_read_no_mreq( HL, 1 ); contend_read_no_mreq( HL, 1 );
           Z80_WB_MACRO(HL,  ( A << 4 ) | ( bytetemp >> 4 ) );
           A = ( A & 0xf0 ) | ( bytetemp & 0x0f );
-          F = ( F & Z80_FLAG_C ) | sz53p_table[A];
+          F = ( F & FLAG_C ) | sz53p_table[A];
        }
        break;
     case 0x68:		/* IN L,(C) */
@@ -207,17 +207,17 @@
        break;
     case 0x6f:		/* RLD */
        {
-          uint8_t bytetemp = Z80_RB_MACRO( HL );
+          uint8 bytetemp = Z80_RB_MACRO( HL );
           contend_read_no_mreq( HL, 1 ); contend_read_no_mreq( HL, 1 );
           contend_read_no_mreq( HL, 1 ); contend_read_no_mreq( HL, 1 );
           Z80_WB_MACRO(HL, (bytetemp << 4 ) | ( A & 0x0f ) );
           A = ( A & 0xf0 ) | ( bytetemp >> 4 );
-          F = ( F & Z80_FLAG_C ) | sz53p_table[A];
+          F = ( F & FLAG_C ) | sz53p_table[A];
        }
        break;
     case 0x70:		/* IN F,(C) */
        {
-          uint8_t bytetemp;
+          uint8 bytetemp;
           Z80_IN( bytetemp, BC );
        }
        break;
@@ -258,19 +258,19 @@
        break;
     case 0xa0:		/* LDI */
        {
-          uint8_t bytetemp=Z80_RB_MACRO( HL );
+          uint8 bytetemp=Z80_RB_MACRO( HL );
           BC--;
           Z80_WB_MACRO(DE,bytetemp);
           contend_write_no_mreq( DE, 1 ); contend_write_no_mreq( DE, 1 );
           DE++; HL++;
           bytetemp += A;
-          F = ( F & ( Z80_FLAG_C | Z80_FLAG_Z | Z80_FLAG_S ) ) | ( BC ? Z80_FLAG_V : 0 ) |
-             ( bytetemp & Z80_FLAG_3 ) | ( (bytetemp & 0x02) ? Z80_FLAG_5 : 0 );
+          F = ( F & ( FLAG_C | FLAG_Z | FLAG_S ) ) | ( BC ? FLAG_V : 0 ) |
+             ( bytetemp & FLAG_3 ) | ( (bytetemp & 0x02) ? FLAG_5 : 0 );
        }
        break;
     case 0xa1:		/* CPI */
        {
-          uint8_t value = Z80_RB_MACRO( HL ), bytetemp = A - value,
+          uint8 value = Z80_RB_MACRO( HL ), bytetemp = A - value,
                 lookup = ( (        A & 0x08 ) >> 3 ) |
                    ( (  (value) & 0x08 ) >> 2 ) |
                    ( ( bytetemp & 0x08 ) >> 1 );
@@ -278,16 +278,16 @@
           contend_read_no_mreq( HL, 1 ); contend_read_no_mreq( HL, 1 );
           contend_read_no_mreq( HL, 1 );
           HL++; BC--;
-          F = ( F & Z80_FLAG_C ) | ( BC ? ( Z80_FLAG_V | Z80_FLAG_N ) : Z80_FLAG_N ) |
-             halfcarry_sub_table[lookup] | ( bytetemp ? 0 : Z80_FLAG_Z ) |
-             ( bytetemp & Z80_FLAG_S );
-          if(F & Z80_FLAG_H) bytetemp--;
-          F |= ( bytetemp & Z80_FLAG_3 ) | ( (bytetemp&0x02) ? Z80_FLAG_5 : 0 );
+          F = ( F & FLAG_C ) | ( BC ? ( FLAG_V | FLAG_N ) : FLAG_N ) |
+             halfcarry_sub_table[lookup] | ( bytetemp ? 0 : FLAG_Z ) |
+             ( bytetemp & FLAG_S );
+          if(F & FLAG_H) bytetemp--;
+          F |= ( bytetemp & FLAG_3 ) | ( (bytetemp&0x02) ? FLAG_5 : 0 );
        }
        break;
     case 0xa2:		/* INI */
        {
-          uint8_t initemp, initemp2;
+          uint8 initemp, initemp2;
 
           contend_read_no_mreq( IR, 1 );
           initemp = Z80_RP_MACRO( BC );
@@ -295,15 +295,15 @@
 
           B--; HL++;
           initemp2 = initemp + C + 1;
-          F = ( initemp & 0x80 ? Z80_FLAG_N : 0 ) |
-             ( ( initemp2 < initemp ) ? Z80_FLAG_H | Z80_FLAG_C : 0 ) |
-             ( parity_table[ ( initemp2 & 0x07 ) ^ B ] ? Z80_FLAG_P : 0 ) |
+          F = ( initemp & 0x80 ? FLAG_N : 0 ) |
+             ( ( initemp2 < initemp ) ? FLAG_H | FLAG_C : 0 ) |
+             ( parity_table[ ( initemp2 & 0x07 ) ^ B ] ? FLAG_P : 0 ) |
              sz53_table[B];
        }
        break;
     case 0xa3:		/* OUTI */
        {
-          uint8_t outitemp, outitemp2;
+          uint8 outitemp, outitemp2;
 
           contend_read_no_mreq( IR, 1 );
           outitemp = Z80_RB_MACRO( HL );
@@ -312,27 +312,27 @@
 
           HL++;
           outitemp2 = outitemp + L;
-          F = ( outitemp & 0x80 ? Z80_FLAG_N : 0 ) |
-             ( ( outitemp2 < outitemp ) ? Z80_FLAG_H | Z80_FLAG_C : 0 ) |
-             ( parity_table[ ( outitemp2 & 0x07 ) ^ B ] ? Z80_FLAG_P : 0 ) |
+          F = ( outitemp & 0x80 ? FLAG_N : 0 ) |
+             ( ( outitemp2 < outitemp ) ? FLAG_H | FLAG_C : 0 ) |
+             ( parity_table[ ( outitemp2 & 0x07 ) ^ B ] ? FLAG_P : 0 ) |
              sz53_table[B];
        }
        break;
     case 0xa8:		/* LDD */
        {
-          uint8_t bytetemp=Z80_RB_MACRO( HL );
+          uint8 bytetemp=Z80_RB_MACRO( HL );
           BC--;
           Z80_WB_MACRO(DE,bytetemp);
           contend_write_no_mreq( DE, 1 ); contend_write_no_mreq( DE, 1 );
           DE--; HL--;
           bytetemp += A;
-          F = ( F & ( Z80_FLAG_C | Z80_FLAG_Z | Z80_FLAG_S ) ) | ( BC ? Z80_FLAG_V : 0 ) |
-             ( bytetemp & Z80_FLAG_3 ) | ( (bytetemp & 0x02) ? Z80_FLAG_5 : 0 );
+          F = ( F & ( FLAG_C | FLAG_Z | FLAG_S ) ) | ( BC ? FLAG_V : 0 ) |
+             ( bytetemp & FLAG_3 ) | ( (bytetemp & 0x02) ? FLAG_5 : 0 );
        }
        break;
     case 0xa9:		/* CPD */
        {
-          uint8_t value = Z80_RB_MACRO( HL ), bytetemp = A - value,
+          uint8 value = Z80_RB_MACRO( HL ), bytetemp = A - value,
                 lookup = ( (        A & 0x08 ) >> 3 ) |
                    ( (  (value) & 0x08 ) >> 2 ) |
                    ( ( bytetemp & 0x08 ) >> 1 );
@@ -340,16 +340,16 @@
           contend_read_no_mreq( HL, 1 ); contend_read_no_mreq( HL, 1 );
           contend_read_no_mreq( HL, 1 );
           HL--; BC--;
-          F = ( F & Z80_FLAG_C ) | ( BC ? ( Z80_FLAG_V | Z80_FLAG_N ) : Z80_FLAG_N ) |
-             halfcarry_sub_table[lookup] | ( bytetemp ? 0 : Z80_FLAG_Z ) |
-             ( bytetemp & Z80_FLAG_S );
-          if(F & Z80_FLAG_H) bytetemp--;
-          F |= ( bytetemp & Z80_FLAG_3 ) | ( (bytetemp&0x02) ? Z80_FLAG_5 : 0 );
+          F = ( F & FLAG_C ) | ( BC ? ( FLAG_V | FLAG_N ) : FLAG_N ) |
+             halfcarry_sub_table[lookup] | ( bytetemp ? 0 : FLAG_Z ) |
+             ( bytetemp & FLAG_S );
+          if(F & FLAG_H) bytetemp--;
+          F |= ( bytetemp & FLAG_3 ) | ( (bytetemp&0x02) ? FLAG_5 : 0 );
        }
        break;
     case 0xaa:		/* IND */
        {
-          uint8_t initemp, initemp2;
+          uint8 initemp, initemp2;
 
           contend_read_no_mreq( IR, 1 );
           initemp = Z80_RP_MACRO( BC );
@@ -357,15 +357,15 @@
 
           B--; HL--;
           initemp2 = initemp + C - 1;
-          F = ( initemp & 0x80 ? Z80_FLAG_N : 0 ) |
-             ( ( initemp2 < initemp ) ? Z80_FLAG_H | Z80_FLAG_C : 0 ) |
-             ( parity_table[ ( initemp2 & 0x07 ) ^ B ] ? Z80_FLAG_P : 0 ) |
+          F = ( initemp & 0x80 ? FLAG_N : 0 ) |
+             ( ( initemp2 < initemp ) ? FLAG_H | FLAG_C : 0 ) |
+             ( parity_table[ ( initemp2 & 0x07 ) ^ B ] ? FLAG_P : 0 ) |
              sz53_table[B];
        }
        break;
     case 0xab:		/* OUTD */
        {
-          uint8_t outitemp, outitemp2;
+          uint8 outitemp, outitemp2;
 
           contend_read_no_mreq( IR, 1 );
           outitemp = Z80_RB_MACRO( HL );
@@ -374,21 +374,21 @@
 
           HL--;
           outitemp2 = outitemp + L;
-          F = ( outitemp & 0x80 ? Z80_FLAG_N : 0 ) |
-             ( ( outitemp2 < outitemp ) ? Z80_FLAG_H | Z80_FLAG_C : 0 ) |
-             ( parity_table[ ( outitemp2 & 0x07 ) ^ B ] ? Z80_FLAG_P : 0 ) |
+          F = ( outitemp & 0x80 ? FLAG_N : 0 ) |
+             ( ( outitemp2 < outitemp ) ? FLAG_H | FLAG_C : 0 ) |
+             ( parity_table[ ( outitemp2 & 0x07 ) ^ B ] ? FLAG_P : 0 ) |
              sz53_table[B];
        }
        break;
     case 0xb0:		/* LDIR */
        {
-          uint8_t bytetemp=Z80_RB_MACRO( HL );
+          uint8 bytetemp=Z80_RB_MACRO( HL );
           Z80_WB_MACRO(DE,bytetemp);
           contend_write_no_mreq( DE, 1 ); contend_write_no_mreq( DE, 1 );
           BC--;
           bytetemp += A;
-          F = ( F & ( Z80_FLAG_C | Z80_FLAG_Z | Z80_FLAG_S ) ) | ( BC ? Z80_FLAG_V : 0 ) |
-             ( bytetemp & Z80_FLAG_3 ) | ( (bytetemp & 0x02) ? Z80_FLAG_5 : 0 );
+          F = ( F & ( FLAG_C | FLAG_Z | FLAG_S ) ) | ( BC ? FLAG_V : 0 ) |
+             ( bytetemp & FLAG_3 ) | ( (bytetemp & 0x02) ? FLAG_5 : 0 );
           if(BC) {
              contend_write_no_mreq( DE, 1 ); contend_write_no_mreq( DE, 1 );
              contend_write_no_mreq( DE, 1 ); contend_write_no_mreq( DE, 1 );
@@ -400,7 +400,7 @@
        break;
     case 0xb1:		/* CPIR */
        {
-          uint8_t value = Z80_RB_MACRO( HL ), bytetemp = A - value,
+          uint8 value = Z80_RB_MACRO( HL ), bytetemp = A - value,
                 lookup = ( (        A & 0x08 ) >> 3 ) |
                    ( (  (value) & 0x08 ) >> 2 ) |
                    ( ( bytetemp & 0x08 ) >> 1 );
@@ -408,12 +408,12 @@
           contend_read_no_mreq( HL, 1 ); contend_read_no_mreq( HL, 1 );
           contend_read_no_mreq( HL, 1 );
           BC--;
-          F = ( F & Z80_FLAG_C ) | ( BC ? ( Z80_FLAG_V | Z80_FLAG_N ) : Z80_FLAG_N ) |
-             halfcarry_sub_table[lookup] | ( bytetemp ? 0 : Z80_FLAG_Z ) |
-             ( bytetemp & Z80_FLAG_S );
-          if(F & Z80_FLAG_H) bytetemp--;
-          F |= ( bytetemp & Z80_FLAG_3 ) | ( (bytetemp&0x02) ? Z80_FLAG_5 : 0 );
-          if( ( F & ( Z80_FLAG_V | Z80_FLAG_Z ) ) == Z80_FLAG_V ) {
+          F = ( F & FLAG_C ) | ( BC ? ( FLAG_V | FLAG_N ) : FLAG_N ) |
+             halfcarry_sub_table[lookup] | ( bytetemp ? 0 : FLAG_Z ) |
+             ( bytetemp & FLAG_S );
+          if(F & FLAG_H) bytetemp--;
+          F |= ( bytetemp & FLAG_3 ) | ( (bytetemp&0x02) ? FLAG_5 : 0 );
+          if( ( F & ( FLAG_V | FLAG_Z ) ) == FLAG_V ) {
              contend_read_no_mreq( HL, 1 ); contend_read_no_mreq( HL, 1 );
              contend_read_no_mreq( HL, 1 ); contend_read_no_mreq( HL, 1 );
              contend_read_no_mreq( HL, 1 );
@@ -424,7 +424,7 @@
        break;
     case 0xb2:		/* INIR */
        {
-          uint8_t initemp, initemp2;
+          uint8 initemp, initemp2;
 
           contend_read_no_mreq( IR, 1 );
           initemp = Z80_RP_MACRO( BC );
@@ -432,9 +432,9 @@
 
           B--;
           initemp2 = initemp + C + 1;
-          F = ( initemp & 0x80 ? Z80_FLAG_N : 0 ) |
-             ( ( initemp2 < initemp ) ? Z80_FLAG_H | Z80_FLAG_C : 0 ) |
-             ( parity_table[ ( initemp2 & 0x07 ) ^ B ] ? Z80_FLAG_P : 0 ) |
+          F = ( initemp & 0x80 ? FLAG_N : 0 ) |
+             ( ( initemp2 < initemp ) ? FLAG_H | FLAG_C : 0 ) |
+             ( parity_table[ ( initemp2 & 0x07 ) ^ B ] ? FLAG_P : 0 ) |
              sz53_table[B];
 
           if( B ) {
@@ -448,7 +448,7 @@
        break;
     case 0xb3:		/* OTIR */
        {
-          uint8_t outitemp, outitemp2;
+          uint8 outitemp, outitemp2;
 
           contend_read_no_mreq( IR, 1 );
           outitemp = Z80_RB_MACRO( HL );
@@ -457,9 +457,9 @@
 
           HL++;
           outitemp2 = outitemp + L;
-          F = ( outitemp & 0x80 ? Z80_FLAG_N : 0 ) |
-             ( ( outitemp2 < outitemp ) ? Z80_FLAG_H | Z80_FLAG_C : 0 ) |
-             ( parity_table[ ( outitemp2 & 0x07 ) ^ B ] ? Z80_FLAG_P : 0 ) |
+          F = ( outitemp & 0x80 ? FLAG_N : 0 ) |
+             ( ( outitemp2 < outitemp ) ? FLAG_H | FLAG_C : 0 ) |
+             ( parity_table[ ( outitemp2 & 0x07 ) ^ B ] ? FLAG_P : 0 ) |
              sz53_table[B];
 
           if( B ) {
@@ -472,13 +472,13 @@
        break;
     case 0xb8:		/* LDDR */
        {
-          uint8_t bytetemp=Z80_RB_MACRO( HL );
+          uint8 bytetemp=Z80_RB_MACRO( HL );
           Z80_WB_MACRO(DE,bytetemp);
           contend_write_no_mreq( DE, 1 ); contend_write_no_mreq( DE, 1 );
           BC--;
           bytetemp += A;
-          F = ( F & ( Z80_FLAG_C | Z80_FLAG_Z | Z80_FLAG_S ) ) | ( BC ? Z80_FLAG_V : 0 ) |
-             ( bytetemp & Z80_FLAG_3 ) | ( (bytetemp & 0x02) ? Z80_FLAG_5 : 0 );
+          F = ( F & ( FLAG_C | FLAG_Z | FLAG_S ) ) | ( BC ? FLAG_V : 0 ) |
+             ( bytetemp & FLAG_3 ) | ( (bytetemp & 0x02) ? FLAG_5 : 0 );
           if(BC) {
              contend_write_no_mreq( DE, 1 ); contend_write_no_mreq( DE, 1 );
              contend_write_no_mreq( DE, 1 ); contend_write_no_mreq( DE, 1 );
@@ -490,7 +490,7 @@
        break;
     case 0xb9:		/* CPDR */
        {
-          uint8_t value = Z80_RB_MACRO( HL ), bytetemp = A - value,
+          uint8 value = Z80_RB_MACRO( HL ), bytetemp = A - value,
                 lookup = ( (        A & 0x08 ) >> 3 ) |
                    ( (  (value) & 0x08 ) >> 2 ) |
                    ( ( bytetemp & 0x08 ) >> 1 );
@@ -498,12 +498,12 @@
           contend_read_no_mreq( HL, 1 ); contend_read_no_mreq( HL, 1 );
           contend_read_no_mreq( HL, 1 );
           BC--;
-          F = ( F & Z80_FLAG_C ) | ( BC ? ( Z80_FLAG_V | Z80_FLAG_N ) : Z80_FLAG_N ) |
-             halfcarry_sub_table[lookup] | ( bytetemp ? 0 : Z80_FLAG_Z ) |
-             ( bytetemp & Z80_FLAG_S );
-          if(F & Z80_FLAG_H) bytetemp--;
-          F |= ( bytetemp & Z80_FLAG_3 ) | ( (bytetemp&0x02) ? Z80_FLAG_5 : 0 );
-          if( ( F & ( Z80_FLAG_V | Z80_FLAG_Z ) ) == Z80_FLAG_V ) {
+          F = ( F & FLAG_C ) | ( BC ? ( FLAG_V | FLAG_N ) : FLAG_N ) |
+             halfcarry_sub_table[lookup] | ( bytetemp ? 0 : FLAG_Z ) |
+             ( bytetemp & FLAG_S );
+          if(F & FLAG_H) bytetemp--;
+          F |= ( bytetemp & FLAG_3 ) | ( (bytetemp&0x02) ? FLAG_5 : 0 );
+          if( ( F & ( FLAG_V | FLAG_Z ) ) == FLAG_V ) {
              contend_read_no_mreq( HL, 1 ); contend_read_no_mreq( HL, 1 );
              contend_read_no_mreq( HL, 1 ); contend_read_no_mreq( HL, 1 );
              contend_read_no_mreq( HL, 1 );
@@ -514,7 +514,7 @@
        break;
     case 0xba:		/* INDR */
        {
-          uint8_t initemp, initemp2;
+          uint8 initemp, initemp2;
 
           contend_read_no_mreq( IR, 1 );
           initemp = Z80_RP_MACRO( BC );
@@ -522,9 +522,9 @@
 
           B--;
           initemp2 = initemp + C - 1;
-          F = ( initemp & 0x80 ? Z80_FLAG_N : 0 ) |
-             ( ( initemp2 < initemp ) ? Z80_FLAG_H | Z80_FLAG_C : 0 ) |
-             ( parity_table[ ( initemp2 & 0x07 ) ^ B ] ? Z80_FLAG_P : 0 ) |
+          F = ( initemp & 0x80 ? FLAG_N : 0 ) |
+             ( ( initemp2 < initemp ) ? FLAG_H | FLAG_C : 0 ) |
+             ( parity_table[ ( initemp2 & 0x07 ) ^ B ] ? FLAG_P : 0 ) |
              sz53_table[B];
 
           if( B ) {
@@ -538,7 +538,7 @@
        break;
     case 0xbb:		/* OTDR */
        {
-          uint8_t outitemp, outitemp2;
+          uint8 outitemp, outitemp2;
 
           contend_read_no_mreq( IR, 1 );
           outitemp = Z80_RB_MACRO( HL );
@@ -547,9 +547,9 @@
 
           HL--;
           outitemp2 = outitemp + L;
-          F = ( outitemp & 0x80 ? Z80_FLAG_N : 0 ) |
-             ( ( outitemp2 < outitemp ) ? Z80_FLAG_H | Z80_FLAG_C : 0 ) |
-             ( parity_table[ ( outitemp2 & 0x07 ) ^ B ] ? Z80_FLAG_P : 0 ) |
+          F = ( outitemp & 0x80 ? FLAG_N : 0 ) |
+             ( ( outitemp2 < outitemp ) ? FLAG_H | FLAG_C : 0 ) |
+             ( parity_table[ ( outitemp2 & 0x07 ) ^ B ] ? FLAG_P : 0 ) |
              sz53_table[B];
 
           if( B ) {

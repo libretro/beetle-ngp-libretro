@@ -12,24 +12,19 @@
 //	additional informations.
 //---------------------------------------------------------------------------
 
-#ifndef __SOUND__
-#define __SOUND__
+#ifndef __NEOPOP_SOUND__
+#define __NEOPOP_SOUND__
 
-#include <stdint.h>
+void Write_SoundChipLeft(uint8 data);
+void Write_SoundChipRight(uint8 data);
 
-/* Speed of DAC playback (in Hz) */
-#define DAC_FREQUENCY		8000
+void dac_write_left(uint8);
+void dac_write_right(uint8);
 
-void Write_SoundChipLeft(uint8_t data);
-void Write_SoundChipRight(uint8_t data);
-
-void dac_write_left(uint8_t);
-void dac_write_right(uint8_t);
-
-int32_t MDFNNGPCSOUND_Flush(int16_t *SoundBuf, const int32_t MaxSoundFrames);
-void MDFNNGPCSOUND_Init(void);
-bool MDFNNGPC_SetSoundRate(uint32_t rate);
-int MDFNNGPCSOUND_StateAction(void *data, int load, int data_only);
+int32 MDFNNGPCSOUND_Flush(int16 *SoundBuf, const int32 MaxSoundFrames);
+void MDFNNGPCSOUND_Init(void) MDFN_COLD;
+bool MDFNNGPC_SetSoundRate(uint32 rate);
+int MDFNNGPCSOUND_StateAction(StateMem *sm, int load, int data_only);
 void MDFNNGPCSOUND_SetEnable(bool set);
 
 #endif

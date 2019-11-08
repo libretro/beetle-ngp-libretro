@@ -65,7 +65,7 @@ typedef struct
 	const char *SettingName;	// No spaces, shouldbe all a-z0-9 and _. Definitely no ~!
 	const char *Name;
 	/*const InputDeviceInputVB VirtButton;*/
-        const int ConfigOrder;          // Configuration order during in-game config process, -1 for no config.
+	const int ConfigOrder;          // Configuration order during in-game config process, -1 for no config.
 	const InputDeviceInputType Type;
 	const char *ExcludeName;	// SettingName of a button that can't be pressed at the same time as this button
 					// due to physical limitations.
@@ -105,6 +105,8 @@ typedef struct
 
 struct MemoryPatch;
 
+
+#ifdef __cplusplus
 struct CheatFormatStruct
 {
  const char *FullName;		//"Game Genie", "GameShark", "Pro Action Catplay", etc.
@@ -124,6 +126,8 @@ struct CheatFormatInfoStruct
 
  CheatFormatStruct *Formats;
 };
+#endif
+
 
 // Miscellaneous system/simple commands(power, reset, dip switch toggles, coin insert, etc.)
 // (for DoSimpleCommand() )
@@ -333,6 +337,6 @@ typedef struct
  double mouse_sensitivity;
 } MDFNGI;
 
-int StateAction(StateMem *sm, int load, int data_only);
+int StateAction(StateMem *sm, const unsigned load, const bool data_only);
 
 #endif

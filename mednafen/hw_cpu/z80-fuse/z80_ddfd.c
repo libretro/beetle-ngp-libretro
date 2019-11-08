@@ -94,8 +94,8 @@
       break;
     case 0x34:		/* INC (REGISTER+dd) */
       {
-	uint8_t offset, bytetemp;
-	uint16_t wordtemp;
+	uint8 offset, bytetemp;
+	uint16 wordtemp;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -109,8 +109,8 @@
       break;
     case 0x35:		/* DEC (REGISTER+dd) */
       {
-	uint8_t offset, bytetemp;
-	uint16_t wordtemp;
+	uint8 offset, bytetemp;
+	uint16 wordtemp;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -124,7 +124,7 @@
       break;
     case 0x36:		/* LD (REGISTER+dd),nn */
       {
-	uint8_t offset, value;
+	uint8 offset, value;
 	offset = Z80_RB_MACRO( PC++ );
 	value = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 ); PC++;
@@ -149,7 +149,7 @@
       break;
     case 0x46:		/* LD B,(REGISTER+dd) */
       {
-	uint8_t offset;
+	uint8 offset;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -165,7 +165,7 @@
       break;
     case 0x4e:		/* LD C,(REGISTER+dd) */
       {
-	uint8_t offset;
+	uint8 offset;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -181,7 +181,7 @@
       break;
     case 0x56:		/* LD D,(REGISTER+dd) */
       {
-	uint8_t offset;
+	uint8 offset;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -197,7 +197,7 @@
       break;
     case 0x5e:		/* LD E,(REGISTER+dd) */
       {
-	uint8_t offset;
+	uint8 offset;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -224,7 +224,7 @@
       break;
     case 0x66:		/* LD H,(REGISTER+dd) */
       {
-	uint8_t offset;
+	uint8 offset;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -254,7 +254,7 @@
       break;
     case 0x6e:		/* LD L,(REGISTER+dd) */
       {
-	uint8_t offset;
+	uint8 offset;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -267,7 +267,7 @@
       break;
     case 0x70:		/* LD (REGISTER+dd),B */
       {
-	uint8_t offset;
+	uint8 offset;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -277,7 +277,7 @@
       break;
     case 0x71:		/* LD (REGISTER+dd),C */
       {
-	uint8_t offset;
+	uint8 offset;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -287,7 +287,7 @@
       break;
     case 0x72:		/* LD (REGISTER+dd),D */
       {
-	uint8_t offset;
+	uint8 offset;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -297,7 +297,7 @@
       break;
     case 0x73:		/* LD (REGISTER+dd),E */
       {
-	uint8_t offset;
+	uint8 offset;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -307,7 +307,7 @@
       break;
     case 0x74:		/* LD (REGISTER+dd),H */
       {
-	uint8_t offset;
+	uint8 offset;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -317,7 +317,7 @@
       break;
     case 0x75:		/* LD (REGISTER+dd),L */
       {
-	uint8_t offset;
+	uint8 offset;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -327,7 +327,7 @@
       break;
     case 0x77:		/* LD (REGISTER+dd),A */
       {
-	uint8_t offset;
+	uint8 offset;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -343,7 +343,7 @@
       break;
     case 0x7e:		/* LD A,(REGISTER+dd) */
       {
-	uint8_t offset;
+	uint8 offset;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -359,7 +359,7 @@
       break;
     case 0x86:		/* ADD A,(REGISTER+dd) */
       {
-	uint8_t offset, bytetemp;
+	uint8 offset, bytetemp;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -376,7 +376,7 @@
       break;
     case 0x8e:		/* ADC A,(REGISTER+dd) */
       {
-	uint8_t offset, bytetemp;
+	uint8 offset, bytetemp;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -393,7 +393,7 @@
       break;
     case 0x96:		/* SUB A,(REGISTER+dd) */
       {
-	uint8_t offset, bytetemp;
+	uint8 offset, bytetemp;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -410,7 +410,7 @@
       break;
     case 0x9e:		/* SBC A,(REGISTER+dd) */
       {
-	uint8_t offset, bytetemp;
+	uint8 offset, bytetemp;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -427,7 +427,7 @@
       break;
     case 0xa6:		/* AND A,(REGISTER+dd) */
       {
-	uint8_t offset, bytetemp;
+	uint8 offset, bytetemp;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -444,7 +444,7 @@
       break;
     case 0xae:		/* XOR A,(REGISTER+dd) */
       {
-	uint8_t offset, bytetemp;
+	uint8 offset, bytetemp;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -461,7 +461,7 @@
       break;
     case 0xb6:		/* OR A,(REGISTER+dd) */
       {
-	uint8_t offset, bytetemp;
+	uint8 offset, bytetemp;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -478,7 +478,7 @@
       break;
     case 0xbe:		/* CP A,(REGISTER+dd) */
       {
-	uint8_t offset, bytetemp;
+	uint8 offset, bytetemp;
 	offset = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 );
@@ -489,15 +489,14 @@
       break;
     case 0xcb:		/* shift DDFDCB */
       {
-	uint16_t tempaddr; uint8_t opcode3;
+	uint16 tempaddr; uint8 opcode3;
 	tempaddr = REGISTER + (int8)Z80_RB_MACRO( PC );
 	PC++;
 	opcode3 = Z80_RB_MACRO( PC );
 	contend_read_no_mreq( PC, 1 ); contend_read_no_mreq( PC, 1 ); PC++;
-	switch(opcode3)
-   {
+	switch(opcode3) {
 #include "z80_ddfdcb.c"
-   }
+    }
       }
       break;
     case 0xe1:		/* POP REGISTER */
@@ -505,7 +504,7 @@
       break;
     case 0xe3:		/* EX (SP),REGISTER */
       {
-	uint8_t bytetempl, bytetemph;
+	uint8 bytetempl, bytetemph;
 	bytetempl = Z80_RB_MACRO( SP );
 	bytetemph = Z80_RB_MACRO( SP + 1 ); contend_read_no_mreq( SP + 1, 1 );
 	Z80_WB_MACRO( SP + 1, REGISTERH );

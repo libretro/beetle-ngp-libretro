@@ -3,29 +3,26 @@
 #ifndef SMS_APU_H
 #define SMS_APU_H
 
-#include <stdint.h>
-
 typedef long sms_time_t; // clock cycle count
 
 #include "T6W28_Oscs.h"
 
 typedef struct
 {
-	int32_t sq_period[3];
-	int32_t sq_phase[3];
-	uint32_t noise_period;
-	uint32_t noise_period_extra;
-	uint32_t noise_shifter;
-	uint32_t noise_tap;
+	int32 sq_period[3];
+	int32 sq_phase[3];
+	uint32 noise_period;
+	uint32 noise_period_extra;
+	uint32 noise_shifter;
+	uint32 noise_tap;
 
-	int32_t delay[4];
-	int32_t volume_left[4];
-	int32_t volume_right[4];
-	uint8_t latch_left, latch_right;
+	int32 delay[4];
+	int32 volume_left[4];
+	int32 volume_right[4];
+	uint8 latch_left, latch_right;
 } T6W28_ApuState;
 
-class T6W28_Apu
-{
+class T6W28_Apu {
    public:
       // Set overall volume of all oscillators, where 1.0 is full volume
       void volume( double );
@@ -61,8 +58,8 @@ class T6W28_Apu
       // to the center buffer.
       bool end_frame( sms_time_t );
 
-      T6W28_ApuState *save_state(void);
-      void load_state(T6W28_ApuState*);
+      void save_state(T6W28_ApuState*);
+      void load_state(const T6W28_ApuState*);
    public:
       T6W28_Apu();
       ~T6W28_Apu();

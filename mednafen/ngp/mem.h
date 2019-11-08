@@ -12,11 +12,9 @@
 //	additional informations.
 //---------------------------------------------------------------------------
 
-#ifndef __MEM__
-#define __MEM__
-
-#include <stdint.h>
-#include <boolean.h>
+#ifndef __NEOPOP_MEM__
+#define __NEOPOP_MEM__
+//=============================================================================
 
 #define ROM_START    0x200000
 #define ROM_END		0x3FFFFF
@@ -29,34 +27,39 @@
 
 void reset_memory(void);
 
-void dump_memory(uint32_t start, uint32_t length);
+void dump_memory(uint32 start, uint32 length);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 extern bool debug_abort_memory;
+extern bool debug_mask_memory_error_messages;
+
 #ifdef __cplusplus
 }
 #endif
-extern bool debug_mask_memory_error_messages;
 
 extern bool memory_unlock_flash_write;
 extern bool memory_flash_error;
 extern bool memory_flash_command;
 
 extern bool FlashStatusEnable;
-extern uint8_t COMMStatus;
+extern uint8 COMMStatus;
+
+//=============================================================================
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-uint8_t  loadB(uint32_t address);
-uint16_t loadW(uint32_t address);
-uint32_t loadL(uint32_t address);
+uint8  loadB(uint32 address);
+uint16 loadW(uint32 address);
+uint32 loadL(uint32 address);
 
-void storeB(uint32_t address, uint8_t data);
-void storeW(uint32_t address, uint16_t data);
-void storeL(uint32_t address, uint32_t data);
+void storeB(uint32 address, uint8 data);
+void storeW(uint32 address, uint16 data);
+void storeL(uint32 address, uint32 data);
 
 #ifdef __cplusplus
 }
@@ -65,4 +68,5 @@ void storeL(uint32_t address, uint32_t data);
 void SetFRM(void);
 void RecacheFRM(void);
 
+//=============================================================================
 #endif

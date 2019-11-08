@@ -12,18 +12,38 @@
 //	additional informations.
 //---------------------------------------------------------------------------
 
-#include <string.h>
+#include "neopop.h"
+#include "Z80_interface.h"
+#include "gfx.h"
+#include "mem.h"
+#include "interrupt.h"
+#include "sound.h"
+#include "dma.h"
 #include "bios.h"
 
-#ifdef MSB_FIRST
-#define HTOLE32(l) ((((l)>>24) & 0xff) | (((l)>>8) & 0xff00) | (((l)<<8) & 0xff0000) | (((l)<<24) & 0xff000000))
-#else
-#define HTOLE32(l) (l)
-#endif
+//=============================================================================
 
-uint8_t ngpc_bios[0x10000];		/* Holds BIOS program data */
+uint8 ngpc_bios[0x10000];		//Holds bios program data
 
-static const uint8_t font[0x800] = { 
+//=============================================================================
+
+void reset(void)
+{
+   NGPGfx_power();
+   Z80_reset();
+   reset_int();
+   reset_timers();
+
+   reset_memory();
+   BIOSHLE_Reset();
+   reset_registers();	// TLCS900H registers
+   reset_dma();
+}
+
+//=============================================================================
+
+static const uint8 font[0x800] = { 
+
 	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 	0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,
 	0x18,0x18,0x18,0x18,0x18,0x18,0x18,0x18,0x00,0x00,0x00,0xFF,0xFF,0x00,0x00,0x00,
@@ -154,12 +174,12 @@ static const uint8_t font[0x800] = {
 	0x00,0x00,0x00,0x00,0x0A,0x05,0x05,0x00,0x00,0x00,0x00,0x00,0x02,0x05,0x02,0x00
 };
 
-int bios_install(void)
+bool bios_install(void)
 {
-   /* Install the reverse engineered bios */
+   //=== Install the reverse engineered bios
    int i;
 
-   uint32_t vectable[] =
+   uint32 vectable[] =
    {
       0xFF27A2,		//0			VECT_SHUTDOWN
       0xFF1030,		//1			VECT_CLOCKGEARSET
@@ -191,22 +211,26 @@ int bios_install(void)
       0xFF2D85,		//0x1a		VECT_COMGETBUFDATA
    };
 
-   /* System Call Table, install iBIOSHLE instructions */
+   // System Call Table, install iBIOSHLE instructions
    for (i = 0; i <= 0x1A; i++)
    {
-      *(uint32_t*)(ngpc_bios + 0xFE00 + (i * 4)) = HTOLE32(vectable[i]);
+      MDFN_en32lsb(&ngpc_bios[0xFE00 + (i * 4)], vectable[i]);
       ngpc_bios[vectable[i] & 0xFFFF] = 0x1F;	//iBIOSHLE
    }
 
-   /* System Font */
+   // System Font
    memcpy(ngpc_bios + 0x8DCF, font, 0x800);
 
-   /* Default Interrupt handler */
+   // Default Interrupt handler
    ngpc_bios[0x23DF] = 0x07;  //RETI
 
-   /* Install a Quick and Dirty Bios */
+   // ==========
+
+   // Install a Quick and Dirty Bios
    ngpc_bios[0xFFFE] = 0x68; // - JR 0xFFFFFE (Infinite loop!)
    ngpc_bios[0xFFFF] = 0xFE;
 
-   return 1;
+   return true;	//Success
 }
+
+//=============================================================================

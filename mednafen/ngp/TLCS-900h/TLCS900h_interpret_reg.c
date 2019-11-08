@@ -62,6 +62,7 @@
 //---------------------------------------------------------------------------
 */
 
+#include "../neopop.h"
 #include "TLCS900h_interpret.h"
 #include "TLCS900h_registers.h"
 #include "../mem.h"
@@ -728,12 +729,61 @@ void regTSET()
 	cycles = 6;
 }
 
+#if 0
+// TODO, test on an actual TLCS-900H CPU:
+
+//===== MINC1 #,r
+void regMINC1()
+{
+	const uint16 mask = fetch16() | 0;
+	const uint16 origval = rCodeW(rCode);
+
+	if(size == 1)
+	 rCodeW(rCode) = (origval & ~mask) + ((origval + 1) & mask);
+
+	printf("MINC1: 0x%04x, 0x%04x->0x%04x%s\n", mask, origval, rCodeW(rCode), (rCodeW(rCode) < origval) ? " (wrap)" : "");
+
+	cycles = 8;
+}
+
+//===== MINC2 #,r
+// Densetsu no Ogre Battle Gaiden
+void regMINC2()
+{
+	const uint16 mask = fetch16() | 1;
+	const uint16 origval = rCodeW(rCode);
+
+	if(size == 1)
+	 rCodeW(rCode) = (origval & ~mask) + ((origval + 2) & mask);
+
+	printf("MINC2: 0x%04x, 0x%04x->0x%04x%s\n", mask, origval, rCodeW(rCode), (rCodeW(rCode) < origval) ? " (wrap)" : "");
+
+	cycles = 8;
+}
+
+//===== MINC4 #,r
+// Pocket Tennis Color
+void regMINC4()
+{
+	const uint16 mask = fetch16() | 3;
+	const uint16 origval = rCodeW(rCode);
+
+	if(size == 1)
+	 rCodeW(rCode) = (origval & ~mask) + ((origval + 4) & mask);
+
+	printf("MINC4: 0x%04x, 0x%04x->0x%04x%s\n", mask, origval, rCodeW(rCode), (rCodeW(rCode) < origval) ? " (wrap)" : "");
+
+	cycles = 8;
+}
+
+#endif
+
 //===== MINC1 #,r
 void regMINC1()
 {
 	uint16 num = fetch16() + 1;
 
-	if (size == 1)
+	if (size == 1 && num)
 	{
 		if ((rCodeW(rCode) % num) == (num - 1))
 			rCodeW(rCode) -= (num - 1);
@@ -749,7 +799,7 @@ void regMINC2()
 {
 	uint16 num = fetch16() + 2;
 
-	if (size == 1)
+	if (size == 1 && num)
 	{
 		if ((rCodeW(rCode) % num) == (num - 2))
 			rCodeW(rCode) -= (num - 2);
@@ -765,7 +815,7 @@ void regMINC4()
 {
 	uint16 num = fetch16() + 4;
 
-	if (size == 1)
+	if (size == 1 && num)
 	{
 		if ((rCodeW(rCode) % num) == (num - 4))
 			rCodeW(rCode) -= (num - 4);
@@ -781,7 +831,7 @@ void regMDEC1()
 {
 	uint16 num = fetch16() + 1;
 
-	if (size == 1)
+	if (size == 1 && num)
 	{
 		if ((rCodeW(rCode) % num) == 0)
 			rCodeW(rCode) += (num - 1);
@@ -797,7 +847,7 @@ void regMDEC2()
 {
 	uint16 num = fetch16() + 2;
 
-	if (size == 1)
+	if (size == 1 && num)
 	{
 		if ((rCodeW(rCode) % num) == 0)
 			rCodeW(rCode) += (num - 2);
@@ -813,7 +863,7 @@ void regMDEC4()
 {
 	uint16 num = fetch16() + 4;
 
-	if (size == 1)
+	if (size == 1 && num)
 	{
 		if ((rCodeW(rCode) % num) == 0)
 			rCodeW(rCode) += (num - 4);
@@ -1465,143 +1515,124 @@ void regRRCi()
 }
 
 //===== RL #,r
-void regRLi(void)
+void regRLi()
 {
 	int i;
 	bool tempC;
 	uint8 sa = FETCH8 & 0xF;
-	if (sa == 0)
-      sa = 16;
+	if (sa == 0) sa = 16;
 
 	switch(size)
-   {
-      case 0:
-         {
-            uint8 result = 0;
-            for (i = 0; i < sa; i++) 
-            {
-               result = rCodeB(rCode);
-               tempC = FLAG_C;
-               SETFLAG_C(result & 0x80);
-               result <<= 1;
-               if (tempC) result |= 1;
-               rCodeB(rCode) = result;
-            }
-            SETFLAG_S(result & 0x80);
-            SETFLAG_Z(result == 0);
-            parityB(result);
-            cycles = 6 + (2*sa);
-         }
-         break;
+    {
+	case 0:	{	uint8 result;
+				for (i = 0; i < sa; i++) 
+				{
+					result = rCodeB(rCode);
+					tempC = FLAG_C;
+					SETFLAG_C(result & 0x80);
+					result <<= 1;
+					if (tempC) result |= 1;
+					rCodeB(rCode) = result;
+				}
+				SETFLAG_S(result & 0x80);
+				SETFLAG_Z(result == 0);
+				parityB(result);
+				cycles = 6 + (2*sa);
+				break; }
+		
+	case 1:	{	uint16 result;
+				for (i = 0; i < sa; i++) 
+				{
+					result = rCodeW(rCode);
+					tempC = FLAG_C;
+					SETFLAG_C(result & 0x8000);
+					result <<= 1;
+					if (tempC) result |= 1;
+					rCodeW(rCode) = result;
+				}
+				SETFLAG_S(result & 0x8000);
+				SETFLAG_Z(result == 0);
+				parityW(result);
+				cycles = 6 + (2*sa);
+				break; }
 
-      case 1:
-         {
-            uint16 result = 0;
-            for (i = 0; i < sa; i++) 
-            {
-               result = rCodeW(rCode);
-               tempC = FLAG_C;
-               SETFLAG_C(result & 0x8000);
-               result <<= 1;
-               if (tempC) result |= 1;
-               rCodeW(rCode) = result;
-            }
-            SETFLAG_S(result & 0x8000);
-            SETFLAG_Z(result == 0);
-            parityW(result);
-            cycles = 6 + (2*sa);
-         }
-         break;
-
-      case 2:
-         {
-            uint32 result = 0;
-            for (i = 0; i < sa; i++) 
-            {
-               result = rCodeL(rCode);
-               tempC = FLAG_C;
-               SETFLAG_C(result & 0x80000000);
-               result <<= 1;
-               if (tempC) result |= 1;
-               rCodeL(rCode) = result;
-            }
-            SETFLAG_S(result & 0x80000000);
-            SETFLAG_Z(result == 0);
-            cycles = 8 + (2*sa);
-         }
-         break;
-   }
+	case 2:	{	uint32 result;
+				for (i = 0; i < sa; i++) 
+				{
+					result = rCodeL(rCode);
+					tempC = FLAG_C;
+					SETFLAG_C(result & 0x80000000);
+					result <<= 1;
+					if (tempC) result |= 1;
+					rCodeL(rCode) = result;
+				}
+				SETFLAG_S(result & 0x80000000);
+				SETFLAG_Z(result == 0);
+				cycles = 8 + (2*sa);
+				break; }
+	}
 
 	SETFLAG_H0;
 	SETFLAG_N0;
 }
 
 //===== RR #,r
-void regRRi(void)
+void regRRi()
 {
 	int i;
 	bool tempC;
 	uint8 sa = FETCH8 & 0xF;
-	if (sa == 0)
-      sa = 16;
+	if (sa == 0) sa = 16;
 
 	switch(size)
-   {
-      case 0:
-         {
-            uint8 result = 0;
-            for (i = 0; i < sa; i++) 
-            {
-               result = rCodeB(rCode);
-               tempC = FLAG_C;
-               SETFLAG_C(result & 0x01);
-               result >>= 1;
-               if (tempC) result |= 0x80;
-               rCodeB(rCode) = result;
-            }
-            SETFLAG_S(result & 0x80);
-            SETFLAG_Z(result == 0);
-            cycles = 6 + (2*sa);
-            parityB(result);
-         }
-         break;
-      case 1:
-         {
-            uint16 result = 0;
-            for (i = 0; i < sa; i++) 
-            {
-               result = rCodeW(rCode);
-               tempC = FLAG_C;
-               SETFLAG_C(result & 0x01);
-               result >>= 1;
-               if (tempC) result |= 0x8000;
-               rCodeW(rCode) = result;
-            }
-            SETFLAG_S(result & 0x8000);
-            SETFLAG_Z(result == 0);
-            cycles = 6 + (2*sa);
-            parityW(result);
-         }
-         break;
+    {
+	case 0:	{	uint8 result;
+				for (i = 0; i < sa; i++) 
+				{
+					result = rCodeB(rCode);
+					tempC = FLAG_C;
+					SETFLAG_C(result & 0x01);
+					result >>= 1;
+					if (tempC) result |= 0x80;
+					rCodeB(rCode) = result;
+				}
+				SETFLAG_S(result & 0x80);
+				SETFLAG_Z(result == 0);
+				cycles = 6 + (2*sa);
+				parityB(result);
+				break; }
+		
+	case 1:	{	uint16 result;
+				for (i = 0; i < sa; i++) 
+				{
+					result = rCodeW(rCode);
+					tempC = FLAG_C;
+					SETFLAG_C(result & 0x01);
+					result >>= 1;
+					if (tempC) result |= 0x8000;
+					rCodeW(rCode) = result;
+				}
+				SETFLAG_S(result & 0x8000);
+				SETFLAG_Z(result == 0);
+				cycles = 6 + (2*sa);
+				parityW(result);
+				break; }
 
-      case 2:
-         {
-            uint32 result = 0;
-            for (i = 0; i < sa; i++) 
-            {
-               result = rCodeL(rCode);
-               tempC = FLAG_C;
-               SETFLAG_C(result & 0x01);
-               result >>= 1;
-               if (tempC) result |= 0x80000000;
-               rCodeL(rCode) = result;
-            }
-            SETFLAG_S(result & 0x80000000);
-            SETFLAG_Z(result == 0);
-            cycles = 8 + (2*sa);
-         }
-         break;
-   }
+	case 2:	{	uint32 result;
+				for (i = 0; i < sa; i++) 
+				{
+					result = rCodeL(rCode);
+					tempC = FLAG_C;
+					SETFLAG_C(result & 0x01);
+					result >>= 1;
+					if (tempC) result |= 0x80000000;
+					rCodeL(rCode) = result;
+				}
+				SETFLAG_S(result & 0x80000000);
+				SETFLAG_Z(result == 0);
+				cycles = 8 + (2*sa);
+				break; }
+    }
 
 	SETFLAG_H0;
 	SETFLAG_N0;
@@ -1890,71 +1921,61 @@ void regRRCA()
 }
 
 //===== RL A,r
-void regRLA(void)
+void regRLA()
 {
    int i;
    bool tempC;
    uint8 sa = REGA & 0xF;
-   if (sa == 0)
-      sa = 16;
+   if (sa == 0) sa = 16;
 
    switch(size)
    {
-      case 0:
-         {
-            uint8 result = 0;
-            for (i = 0; i < sa; i++) 
-            {
-               result = rCodeB(rCode);
-               tempC = FLAG_C;
-               SETFLAG_C(result & 0x80);
-               result <<= 1;
-               if (tempC) result |= 1;
-               rCodeB(rCode) = result;
-            }
-            SETFLAG_S(result & 0x80);
-            SETFLAG_Z(result == 0);
-            cycles = 6 + (2*sa);
-            parityB(result);
-         }
-         break;
+	case 0:	{	uint8 result;
+				for (i = 0; i < sa; i++) 
+				{
+					result = rCodeB(rCode);
+					tempC = FLAG_C;
+					SETFLAG_C(result & 0x80);
+					result <<= 1;
+					if (tempC) result |= 1;
+					rCodeB(rCode) = result;
+				}
+				SETFLAG_S(result & 0x80);
+				SETFLAG_Z(result == 0);
+				cycles = 6 + (2*sa);
+				parityB(result);
+				break; }
+		
+	case 1:	{	uint16 result;
+				for (i = 0; i < sa; i++) 
+				{
+					result = rCodeW(rCode);
+					tempC = FLAG_C;
+					SETFLAG_C(result & 0x8000);
+					result <<= 1;
+					if (tempC) result |= 1;
+					rCodeW(rCode) = result;
+				}
+				SETFLAG_S(result & 0x8000);
+				SETFLAG_Z(result == 0);
+				cycles = 6 + (2*sa);
+				parityW(result);
+				break; }
 
-      case 1:
-         {
-            uint16 result = 0;
-            for (i = 0; i < sa; i++) 
-            {
-               result = rCodeW(rCode);
-               tempC = FLAG_C;
-               SETFLAG_C(result & 0x8000);
-               result <<= 1;
-               if (tempC) result |= 1;
-               rCodeW(rCode) = result;
-            }
-            SETFLAG_S(result & 0x8000);
-            SETFLAG_Z(result == 0);
-            cycles = 6 + (2*sa);
-            parityW(result);
-         }
-         break;
-
-      case 2:
-         {
-            uint32 result = 0;
-            for (i = 0; i < sa; i++) 
-            {
-               result = rCodeL(rCode);
-               tempC = FLAG_C;
-               SETFLAG_C(result & 0x80000000);
-               result <<= 1;
-               if (tempC) result |= 1;
-               rCodeL(rCode) = result;
-            }
-            SETFLAG_S(result & 0x80000000);
-            SETFLAG_Z(result == 0);
-            cycles = 8 + (2*sa);
-         }
-         break;
+	case 2:	{	uint32 result;
+				for (i = 0; i < sa; i++) 
+				{
+					result = rCodeL(rCode);
+					tempC = FLAG_C;
+					SETFLAG_C(result & 0x80000000);
+					result <<= 1;
+					if (tempC) result |= 1;
+					rCodeL(rCode) = result;
+				}
+				SETFLAG_S(result & 0x80000000);
+				SETFLAG_Z(result == 0);
+				cycles = 8 + (2*sa);
+				break; }
    }
 
    SETFLAG_H0;
@@ -1962,67 +1983,61 @@ void regRLA(void)
 }
 
 //===== RR A,r
-void regRRA(void)
+void regRRA()
 {
    int i;
    bool tempC;
    uint8 sa = REGA & 0xF;
-   if (sa == 0)
-      sa = 16;
+   if (sa == 0) sa = 16;
 
    switch(size)
    {
-      case 0:
-         {	uint8 result = 0;
-            for (i = 0; i < sa; i++) 
-            {
-               result = rCodeB(rCode);
-               tempC = FLAG_C;
-               SETFLAG_C(result & 0x01);
-               result >>= 1;
-               if (tempC) result |= 0x80;
-               rCodeB(rCode) = result;
-            }
-            SETFLAG_S(result & 0x80);
-            SETFLAG_Z(result == 0);
-            cycles = 6 + (2*sa);
-            parityB(result);
-         }
-         break;
-      case 1:
-         {
-            uint16 result = 0;
-            for (i = 0; i < sa; i++) 
-            {
-               result = rCodeW(rCode);
-               tempC = FLAG_C;
-               SETFLAG_C(result & 0x01);
-               result >>= 1;
-               if (tempC) result |= 0x8000;
-               rCodeW(rCode) = result;
-            }
-            SETFLAG_S(result & 0x8000);
-            SETFLAG_Z(result == 0);
-            cycles = 6 + (2*sa);
-            parityW(result);
-         }
-         break;
-      case 2:
-         {	uint32 result = 0;
-            for (i = 0; i < sa; i++) 
-            {
-               result = rCodeL(rCode);
-               tempC = FLAG_C;
-               SETFLAG_C(result & 0x01);
-               result >>= 1;
-               if (tempC) result |= 0x80000000;
-               rCodeL(rCode) = result;
-            }
-            SETFLAG_S(result & 0x80000000);
-            SETFLAG_Z(result == 0);
-            cycles = 8 + (2*sa);
-         }
-         break;
+	case 0:	{	uint8 result;
+				for (i = 0; i < sa; i++) 
+				{
+					result = rCodeB(rCode);
+					tempC = FLAG_C;
+					SETFLAG_C(result & 0x01);
+					result >>= 1;
+					if (tempC) result |= 0x80;
+					rCodeB(rCode) = result;
+				}
+				SETFLAG_S(result & 0x80);
+				SETFLAG_Z(result == 0);
+				cycles = 6 + (2*sa);
+				parityB(result);
+				break; }
+		
+	case 1:	{	uint16 result;
+				for (i = 0; i < sa; i++) 
+				{
+					result = rCodeW(rCode);
+					tempC = FLAG_C;
+					SETFLAG_C(result & 0x01);
+					result >>= 1;
+					if (tempC) result |= 0x8000;
+					rCodeW(rCode) = result;
+				}
+				SETFLAG_S(result & 0x8000);
+				SETFLAG_Z(result == 0);
+				cycles = 6 + (2*sa);
+				parityW(result);
+				break; }
+
+	case 2:	{	uint32 result;
+				for (i = 0; i < sa; i++) 
+				{
+					result = rCodeL(rCode);
+					tempC = FLAG_C;
+					SETFLAG_C(result & 0x01);
+					result >>= 1;
+					if (tempC) result |= 0x80000000;
+					rCodeL(rCode) = result;
+				}
+				SETFLAG_S(result & 0x80000000);
+				SETFLAG_Z(result == 0);
+				cycles = 8 + (2*sa);
+				break; }
    }
 
    SETFLAG_H0;

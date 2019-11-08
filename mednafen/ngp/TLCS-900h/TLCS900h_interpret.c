@@ -52,7 +52,9 @@
 //---------------------------------------------------------------------------
 */
 
+#include "../neopop.h"
 #include "TLCS900h_registers.h"
+#include "../interrupt.h"
 #include "../mem.h"
 #include "../bios.h"
 #include "TLCS900h_interpret.h"
@@ -61,7 +63,11 @@
 #include "TLCS900h_interpret_dst.h"
 #include "TLCS900h_interpret_reg.h"
 
-static void DUMMY_instruction_error(const char* vaMessage,...) { }
+static void DUMMY_instruction_error(const char* vaMessage,...)
+{
+
+
+}
 
 void (*instruction_error)(const char* vaMessage,...) = DUMMY_instruction_error;
 
@@ -136,44 +142,13 @@ void parityW(uint16 value)
 
 //=========================================================================
 
-void push8(uint8 data)
-{
-   REGXSP -= 1;
-   storeB(REGXSP, data);
-}
+void push8(uint8 data) { REGXSP -= 1; storeB(REGXSP, data); }
+void push16(uint16 data) { REGXSP -= 2; storeW(REGXSP, data); }
+void push32(uint32 data) { REGXSP -= 4; storeL(REGXSP, data); }
 
-void push16(uint16 data)
-{
-   REGXSP -= 2;
-   storeW(REGXSP, data);
-}
-
-void push32(uint32 data)
-{
-   REGXSP -= 4;
-   storeL(REGXSP, data);
-}
-
-uint8 pop8(void)
-{
-   uint8 temp = loadB(REGXSP);
-   REGXSP += 1;
-   return temp;
-}
-
-uint16 pop16(void)
-{
-   uint16 temp = loadW(REGXSP);
-   REGXSP += 2;
-   return temp;
-}
-
-uint32 pop32(void)
-{
-   uint32 temp = loadL(REGXSP);
-   REGXSP += 4;
-   return temp;
-}
+uint8 pop8(void) { uint8 temp = loadB(REGXSP); REGXSP += 1; return temp; }
+uint16 pop16(void) { uint16 temp = loadW(REGXSP); REGXSP += 2; return temp; }
+uint32 pop32(void) { uint32 temp = loadL(REGXSP); REGXSP += 4; return temp; }
 
 //=============================================================================
 
@@ -377,13 +352,7 @@ uint8 generic_SUB_B(uint8 dst, uint8 src)
 
 	if ((((int8)dst >= 0) && ((int8)src < 0) && ((int8)result < 0)) ||
 		(((int8)dst < 0) && ((int8)src >= 0) && ((int8)result >= 0)))
-	{
-      SETFLAG_V1
-   }
-   else
-   {
-      SETFLAG_V0
-   }
+	{ SETFLAG_V1 } else { SETFLAG_V0 }
 
 	SETFLAG_N1;
 	SETFLAG_C(resultC > 0xFF);
@@ -495,71 +464,24 @@ bool conditionCode(int cc)
 {
    switch(cc)
    {
-      case 0:
-         return 0;	//(F)
-      case 1:
-         if (FLAG_S ^ FLAG_V)
-            return 1;
-         return 0;	//(LT)
-      case 2:
-         if (FLAG_Z | (FLAG_S ^ FLAG_V))
-            return 1;
-         return 0;	//(LE)
-      case 3:
-         if (FLAG_C | FLAG_Z)
-            return 1;
-         return 0;	//(ULE)
-      case 4:
-         if (FLAG_V)
-            return 1;
-         return 0;	//(OV)
-      case 5:
-         if (FLAG_S)
-            return 1;
-         return 0;	//(MI)
-      case 6:
-         if (FLAG_Z)
-            return 1;
-         return 0;	//(Z)
-      case 7:
-         if (FLAG_C)
-            return 1;
-         return 0;	//(C)
-      case 8:
-         return 1;	//always True														
-      case 9:
-         if (FLAG_S ^ FLAG_V)
-            return 0;
-         return 1;	//(GE)
-      case 10:
-         if (FLAG_Z | (FLAG_S ^ FLAG_V))
-            return 0;
-         return 1;	//(GT)
-      case 11:
-         if (FLAG_C | FLAG_Z)
-            return 0;
-         return 1;	//(UGT)
-      case 12:
-         if (FLAG_V)
-            return 0;
-         return 1;	//(NOV)
-      case 13:
-         if (FLAG_S)
-            return 0;
-         return 1;	//(PL)
-      case 14:
-         if (FLAG_Z)
-            return 0;
-         return 1;	//(NZ)
-      case 15:
-         if (FLAG_C)
-            return 0;
-         return 1;	//(NC)
+      case 0: return 0;	//(F)
+      case 1: if (FLAG_S ^ FLAG_V) return 1; else return 0;	//(LT)
+      case 2: if (FLAG_Z | (FLAG_S ^ FLAG_V)) return 1; else return 0;	//(LE)
+      case 3: if (FLAG_C | FLAG_Z) return 1; else return 0;	//(ULE)
+      case 4: if (FLAG_V) return 1; else return 0;	//(OV)
+      case 5: if (FLAG_S) return 1; else return 0;	//(MI)
+      case 6: if (FLAG_Z) return 1; else return 0;	//(Z)
+      case 7: if (FLAG_C) return 1; else return 0;	//(C)
+      case 8: return 1;	//always True														
+      case 9: if (FLAG_S ^ FLAG_V) return 0; else return 1;	//(GE)
+      case 10: if (FLAG_Z | (FLAG_S ^ FLAG_V)) return 0; else return 1;	//(GT)
+      case 11: if (FLAG_C | FLAG_Z) return 0; else return 1;	//(UGT)
+      case 12: if (FLAG_V) return 0; else return 1;	//(NOV)
+      case 13: if (FLAG_S) return 0; else return 1;	//(PL)
+      case 14: if (FLAG_Z) return 0; else return 1;	//(NZ)
+      case 15: if (FLAG_C) return 0; else return 1;	//(NC)
    }
 
-#ifdef NEOPOP_DEBUG
-   system_debug_message("Unknown Condition Code %d", cc);
-#endif
    return false;
 }
 
@@ -607,45 +529,25 @@ uint8 get_RR_Target(void)
    //Create a regCode
    switch(second & 7)
    {
-      case 0:
-         if (size == 1)
-            target = 0xE0;
+      case 0: if (size == 1) target = 0xE0; break;
+      case 1:
+         if (size == 0) target = 0xE0;
+         if (size == 1) target = 0xE4;
          break;
-      case 1:	
-         if (size == 0)
-            target = 0xE0;
-         if (size == 1)
-            target = 0xE4;
-         break;
-      case 2:
-         if (size == 1)
-            target = 0xE8;
-         break;
+      case 2: if (size == 1) target = 0xE8; break;
       case 3:
-         if (size == 0)
-            target = 0xE4;
-         if (size == 1)
-            target = 0xEC;
+         if (size == 0) target = 0xE4;
+         if (size == 1) target = 0xEC;
          break;
-      case 4:
-         if (size == 1)
-            target = 0xF0;
+      case 4: if (size == 1) target = 0xF0; break;
+      case 5:
+         if (size == 0) target = 0xE8;
+         if (size == 1) target = 0xF4;
          break;
-      case 5:	
-         if (size == 0)
-            target = 0xE8;
-         if (size == 1)
-            target = 0xF4;
-         break;
-      case 6:
-         if (size == 1)
-            target = 0xF8;
-         break;
+      case 6: if (size == 1) target = 0xF8; break;
       case 7:
-         if (size == 0)
-            target = 0xEC;
-         if (size == 1)
-            target = 0xFC;
+         if (size == 0) target = 0xEC;
+         if (size == 1) target = 0xFC;
          break;
    }
 
@@ -672,25 +574,11 @@ static void ExXIYd()	{mem = regL(5) + (int8)FETCH8; cycles_extra = 2;}
 static void ExXIZd()	{mem = regL(6) + (int8)FETCH8; cycles_extra = 2;}
 static void ExXSPd()	{mem = regL(7) + (int8)FETCH8; cycles_extra = 2;}
 
-static void Ex8(void)
-{
-   mem = FETCH8;
-   cycles_extra = 2;
-}
+static void Ex8()		{mem = FETCH8;		cycles_extra = 2;}
+static void Ex16()		{mem = fetch16();	cycles_extra = 2;}
+static void Ex24()		{mem = fetch24();	cycles_extra = 3;}
 
-static void Ex16(void)
-{
-   mem = fetch16();
-   cycles_extra = 2;
-}
-
-static void Ex24(void)
-{
-   mem = fetch24();
-   cycles_extra = 3;
-}
-
-static void ExR32(void)
+static void ExR32()
 {
 	uint8 data = FETCH8;
 
@@ -717,7 +605,8 @@ static void ExR32(void)
 	//Undocumented mode!
 	if (data == 0x13)
 	{
-		int16 disp = fetch16();
+		const int16 disp = fetch16();
+
 		mem = pc + disp;
 		cycles_extra = 8;	//Unconfirmed... doesn't make much difference
 		return;
@@ -725,9 +614,10 @@ static void ExR32(void)
 
 	cycles_extra = 5;
 
-   mem = rCodeL(data);
 	if ((data & 3) == 1)
-		mem += (int16)fetch16();
+		mem = rCodeL(data) + (int16)fetch16();
+	else
+		mem = rCodeL(data);
 }
 
 static void ExDec()
@@ -754,18 +644,9 @@ static void ExInc()
 
    switch(data & 3)
    {
-      case 0:
-         mem = rCodeL(r32);
-         rCodeL(r32) += 1;
-         break;
-      case 1:
-         mem = rCodeL(r32);
-         rCodeL(r32) += 2;
-         break;
-      case 2:
-         mem = rCodeL(r32);
-         rCodeL(r32) += 4;
-         break;
+      case 0: mem = rCodeL(r32); rCodeL(r32) += 1; break;
+      case 1: mem = rCodeL(r32); rCodeL(r32) += 2; break;
+      case 2: mem = rCodeL(r32); rCodeL(r32) += 4; break;
    }
 }
 
@@ -871,38 +752,38 @@ static void (*srcDecode[256])() =
 //Secondary (DST) Instruction decode
 static void (*dstDecode[256])() = 
 {
-/*0*/	DST_dstLDBi,	ed,			DST_dstLDWi,	ed,			DST_dstPOPB,	ed,			DST_dstPOPW,	ed,
+/*0*/	dstLDBi,	ed,			dstLDWi,	ed,			dstPOPB,	ed,			dstPOPW,	ed,
 		ed,			ed,			ed,			ed,			ed,			ed,			ed,			ed,
-/*1*/	ed,			ed,			ed,			ed,			DST_dstLDBm16,	ed,			DST_dstLDWm16,	ed,
+/*1*/	ed,			ed,			ed,			ed,			dstLDBm16,	ed,			dstLDWm16,	ed,
 		ed,			ed,			ed,			ed,			ed,			ed,			ed,			ed,
-/*2*/	DST_dstLDAW,	DST_dstLDAW,	DST_dstLDAW,	DST_dstLDAW,	DST_dstLDAW,	DST_dstLDAW,	DST_dstLDAW,	DST_dstLDAW,
-		DST_dstANDCFA,	DST_dstORCFA,	DST_dstXORCFA,	DST_dstLDCFA,	DST_dstSTCFA,	ed,			ed,			ed,
-/*3*/	DST_dstLDAL,	DST_dstLDAL,	DST_dstLDAL,	DST_dstLDAL,	DST_dstLDAL,	DST_dstLDAL,	DST_dstLDAL,	DST_dstLDAL,
+/*2*/	dstLDAW,	dstLDAW,	dstLDAW,	dstLDAW,	dstLDAW,	dstLDAW,	dstLDAW,	dstLDAW,
+		dstANDCFA,	dstORCFA,	dstXORCFA,	dstLDCFA,	dstSTCFA,	ed,			ed,			ed,
+/*3*/	dstLDAL,	dstLDAL,	dstLDAL,	dstLDAL,	dstLDAL,	dstLDAL,	dstLDAL,	dstLDAL,
 		ed,			ed,			ed,			ed,			ed,			ed,			ed,			ed,
-/*4*/	DST_dstLDBR,	DST_dstLDBR,	DST_dstLDBR,	DST_dstLDBR,	DST_dstLDBR,	DST_dstLDBR,	DST_dstLDBR,	DST_dstLDBR,
+/*4*/	dstLDBR,	dstLDBR,	dstLDBR,	dstLDBR,	dstLDBR,	dstLDBR,	dstLDBR,	dstLDBR,
 		ed,			ed,			ed,			ed,			ed,			ed,			ed,			ed,
-/*5*/	DST_dstLDWR,	DST_dstLDWR,	DST_dstLDWR,	DST_dstLDWR,	DST_dstLDWR,	DST_dstLDWR,	DST_dstLDWR,	DST_dstLDWR,
+/*5*/	dstLDWR,	dstLDWR,	dstLDWR,	dstLDWR,	dstLDWR,	dstLDWR,	dstLDWR,	dstLDWR,
 		ed,			ed,			ed,			ed,			ed,			ed,			ed,			ed,
-/*6*/	DST_dstLDLR,	DST_dstLDLR,	DST_dstLDLR,	DST_dstLDLR,	DST_dstLDLR,	DST_dstLDLR,	DST_dstLDLR,	DST_dstLDLR,
+/*6*/	dstLDLR,	dstLDLR,	dstLDLR,	dstLDLR,	dstLDLR,	dstLDLR,	dstLDLR,	dstLDLR,
 		ed,			ed,			ed,			ed,			ed,			ed,			ed,			ed,
 /*7*/	ed,			ed,			ed,			ed,			ed,			ed,			ed,			ed,
 		ed,			ed,			ed,			ed,			ed,			ed,			ed,			ed,
-/*8*/	DST_dstANDCF,	DST_dstANDCF,	DST_dstANDCF,	DST_dstANDCF,	DST_dstANDCF,	DST_dstANDCF,	DST_dstANDCF,	DST_dstANDCF,
-		DST_dstORCF,	DST_dstORCF,	DST_dstORCF,	DST_dstORCF,	DST_dstORCF,	DST_dstORCF,	DST_dstORCF,	DST_dstORCF,
-/*9*/	DST_dstXORCF,	DST_dstXORCF,	DST_dstXORCF,	DST_dstXORCF,	DST_dstXORCF,	DST_dstXORCF,	DST_dstXORCF,	DST_dstXORCF,
-		DST_dstLDCF,	DST_dstLDCF,	DST_dstLDCF,	DST_dstLDCF,	DST_dstLDCF,	DST_dstLDCF,	DST_dstLDCF,	DST_dstLDCF,
-/*A*/	DST_dstSTCF,	DST_dstSTCF,	DST_dstSTCF,	DST_dstSTCF,	DST_dstSTCF,	DST_dstSTCF,	DST_dstSTCF,	DST_dstSTCF,	
-		DST_dstTSET,	DST_dstTSET,	DST_dstTSET,	DST_dstTSET,	DST_dstTSET,	DST_dstTSET,	DST_dstTSET,	DST_dstTSET,
-/*B*/	DST_dstRES,		DST_dstRES,		DST_dstRES,		DST_dstRES,		DST_dstRES,		DST_dstRES,		DST_dstRES,		DST_dstRES,
-		DST_dstSET,		DST_dstSET,		DST_dstSET,		DST_dstSET,		DST_dstSET,		DST_dstSET,		DST_dstSET,		DST_dstSET,
-/*C*/	DST_dstCHG,		DST_dstCHG,		DST_dstCHG,		DST_dstCHG,		DST_dstCHG,		DST_dstCHG,		DST_dstCHG,		DST_dstCHG,
-		DST_dstBIT,		DST_dstBIT,		DST_dstBIT,		DST_dstBIT,		DST_dstBIT,		DST_dstBIT,		DST_dstBIT,		DST_dstBIT,
-/*D*/	DST_dstJP,		DST_dstJP,		DST_dstJP,		DST_dstJP,		DST_dstJP,		DST_dstJP,		DST_dstJP,		DST_dstJP,
-		DST_dstJP,		DST_dstJP,		DST_dstJP,		DST_dstJP,		DST_dstJP,		DST_dstJP,		DST_dstJP,		DST_dstJP,
-/*E*/	DST_dstCALL,	DST_dstCALL,	DST_dstCALL,	DST_dstCALL,	DST_dstCALL,	DST_dstCALL,	DST_dstCALL,	DST_dstCALL,
-		DST_dstCALL,	DST_dstCALL,	DST_dstCALL,	DST_dstCALL,	DST_dstCALL,	DST_dstCALL,	DST_dstCALL,	DST_dstCALL,
-/*F*/	DST_dstRET,		DST_dstRET,		DST_dstRET,		DST_dstRET,		DST_dstRET,		DST_dstRET,		DST_dstRET,		DST_dstRET,
-		DST_dstRET,		DST_dstRET,		DST_dstRET,		DST_dstRET,		DST_dstRET,		DST_dstRET,		DST_dstRET,		DST_dstRET
+/*8*/	dstANDCF,	dstANDCF,	dstANDCF,	dstANDCF,	dstANDCF,	dstANDCF,	dstANDCF,	dstANDCF,
+		dstORCF,	dstORCF,	dstORCF,	dstORCF,	dstORCF,	dstORCF,	dstORCF,	dstORCF,
+/*9*/	dstXORCF,	dstXORCF,	dstXORCF,	dstXORCF,	dstXORCF,	dstXORCF,	dstXORCF,	dstXORCF,
+		dstLDCF,	dstLDCF,	dstLDCF,	dstLDCF,	dstLDCF,	dstLDCF,	dstLDCF,	dstLDCF,
+/*A*/	dstSTCF,	dstSTCF,	dstSTCF,	dstSTCF,	dstSTCF,	dstSTCF,	dstSTCF,	dstSTCF,	
+		dstTSET,	dstTSET,	dstTSET,	dstTSET,	dstTSET,	dstTSET,	dstTSET,	dstTSET,
+/*B*/	dstRES,		dstRES,		dstRES,		dstRES,		dstRES,		dstRES,		dstRES,		dstRES,
+		dstSET,		dstSET,		dstSET,		dstSET,		dstSET,		dstSET,		dstSET,		dstSET,
+/*C*/	dstCHG,		dstCHG,		dstCHG,		dstCHG,		dstCHG,		dstCHG,		dstCHG,		dstCHG,
+		dstBIT,		dstBIT,		dstBIT,		dstBIT,		dstBIT,		dstBIT,		dstBIT,		dstBIT,
+/*D*/	dstJP,		dstJP,		dstJP,		dstJP,		dstJP,		dstJP,		dstJP,		dstJP,
+		dstJP,		dstJP,		dstJP,		dstJP,		dstJP,		dstJP,		dstJP,		dstJP,
+/*E*/	dstCALL,	dstCALL,	dstCALL,	dstCALL,	dstCALL,	dstCALL,	dstCALL,	dstCALL,
+		dstCALL,	dstCALL,	dstCALL,	dstCALL,	dstCALL,	dstCALL,	dstCALL,	dstCALL,
+/*F*/	dstRET,		dstRET,		dstRET,		dstRET,		dstRET,		dstRET,		dstRET,		dstRET,
+		dstRET,		dstRET,		dstRET,		dstRET,		dstRET,		dstRET,		dstRET,		dstRET
 };
 
 //Secondary (REG) Instruction decode
@@ -983,7 +864,7 @@ static uint8 rCodeConversionB[8] = { 0xE1, 0xE0, 0xE5, 0xE4, 0xE9, 0xE8, 0xED, 0
 static uint8 rCodeConversionW[8] = { 0xE0, 0xE4, 0xE8, 0xEC, 0xF0, 0xF4, 0xF8, 0xFC };
 static uint8 rCodeConversionL[8] = { 0xE0, 0xE4, 0xE8, 0xEC, 0xF0, 0xF4, 0xF8, 0xFC };
 
-static void reg_B(void)
+static void reg_B()
 {
 	second = FETCH8;			//Get the second opcode
 	R = second & 7;
@@ -998,7 +879,7 @@ static void reg_B(void)
 	(*regDecode[second])();		//Call
 }
 
-static void reg_W(void)
+static void reg_W()
 {
 	second = FETCH8;			//Get the second opcode
 	R = second & 7;
@@ -1013,7 +894,7 @@ static void reg_W(void)
 	(*regDecode[second])();		//Call
 }
 
-static void reg_L(void)
+static void reg_L()
 {
 	second = FETCH8;			//Get the second opcode
 	R = second & 7;
