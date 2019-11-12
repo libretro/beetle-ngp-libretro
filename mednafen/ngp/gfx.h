@@ -77,7 +77,7 @@ typedef struct NGPGfx
    uint8 SCREEN_PERIOD;
    uint8 K2GE_MODE;
 
-   uint16 ColorMap[4096];
+   bpp_t ColorMap[4096];
 
    int layer_enable_setting;
 } NGPGfx_t;
