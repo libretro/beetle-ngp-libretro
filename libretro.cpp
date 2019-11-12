@@ -4,7 +4,7 @@
 
 #include "libretro_core_options.h"
 
-#include "mednafen/ngp/gfx.h"
+#include "mednafen/ngp/neopop.h"
 #include "mednafen/ngp/sound.h"
 
 
@@ -37,6 +37,48 @@ static void hookup_ports(bool force)
    SetInput(0, "gamepad", &input_buf);
 
    initial_ports_hookup = true;
+}
+
+
+static int color_correction = -1;
+
+static void MakeColorPalette()
+{
+#if defined(WANT_16BPP)
+   NGPGfx_set_pixel_format();
+#elif defined(WANT_32BPP)
+   for(int x = 0; x < 4096; x++)
+   {
+      int r = (x >> 0) & 0xF;
+      int g = (x >> 4) & 0xF;
+      int b = (x >> 8) & 0xF;
+
+      if(color_correction == 1)
+      {
+         const uint8 sameboy_gaussian[] = { 0,2,4,7,12,18,25,34,42,52,62,73,85,97,109,121,134,146,158,170,182,193,203,213,221,230,237,243,248,251,253,255 };
+
+         if(r) r = sameboy_gaussian[(r << 1) | 0];
+         if(g) g = sameboy_gaussian[(g << 1) | 0];
+         if(b) b = sameboy_gaussian[(b << 1) | 0];
+      }
+      else if(color_correction == 2)
+      {
+         const uint8 sameboy_gamma[] = { 0,2,5,9,15,20,27,34,42,50,58,67,76,85,94,104,114,123,133,143,153,163,173,182,192,202,211,220,229,238,247,255 };
+
+         if(r) r = sameboy_gamma[(r << 1) | 1];
+         if(g) g = sameboy_gamma[(g << 1) | 1];
+         if(b) b = sameboy_gamma[(b << 1) | 1];
+      }
+      else
+      {
+         r *= 17;
+         g *= 17;
+         b *= 17;
+      }
+
+      NGPGfx->ColorMap[x] = MAKECOLOR(r, g, b, 0);
+   }
+#endif
 }
 
 
@@ -156,10 +198,18 @@ void retro_init(void)
       strcpy(retro_save_directory, retro_base_directory);
    }      
 
-#if defined(FRONTEND_SUPPORTS_RGB565)
+#if defined(WANT_16BPP) && defined(FRONTEND_SUPPORTS_RGB565)
    enum retro_pixel_format rgb565 = RETRO_PIXEL_FORMAT_RGB565;
    if (environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &rgb565) && log_cb)
       log_cb(RETRO_LOG_INFO, "Frontend supports RGB565 - will use that instead of XRGB1555.\n");
+#elif defined(WANT_32BPP)
+   enum retro_pixel_format rgb888 = RETRO_PIXEL_FORMAT_XRGB8888;
+   if (!environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &rgb888))
+   {
+      if (log_cb)
+         log_cb(RETRO_LOG_ERROR, "Pixel format XRGB8888 not supported by platform, cannot use %s.\n", MEDNAFEN_CORE_NAME);
+      return;
+   }
 #endif
 
    perf_get_cpu_features_cb = NULL;
@@ -202,11 +252,32 @@ static void check_variables(void)
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
    {
+      int old_setting = setting_ngp_language;
+
       if (!strcmp(var.value, "japanese"))
          setting_ngp_language = 0;
       else if (!strcmp(var.value, "english"))
-         setting_ngp_language = 1;    
-      retro_reset();
+         setting_ngp_language = 1;
+
+      if(old_setting != setting_ngp_language)
+         retro_reset();
+   }
+
+   var.key = "ngp_color_correction";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      int old_value = color_correction;
+
+      if (!strcmp(var.value, "disabled"))
+         color_correction = 0;
+      else if (!strcmp(var.value, "gaussian"))
+         color_correction = 1;
+      else if (!strcmp(var.value, "gamma"))
+         color_correction = 2;
+
+      if(old_value != color_correction)
+	     MakeColorPalette();
    }
 }
 
@@ -259,7 +330,7 @@ bool retro_load_game(const struct retro_game_info *info)
    surf->height = FB_HEIGHT;
    surf->pitch  = FB_WIDTH;
 
-   surf->pixels = (uint16_t*)calloc(1, FB_WIDTH * FB_HEIGHT * 2);
+   surf->pixels = (bpp_t*)calloc(1, FB_WIDTH * FB_HEIGHT * sizeof(bpp_t));
 
    if (!surf->pixels)
    {
@@ -270,7 +341,6 @@ bool retro_load_game(const struct retro_game_info *info)
    hookup_ports(true);
 
    check_variables();
-   NGPGfx_set_pixel_format();
    MDFNNGPC_SetSoundRate(44100);
 
    return game;
@@ -352,7 +422,7 @@ void retro_run(void)
    width  = spec.DisplayRect.w;
    height = spec.DisplayRect.h;
 
-   video_cb(surf->pixels, width, height, FB_WIDTH << 1);
+   video_cb(surf->pixels, width, height, FB_WIDTH * sizeof(bpp_t));
 
    video_frames++;
    audio_frames += spec.SoundBufSize;

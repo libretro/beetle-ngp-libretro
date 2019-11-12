@@ -130,7 +130,7 @@ bool NGPGfx_draw(MDFN_Surface *surface, bool skip)
       if (!gfx->K2GE_MODE) NGPGfx_draw_scanline_colour(gfx->layer_enable_setting, gfx->raster_line);
       else                 NGPGfx_draw_scanline_mono(gfx->layer_enable_setting, gfx->raster_line);
 
-      uint16 *dest = surface->pixels + surface->pitch * gfx->raster_line;
+      bpp_t *dest = surface->pixels + surface->pitch * gfx->raster_line;
       for (int x = 0; x < SCREEN_WIDTH; x++)
 	  {
          dest[x] = gfx->ColorMap[gfx->cfb_scanline[x] & 4095];

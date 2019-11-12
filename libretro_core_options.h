@@ -40,6 +40,20 @@ struct retro_core_option_definition option_defs_us[] = {
       },
       "english",
    },
+#if defined(WANT_32BPP)
+   {
+      "ngp_color_correction",
+      "Color Correction",
+      "Applies color curves to pixels.",
+      {
+         { "disabled",  NULL },
+         { "gaussian",  NULL },
+         { "gamma",  NULL },
+         { NULL, NULL},
+      },
+      "disabled",
+   },
+#endif
    { NULL, NULL, NULL, { NULL, NULL }, NULL },
 };
 
