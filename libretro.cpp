@@ -210,11 +210,11 @@ static void check_variables(void)
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
    {
+      // user must manually restart core for change to happen
       if (!strcmp(var.value, "japanese"))
          setting_ngp_language = 0;
       else if (!strcmp(var.value, "english"))
-         setting_ngp_language = 1;    
-      retro_reset();
+         setting_ngp_language = 1;
    }
 }
 
