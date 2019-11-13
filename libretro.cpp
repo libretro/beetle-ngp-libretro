@@ -246,6 +246,8 @@ bool retro_load_game(const struct retro_game_info *info)
 
    set_basename(info->path);
 
+   check_variables();
+
 #ifdef LOAD_FROM_MEMORY
    game = MDFNI_LoadGameData((const uint8_t *)info->data, info->size);
 #else
@@ -277,7 +279,6 @@ bool retro_load_game(const struct retro_game_info *info)
 
    hookup_ports(true);
 
-   check_variables();
    NGPGfx_set_pixel_format();
    MDFNNGPC_SetSoundRate(44100);
 
