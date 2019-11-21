@@ -8,6 +8,8 @@
 #include "mednafen/ngp/sound.h"
 
 
+#define SAMPLE_RATE 44100
+
 // ====================================================
 
 
@@ -280,7 +282,7 @@ bool retro_load_game(const struct retro_game_info *info)
    hookup_ports(true);
 
    NGPGfx_set_pixel_format();
-   MDFNNGPC_SetSoundRate(44100);
+   MDFNNGPC_SetSoundRate(SAMPLE_RATE);
 
    return game;
 }
@@ -342,7 +344,7 @@ void retro_run(void)
    rects[0].w              = ~0;
 
    spec.surface            = surf;
-   spec.SoundRate          = 44100;
+   spec.SoundRate          = SAMPLE_RATE;
    spec.SoundBuf           = sound_buf;
    spec.LineWidths         = rects;
    spec.SoundBufMaxSize    = sizeof(sound_buf) / 2;
@@ -366,7 +368,15 @@ void retro_run(void)
    video_frames++;
    audio_frames += spec.SoundBufSize;
 
-   audio_batch_cb(spec.SoundBuf, spec.SoundBufSize);
+   int audio_left = spec.SoundBufSize;
+   int audio_total = 0;
+
+   while(audio_left > 0) {
+      audio_batch_cb(spec.SoundBuf + audio_total, audio_left < 1024 ? audio_left : 1024);
+
+	  audio_left -= 1024;
+	  audio_total += 1024 * 2;
+   }
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
       check_variables();
@@ -395,7 +405,7 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
 {
    memset(info, 0, sizeof(*info));
    info->timing.fps            = MEDNAFEN_CORE_TIMING_FPS;
-   info->timing.sample_rate    = 44100;
+   info->timing.sample_rate    = SAMPLE_RATE;
    info->geometry.base_width   = MEDNAFEN_CORE_GEOMETRY_BASE_W;
    info->geometry.base_height  = MEDNAFEN_CORE_GEOMETRY_BASE_H;
    info->geometry.max_width    = MEDNAFEN_CORE_GEOMETRY_MAX_W;
