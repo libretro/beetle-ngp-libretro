@@ -65,7 +65,7 @@ void Emulate(EmulateSpecStruct *espec)
    espec->DisplayRect.h = 152;
 
    if(espec->VideoFormatChanged)
-      NGPGfx_set_pixel_format();
+      NGPGfx_set_pixel_format(espec->surface->pix_depth);
 
    if(espec->SoundFormatChanged)
       MDFNNGPC_SetSoundRate(espec->SoundRate);
