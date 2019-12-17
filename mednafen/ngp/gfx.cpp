@@ -108,7 +108,7 @@ bool NGPGfx_hint(void)
    return (0);
 }
 
-void NGPGfx_set_pixel_format(void)
+void NGPGfx_set_pixel_format(int depth)
 {
    for(int x = 0; x < 4096; x++)
    {
@@ -116,7 +116,12 @@ void NGPGfx_set_pixel_format(void)
       int g = ((x >> 4) & 0xF) * 17;
       int b = ((x >> 8) & 0xF) * 17;
 
-      gfx->ColorMap[x] = MAKECOLOR(r, g, b, 0);
+      switch(depth)
+      {
+      case 15: gfx->ColorMap[x] = MAKECOLOR_15(r, g, b, 0); break;
+      case 16: gfx->ColorMap[x] = MAKECOLOR_16(r, g, b, 0); break;
+      case 24: gfx->ColorMap[x] = MAKECOLOR_24(r, g, b, 0); break;
+      }
    }
 }
 
@@ -130,11 +135,22 @@ bool NGPGfx_draw(MDFN_Surface *surface, bool skip)
       if (!gfx->K2GE_MODE) NGPGfx_draw_scanline_colour(gfx->layer_enable_setting, gfx->raster_line);
       else                 NGPGfx_draw_scanline_mono(gfx->layer_enable_setting, gfx->raster_line);
 
-      bpp_t *dest = surface->pixels + surface->pitch * gfx->raster_line;
-      for (int x = 0; x < SCREEN_WIDTH; x++)
-	  {
-         dest[x] = gfx->ColorMap[gfx->cfb_scanline[x] & 4095];
-	  }
+      if(surface->pix_bytes == 2)
+      {
+         uint16_t *dest = surface->pixels16 + surface->pitch * gfx->raster_line;
+         for (int x = 0; x < SCREEN_WIDTH; x++)
+         {
+            dest[x] = gfx->ColorMap[gfx->cfb_scanline[x] & 4095];
+         }
+      }
+      else if(surface->pix_bytes == 4)
+      {
+         uint32_t *dest = surface->pixels + surface->pitch * gfx->raster_line;
+         for (int x = 0; x < SCREEN_WIDTH; x++)
+         {
+            dest[x] = gfx->ColorMap[gfx->cfb_scanline[x] & 4095];
+         }
+      }	  
    }
    gfx->raster_line++;
 

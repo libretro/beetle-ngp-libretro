@@ -33,7 +33,7 @@ uint16 NGPGfx_read16(uint32 address);
 
 int NGPGfx_StateAction(StateMem *sm, int load, int data_only);
 void NGPGfx_SetLayerEnableMask(uint64 mask);
-void NGPGfx_set_pixel_format(void);
+void NGPGfx_set_pixel_format(int depth);
 
 bool NGPGfx_draw(MDFN_Surface *surface, bool skip);
 bool NGPGfx_hint(void);
@@ -77,7 +77,7 @@ typedef struct NGPGfx
    uint8 SCREEN_PERIOD;
    uint8 K2GE_MODE;
 
-   bpp_t ColorMap[4096];
+   uint32 ColorMap[4096];
 
    int layer_enable_setting;
 } NGPGfx_t;

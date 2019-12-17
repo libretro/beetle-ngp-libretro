@@ -8,7 +8,13 @@
 #include "mednafen/ngp/sound.h"
 
 
-#define SAMPLE_RATE 44100
+
+// core options
+static int RETRO_SAMPLE_RATE = 44100;
+
+static int RETRO_PIX_BYTES = 2;
+static int RETRO_PIX_DEPTH = 15;
+
 
 // ====================================================
 
@@ -103,6 +109,60 @@ static void check_system_specs(void)
    environ_cb(RETRO_ENVIRONMENT_SET_PERFORMANCE_LEVEL, &level);
 }
 
+static void check_variables(void)
+{
+   struct retro_variable var = {0};
+
+   var.key = "ngp_language";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      // user must manually restart core for change to happen
+      if (!strcmp(var.value, "japanese"))
+         setting_ngp_language = 0;
+      else if (!strcmp(var.value, "english"))
+         setting_ngp_language = 1;
+   }
+
+   var.key = "ngp_sound_sample_rate";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      static bool once = false;
+
+      if(!once)
+      {
+         RETRO_SAMPLE_RATE = atoi(var.value);
+         once = true;
+      }
+   }
+
+   var.key = "ngp_gfx_colors";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      static bool once = false;
+
+      if(!once)
+      {
+         if (strcmp(var.value, "16bit") == 0)
+         {
+            RETRO_PIX_BYTES = 2;
+            RETRO_PIX_DEPTH = 16;
+         }
+         else if (strcmp(var.value, "24bit") == 0)
+         {
+            RETRO_PIX_BYTES = 4;
+            RETRO_PIX_DEPTH = 24;
+         }
+         once = true;
+      }
+   }
+}
+
 void retro_init(void)
 {
    struct retro_log_callback log;
@@ -158,17 +218,32 @@ void retro_init(void)
       strcpy(retro_save_directory, retro_base_directory);
    }      
 
-#if defined(WANT_16BPP) && defined(FRONTEND_SUPPORTS_RGB565)
-   enum retro_pixel_format rgb565 = RETRO_PIXEL_FORMAT_RGB565;
-   if (environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &rgb565) && log_cb)
-      log_cb(RETRO_LOG_INFO, "Frontend supports RGB565 - will use that instead of XRGB1555.\n");
-#elif defined(WANT_32BPP)
-   enum retro_pixel_format rgb888 = RETRO_PIXEL_FORMAT_XRGB8888;
-   if (!environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &rgb888))
+   check_variables();
+
+   if (RETRO_PIX_DEPTH == 24)
    {
-      if (log_cb)
-         log_cb(RETRO_LOG_ERROR, "Pixel format XRGB8888 not supported by platform, cannot use %s.\n", MEDNAFEN_CORE_NAME);
-      return;
+      enum retro_pixel_format rgb888 = RETRO_PIXEL_FORMAT_XRGB8888;
+
+      if(!environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &rgb888))
+      {
+         if(log_cb) log_cb(RETRO_LOG_ERROR, "Pixel format XRGB8888 not supported by platform.\n");
+         
+         RETRO_PIX_BYTES = 2;
+         RETRO_PIX_DEPTH = 15;
+      }
+   }
+
+#if defined(FRONTEND_SUPPORTS_RGB565)
+   if (RETRO_PIX_BYTES == 2)
+   {
+      enum retro_pixel_format rgb565 = RETRO_PIXEL_FORMAT_RGB565;
+
+      if (environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &rgb565))
+      {
+         if(log_cb) log_cb(RETRO_LOG_INFO, "Frontend supports RGB565 - will use that instead of XRGB1555.\n");
+
+         RETRO_PIX_DEPTH = 16;
+      }
    }
 #endif
 
@@ -204,22 +279,6 @@ static void set_volume (uint32_t *ptr, unsigned number)
    }
 }
 
-static void check_variables(void)
-{
-   struct retro_variable var = {0};
-
-   var.key = "ngp_language";
-
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
-   {
-      // user must manually restart core for change to happen
-      if (!strcmp(var.value, "japanese"))
-         setting_ngp_language = 0;
-      else if (!strcmp(var.value, "english"))
-         setting_ngp_language = 1;
-   }
-}
-
 #define MAX_PLAYERS 1
 #define MAX_BUTTONS 7
 
@@ -248,8 +307,6 @@ bool retro_load_game(const struct retro_game_info *info)
 
    set_basename(info->path);
 
-   check_variables();
-
 #ifdef LOAD_FROM_MEMORY
    game = MDFNI_LoadGameData((const uint8_t *)info->data, info->size);
 #else
@@ -270,19 +327,32 @@ bool retro_load_game(const struct retro_game_info *info)
    surf->width  = FB_WIDTH;
    surf->height = FB_HEIGHT;
    surf->pitch  = FB_WIDTH;
+   surf->pix_bytes = RETRO_PIX_BYTES;
+   surf->pix_depth = RETRO_PIX_DEPTH;
 
-   surf->pixels = (bpp_t*)calloc(1, FB_WIDTH * FB_HEIGHT * sizeof(bpp_t));
-
-   if (!surf->pixels)
+   if (RETRO_PIX_BYTES == 2)
    {
-      free(surf);
-      return false;
+      surf->pixels16 = (uint16_t*) calloc(1, FB_WIDTH * FB_HEIGHT * RETRO_PIX_BYTES);
+      if (!surf->pixels16)
+      {
+         free(surf);
+         return false;
+      }
+   }
+   else if (RETRO_PIX_BYTES == 4)
+   {
+      surf->pixels = (uint32_t*) calloc(1, FB_WIDTH * FB_HEIGHT * RETRO_PIX_BYTES);
+      if (!surf->pixels)
+      {
+         free(surf);
+         return false;
+      }
    }
 
    hookup_ports(true);
 
-   NGPGfx_set_pixel_format();
-   MDFNNGPC_SetSoundRate(SAMPLE_RATE);
+   NGPGfx_set_pixel_format(RETRO_PIX_DEPTH);
+   MDFNNGPC_SetSoundRate(RETRO_SAMPLE_RATE);
 
    return game;
 }
@@ -344,7 +414,7 @@ void retro_run(void)
    rects[0].w              = ~0;
 
    spec.surface            = surf;
-   spec.SoundRate          = SAMPLE_RATE;
+   spec.SoundRate          = RETRO_SAMPLE_RATE;
    spec.SoundBuf           = sound_buf;
    spec.LineWidths         = rects;
    spec.SoundBufMaxSize    = sizeof(sound_buf) / 2;
@@ -363,20 +433,16 @@ void retro_run(void)
    width  = spec.DisplayRect.w;
    height = spec.DisplayRect.h;
 
-   video_cb(surf->pixels, width, height, FB_WIDTH * sizeof(bpp_t));
+   if(RETRO_PIX_BYTES == 2)
+      video_cb(surf->pixels16, width, height, FB_WIDTH * RETRO_PIX_BYTES);
+   else if(RETRO_PIX_BYTES == 4)
+      video_cb(surf->pixels, width, height, FB_WIDTH * RETRO_PIX_BYTES);
 
    video_frames++;
    audio_frames += spec.SoundBufSize;
 
-   int audio_left = spec.SoundBufSize;
-   int audio_total = 0;
-
-   while(audio_left > 0) {
-      audio_batch_cb(spec.SoundBuf + audio_total, audio_left < 1024 ? audio_left : 1024);
-
-	  audio_left -= 1024;
-	  audio_total += 1024 * 2;
-   }
+   for(int total = 0; total < spec.SoundBufSize; )
+      total += audio_batch_cb(spec.SoundBuf + total*2, spec.SoundBufSize - total);
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
       check_variables();
@@ -405,7 +471,7 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
 {
    memset(info, 0, sizeof(*info));
    info->timing.fps            = MEDNAFEN_CORE_TIMING_FPS;
-   info->timing.sample_rate    = SAMPLE_RATE;
+   info->timing.sample_rate    = RETRO_SAMPLE_RATE;
    info->geometry.base_width   = MEDNAFEN_CORE_GEOMETRY_BASE_W;
    info->geometry.base_height  = MEDNAFEN_CORE_GEOMETRY_BASE_H;
    info->geometry.max_width    = MEDNAFEN_CORE_GEOMETRY_MAX_W;
