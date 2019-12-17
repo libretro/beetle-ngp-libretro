@@ -31,14 +31,31 @@ extern "C" {
 struct retro_core_option_definition option_defs_us[] = {
    {
       "ngp_language",
-      "Language (Restart)",
-      "Language games should display text in.",
+      "Language (*)",
+      "Language games should display text in.\n(*) Core restart required.",
       {
          { "english",  NULL },
          { "japanese",  NULL },
          { NULL, NULL},
       },
       "english",
+   },
+   {
+      "ngp_sound_sample_rate",
+      "Sound Output Samplerate (*)",
+      "Slightly higher quality or higher performance.\n(*) Core restart required.",
+      {
+         { "8000", NULL },
+         { "11025", NULL },
+         { "22050", NULL },
+         { "44100", NULL },
+         { "48000", NULL },
+         { "96000", NULL },
+         { "192000", NULL },
+         { "384000", NULL },
+         { NULL, NULL },
+      },
+      "44100",
    },
    { NULL, NULL, NULL, { NULL, NULL }, NULL },
 };
