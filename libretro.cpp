@@ -368,15 +368,8 @@ void retro_run(void)
    video_frames++;
    audio_frames += spec.SoundBufSize;
 
-   int audio_left = spec.SoundBufSize;
-   int audio_total = 0;
-
-   while(audio_left > 0) {
-      audio_batch_cb(spec.SoundBuf + audio_total, audio_left < 1024 ? audio_left : 1024);
-
-	  audio_left -= 1024;
-	  audio_total += 1024 * 2;
-   }
+   for(int total = 0; total < spec.SoundBufSize; )
+      total += audio_batch_cb(spec.SoundBuf + total*2, spec.SoundBufSize - total);
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
       check_variables();
