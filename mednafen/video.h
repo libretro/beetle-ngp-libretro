@@ -9,7 +9,6 @@
 #define ALPHA_SHIFT_24 24
 #define MAKECOLOR_24(r, g, b, a) ((r << RED_SHIFT_24) | (g << GREEN_SHIFT_24) | (b << BLUE_SHIFT_24) | (a << ALPHA_SHIFT_24))
 
-#if defined(FRONTEND_SUPPORTS_RGB565)
 /* 16bit color - RGB565 */
 #define RED_MASK_16  0xf800
 #define GREEN_MASK_16 0x7e0
@@ -21,7 +20,6 @@
 #define GREEN_SHIFT_16 5
 #define BLUE_SHIFT_16 0
 #define MAKECOLOR_16(r, g, b, a) (((r >> RED_EXPAND_16) << RED_SHIFT_16) | ((g >> GREEN_EXPAND_16) << GREEN_SHIFT_16) | ((b >> BLUE_EXPAND_16) << BLUE_SHIFT_16))
-#endif
 
 /* 16bit color - RGB555 */
 #define RED_MASK_15  0x7c00
