@@ -334,7 +334,8 @@ void retro_unload_game(void)
 
    if (surf)
    {
-      free(surf->pixels);
+      if (surf->pixels)
+         free(surf->pixels);
       free(surf);
    }
    surf = NULL;
