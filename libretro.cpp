@@ -7,7 +7,8 @@
 
 #include "libretro_core_options.h"
 
-#define SAMPLE_RATE 44100
+/* core options */
+static int RETRO_SAMPLE_RATE = 44100;
 
 static MDFNGI *game;
 
@@ -430,6 +431,43 @@ static void check_system_specs(void)
    environ_cb(RETRO_ENVIRONMENT_SET_PERFORMANCE_LEVEL, &level);
 }
 
+static void check_variables(void)
+{
+   struct retro_variable var = {0};
+
+   var.key   = "ngp_language";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      /* user must manually restart core for change to happen */
+      if (!strcmp(var.value, "japanese"))
+         setting_ngp_language = 0;
+      else if (!strcmp(var.value, "english"))
+         setting_ngp_language = 1;
+   }
+
+   var.key = "ngp_sound_sample_rate";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      int rate = 44100;
+
+      if (strcmp(var.value, "8000") == 0) { rate = 8000; }
+      else if (strcmp(var.value, "11025") == 0) { rate = 11025; }
+      else if (strcmp(var.value, "22050") == 0) { rate = 22050; }
+      else if (strcmp(var.value, "44100") == 0) { rate = 44100; }
+      else if (strcmp(var.value, "48000") == 0) { rate = 48000; }
+      else if (strcmp(var.value, "96000") == 0) { rate = 96000; }
+      else if (strcmp(var.value, "192000") == 0) { rate = 192000; }
+      else if (strcmp(var.value, "384000") == 0) { rate = 384000; }
+
+      RETRO_SAMPLE_RATE = rate;
+   }
+}
+
+
 void retro_init(void)
 {
    struct retro_log_callback log;
@@ -485,6 +523,8 @@ void retro_init(void)
       strcpy(retro_save_directory, retro_base_directory);
    }      
 
+   check_variables();
+
 #if defined(FRONTEND_SUPPORTS_RGB565)
    enum retro_pixel_format rgb565 = RETRO_PIXEL_FORMAT_RGB565;
    if (environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &rgb565) && log_cb)
@@ -520,22 +560,6 @@ static void set_volume (uint32_t *ptr, unsigned number)
       default:
          *ptr = number;
          break;
-   }
-}
-
-static void check_variables(void)
-{
-   struct retro_variable var = {0};
-
-   var.key = "ngp_language";
-
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
-   {
-      // user must manually restart core for change to happen
-      if (!strcmp(var.value, "japanese"))
-         setting_ngp_language = 0;
-      else if (!strcmp(var.value, "english"))
-         setting_ngp_language = 1;
    }
 }
 
@@ -609,9 +633,8 @@ bool retro_load_game(const struct retro_game_info *info)
 
    hookup_ports(true);
 
-   check_variables();
    ngpgfx_set_pixel_format(NGPGfx);
-   MDFNNGPC_SetSoundRate(SAMPLE_RATE);
+   MDFNNGPC_SetSoundRate(RETRO_SAMPLE_RATE);
 
    return game;
 }
@@ -667,6 +690,9 @@ void retro_run(void)
    EmulateSpecStruct spec = {0};
    bool updated = false;
 
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
+      check_variables();
+
    input_poll_cb();
 
    update_input();
@@ -674,7 +700,7 @@ void retro_run(void)
    rects[0].w              = ~0;
 
    spec.surface            = surf;
-   spec.SoundRate          = SAMPLE_RATE;
+   spec.SoundRate          = RETRO_SAMPLE_RATE;
    spec.SoundBuf           = sound_buf;
    spec.LineWidths         = rects;
    spec.SoundBufMaxSize    = sizeof(sound_buf) / 2;
@@ -701,8 +727,6 @@ void retro_run(void)
    for (total = 0; total < spec.SoundBufSize; )
       total += audio_batch_cb(spec.SoundBuf + total*2, spec.SoundBufSize - total);
 
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
-      check_variables();
 }
 
 void retro_get_system_info(struct retro_system_info *info)
@@ -728,7 +752,7 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
 {
    memset(info, 0, sizeof(*info));
    info->timing.fps            = MEDNAFEN_CORE_TIMING_FPS;
-   info->timing.sample_rate    = SAMPLE_RATE;
+   info->timing.sample_rate    = RETRO_SAMPLE_RATE;
    info->geometry.base_width   = MEDNAFEN_CORE_GEOMETRY_BASE_W;
    info->geometry.base_height  = MEDNAFEN_CORE_GEOMETRY_BASE_H;
    info->geometry.max_width    = MEDNAFEN_CORE_GEOMETRY_MAX_W;
