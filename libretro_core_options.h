@@ -45,7 +45,6 @@ struct retro_core_option_definition option_defs_us[] = {
       "Sound Output Samplerate (*)",
       "Slightly higher quality or higher performance.\n(*) Core restart required.",
       {
-         { "8000", NULL },
          { "11025", NULL },
          { "22050", NULL },
          { "44100", NULL },

@@ -406,6 +406,11 @@ static void set_basename(const char *path)
    retro_base_name = retro_base_name.substr(0, retro_base_name.find_last_of('.'));
 }
 
+#if 0
+static bool update_video = false;
+#endif
+static bool update_audio = false;
+
 #define MEDNAFEN_CORE_NAME_MODULE "ngp"
 #define MEDNAFEN_CORE_NAME "Beetle NeoPop"
 #define MEDNAFEN_CORE_VERSION "v0.9.36.1"
@@ -452,18 +457,12 @@ static void check_variables(void)
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
    {
-      int rate = 44100;
+      int old_value = RETRO_SAMPLE_RATE;
 
-      if (strcmp(var.value, "8000") == 0) { rate = 8000; }
-      else if (strcmp(var.value, "11025") == 0) { rate = 11025; }
-      else if (strcmp(var.value, "22050") == 0) { rate = 22050; }
-      else if (strcmp(var.value, "44100") == 0) { rate = 44100; }
-      else if (strcmp(var.value, "48000") == 0) { rate = 48000; }
-      else if (strcmp(var.value, "96000") == 0) { rate = 96000; }
-      else if (strcmp(var.value, "192000") == 0) { rate = 192000; }
-      else if (strcmp(var.value, "384000") == 0) { rate = 384000; }
+      RETRO_SAMPLE_RATE = atoi(var.value);
 
-      RETRO_SAMPLE_RATE = rate;
+      if (old_value != RETRO_SAMPLE_RATE)
+         update_audio = true;
    }
 }
 
@@ -636,6 +635,11 @@ bool retro_load_game(const struct retro_game_info *info)
    ngpgfx_set_pixel_format(NGPGfx);
    MDFNNGPC_SetSoundRate(RETRO_SAMPLE_RATE);
 
+#if 0
+   update_video = false;
+#endif
+   update_audio = false;
+
    return game;
 }
 
@@ -708,7 +712,32 @@ void retro_run(void)
    spec.soundmultiplier    = 1.0;
    spec.SoundBufSize       = 0;
    spec.VideoFormatChanged = false;
-   spec.SoundFormatChanged = false;
+   spec.SoundFormatChanged = update_audio;
+
+#if 0
+   if (update_video || update_audio)
+#else
+   if (update_audio)
+#endif
+   {
+      struct retro_system_av_info system_av_info;
+
+#if 0
+      if (update_video)
+      {
+         memset(&system_av_info, 0, sizeof(system_av_info));
+         environ_cb(RETRO_ENVIRONMENT_SET_SYSTEM_AV_INFO, &system_av_info);
+      }
+#endif
+
+      retro_get_system_av_info(&system_av_info);
+      environ_cb(RETRO_ENVIRONMENT_SET_SYSTEM_AV_INFO, &system_av_info);
+
+#if 0
+      update_video = false;
+#endif
+      update_audio = false;
+   }
 
    Emulate(&spec);
 
