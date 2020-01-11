@@ -1001,6 +1001,11 @@ uint8_t ngpgfx_read8(ngpgfx_t *gfx, uint32_t address)
 
 uint16_t ngpgfx_read16(ngpgfx_t *gfx, uint32_t address)
 {
-   return (ngpgfx_read8(gfx, address) | (ngpgfx_read8(gfx, address + 1) << 8));
+   uint16_t ret;
+
+   ret = ngpgfx_read8(gfx, address);
+   ret |= ngpgfx_read8(gfx, address + 1) << 8;
+
+   return(ret);
 }
 
