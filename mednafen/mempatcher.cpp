@@ -26,7 +26,7 @@
 #include "mempatcher.h"
 
 #ifdef _WIN32
-#include "msvc_compat.h"
+#include "compat\msvc.h"
 #endif
 
 static uint8 **RAMPtrs = NULL;
