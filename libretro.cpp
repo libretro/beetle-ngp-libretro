@@ -10,6 +10,11 @@
 /* core options */
 static int RETRO_SAMPLE_RATE = 44100;
 
+static int RETRO_PIX_BYTES = 2;
+static int RETRO_PIX_DEPTH = 15;
+
+// ====================================================
+
 static MDFNGI *game;
 
 struct retro_perf_callback perf_cb;
@@ -89,6 +94,12 @@ static void Emulate(EmulateSpecStruct *espec)
    espec->DisplayRect.y = 0;
    espec->DisplayRect.w = 160;
    espec->DisplayRect.h = 152;
+
+   if(espec->VideoFormatChanged)
+      ngpgfx_set_pixel_format(NGPGfx, espec->surface->depth);
+
+   if(espec->SoundFormatChanged)
+      MDFNNGPC_SetSoundRate(espec->SoundRate);
 
    NGPJoyLatch          = *chee;
 
@@ -406,9 +417,7 @@ static void set_basename(const char *path)
    retro_base_name = retro_base_name.substr(0, retro_base_name.find_last_of('.'));
 }
 
-#if 0
 static bool update_video = false;
-#endif
 static bool update_audio = false;
 
 #define MEDNAFEN_CORE_NAME_MODULE "ngp"
@@ -434,6 +443,45 @@ static void check_system_specs(void)
 {
    unsigned level = 0;
    environ_cb(RETRO_ENVIRONMENT_SET_PERFORMANCE_LEVEL, &level);
+}
+
+static void check_color_depth(void)
+{
+   if (RETRO_PIX_DEPTH == 24)
+   {
+      enum retro_pixel_format rgb888 = RETRO_PIXEL_FORMAT_XRGB8888;
+
+      if(!environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &rgb888))
+      {
+         if(log_cb) log_cb(RETRO_LOG_ERROR, "Pixel format XRGB8888 not supported by platform.\n");
+
+         RETRO_PIX_BYTES = 2;
+         RETRO_PIX_DEPTH = 15;
+      }
+   }
+
+   if (RETRO_PIX_BYTES == 2)
+   {
+#if defined(FRONTEND_SUPPORTS_RGB565)
+      enum retro_pixel_format rgb565 = RETRO_PIXEL_FORMAT_RGB565;
+
+      if (environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &rgb565))
+      {
+         if(log_cb) log_cb(RETRO_LOG_INFO, "Frontend supports RGB565 - will use that instead of XRGB1555.\n");
+
+         RETRO_PIX_DEPTH = 16;
+      }
+#else
+      enum retro_pixel_format rgb555 = RETRO_PIXEL_FORMAT_0RGB1555;
+
+      if (environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &rgb555))
+      {
+         if(log_cb) log_cb(RETRO_LOG_INFO, "Using default 0RGB1555 pixel format.\n");
+
+         RETRO_PIX_DEPTH = 15;
+      }
+#endif
+   }
 }
 
 static void check_variables(void)
@@ -463,6 +511,28 @@ static void check_variables(void)
 
       if (old_value != RETRO_SAMPLE_RATE)
          update_audio = true;
+   }
+
+   var.key = "ngp_gfx_colors";
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      int old_value = RETRO_PIX_BYTES;
+
+      if (strcmp(var.value, "16bit") == 0)
+      {
+         RETRO_PIX_BYTES = 2;
+         RETRO_PIX_DEPTH = 16;
+      }
+      else if (strcmp(var.value, "24bit") == 0)
+      {
+         RETRO_PIX_BYTES = 4;
+         RETRO_PIX_DEPTH = 24;
+      }
+
+      if (old_value != RETRO_PIX_BYTES)
+         update_video = true;
    }
 }
 
@@ -522,14 +592,6 @@ void retro_init(void)
       strcpy(retro_save_directory, retro_base_directory);
    }      
 
-   check_variables();
-
-#if defined(FRONTEND_SUPPORTS_RGB565)
-   enum retro_pixel_format rgb565 = RETRO_PIXEL_FORMAT_RGB565;
-   if (environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &rgb565) && log_cb)
-      log_cb(RETRO_LOG_INFO, "Frontend supports RGB565 - will use that instead of XRGB1555.\n");
-#endif
-
    perf_get_cpu_features_cb = NULL;
    if (environ_cb(RETRO_ENVIRONMENT_GET_PERF_INTERFACE, &perf_cb))
       perf_get_cpu_features_cb = perf_cb.get_cpu_features;
@@ -538,7 +600,6 @@ void retro_init(void)
       libretro_supports_bitmasks = true;
 
    check_system_specs();
-   MDFNGI_reset(MDFNGameInfo);
 }
 
 void retro_reset(void)
@@ -601,6 +662,9 @@ bool retro_load_game(const struct retro_game_info *info)
 
    set_basename(info->path);
 
+   check_variables();
+   check_color_depth();
+
 #ifdef LOAD_FROM_MEMORY
    game = MDFNI_LoadGameData((const uint8_t *)info->data, info->size);
 #else
@@ -621,8 +685,9 @@ bool retro_load_game(const struct retro_game_info *info)
    surf->width  = FB_WIDTH;
    surf->height = FB_HEIGHT;
    surf->pitch  = FB_WIDTH;
+   surf->depth  = RETRO_PIX_DEPTH;
 
-   surf->pixels = (uint16_t*)calloc(1, FB_WIDTH * FB_HEIGHT * 2);
+   surf->pixels = (uint16_t*)calloc(1, FB_WIDTH * FB_HEIGHT * sizeof(uint32_t));
 
    if (!surf->pixels)
    {
@@ -632,12 +697,10 @@ bool retro_load_game(const struct retro_game_info *info)
 
    hookup_ports(true);
 
-   ngpgfx_set_pixel_format(NGPGfx);
+   ngpgfx_set_pixel_format(NGPGfx, RETRO_PIX_DEPTH);
    MDFNNGPC_SetSoundRate(RETRO_SAMPLE_RATE);
 
-#if 0
    update_video = false;
-#endif
    update_audio = false;
 
    return game;
@@ -651,6 +714,14 @@ void retro_unload_game(void)
    MDFN_FlushGameCheats(0);
    MDFNI_CloseGame();
    MDFNMP_Kill();
+
+   if (surf)
+   {
+      if (surf->pixels)
+         free(surf->pixels);
+      free(surf);
+   }
+   surf = NULL;
 }
 
 static void update_input(void)
@@ -711,31 +782,25 @@ void retro_run(void)
    spec.SoundVolume        = 1.0;
    spec.soundmultiplier    = 1.0;
    spec.SoundBufSize       = 0;
-   spec.VideoFormatChanged = false;
+   spec.VideoFormatChanged = update_video;
    spec.SoundFormatChanged = update_audio;
 
-#if 0
    if (update_video || update_audio)
-#else
-   if (update_audio)
-#endif
    {
       struct retro_system_av_info system_av_info;
 
-#if 0
       if (update_video)
       {
          memset(&system_av_info, 0, sizeof(system_av_info));
          environ_cb(RETRO_ENVIRONMENT_SET_SYSTEM_AV_INFO, &system_av_info);
       }
-#endif
 
       retro_get_system_av_info(&system_av_info);
       environ_cb(RETRO_ENVIRONMENT_SET_SYSTEM_AV_INFO, &system_av_info);
 
-#if 0
+      surf->depth = RETRO_PIX_DEPTH;
+
       update_video = false;
-#endif
       update_audio = false;
    }
 
@@ -748,7 +813,7 @@ void retro_run(void)
    width  = spec.DisplayRect.w;
    height = spec.DisplayRect.h;
 
-   video_cb(surf->pixels, width, height, FB_WIDTH << 1);
+   video_cb(surf->pixels, width, height, FB_WIDTH * RETRO_PIX_BYTES);
 
    video_frames++;
    audio_frames += spec.SoundBufSize;
@@ -787,6 +852,8 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
    info->geometry.max_width    = MEDNAFEN_CORE_GEOMETRY_MAX_W;
    info->geometry.max_height   = MEDNAFEN_CORE_GEOMETRY_MAX_H;
    info->geometry.aspect_ratio = MEDNAFEN_CORE_GEOMETRY_ASPECT_RATIO;
+
+   check_color_depth();
 }
 
 void retro_deinit(void)
