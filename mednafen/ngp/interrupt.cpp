@@ -25,6 +25,10 @@
 #include "dma.h"
 #include "system.h"
 
+#ifndef NDEBUG
+#include <assert.h>
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
