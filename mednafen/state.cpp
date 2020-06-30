@@ -227,21 +227,12 @@ static bool SubWrite(StateMem *st, SFORMAT *sf, const char *name_prefix = NULL)
       int slen = sprintf(nameo + 1, "%s%s", name_prefix ? name_prefix : "", sf->name);
       nameo[0] = slen;
 
-      if(slen >= 255)
-      {
-         printf("Warning:  state variable name possibly too long: %s %s %s %d\n", sf->name, name_prefix, nameo, slen);
-         slen = 255;
-      }
-
       smem_write(st, nameo, 1 + nameo[0]);
       smem_write32le(st, bytesize);
 
 #ifdef MSB_FIRST
       /* Flip the byte order... */
-      if(sf->flags & MDFNSTATE_BOOL)
-      {
-
-      }
+      if(sf->flags & MDFNSTATE_BOOL) { }
       else if(sf->flags & MDFNSTATE_RLSB64)
          Endian_A64_Swap(sf->v, bytesize / sizeof(uint64_t));
       else if(sf->flags & MDFNSTATE_RLSB32)
@@ -268,10 +259,7 @@ static bool SubWrite(StateMem *st, SFORMAT *sf, const char *name_prefix = NULL)
 
 #ifdef MSB_FIRST
       /* Now restore the original byte order. */
-      if(sf->flags & MDFNSTATE_BOOL)
-      {
-
-      }
+      if(sf->flags & MDFNSTATE_BOOL) { }
       else if(sf->flags & MDFNSTATE_RLSB64)
          Endian_A64_Swap(sf->v, bytesize / sizeof(uint64_t));
       else if(sf->flags & MDFNSTATE_RLSB32)
