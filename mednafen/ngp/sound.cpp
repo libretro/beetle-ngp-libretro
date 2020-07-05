@@ -5,6 +5,7 @@
 #include "../include/blip/Stereo_Buffer.h"
 #include "T6W28_Apu.h"
 #include "../state.h"
+#include "../state_helpers.h"
 
 static T6W28_Apu apu;
 

@@ -23,6 +23,7 @@
 #include "../hw_cpu/z80-fuse/z80_macros.h"
 
 #include "../state.h"
+#include "../state_helpers.h"
 
 static uint8_t CommByte;
 static bool Z80Enabled;

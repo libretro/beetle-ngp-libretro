@@ -86,10 +86,12 @@ endif
 
 ifneq ($(HAVE_GRIFFIN), 1)
 SOURCES_CXX += \
-	$(MEDNAFEN_DIR)/state.cpp \
 	$(MEDNAFEN_DIR)/mempatcher.cpp \
 	$(MEDNAFEN_DIR)/sound/Stereo_Buffer.cpp \
 	$(CORE_DIR)/libretro.cpp
+
+SOURCES_C   += \
+	$(MEDNAFEN_DIR)/state.c
 
 ifneq ($(STATIC_LINKING), 1)
 SOURCES_C += \

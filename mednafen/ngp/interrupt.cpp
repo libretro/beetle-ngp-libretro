@@ -24,6 +24,7 @@
 #include "Z80_interface.h"
 #include "dma.h"
 #include "system.h"
+#include "state_helpers.h"
 
 #ifndef NDEBUG
 #include <assert.h>

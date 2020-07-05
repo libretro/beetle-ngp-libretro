@@ -6,6 +6,8 @@
 #include <streams/file_stream.h>
 
 #include "libretro_core_options.h"
+#include "mednafen/state.h"
+#include "mednafen/state_helpers.h"
 
 /* core options */
 static int RETRO_SAMPLE_RATE = 44100;
@@ -205,7 +207,7 @@ static void SetInput(int port, const char *type, void *ptr)
       chee = (uint8 *)ptr;
 }
 
-int StateAction(StateMem *sm, int load, int data_only)
+extern "C" int StateAction(StateMem *sm, int load, int data_only)
 {
    SFORMAT StateRegs[] =
    {

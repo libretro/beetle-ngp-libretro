@@ -20,6 +20,7 @@
 #include "TLCS-900h/TLCS900h_registers.h"
 #include "../state.h"
 #include "../video.h"
+#include "../state_helpers.h"
 #ifdef MSB_FIRST
 #include "../masmem.h"
 #endif
