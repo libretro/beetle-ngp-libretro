@@ -207,6 +207,10 @@ static bool SubWrite(StateMem *st, SFORMAT *sf, const char *name_prefix)
 {
    while(sf->size || sf->name)	/* Size can sometimes be zero, so also check for the text name.  These two should both be zero only at the end of a struct. */
    {
+      int slen;
+      char nameo[1 + 256];
+      int32_t bytesize;
+
       if(!sf->size || !sf->v)
       {
          sf++;
@@ -222,10 +226,8 @@ static bool SubWrite(StateMem *st, SFORMAT *sf, const char *name_prefix)
          continue;
       }
 
-      int32_t bytesize = sf->size;
-
-      char nameo[1 + 256];
-      int slen = sprintf(nameo + 1, "%s%s", name_prefix ? name_prefix : "", sf->name);
+      bytesize = sf->size;
+      slen     = sprintf(nameo + 1, "%s%s", name_prefix ? name_prefix : "", sf->name);
       nameo[0] = slen;
 
       smem_write(st, nameo, 1 + nameo[0]);
@@ -249,7 +251,8 @@ static bool SubWrite(StateMem *st, SFORMAT *sf, const char *name_prefix)
        * Don't do it if we're only saving the raw data. */
       if(sf->flags & MDFNSTATE_BOOL)
       {
-         for(int32_t bool_monster = 0; bool_monster < bytesize; bool_monster++)
+         int32_t bool_monster;
+         for(bool_monster = 0; bool_monster < bytesize; bool_monster++)
          {
             uint8_t tmp_bool = ((bool *)sf->v)[bool_monster];
             smem_write(st, &tmp_bool, 1);
@@ -541,9 +544,10 @@ int MDFNSS_StateAction(void *st_p, int load, int data_only, SFORMAT *sf, const c
 
 int MDFNSS_SaveSM(void *st_p, int a, int b, const void *c, const void *d, const void *e)
 {
+   static const char *header_magic = "MDFNSVST";
+   uint32_t sizy;
    uint8_t header[32];
    StateMem *st = (StateMem*)st_p;
-   static const char *header_magic = "MDFNSVST";
    int neowidth = 0, neoheight = 0;
 
    memset(header, 0, sizeof(header));
@@ -557,7 +561,7 @@ int MDFNSS_SaveSM(void *st_p, int a, int b, const void *c, const void *d, const 
    if(!StateAction(st, 0, 0))
       return(0);
 
-   uint32_t sizy = st->loc;
+   sizy = st->loc;
    smem_seek(st, 16 + 4, SEEK_SET);
    smem_write32le(st, sizy);
 
