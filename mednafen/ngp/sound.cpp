@@ -132,11 +132,8 @@ int MDFNNGPCSOUND_StateAction(void *data, int load, int data_only)
 
    if(load)
    {
+      buf.clear();
       apu.load_state(sn_state);
-
-      //fixes loadstate popping
-      //synth.offset(ngpc_soundTS >> 1, CurrentDACLeft - LastDACLeft, buf.left());
-      //synth.offset(ngpc_soundTS >> 1, CurrentDACRight - LastDACRight, buf.right());
 
       LastDACLeft = CurrentDACLeft;
       LastDACRight = CurrentDACRight;
