@@ -54,11 +54,11 @@ void T6W28_Square::run( sms_time_t time, sms_time_t end_time )
 			last_amp_left = 0;
 		}
 
-                if ( last_amp_right )
-                {
-                        synth->offset( time, -last_amp_right, outputs[1] );
-                        last_amp_right = 0;
-                }
+		if ( last_amp_right )
+		{
+			synth->offset( time, -last_amp_right, outputs[1] );
+			last_amp_right = 0;
+		}
 
 		time += delay;
 		if ( !period )
@@ -86,10 +86,10 @@ void T6W28_Square::run( sms_time_t time, sms_time_t end_time )
 			synth->offset( time, delta_left, outputs[2] );
 		}
 		
-                if ( delta_right )
-                {
-                        last_amp_right = amp_right;
-                        synth->offset( time, delta_right, outputs[1] );
+		if ( delta_right )
+		{
+			last_amp_right = amp_right;
+			synth->offset( time, delta_right, outputs[1] );
                 }
 
 		time += delay;
