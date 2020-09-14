@@ -91,7 +91,6 @@ void sngMAX()
 //===== HALT
 void sngHALT()
 {
-	//MDFN_printf("CPU halt requested and ignored.\nPlease send me a saved state.");
 	cycles = 8;
 }
 
