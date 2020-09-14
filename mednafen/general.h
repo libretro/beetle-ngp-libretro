@@ -18,8 +18,6 @@ typedef enum
  MDFNMKF_FIRMWARE
 } MakeFName_Type;
 
-void GetFileBase(const char *f);
-
 #ifdef __cplusplus
 extern "C" {
 #endif

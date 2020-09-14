@@ -15,9 +15,6 @@ int64_t MDFN_GetSettingI(const char *name);
 double MDFN_GetSettingF(const char *name);
 bool MDFN_GetSettingB(const char *name);
 
-bool MDFNI_SetSettingB(const char *name, bool value);
-bool MDFNI_SetSettingUI(const char *name, uint64_t value);
-
 #ifdef __cplusplus
 }
 #endif

@@ -49,44 +49,6 @@ bool MDFN_GetSettingB(const char *name)
    /* LIBRETRO */
    if (!strcmp("ngp.language", name))
       return setting_ngp_language;
-   /* FILESYS */
-   if (!strcmp("filesys.untrusted_fip_check", name))
-      return 0;
-   if (!strcmp("filesys.disablesavegz", name))
-      return 1;
    fprintf(stderr, "unhandled setting B: %s\n", name);
    return 0;
-}
-
-
-const char *MDFN_GetSettingS(const char *name)
-{
-   /* FILESYS */
-   if (!strcmp("filesys.path_firmware", name))
-      return retro_base_directory;
-   if (!strcmp("filesys.path_palette", name))
-      return retro_base_directory;
-   if (!strcmp("filesys.path_sav", name))
-      return retro_base_directory;
-   if (!strcmp("filesys.path_state", name))
-      return retro_base_directory;
-   if (!strcmp("filesys.path_cheat", name))
-      return retro_base_directory;
-   fprintf(stderr, "unhandled setting S: %s\n", name);
-   return 0;
-}
-
-bool MDFNI_SetSetting(const char *name, const char *value, bool NetplayOverride)
-{
-   return false;
-}
-
-bool MDFNI_SetSettingB(const char *name, bool value)
-{
-   return false;
-}
-
-bool MDFNI_SetSettingUI(const char *name, uint64_t value)
-{
-   return false;
 }

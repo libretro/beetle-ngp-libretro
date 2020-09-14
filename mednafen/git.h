@@ -258,20 +258,6 @@ typedef struct
 
 } EmulateSpecStruct;
 
-typedef enum
-{
- MODPRIO_INTERNAL_EXTRA_LOW = 0,	// For "cdplay" module, mostly.
-
- MODPRIO_INTERNAL_LOW = 10,
- MODPRIO_EXTERNAL_LOW = 20,
- MODPRIO_INTERNAL_HIGH = 30,
- MODPRIO_EXTERNAL_HIGH = 40
-} ModPrio;
-
-#ifdef __cplusplus
-class CDIF;
-#endif
-
 #define MDFN_MASTERCLOCK_FIXED(n)	((int64)((double)(n) * (1LL << 32)))
 
 typedef struct
