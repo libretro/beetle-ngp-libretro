@@ -16,7 +16,6 @@ SOURCES_CXX += \
 	$(CORE_EMU_DIR)/biosHLE.cpp \
 	$(CORE_EMU_DIR)/dma.cpp \
 	$(CORE_EMU_DIR)/gfx.cpp \
-	$(CORE_EMU_DIR)/system.cpp \
 	$(CORE_EMU_DIR)/interrupt.cpp \
 	$(CORE_EMU_DIR)/mem.cpp \
 	$(CORE_EMU_DIR)/sound.cpp \
@@ -27,6 +26,7 @@ SOURCES_C += \
 	$(CORE_EMU_DIR)/bios.c \
 	$(CORE_EMU_DIR)/flash.c \
 	$(CORE_EMU_DIR)/rom.c \
+	$(CORE_EMU_DIR)/system.c \
 	$(CORE_EMU_DIR)/TLCS-900h/TLCS900h_interpret.c \
 	$(CORE_EMU_DIR)/TLCS-900h/TLCS900h_interpret_dst.c \
 	$(CORE_EMU_DIR)/TLCS-900h/TLCS900h_interpret_reg.c \

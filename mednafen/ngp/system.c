@@ -11,61 +11,45 @@
 
 #include <streams/file_stream.h>
 
-bool system_comms_read(uint8_t* buffer)
-{
-   return 0;
-}
+bool system_comms_read(uint8_t* buffer) { return 0; }
+bool system_comms_poll(uint8_t* buffer) { return 0; }
+void system_comms_write(uint8_t data) { }
 
-bool system_comms_poll(uint8_t* buffer)
+bool system_io_flash_read(uint8_t *s, uint32_t len)
 {
-   return 0;
-}
+   char path_str[1024];
+   RFILE *flash_fp = NULL;
 
-void system_comms_write(uint8_t data)
-{
-}
-
-static bool system_io_flash_read_internal(
-      uint8_t* buffer, uint32_t bufferLength)
-{
-   std::string pathStr = MDFN_MakeFName(MDFNMKF_SAV, 0, "flash");
-   RFILE     *flash_fp = filestream_open(pathStr.c_str(),
+   MDFN_MakeFName(MDFNMKF_SAV, path_str, sizeof(path_str), 0, "flash");
+   flash_fp = filestream_open(path_str,
          RETRO_VFS_FILE_ACCESS_READ, RETRO_VFS_FILE_ACCESS_HINT_NONE);
 
    if (!flash_fp)
       return 0;
 
-   filestream_read(flash_fp, buffer, bufferLength);
+   filestream_read(flash_fp, s, len);
    filestream_close(flash_fp);
 
    return 1;
 }
 
-static bool system_io_flash_write_internal(
-      uint8_t *buffer, uint32_t bufferLength)
+bool system_io_flash_write(uint8_t *s, uint32_t len)
 {
-   std::string pathStr = MDFN_MakeFName(MDFNMKF_SAV, 0, "flash");
-   RFILE     *flash_fp = filestream_open(pathStr.c_str(),
+   char path_str[1024];
+   RFILE *flash_fp = NULL;
+
+   MDFN_MakeFName(MDFNMKF_SAV, path_str, sizeof(path_str), 0, "flash");
+   flash_fp = filestream_open(path_str,
          RETRO_VFS_FILE_ACCESS_WRITE,
          RETRO_VFS_FILE_ACCESS_HINT_NONE);
 
    if (!flash_fp)
       return 0;
 
-   filestream_write(flash_fp, buffer, bufferLength);
+   filestream_write(flash_fp, s, len);
    filestream_close(flash_fp);
 
    return 1;
-}
-
-extern "C" bool system_io_flash_read(uint8_t *s, uint32_t len)
-{
-   return system_io_flash_read_internal(s, len);
-}
-
-extern "C" bool system_io_flash_write(uint8_t *s, uint32_t len)
-{
-   return system_io_flash_write_internal(s, len);
 }
 
 int FLASH_StateAction(void *data, int load, int data_only)

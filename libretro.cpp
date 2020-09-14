@@ -9,6 +9,8 @@
 #include "mednafen/state.h"
 #include "mednafen/state_helpers.h"
 
+#include <string>
+
 /* core options */
 static int RETRO_SAMPLE_RATE = 44100;
 
@@ -1007,43 +1009,26 @@ void retro_cheat_reset(void)
 void retro_cheat_set(unsigned, bool, const char *)
 {}
 
-#ifdef _WIN32
-static void sanitize_path(std::string &path)
-{
-   size_t size = path.size();
-   for (size_t i = 0; i < size; i++)
-      if (path[i] == '/')
-         path[i] = '\\';
-}
-#endif
-
 // Use a simpler approach to make sure that things go right for libretro.
-std::string MDFN_MakeFName(MakeFName_Type type, int id1, const char *cd1)
+extern "C" void MDFN_MakeFName(MakeFName_Type type, char *s, size_t len,
+      int id1, const char *cd1)
 {
-   char slash;
 #ifdef _WIN32
-   slash = '\\';
+   char slash = '\\';
 #else
-   slash = '/';
+   char slash = '/';
 #endif
-   std::string ret;
    switch (type)
    {
       case MDFNMKF_SAV:
-         ret = std::string(retro_save_directory) + slash + std::string(retro_base_name) +
-            std::string(".") + std::string(cd1);
-         break;
-      case MDFNMKF_FIRMWARE:
-         ret = std::string(retro_base_directory) + slash + std::string(cd1);
-#ifdef _WIN32
-   sanitize_path(ret); // Because Windows path handling is mongoloid.
-#endif
+         snprintf(s, len, "%s%c%s%s%s", 
+               retro_save_directory, slash, retro_base_name.c_str(), ".",
+               cd1);
          break;
       default:	  
          break;
    }
 
    if (log_cb)
-      log_cb(RETRO_LOG_INFO, "MDFN_MakeFName: %s\n", ret.c_str());
-   return ret;
+      log_cb(RETRO_LOG_INFO, "MDFN_MakeFName: %s\n", s);
 }
