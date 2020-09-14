@@ -68,6 +68,4 @@ extern COLOURMODE system_colour;
 /* Core <--> System-Sound Interface */
 
 void int_redo_icache(void);
-
-extern uint8_t NGPJoyLatch;
 #endif

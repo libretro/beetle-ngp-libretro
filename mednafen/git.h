@@ -124,53 +124,6 @@ enum
 {
  MDFN_MSC_RESET = 0x01,
  MDFN_MSC_POWER = 0x02,
-
- MDFN_MSC_INSERT_COIN = 0x07,
-
- // If we ever support arcade systems, we'll abstract DIP switches differently...maybe.
- MDFN_MSC_TOGGLE_DIP0 = 0x10,
- MDFN_MSC_TOGGLE_DIP1,
- MDFN_MSC_TOGGLE_DIP2,
- MDFN_MSC_TOGGLE_DIP3,
- MDFN_MSC_TOGGLE_DIP4,
- MDFN_MSC_TOGGLE_DIP5,
- MDFN_MSC_TOGGLE_DIP6,
- MDFN_MSC_TOGGLE_DIP7,
- MDFN_MSC_TOGGLE_DIP8,
- MDFN_MSC_TOGGLE_DIP9,
- MDFN_MSC_TOGGLE_DIP10,
- MDFN_MSC_TOGGLE_DIP11,
- MDFN_MSC_TOGGLE_DIP12,
- MDFN_MSC_TOGGLE_DIP13,
- MDFN_MSC_TOGGLE_DIP14,
- MDFN_MSC_TOGGLE_DIP15,
-
-
- // n of DISKn translates to is emulation module specific.
- MDFN_MSC_INSERT_DISK0 = 0x20,
- MDFN_MSC_INSERT_DISK1,
- MDFN_MSC_INSERT_DISK2,
- MDFN_MSC_INSERT_DISK3,
- MDFN_MSC_INSERT_DISK4,
- MDFN_MSC_INSERT_DISK5,
- MDFN_MSC_INSERT_DISK6,
- MDFN_MSC_INSERT_DISK7,
- MDFN_MSC_INSERT_DISK8,
- MDFN_MSC_INSERT_DISK9,
- MDFN_MSC_INSERT_DISK10,
- MDFN_MSC_INSERT_DISK11,
- MDFN_MSC_INSERT_DISK12,
- MDFN_MSC_INSERT_DISK13,
- MDFN_MSC_INSERT_DISK14,
- MDFN_MSC_INSERT_DISK15,
-
- MDFN_MSC_INSERT_DISK	= 0x30,
- MDFN_MSC_EJECT_DISK 	= 0x31,
-
- // This command should select the next disk or disk side in the set and use MDFN_DispMessage() to show which disk is selected.
- // (If it's only allowed while a disk is ejected, or not, is emulation module specific.
- MDFN_MSC_SELECT_DISK	= 0x32,
-
  MDFN_MSC__LAST = 0x3F	// WARNING: Increasing(or having the enum'd value of a command greater than this :b) this will necessitate a change to the netplay protocol.
 };
 

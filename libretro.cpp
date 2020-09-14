@@ -81,8 +81,6 @@ ngpgfx_t *NGPGfx;
 
 COLOURMODE system_colour = COLOURMODE_AUTO;
 
-uint8 NGPJoyLatch;
-
 static uint8 *chee;
 
 static int32 z80_runtime;
@@ -104,8 +102,6 @@ static void Emulate(EmulateSpecStruct *espec)
 
    if(espec->SoundFormatChanged)
       MDFNNGPC_SetSoundRate(espec->SoundRate);
-
-   NGPJoyLatch          = *chee;
 
    storeB(0x6F82, *chee);
 
@@ -330,19 +326,6 @@ static InputDeviceInfoStruct InputDeviceInfo[] =
 static const InputPortInfoStruct PortInfo[] =
 {
  { "builtin", "Built-In", sizeof(InputDeviceInfo) / sizeof(InputDeviceInfoStruct), InputDeviceInfo, "gamepad" }
-};
-
-static InputInfoStruct InputInfo =
-{
- sizeof(PortInfo) / sizeof(InputPortInfoStruct),
- PortInfo
-};
-
-static const FileExtensionSpecStruct KnownExtensions[] =
-{
- { ".ngp", "Neo Geo Pocket ROM Image" },
- { ".ngc", "Neo Geo Pocket Color ROM Image" },
- { NULL, NULL }
 };
 
 MDFNGI EmulatedNGP = {};
