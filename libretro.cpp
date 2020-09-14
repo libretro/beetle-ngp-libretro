@@ -19,8 +19,6 @@ static int RETRO_PIX_DEPTH = 15;
 
 // ====================================================
 
-static MDFNGI *game;
-
 struct retro_perf_callback perf_cb;
 retro_get_cpu_features_t perf_get_cpu_features_cb = NULL;
 retro_log_printf_t log_cb;
@@ -352,7 +350,7 @@ static void MDFNGI_reset(MDFNGI *gameinfo)
  gameinfo->soundchan = 2;
 }
 
-static MDFNGI *MDFNI_LoadGame(const char *name)
+static bool MDFNI_LoadGame(const char *name)
 {
    MDFNFILE *GameFile = file_open(name);
 
@@ -365,25 +363,25 @@ static MDFNGI *MDFNI_LoadGame(const char *name)
    file_close(GameFile);
    GameFile     = NULL;
 
-   return MDFNGameInfo;
+   return true;
 
 error:
    if (GameFile)
       file_close(GameFile);
    GameFile     = NULL;
    MDFNGI_reset(MDFNGameInfo);
-   return(0);
+   return false;
 }
 
-static MDFNGI *MDFNI_LoadGameData(const uint8_t *data, size_t size)
+static bool MDFNI_LoadGameData(const uint8_t *data, size_t size)
 {
    if(Load("", NULL, data, size) <= 0)
       goto error;
-   return MDFNGameInfo;
+   return true;
 
 error:
    MDFNGI_reset(MDFNGameInfo);
-   return(0);
+   return false;
 }
 
 static void MDFNI_CloseGame(void)
@@ -648,13 +646,12 @@ bool retro_load_game(const struct retro_game_info *info)
    check_color_depth();
 
 #ifdef LOAD_FROM_MEMORY
-   game = MDFNI_LoadGameData((const uint8_t *)info->data, info->size);
-#else
-   game = MDFNI_LoadGame(info->path);
-#endif
-
-   if (!game)
+   if (!MDFNI_LoadGameData((const uint8_t *)info->data, info->size))
       return false;
+#else
+   if (!MDFNI_LoadGame(info->path))
+      return false;
+#endif
 
    MDFN_LoadGameCheats(NULL);
    MDFNMP_InstallReadPatches();
@@ -690,9 +687,6 @@ bool retro_load_game(const struct retro_game_info *info)
 
 void retro_unload_game(void)
 {
-   if (!game)
-      return;
-
    MDFN_FlushGameCheats(0);
    MDFNI_CloseGame();
    MDFNMP_Kill();
