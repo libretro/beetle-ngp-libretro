@@ -26,16 +26,26 @@ void MDFNNGPCSOUND_SetEnable(bool set)
       apu.reset();
 }
 
-void Write_SoundChipLeft(uint8_t data)
+static void Write_SoundChipLeftInternal(uint8_t data)
 {
    if(schipenable)
       apu.write_data_left(ngpc_soundTS >> 1, data);
 }
 
-void Write_SoundChipRight(uint8_t data)
+static void Write_SoundChipRightInternal(uint8_t data)
 {
    if(schipenable)
       apu.write_data_right(ngpc_soundTS >> 1, data);
+}
+
+extern "C" void Write_SoundChipLeft(uint8_t data)
+{
+   Write_SoundChipLeftInternal(data);
+}
+
+extern "C" void Write_SoundChipRight(uint8_t data)
+{
+   Write_SoundChipRightInternal(data);
 }
 
 void dac_write_left(uint8_t data)

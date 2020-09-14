@@ -20,8 +20,14 @@
 /* Speed of DAC playback (in Hz) */
 #define DAC_FREQUENCY		8000
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 void Write_SoundChipLeft(uint8_t data);
 void Write_SoundChipRight(uint8_t data);
+#ifdef __cplusplus
+}
+#endif
 
 void dac_write_left(uint8_t);
 void dac_write_right(uint8_t);

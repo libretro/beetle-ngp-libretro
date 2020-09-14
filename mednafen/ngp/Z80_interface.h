@@ -19,6 +19,10 @@
 
 #include "../hw_cpu/z80-fuse/z80.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 uint8_t Z80_ReadComm(void);
 void Z80_WriteComm(uint8_t data);
 
@@ -31,5 +35,9 @@ bool Z80_IsEnabled(void);
 int Z80_RunOP(void);
 
 int MDFNNGPCZ80_StateAction(void *data, int load, int data_only);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -71,7 +71,8 @@ int FLASH_StateAction(void *data, int load, int data_only)
 
    if(!FlashLength) // No flash data to save, OR no flash data to load.
    {
-      if(flashdata) free(flashdata);
+      if(flashdata)
+         free(flashdata);
       return 1;
    }
 

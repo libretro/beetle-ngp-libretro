@@ -23,7 +23,6 @@
 #include "../hw_cpu/z80-fuse/z80_macros.h"
 
 #include "../state.h"
-#include "../state_helpers.h"
 
 static uint8_t CommByte;
 static bool Z80Enabled;
@@ -187,9 +186,9 @@ int MDFNNGPCZ80_StateAction(void *data, int load, int data_only)
 {
    SFORMAT StateRegs[] =
    {
-      SFVAR(CommByte),
-      SFVAR(Z80Enabled),
-      SFEND
+      { &(CommByte), (uint32_t)sizeof(CommByte), MDFNSTATE_RLSB, "CommByte" },
+      { &(Z80Enabled), 1, MDFNSTATE_RLSB | MDFNSTATE_BOOL, "Z80Enabled" },
+      { 0, 0, 0, 0 }
    };
 
    if(!MDFNSS_StateAction(data, load, data_only, StateRegs, "Z80X", false))
