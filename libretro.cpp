@@ -44,7 +44,7 @@ static bool initial_ports_hookup = false;
 
 extern "C" char retro_base_directory[1024];
 std::string retro_base_name;
-char retro_save_directory[1024];
+static char retro_save_directory[1024];
 
 //---------------------------------------------------------------------------
 // NEOPOP : Emulator as in Dreamland
@@ -424,12 +424,7 @@ static bool update_audio = false;
 #define MEDNAFEN_CORE_GEOMETRY_ASPECT_RATIO (20.0 / 19.0)
 #define FB_WIDTH 160
 #define FB_HEIGHT 152
-
-
-
 #define FB_MAX_HEIGHT FB_HEIGHT
-
-const char *mednafen_core_str = MEDNAFEN_CORE_NAME;
 
 static void check_system_specs(void)
 {
@@ -532,18 +527,16 @@ static void check_variables(void)
 void retro_init(void)
 {
    struct retro_log_callback log;
+   const char *dir = NULL;
+
    if (environ_cb(RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &log))
       log_cb = log.log;
    else 
       log_cb = NULL;
 
-   const char *dir = NULL;
-
    if (environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &dir) && dir)
    {
-      std::string retro_base_dir_tmp;
-
-      retro_base_dir_tmp = dir;
+      std::string retro_base_dir_tmp = dir;
       // Make sure that we don't have any lingering slashes, etc, as they break Windows.
       size_t last = retro_base_dir_tmp.find_last_not_of("/\\");
       if (last != std::string::npos)
@@ -563,10 +556,8 @@ void retro_init(void)
    
    if (environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &dir) && dir)
    {
-      std::string retro_save_dir_tmp;
-
-	  // If save directory is defined use it, otherwise use system directory
-      retro_save_dir_tmp = *dir ? dir : retro_base_directory;
+      // If save directory is defined use it, otherwise use system directory
+      std::string retro_save_dir_tmp = *dir ? dir : retro_base_directory;
       // Make sure that we don't have any lingering slashes, etc, as they break Windows.
       size_t last = retro_save_dir_tmp.find_last_not_of("/\\");
       if (last != std::string::npos)
@@ -618,7 +609,6 @@ static void set_volume (uint32_t *ptr, unsigned number)
 #define MAX_PLAYERS 1
 #define MAX_BUTTONS 7
 static uint8_t input_buf;
-
 
 static void hookup_ports(bool force)
 {
@@ -695,7 +685,7 @@ bool retro_load_game(const struct retro_game_info *info)
    update_video = false;
    update_audio = false;
 
-   return game;
+   return true;
 }
 
 void retro_unload_game(void)
@@ -861,9 +851,9 @@ void retro_deinit(void)
    if (log_cb)
    {
       log_cb(RETRO_LOG_INFO, "[%s]: Samples / Frame: %.5f\n",
-            mednafen_core_str, (double)audio_frames / video_frames);
+            MEDNAFEN_CORE_NAME, (double)audio_frames / video_frames);
       log_cb(RETRO_LOG_INFO, "[%s]: Estimated FPS: %.5f\n",
-            mednafen_core_str, (double)video_frames * 44100 / audio_frames);
+            MEDNAFEN_CORE_NAME, (double)video_frames * 44100 / audio_frames);
    }
 
    libretro_supports_bitmasks = false;
@@ -920,8 +910,6 @@ void retro_set_video_refresh(retro_video_refresh_t cb)
    video_cb = cb;
 }
 
-static size_t serialize_size;
-
 size_t retro_serialize_size(void)
 {
    StateMem st;
@@ -937,7 +925,7 @@ size_t retro_serialize_size(void)
 
    free(st.data);
 
-   return serialize_size = st.len;
+   return st.len;
 }
 
 bool retro_serialize(void *data, size_t size)
@@ -981,14 +969,14 @@ void *retro_get_memory_data(unsigned type)
 {
    if(type == RETRO_MEMORY_SYSTEM_RAM)
       return CPUExRAM;
-   else return NULL;
+   return NULL;
 }
 
 size_t retro_get_memory_size(unsigned type)
 {
    if(type == RETRO_MEMORY_SYSTEM_RAM)
       return 16384;
-   else return 0;
+   return 0;
 }
 
 void retro_cheat_reset(void)
