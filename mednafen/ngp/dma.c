@@ -18,10 +18,6 @@
 #include "interrupt.h"
 #include "../state.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 static uint32_t dmaS[4], dmaD[4];
 static uint16_t dmaC[4];
 static uint8_t dmaM[4];
@@ -315,8 +311,3 @@ int MDFNNGPCDMA_StateAction(void *data, int load, int data_only)
 
    return 1; 
 }
-
-#ifdef __cplusplus
-}
-#endif
-
