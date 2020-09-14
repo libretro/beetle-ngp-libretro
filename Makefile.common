@@ -13,7 +13,6 @@ endif
 
 ifneq ($(HAVE_GRIFFIN),1)
 SOURCES_CXX += \
-	$(CORE_EMU_DIR)/biosHLE.cpp \
 	$(CORE_EMU_DIR)/dma.cpp \
 	$(CORE_EMU_DIR)/gfx.cpp \
 	$(CORE_EMU_DIR)/interrupt.cpp \
@@ -23,6 +22,7 @@ SOURCES_CXX += \
 	$(CORE_EMU_DIR)/Z80_interface.cpp
 
 SOURCES_C += \
+	$(CORE_EMU_DIR)/biosHLE.c \
 	$(CORE_EMU_DIR)/bios.c \
 	$(CORE_EMU_DIR)/flash.c \
 	$(CORE_EMU_DIR)/rom.c \

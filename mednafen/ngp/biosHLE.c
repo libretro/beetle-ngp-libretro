@@ -23,10 +23,6 @@
 
 #include <boolean.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* Interrupt prio registers at 0x0070-0x007a don't have priority readable. */
 /* This should probably be stored in BIOS work RAM somewhere instead of a 
  * separate array, but I don't know where! */
@@ -421,10 +417,6 @@ void iBIOSHLE(void)
    //RET
    pc = pop32();
 }
-
-#ifdef __cplusplus
-}
-#endif
 
 int BIOSHLE_StateAction(void *data, int load, int data_only)
 {
