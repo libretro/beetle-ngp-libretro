@@ -747,9 +747,9 @@ int ngpgfx_StateAction(ngpgfx_t *gfx, void *data, int load, int data_only)
       { &(gfx->SCREEN_PERIOD), (uint32_t)(SF_IS_BOOL(&(gfx->SCREEN_PERIOD)) ? 1 : sizeof(gfx->SCREEN_PERIOD)), 0x80000000 | (SF_IS_BOOL(&(gfx->SCREEN_PERIOD)) ? 0x08000000 : 0), "SCREEN_PERIOD" },
       { &(gfx->K2GE_MODE), (uint32_t)(SF_IS_BOOL(&(gfx->K2GE_MODE)) ? 1 : sizeof(gfx->K2GE_MODE)), 0x80000000 | (SF_IS_BOOL(&(gfx->K2GE_MODE)) ? 0x08000000 : 0), "K2GE_MODE" },
 
-      { (gfx->SPPLT), (uint32_t)(6), 0 | SF_FORCE_A8(gfx->SPPLT), "SPPLT" },
-      { (gfx->SCRP1PLT), (uint32_t)(6), 0 | SF_FORCE_A8(gfx->SCRP1PLT), "SCRP1PLT" },
-      { (gfx->SCRP2PLT), (uint32_t)(6), 0 | SF_FORCE_A8(gfx->SCRP2PLT), "SCRP2PLT" },
+      { (gfx->SPPLT), (uint32_t)(6), 0, "SPPLT" },
+      { (gfx->SCRP1PLT), (uint32_t)(6), 0, "SCRP1PLT" },
+      { (gfx->SCRP2PLT), (uint32_t)(6), 0, "SCRP2PLT" },
 
       { &(gfx->winx), (uint32_t)(SF_IS_BOOL(&(gfx->winx)) ? 1 : sizeof(gfx->winx)), 0x80000000 | (SF_IS_BOOL(&(gfx->winx)) ? 0x08000000 : 0), "winx" },
       { &(gfx->winw), (uint32_t)(SF_IS_BOOL(&(gfx->winw)) ? 1 : sizeof(gfx->winw)), 0x80000000 | (SF_IS_BOOL(&(gfx->winw)) ? 0x08000000 : 0), "winw" },
@@ -767,11 +767,11 @@ int ngpgfx_StateAction(ngpgfx_t *gfx, void *data, int load, int data_only)
 
       { &(gfx->negative), (uint32_t)(SF_IS_BOOL(&(gfx->negative)) ? 1 : sizeof(gfx->negative)), 0x80000000 | (SF_IS_BOOL(&(gfx->negative)) ? 0x08000000 : 0), "negative" },
 
-      { (gfx->ScrollVRAM), (uint32_t)(4096), 0 | SF_FORCE_A8(gfx->ScrollVRAM), "ScrollVRAM" },
-      { (gfx->CharacterRAM), (uint32_t)(8192), 0 | SF_FORCE_A8(gfx->CharacterRAM), "CharacterRAM" },
-      { (gfx->SpriteVRAM), (uint32_t)(256), 0 | SF_FORCE_A8(gfx->SpriteVRAM), "SpriteVRAM" },
-      { (gfx->SpriteVRAMColor), (uint32_t)(0x40), 0 | SF_FORCE_A8(gfx->SpriteVRAMColor), "SpriteVRAMColor" },
-      { (gfx->ColorPaletteRAM), (uint32_t)(0x200), 0 | SF_FORCE_A8(gfx->ColorPaletteRAM), "ColorPaletteRAM" },
+      { (gfx->ScrollVRAM), (uint32_t)(4096), 0, "ScrollVRAM" },
+      { (gfx->CharacterRAM), (uint32_t)(8192), 0, "CharacterRAM" },
+      { (gfx->SpriteVRAM), (uint32_t)(256), 0, "SpriteVRAM" },
+      { (gfx->SpriteVRAMColor), (uint32_t)(0x40), 0, "SpriteVRAMColor" },
+      { (gfx->ColorPaletteRAM), (uint32_t)(0x200), 0, "ColorPaletteRAM" },
 
       { 0, 0, 0, 0 }
    };
