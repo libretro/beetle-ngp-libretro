@@ -49,7 +49,13 @@ typedef enum
 
 /* Core <--> System-Main Interface */
 
-void reset(void);
+#ifdef __cplusplus
+extern "C" {
+#endif
+void neopop_reset(void);
+#ifdef __cplusplus
+}
+#endif
 
 /* Core <--> System-Graphics Interface */
 

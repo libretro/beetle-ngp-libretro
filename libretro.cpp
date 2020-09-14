@@ -141,7 +141,7 @@ static void Emulate(EmulateSpecStruct *espec)
          espec->SoundBufMaxSize);
 }
 
-void reset(void)
+static void neopop_reset_internal(void)
 {
    ngpgfx_power(NGPGfx);
    Z80_reset();
@@ -152,6 +152,11 @@ void reset(void)
    BIOSHLE_Reset();
    reset_registers();	/* TLCS900H registers */
    reset_dma();
+}
+
+extern "C" void neopop_reset(void)
+{
+   neopop_reset_internal();
 }
 
 static int Load(const char *name, MDFNFILE *fp, const uint8_t *data, size_t size)
@@ -190,7 +195,7 @@ static int Load(const char *name, MDFNFILE *fp, const uint8_t *data, size_t size
 
    z80_runtime = 0;
 
-   reset();
+   neopop_reset();
 
    return(1);
 }
@@ -273,7 +278,7 @@ static void DoSimpleCommand(int cmd)
    {
       case MDFN_MSC_POWER:
       case MDFN_MSC_RESET:
-         reset();
+         neopop_reset();
          break;
    }
 }

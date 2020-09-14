@@ -23,6 +23,10 @@
 #define ZDEPTH_FOREGROUND_SCROLL    5
 #define ZDEPTH_FRONT_SPRITE			6
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern uint16_t cfb_scanline[256];	// __attribute__ ((aligned (8)));
 
 typedef struct ngpgfx
@@ -83,6 +87,10 @@ void ngpgfx_write16(ngpgfx_t *gfx, uint32_t address, uint16_t data);
 void ngpgfx_write8(ngpgfx_t *gfx, uint32_t address, uint8_t data);
 
 extern ngpgfx_t *NGPGfx;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 
