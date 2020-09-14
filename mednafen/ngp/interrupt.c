@@ -24,14 +24,9 @@
 #include "Z80_interface.h"
 #include "dma.h"
 #include "system.h"
-#include "state_helpers.h"
 
 #ifndef NDEBUG
 #include <assert.h>
-#endif
-
-#ifdef __cplusplus
-extern "C" {
 #endif
 
 uint32_t timer_hint;
@@ -262,8 +257,8 @@ void TestIntHDMA(int bios_num, int vec_num)
 }
 
 
-extern "C" int32_t ngpc_soundTS;
-extern "C" bool NGPFrameSkip;
+extern int32_t ngpc_soundTS;
+extern bool NGPFrameSkip;
 
 bool updateTimers(void *data, int cputicks)
 {
@@ -583,28 +578,25 @@ int int_timer_StateAction(void *data, int load, int data_only)
 {
    SFORMAT StateRegs[] =
    {
-      SFVAR(timer_hint),
-      SFARRAY32(timer_clock, 4),
-      SFARRAY(timer, 4),
-      SFARRAY(timer_threshold, 4),
-      SFVAR(TRUN),
-      SFVAR(T01MOD), SFVAR(T23MOD),
-      SFVAR(TRDC),
-      SFVAR(TFFCR),
-      SFARRAY(HDMAStartVector, 4),
-      SFARRAY32(ipending, 24),
-      SFARRAY32(IntPrio, 0xB),
-      SFVAR(h_int),
-      SFVAR(timer0),
-      SFVAR(timer2),
-      SFEND
+      { &(timer_hint), (uint32_t)sizeof(timer_hint), MDFNSTATE_RLSB, "timer_hint" },
+      { (timer_clock), (uint32_t)((4) * sizeof(uint32_t)), MDFNSTATE_RLSB32, "timer_clock" },
+      { (timer), (uint32_t)(4), 0, "timer" },
+      { (timer_threshold), (uint32_t)(4), 0, "timer_threshold" },
+      { &(TRUN), (uint32_t)sizeof(TRUN), MDFNSTATE_RLSB, "TRUN" },
+      { &(T01MOD), (uint32_t)sizeof(T01MOD), MDFNSTATE_RLSB, "T01MOD" },
+      { &(T23MOD), (uint32_t)sizeof(T23MOD), MDFNSTATE_RLSB, "T23MOD" },
+      { &(TRDC), (uint32_t)sizeof(TRDC), MDFNSTATE_RLSB, "TRDC" },
+      { &(TFFCR), (uint32_t)sizeof(TFFCR), MDFNSTATE_RLSB, "TFFCR" },
+      { (HDMAStartVector), (uint32_t)(4), 0, "HDMAStartVector" },
+      { (ipending), (uint32_t)((24) * sizeof(uint32_t)), MDFNSTATE_RLSB32, "ipending" },
+      { (IntPrio), (uint32_t)((0xB) * sizeof(uint32_t)), MDFNSTATE_RLSB32, "IntPrio" },
+      { &(h_int), 1, MDFNSTATE_RLSB | MDFNSTATE_BOOL, "h_int" },
+      { &(timer0), 1, MDFNSTATE_RLSB | MDFNSTATE_BOOL, "timer0" },
+      { &(timer2), 1, MDFNSTATE_RLSB | MDFNSTATE_BOOL, "timer2" },
+      { 0, 0, 0, 0 }
    };
    if(!MDFNSS_StateAction(data, load, data_only, StateRegs, "INTT", false))
       return 0;
 
    return 1;
 }
-
-#ifdef __cplusplus
-}
-#endif
