@@ -25,7 +25,8 @@ void system_comms_write(uint8_t data)
 {
 }
 
-bool system_io_flash_read(uint8_t* buffer, uint32_t bufferLength)
+static bool system_io_flash_read_internal(
+      uint8_t* buffer, uint32_t bufferLength)
 {
    std::string pathStr = MDFN_MakeFName(MDFNMKF_SAV, 0, "flash");
    RFILE     *flash_fp = filestream_open(pathStr.c_str(),
@@ -40,7 +41,8 @@ bool system_io_flash_read(uint8_t* buffer, uint32_t bufferLength)
    return 1;
 }
 
-bool system_io_flash_write(uint8_t *buffer, uint32_t bufferLength)
+static bool system_io_flash_write_internal(
+      uint8_t *buffer, uint32_t bufferLength)
 {
    std::string pathStr = MDFN_MakeFName(MDFNMKF_SAV, 0, "flash");
    RFILE     *flash_fp = filestream_open(pathStr.c_str(),
@@ -54,6 +56,16 @@ bool system_io_flash_write(uint8_t *buffer, uint32_t bufferLength)
    filestream_close(flash_fp);
 
    return 1;
+}
+
+extern "C" bool system_io_flash_read(uint8_t *s, uint32_t len)
+{
+   return system_io_flash_read_internal(s, len);
+}
+
+extern "C" bool system_io_flash_write(uint8_t *s, uint32_t len)
+{
+   return system_io_flash_write_internal(s, len);
 }
 
 int FLASH_StateAction(void *data, int load, int data_only)

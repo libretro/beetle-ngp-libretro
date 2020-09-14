@@ -38,13 +38,17 @@ void system_comms_write(uint8_t data);
 	preallocated buffer. This is rom data */
 bool system_io_rom_read(char* filename, uint8_t* buffer, uint32_t bufferLength);
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*! Reads the "appropriate" (system specific) flash data into the given
 	preallocated buffer. The emulation core doesn't care where from. */
 bool system_io_flash_read(uint8_t* buffer, uint32_t bufferLength);
-
-
 /*! Writes the given flash data into an "appropriate" (system specific)
 	place. The emulation core doesn't care where to. */
 bool system_io_flash_write(uint8_t* buffer, uint32_t bufferLength);
+#ifdef __cplusplus
+}
+#endif
 
 #endif
