@@ -27,16 +27,14 @@
 #define BIOS_START	0xFF0000
 #define BIOS_END     0xFFFFFF
 
-void reset_memory(void);
-
-void dump_memory(uint32_t start, uint32_t length);
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+void reset_memory(void);
+
+void dump_memory(uint32_t start, uint32_t length);
 extern bool debug_abort_memory;
-#ifdef __cplusplus
-}
-#endif
 extern bool debug_mask_memory_error_messages;
 
 extern bool memory_unlock_flash_write;
@@ -46,10 +44,6 @@ extern bool memory_flash_command;
 extern bool FlashStatusEnable;
 extern uint8_t COMMStatus;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 uint8_t  loadB(uint32_t address);
 uint16_t loadW(uint32_t address);
 uint32_t loadL(uint32_t address);
@@ -58,11 +52,11 @@ void storeB(uint32_t address, uint8_t data);
 void storeW(uint32_t address, uint16_t data);
 void storeL(uint32_t address, uint32_t data);
 
+void SetFRM(void);
+void RecacheFRM(void);
+
 #ifdef __cplusplus
 }
 #endif
-
-void SetFRM(void);
-void RecacheFRM(void);
 
 #endif

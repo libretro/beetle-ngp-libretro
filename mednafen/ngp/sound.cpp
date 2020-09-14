@@ -19,7 +19,7 @@ static Synth synth;
 extern "C" int32_t ngpc_soundTS;
 static bool schipenable = 0;
 
-void MDFNNGPCSOUND_SetEnable(bool set)
+extern "C" void MDFNNGPCSOUND_SetEnable(bool set)
 {
    schipenable = set;
    if(!set)
@@ -48,7 +48,7 @@ extern "C" void Write_SoundChipRight(uint8_t data)
    Write_SoundChipRightInternal(data);
 }
 
-void dac_write_left(uint8_t data)
+extern "C" void dac_write_left(uint8_t data)
 {
    CurrentDACLeft = data;
 
@@ -57,7 +57,7 @@ void dac_write_left(uint8_t data)
    LastDACLeft = data;
 }
 
-void dac_write_right(uint8_t data)
+extern "C" void dac_write_right(uint8_t data)
 {
    CurrentDACRight = data;
 

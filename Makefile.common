@@ -13,7 +13,6 @@ endif
 
 ifneq ($(HAVE_GRIFFIN),1)
 SOURCES_CXX += \
-	$(CORE_EMU_DIR)/mem.cpp \
 	$(CORE_EMU_DIR)/sound.cpp \
 	$(CORE_EMU_DIR)/T6W28_Apu.cpp
 
@@ -24,6 +23,7 @@ SOURCES_C += \
 	$(CORE_EMU_DIR)/dma.c \
 	$(CORE_EMU_DIR)/gfx.c \
 	$(CORE_EMU_DIR)/interrupt.c \
+	$(CORE_EMU_DIR)/mem.c \
 	$(CORE_EMU_DIR)/rom.c \
 	$(CORE_EMU_DIR)/system.c \
 	$(CORE_EMU_DIR)/TLCS-900h/TLCS900h_interpret.c \
