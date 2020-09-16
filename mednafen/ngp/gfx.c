@@ -12,6 +12,9 @@
 //	additional informations.
 //---------------------------------------------------------------------------
 
+#include <string.h>
+#include <math.h>
+
 #include "neopop.h"
 #include "mem.h"
 #include "gfx.h"
@@ -910,7 +913,7 @@ void ngpgfx_write8(ngpgfx_t *gfx, uint32 address, uint8 data)
       case 0x87e0:
          if(data == 0x52) 
          {
-            puts("GEreset");
+            /* GEreset */
             neopop_reset(); 
          }
          break;

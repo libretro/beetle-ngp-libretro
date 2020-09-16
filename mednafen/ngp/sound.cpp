@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "neopop.h"
 #include "sound.h"
 

@@ -17,6 +17,8 @@
 
 #include <stdint.h>
 
+#include <boolean.h>
+
 #include "../hw_cpu/z80-fuse/z80.h"
 
 #ifdef __cplusplus

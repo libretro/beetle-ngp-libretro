@@ -15,22 +15,7 @@
 #ifndef __NEOPOP__
 #define __NEOPOP__
 
-#include <stdio.h>
 #include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
-
-#include "TLCS-900h/TLCS900h_disassemble.h"
-#include "TLCS-900h/TLCS900h_interpret_dst.h"
-#include "TLCS-900h/TLCS900h_interpret.h"
-#include "TLCS-900h/TLCS900h_interpret_reg.h"
-#include "TLCS-900h/TLCS900h_interpret_single.h"
-#include "TLCS-900h/TLCS900h_interpret_src.h"
-#include "TLCS-900h/TLCS900h_registers.h"
-
-#include "system.h"
-#include "rom.h"
 
 #ifndef MAX
 #define MAX(a,b) ((a)>(b)?(a):(b))

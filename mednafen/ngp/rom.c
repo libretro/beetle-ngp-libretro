@@ -15,6 +15,7 @@
 #include "neopop.h"
 #include "flash.h"
 #include "interrupt.h"
+#include "rom.h"
 #include "TLCS-900h/TLCS900h_disassemble.h"
 #include "../mednafen.h"
 

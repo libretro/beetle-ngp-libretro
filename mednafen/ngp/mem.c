@@ -21,6 +21,7 @@
 #include "interrupt.h"
 #include "sound.h"
 #include "flash.h"
+#include "rom.h"
 #include "rtc.h"
 
 #ifdef MSB_FIRST

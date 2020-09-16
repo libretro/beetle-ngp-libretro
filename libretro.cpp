@@ -66,6 +66,7 @@ static char retro_save_directory[1024];
 #include "mednafen/ngp/Z80_interface.h"
 #include "mednafen/ngp/interrupt.h"
 #include "mednafen/ngp/mem.h"
+#include "mednafen/ngp/rom.h"
 #include "mednafen/ngp/gfx.h"
 #include "mednafen/ngp/sound.h"
 #include "mednafen/ngp/dma.h"
