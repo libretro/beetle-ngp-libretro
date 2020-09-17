@@ -87,7 +87,7 @@ static int32 z80_runtime;
 extern "C" bool NGPFrameSkip;
 extern "C" int32_t ngpc_soundTS;
 
-static void Emulate(EmulateSpecStruct *espec)
+static void Emulate(EmulateSpecStruct *espec, int16_t *sound_buf)
 {
    bool MeowMeow        = false;
 
@@ -132,7 +132,7 @@ static void Emulate(EmulateSpecStruct *espec)
 
 
    espec->MasterCycles = ngpc_soundTS;
-   espec->SoundBufSize = MDFNNGPCSOUND_Flush(espec->SoundBuf,
+   espec->SoundBufSize = MDFNNGPCSOUND_Flush(sound_buf,
          espec->SoundBufMaxSize);
 }
 
@@ -748,11 +748,8 @@ void retro_run(void)
 
    spec.surface            = surf;
    spec.SoundRate          = RETRO_SAMPLE_RATE;
-   spec.SoundBuf           = sound_buf;
    spec.LineWidths         = rects;
    spec.SoundBufMaxSize    = sizeof(sound_buf) / 2;
-   spec.SoundVolume        = 1.0;
-   spec.soundmultiplier    = 1.0;
    spec.SoundBufSize       = 0;
    spec.VideoFormatChanged = update_video;
    spec.SoundFormatChanged = update_audio;
@@ -776,10 +773,9 @@ void retro_run(void)
       update_audio = false;
    }
 
-   Emulate(&spec);
+   Emulate(&spec, sound_buf);
 
-   SoundBufSize    = spec.SoundBufSize - spec.SoundBufSizeALMS;
-
+   SoundBufSize      = spec.SoundBufSize - spec.SoundBufSizeALMS;
    spec.SoundBufSize = spec.SoundBufSizeALMS + SoundBufSize;
 
    width  = spec.DisplayRect.w;
@@ -791,7 +787,7 @@ void retro_run(void)
    audio_frames += spec.SoundBufSize;
 
    for (total = 0; total < spec.SoundBufSize; )
-      total += audio_batch_cb(spec.SoundBuf + total*2, spec.SoundBufSize - total);
+      total += audio_batch_cb(sound_buf + total*2, spec.SoundBufSize - total);
 
 }
 
