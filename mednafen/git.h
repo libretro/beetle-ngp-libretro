@@ -5,32 +5,7 @@
 #include <boolean.h>
 
 #include "video.h"
-
-typedef struct
-{
- const char *extension; // Example ".nes"
- const char *description; // Example "iNES Format ROM Image"
-} FileExtensionSpecStruct;
-
 #include "file.h"
-
-enum
-{
- MDFN_ROTATE0 = 0,
- MDFN_ROTATE90,
- MDFN_ROTATE180,
- MDFN_ROTATE270
-};
-
-typedef enum
-{
- VIDSYS_NONE, // Can be used internally in system emulation code, but it is an error condition to let it continue to be
-	      // after the Load() or LoadCD() function returns!
- VIDSYS_PAL,
- VIDSYS_PAL_M, // Same timing as NTSC, but uses PAL-style colour encoding
- VIDSYS_NTSC,
- VIDSYS_SECAM
-} VideoSystems;
 
 typedef enum
 {
@@ -224,11 +199,6 @@ typedef struct
  int soundchan; 	// Number of output sound channels.
 
 
- int rotated;
-
- int soundrate;  /* For Ogg Vorbis expansion sound wacky support.  0 for default. */
-
- VideoSystems VideoSystem;
  GameMediumTypes GameType;
 
  //int DiskLogicalCount;	// A single double-sided disk would be 2 here.
