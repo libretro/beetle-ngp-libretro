@@ -148,8 +148,8 @@ void MDFNMP_InstallReadPatches(void)
    {
       for(chit = SubCheats[x].begin(); chit != SubCheats[x].end(); chit++)
       {
-         if(MDFNGameInfo->InstallReadPatch)
-            MDFNGameInfo->InstallReadPatch(chit->addr);
+         if(EmulatedNGP.InstallReadPatch)
+            EmulatedNGP.InstallReadPatch(chit->addr);
       }
    }
 #endif
@@ -158,8 +158,8 @@ void MDFNMP_InstallReadPatches(void)
 void MDFNMP_RemoveReadPatches(void)
 {
 #if 0
-   if(MDFNGameInfo->RemoveReadPatches)
-      MDFNGameInfo->RemoveReadPatches();
+   if(EmulatedNGP.RemoveReadPatches)
+      EmulatedNGP.RemoveReadPatches();
 #endif
 }
 
@@ -301,7 +301,7 @@ static bool TestConditions(const char *string)
             shiftie = (bytelen - 1 - x) * 8;
          else
             shiftie = x * 8;
-         value_at_address |= MDFNGameInfo->MemRead(v_address + x) << shiftie;
+         value_at_address |= EmulatedNGP.MemRead(v_address + x) << shiftie;
       }
 #endif
 

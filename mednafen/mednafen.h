@@ -12,7 +12,7 @@
 #define strcasecmp _stricmp
 #endif
 
-extern MDFNGI *MDFNGameInfo;
+extern MDFNGI EmulatedNGP;
 
 #include "settings.h"
 

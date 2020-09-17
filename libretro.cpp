@@ -178,7 +178,7 @@ static int Load(const char *name, MDFNFILE *fp, const uint8_t *data, size_t size
    NGPGfx = (ngpgfx_t*)calloc(1, sizeof(*NGPGfx));
    NGPGfx->layer_enable = 1 | 2 | 4;
 
-   MDFNGameInfo->fps = (uint32)((uint64)6144000 * 65536 * 256 / 515 / 198); // 3072000 * 2 * 10000 / 515 / 198
+   EmulatedNGP.fps = (uint32)((uint64)6144000 * 65536 * 256 / 515 / 198); // 3072000 * 2 * 10000 / 515 / 198
 
    MDFNNGPCSOUND_Init();
 
@@ -329,8 +329,6 @@ static const InputPortInfoStruct PortInfo[] =
 
 MDFNGI EmulatedNGP = {};
 
-MDFNGI *MDFNGameInfo = &EmulatedNGP;
-
 static void MDFNGI_reset(MDFNGI *gameinfo)
 {
  gameinfo->Settings = NGPSettings;
@@ -370,7 +368,7 @@ error:
    if (GameFile)
       file_close(GameFile);
    GameFile     = NULL;
-   MDFNGI_reset(MDFNGameInfo);
+   MDFNGI_reset(&EmulatedNGP);
    return false;
 }
 
@@ -381,17 +379,14 @@ static bool MDFNI_LoadGameData(const uint8_t *data, size_t size)
    return true;
 
 error:
-   MDFNGI_reset(MDFNGameInfo);
+   MDFNGI_reset(&EmulatedNGP);
    return false;
 }
 
 static void MDFNI_CloseGame(void)
 {
-   if(!MDFNGameInfo)
-      return;
-
    CloseGame();
-   MDFNGI_reset(MDFNGameInfo);
+   MDFNGI_reset(&EmulatedNGP);
 }
 
 static void set_basename(const char *path)
