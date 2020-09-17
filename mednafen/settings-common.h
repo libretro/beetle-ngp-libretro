@@ -52,17 +52,6 @@ typedef struct
    const MDFNSetting_EnumList *enum_list;
 } MDFNSetting;
 
-typedef struct __MDFNCS
-{
-   char *name;
-   char *value;
-   char *game_override;    // per-game setting override(netplay_override > game_override > value, in precedence)
-
-   const MDFNSetting *desc;
-   void (*ChangeNotification)(const char *name);
-   uint32_t name_hash;
-} MDFNCS;
-
 #ifdef __cplusplus
 }
 #endif
