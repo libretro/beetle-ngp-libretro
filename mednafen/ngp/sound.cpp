@@ -16,8 +16,7 @@ static Stereo_Buffer buf;
 static uint8_t LastDACLeft = 0, LastDACRight = 0;
 static uint8_t CurrentDACLeft = 0, CurrentDACRight = 0;
 
-typedef Blip_Synth<blip_good_quality, 0xFF> Synth;
-static Synth synth;
+static Blip_Synth<blip_good_quality, 0xFF> synth;
 extern "C" int32_t ngpc_soundTS;
 static bool schipenable = 0;
 
