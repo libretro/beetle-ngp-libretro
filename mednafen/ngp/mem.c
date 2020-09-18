@@ -192,10 +192,6 @@ static void *translate_address_write(uint32 address)
    return NULL;
 }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* WARNING:  32-bit loads and stores apparently DON'T have to be 4-byte-aligned(so we must +2 instead of |2). */
 /* Treat all 32-bit operations as two 16-bit operations */
 extern uint32 pc;
@@ -250,10 +246,8 @@ uint16_t loadW(uint32 address)
 
    if(address & 1)
    {
-      uint16 ret;
-
-      ret = loadB(address);
-      ret |= loadB(address + 1) << 8;
+      uint16 ret  = loadB(address);
+      ret        |= loadB(address + 1) << 8;
 
       return(ret);
    }
@@ -296,31 +290,24 @@ uint16_t loadW(uint32 address)
 
    if(address >= 0x70 && address <= 0x7F)
    {
-      uint16 ret;
-
-      ret = int_read8(address);
-      ret |= int_read8(address + 1) << 8;
+      uint16 ret  = int_read8(address);
+      ret        |= int_read8(address + 1) << 8;
 
       return(ret);
    }
 
    if(address >= 0x90 && address <= 0x97)
    {
-      uint16 ret;
-
-      ret = rtc_read8(address);
-      ret |= rtc_read8(address + 1) << 8;
+      uint16 ret  = rtc_read8(address);
+      ret        |= rtc_read8(address + 1) << 8;
 
       return(ret);
    }
 
    if(address >= 0x20 && address <= 0x29)
    {
-      uint16 ret;
-
-      ret = timer_read8(address);
-      ret |= timer_read8(address + 1) << 8;
-
+      uint16 ret  = timer_read8(address);
+      ret        |= timer_read8(address + 1) << 8;
       return(ret);
    }
 
@@ -334,9 +321,7 @@ uint16_t loadW(uint32 address)
 
 uint32 loadL(uint32 address)
 {
-   uint32 ret;
-
-   ret = loadW(address);
+   uint32 ret = loadW(address);
    ret |= loadW(address + 2) << 16;
 
    return(ret);
@@ -524,10 +509,6 @@ void storeL(uint32 address, uint32 data)
    storeW(address + 2, data >> 16);
 }
 
-#ifdef __cplusplus
-}
-#endif
-
 static const uint8_t systemMemory[] = 
 {
 	// 0x00												// 0x08
@@ -566,99 +547,97 @@ static const uint8_t systemMemory[] =
 
 void reset_memory(void)
 {
-	unsigned int i;
+   unsigned int i;
 
-	FlashStatusEnable = false;
-	RecacheFRM();
+   FlashStatusEnable = false;
+   RecacheFRM();
 
-	memory_flash_command = false;
+   memory_flash_command = false;
 
    /* 000000 -> 000100	CPU Internal RAM (Timers/DMA/Z80) */
 
-	for (i = 0; i < sizeof(systemMemory); i++)
-		storeB(i, systemMemory[i]);
+   for (i = 0; i < sizeof(systemMemory); i++)
+      storeB(i, systemMemory[i]);
 
    /* 006C00 -> 006FFF	BIOS Workspace */
 
-	storeL(0x6C00, rom_header->startPC);		//Start
+   storeL(0x6C00, rom_header->startPC);		//Start
 
-	storeW(0x6C04, rom_header->catalog);
-	storeW(0x6E82, rom_header->catalog);
+   storeW(0x6C04, rom_header->catalog);
+   storeW(0x6E82, rom_header->catalog);
 
-	storeB(0x6C06, rom_header->subCatalog);
-	storeB(0x6E84, rom_header->subCatalog);
+   storeB(0x6C06, rom_header->subCatalog);
+   storeB(0x6E84, rom_header->subCatalog);
 
-	for(i = 0; i < 12; i++)
-	 storeB(0x6c08 + i, ngpc_rom.data[0x24 + i]);
+   for(i = 0; i < 12; i++)
+      storeB(0x6c08 + i, ngpc_rom.data[0x24 + i]);
 
-	storeB(0x6C58, 0x01);
+   storeB(0x6C58, 0x01);
 
-	/* 32MBit cart? */
-	if (ngpc_rom.length > 0x200000)
-		storeB(0x6C59, 0x01);
-	else
-		storeB(0x6C59, 0x00);
+   /* 32MBit cart? */
+   if (ngpc_rom.length > 0x200000)
+      storeB(0x6C59, 0x01);
+   else
+      storeB(0x6C59, 0x00);
 
-	storeB(0x6C55, 1);      /* Commercial game */
+   storeB(0x6C55, 1);      /* Commercial game */
 
-	storeB(0x6F80, 0xFF);	/* Lots of battery power! */
-	storeB(0x6F81, 0x03);
+   storeB(0x6F80, 0xFF);	/* Lots of battery power! */
+   storeB(0x6F81, 0x03);
 
-	storeB(0x6F84, 0x40);	/* "Power On" startup */
-	storeB(0x6F85, 0x00);	/* No shutdown request */
-	storeB(0x6F86, 0x00);	/* No user answer (?) */
+   storeB(0x6F84, 0x40);	/* "Power On" startup */
+   storeB(0x6F85, 0x00);	/* No shutdown request */
+   storeB(0x6F86, 0x00);	/* No user answer (?) */
 
-	/* Language: 0 = Japanese, 1 = English */
-	storeB(0x6F87, MDFN_GetSettingB("ngp.language"));
+   /* Language: 0 = Japanese, 1 = English */
+   storeB(0x6F87, MDFN_GetSettingB("ngp.language"));
 
-	/* Color Mode Selection: 0x00 = B&W, 0x10 = Colour */
-	storeB(0x6F91, rom_header->mode);
-	storeB(0x6F95, rom_header->mode);
+   /* Color Mode Selection: 0x00 = B&W, 0x10 = Colour */
+   storeB(0x6F91, rom_header->mode);
+   storeB(0x6F95, rom_header->mode);
 
-	/* Interrupt table */
-	for (i = 0; i < 0x12; i++)
-		storeL(0x6FB8 + i * 4, 0x00FF23DF);
+   /* Interrupt table */
+   for (i = 0; i < 0x12; i++)
+      storeL(0x6FB8 + i * 4, 0x00FF23DF);
 
 
    /* 008000 -> 00BFFF	Video RAM */
-	storeB(0x8000, 0xC0);	// Both interrupts allowed
+   storeB(0x8000, 0xC0);	// Both interrupts allowed
 
-	/* Hardware window */
-	storeB(0x8002, 0x00);
-	storeB(0x8003, 0x00);
-	storeB(0x8004, 0xFF);
-	storeB(0x8005, 0xFF);
+   /* Hardware window */
+   storeB(0x8002, 0x00);
+   storeB(0x8003, 0x00);
+   storeB(0x8004, 0xFF);
+   storeB(0x8005, 0xFF);
 
-	storeB(0x8006, 0xc6);	// Frame Rate Register
+   storeB(0x8006, 0xc6);	// Frame Rate Register
 
-	storeB(0x8012, 0x00);	// NEG / OOWC setting.
+   storeB(0x8012, 0x00);	// NEG / OOWC setting.
 
-	storeB(0x8118, 0x80);	// BGC on!
+   storeB(0x8118, 0x80);	// BGC on!
 
-	storeB(0x83E0, 0xFF);	// Default background colour
-	storeB(0x83E1, 0x0F);
+   storeB(0x83E0, 0xFF);	// Default background colour
+   storeB(0x83E1, 0x0F);
 
-	storeB(0x83F0, 0xFF);	// Default window colour
-	storeB(0x83F1, 0x0F);
+   storeB(0x83F0, 0xFF);	// Default window colour
+   storeB(0x83F1, 0x0F);
 
-	storeB(0x8400, 0xFF);	// LED on
-	storeB(0x8402, 0x80);	// Flash cycle = 1.3s
+   storeB(0x8400, 0xFF);	// LED on
+   storeB(0x8402, 0x80);	// Flash cycle = 1.3s
 
-	storeB(0x87E2, loadB(0x6F95) ? 0x00 : 0x80);
+   storeB(0x87E2, loadB(0x6F95) ? 0x00 : 0x80);
 
-	//
-	// Metal Slug - 2nd Mission oddly relies on a specific character RAM pattern.
-	//
-	{
-	 static const uint8 char_data[64] = {
-	 	255, 63, 255, 255, 0, 252, 255, 255, 255, 63, 3, 0, 255, 255, 255, 255, 
-	 	240, 243, 252, 243, 255, 3, 255, 195, 255, 243, 243, 243, 240, 243, 240, 195, 
-		207, 15, 207, 15, 207, 15, 207, 207, 207, 255, 207, 255, 207, 255, 207, 63, 
-		255, 192, 252, 195, 240, 207, 192, 255, 192, 255, 240, 207, 252, 195, 255, 192 };
+   //
+   // Metal Slug - 2nd Mission oddly relies on a specific character RAM pattern.
+   //
+   {
+      static const uint8 char_data[64] = {
+         255, 63, 255, 255, 0, 252, 255, 255, 255, 63, 3, 0, 255, 255, 255, 255, 
+         240, 243, 252, 243, 255, 3, 255, 195, 255, 243, 243, 243, 240, 243, 240, 195, 
+         207, 15, 207, 15, 207, 15, 207, 207, 207, 255, 207, 255, 207, 255, 207, 63, 
+         255, 192, 252, 195, 240, 207, 192, 255, 192, 255, 240, 207, 252, 195, 255, 192 };
 
-         for(i = 0; i < 64; i++)
-	 {
-	  storeB(0xA1C0 + i, char_data[i]);
-	 }
-	}
+      for(i = 0; i < 64; i++)
+         storeB(0xA1C0 + i, char_data[i]);
+   }
 }
