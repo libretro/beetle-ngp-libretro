@@ -17,7 +17,6 @@ typedef enum
 } GameMediumTypes;
 
 #include "state.h"
-#include "settings-common.h"
 
 typedef enum
 {
@@ -164,8 +163,6 @@ typedef struct
 
 typedef struct
 {
- const MDFNSetting *Settings;
-
  // Time base for EmulateSpecStruct::MasterCycles
  int64 MasterClock;
 

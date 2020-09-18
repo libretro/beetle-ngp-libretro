@@ -282,23 +282,6 @@ static void DoSimpleCommand(int cmd)
    }
 }
 
-static const MDFNSetting_EnumList LanguageList[] =
-{
- { "japanese", 0, "Japanese" },
- { "0", 0 },
-
- { "english", 1, "English" },
- { "1", 1 },
-
- { NULL, 0 },
-};
-
-static MDFNSetting NGPSettings[] =
-{
- { "ngp.language", MDFNSF_EMU_STATE | MDFNSF_UNTRUSTED_SAFE, "Language games should display text in.", NULL, MDFNST_ENUM, "english", NULL, NULL, NULL, NULL, LanguageList },
- { NULL }
-};
-
 static void SetLayerEnableMask(uint64 mask)
 {
  ngpgfx_SetLayerEnableMask(NGPGfx, mask);
@@ -335,7 +318,6 @@ MDFNGI EmulatedNGP = {};
 
 static void MDFNGI_reset(MDFNGI *gameinfo)
 {
- gameinfo->Settings = NGPSettings;
  gameinfo->MasterClock = MDFN_MASTERCLOCK_FIXED(6144000);
  gameinfo->fps = 0;
  gameinfo->multires = false; // Multires possible?

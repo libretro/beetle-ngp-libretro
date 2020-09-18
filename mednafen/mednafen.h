@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "git.h"
+#include "settings.h"
 
 #ifdef _WIN32
 #define strcasecmp _stricmp
@@ -14,11 +15,7 @@
 
 extern MDFNGI EmulatedNGP;
 
-#include "settings.h"
-
 void MDFN_LoadGameCheats(void *override);
 void MDFN_FlushGameCheats(int nosave);
-
-#include "mednafen-driver.h"
 
 #endif
