@@ -161,7 +161,11 @@ void flash_read(void)
    uint8_t* flashdata;
 
    //Initialise the internal flash configuration
-   block_count = 0;
+   block_count              = 0;
+
+   header.valid_flash_id    = 0;
+   header.block_count       = 0;
+   header.total_file_length = 0;
 
    //Read flash buffer header
    if (system_io_flash_read((uint8_t*)&header, sizeof(FlashFileHeader)) == 0)
@@ -169,10 +173,7 @@ void flash_read(void)
 
    //Verify correct flash id
    if (header.valid_flash_id != FLASH_VALID_ID)
-   {
-      //MDFN_PrintError("IDS_BADFLASH");
       return;
-   }
 
    //Read the flash data
    flashdata = (uint8_t*)malloc(header.total_file_length * sizeof(uint8_t));
