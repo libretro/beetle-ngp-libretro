@@ -9,6 +9,10 @@
 #include "mednafen/state.h"
 #include "mednafen/state_helpers.h"
 
+#ifdef _MSC_VER
+#include <compat/msvc.h>
+#endif
+
 #include <string>
 
 /* core options */
@@ -74,7 +78,7 @@ static char retro_save_directory[1024];
 #include "mednafen/ngp/flash.h"
 #include "mednafen/ngp/system.h"
 
-extern uint8 CPUExRAM[16384];
+extern "C" uint8 CPUExRAM[16384];
 
 ngpgfx_t *NGPGfx;
 

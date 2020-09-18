@@ -56,15 +56,19 @@ int FLASH_StateAction(void *data, int load, int data_only)
 {
    int32_t FlashLength = 0;
    uint8_t *flashdata = NULL;
-
-   if(!load)
-      flashdata = make_flash_commit(&FlashLength);
-
    SFORMAT FINF_StateRegs[] =
    {
       { &FlashLength, sizeof(FlashLength), 0x80000000, "FlashLength" },
       { 0, 0, 0, 0 }
    };
+   SFORMAT FLSH_StateRegs[] =
+   {
+      { flashdata, (uint32_t)FlashLength, 0, "flashdata" },
+      { 0, 0, 0, 0 }
+   };
+
+   if(!load)
+      flashdata = make_flash_commit(&FlashLength);
 
    if(!MDFNSS_StateAction(data, load, data_only, FINF_StateRegs, "FINF", false))
       return 0;
@@ -78,12 +82,6 @@ int FLASH_StateAction(void *data, int load, int data_only)
 
    if(load)
       flashdata = (uint8_t *)malloc(FlashLength);
-
-   SFORMAT FLSH_StateRegs[] =
-   {
-      { flashdata, (uint32_t)FlashLength, 0, "flashdata" },
-      { 0, 0, 0, 0 }
-   };
 
    if(!MDFNSS_StateAction(data, load, data_only, FLSH_StateRegs, "FLSH", false))
    {

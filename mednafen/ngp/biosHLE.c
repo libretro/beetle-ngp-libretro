@@ -242,6 +242,7 @@ void iBIOSHLE(void)
 		    {
 		       const uint32 addr = 0x3F0000;
 		       const uint32 size = 0x008000;
+             uint32_t i;
 
 		       flash_optimise_blocks();
 		       flash_write(addr, size);
@@ -249,10 +250,9 @@ void iBIOSHLE(void)
 
 		       memory_flash_error = false;
 		       memory_unlock_flash_write = true;
-		       for(uint32 i = 0; i < size; i += 4)
-		       {
+
+		       for(i = 0; i < size; i += 4)
 		        storeL(addr + i, 0xFFFFFFFF);
-		       }
 		       memory_unlock_flash_write = false;
 		    }
 

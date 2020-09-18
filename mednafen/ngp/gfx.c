@@ -309,6 +309,7 @@ static void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline,
 static void MonoPlot(ngpgfx_t *gfx, uint16_t *cfb_scanline, uint8_t *zbuffer,
       uint8 x, uint8* palette_ptr, uint16 pal_hi, uint8 index, uint8 depth)
 {
+   uint16 r, g, b;
 	uint8_t data8, *zbuf;
    uint16_t *scan, data16;
 
@@ -326,9 +327,9 @@ static void MonoPlot(ngpgfx_t *gfx, uint16_t *cfb_scanline, uint8_t *zbuffer,
 	/*Get the colour of the pixel */
    data8 = palette_ptr[(pal_hi ? 3 : 0) + index - 1];
 
-	uint16 r = (data8 & 7) << 1;
-	uint16 g = (data8 & 7) << 5;
-	uint16 b = (data8 & 7) << 9;
+	r     = (data8 & 7) << 1;
+	g     = (data8 & 7) << 5;
+	b     = (data8 & 7) << 9;
 
    scan = &cfb_scanline[x];
    data16 = ~(r | g | b);

@@ -245,6 +245,7 @@ uint8_t loadB(uint32 address)
 
 uint16_t loadW(uint32 address)
 {
+   uint16_t* ptr;
    address &= 0xFFFFFF;
 
    if(address & 1)
@@ -267,7 +268,7 @@ uint16_t loadW(uint32 address)
 #endif
    }
 
-   uint16_t* ptr = (uint16_t*)translate_address_read(address);
+   ptr = (uint16_t*)translate_address_read(address);
    if(ptr)
    {
 #ifdef MSB_FIRST
@@ -343,6 +344,7 @@ uint32 loadL(uint32 address)
 
 void storeB(uint32 address, uint8_t data)
 {
+   uint8_t* ptr;
    address &= 0xFFFFFF;
 
    if(address < 0x80)
@@ -417,7 +419,7 @@ void storeB(uint32 address, uint8_t data)
       return;
    }
 
-   uint8_t* ptr = (uint8_t*)translate_address_write(address);
+   ptr = (uint8_t*)translate_address_write(address);
 
    /* Write */
    if (ptr)
