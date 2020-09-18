@@ -55,47 +55,47 @@
 //=========================================================================
 
 //===== NOP
-void sngNOP()
+void sngNOP(void)
 {
 	cycles = 2;
 }
 
 //===== NORMAL
-void sngNORMAL()
+void sngNORMAL(void)
 {
 	//Not supported
 	cycles = 4;
 }
 
 //===== PUSH SR
-void sngPUSHSR()
+void sngPUSHSR(void)
 {
 	push16(sr);
 	cycles = 4;
 }
 
 //===== POP SR
-void sngPOPSR()
+void sngPOPSR(void)
 {
 	sr = pop16();	changedSP();
 	cycles = 6;
 }
 
 //===== MAX
-void sngMAX()
+void sngMAX(void)
 {
 	//Not supported
 	cycles = 4;
 }
 
 //===== HALT
-void sngHALT()
+void sngHALT(void)
 {
 	cycles = 8;
 }
 
 //===== EI #3
-void sngEI()
+void sngEI(void)
 {
 	setStatusIFF(FETCH8);
 	int_check_pending();
@@ -103,7 +103,7 @@ void sngEI()
 }
 
 //===== RETI
-void sngRETI()
+void sngRETI(void)
 {
 	uint16 temp = pop16();
 	pc = pop32();
@@ -112,7 +112,7 @@ void sngRETI()
 }
 
 //===== LD (n), n
-void sngLD8_8()
+void sngLD8_8(void)
 {
 	uint8 dst = FETCH8;
 	uint8 src = FETCH8;
@@ -121,7 +121,7 @@ void sngLD8_8()
 }
 
 //===== PUSH n
-void sngPUSH8()
+void sngPUSH8(void)
 {
 	uint8 data = FETCH8;
 	push8(data);
@@ -129,7 +129,7 @@ void sngPUSH8()
 }
 
 //===== LD (n), nn
-void sngLD8_16()
+void sngLD8_16(void)
 {
 	uint8 dst = FETCH8;
 	uint16 src = fetch16();
@@ -138,35 +138,35 @@ void sngLD8_16()
 }
 
 //===== PUSH nn
-void sngPUSH16()
+void sngPUSH16(void)
 {
 	push16(fetch16());
 	cycles = 5;
 }
 
 //===== INCF
-void sngINCF()
+void sngINCF(void)
 {
 	setStatusRFP(((sr & 0x300) >> 8) + 1);
 	cycles = 2;
 }
 
 //===== DECF
-void sngDECF()
+void sngDECF(void)
 {
 	setStatusRFP(((sr & 0x300) >> 8) - 1);
 	cycles = 2;
 }
 
 //===== RET condition
-void sngRET()
+void sngRET(void)
 {
 	pc = pop32();
 	cycles = 9;
 }
 
 //===== RETD dd
-void sngRETD()
+void sngRETD(void)
 {
 	int16 d = (int16)fetch16();
 	pc = pop32();
@@ -175,7 +175,7 @@ void sngRETD()
 }
 
 //===== RCF
-void sngRCF()
+void sngRCF(void)
 {
 	SETFLAG_N0;
 	SETFLAG_V0;
@@ -184,7 +184,7 @@ void sngRCF()
 }
 
 //===== SCF
-void sngSCF()
+void sngSCF(void)
 {
 	SETFLAG_H0;
 	SETFLAG_N0;
@@ -193,7 +193,7 @@ void sngSCF()
 }
 
 //===== CCF
-void sngCCF()
+void sngCCF(void)
 {
 	SETFLAG_N0;
 	SETFLAG_C(!FLAG_C);
@@ -201,7 +201,7 @@ void sngCCF()
 }
 
 //===== ZCF
-void sngZCF()
+void sngZCF(void)
 {
 	SETFLAG_N0;
 	SETFLAG_C(!FLAG_Z);
@@ -209,21 +209,21 @@ void sngZCF()
 }
 
 //===== PUSH A
-void sngPUSHA()
+void sngPUSHA(void)
 {
 	push8(REGA);
 	cycles = 3;
 }
 
 //===== POP A
-void sngPOPA()
+void sngPOPA(void)
 {
 	REGA = pop8();
 	cycles = 4;
 }
 
 //===== EX F,F'
-void sngEX()
+void sngEX(void)
 {
 	uint8 f = sr & 0xFF;
 	sr = (sr & 0xFF00) | f_dash;
@@ -232,42 +232,42 @@ void sngEX()
 }
 
 //===== LDF #3
-void sngLDF()
+void sngLDF(void)
 {
 	setStatusRFP(FETCH8);
 	cycles = 2;
 }
 
 //===== PUSH F
-void sngPUSHF()
+void sngPUSHF(void)
 {
 	push8(sr & 0xFF);
 	cycles = 3;
 }
 
 //===== POP F
-void sngPOPF()
+void sngPOPF(void)
 {
 	sr = (sr & 0xFF00) | pop8();
 	cycles = 4;
 }
 
 //===== JP nn
-void sngJP16()
+void sngJP16(void)
 {
 	pc = fetch16();
 	cycles = 7;
 }
 
 //===== JP nnn
-void sngJP24()
+void sngJP24(void)
 {
 	pc = fetch24();
 	cycles = 7;
 }
 
 //===== CALL #16
-void sngCALL16()
+void sngCALL16(void)
 {
 	uint32 target = fetch16();
 	push32(pc);
@@ -276,7 +276,7 @@ void sngCALL16()
 }
 
 //===== CALL #24
-void sngCALL24()
+void sngCALL24(void)
 {
 	uint32 target = fetch24();
 	push32(pc);
@@ -285,7 +285,7 @@ void sngCALL24()
 }
 
 //===== CALR $+3+d16
-void sngCALR()
+void sngCALR(void)
 {
 	int16 displacement = (int16)fetch16();
 	uint32 target = pc + displacement;
@@ -295,56 +295,56 @@ void sngCALR()
 }
 
 //===== LD R, n
-void sngLDB()
+void sngLDB(void)
 {
 	regB(first & 7) = FETCH8;
 	cycles = 2;
 }
 
 //===== PUSH RR
-void sngPUSHW()
+void sngPUSHW(void)
 {
 	push16(regW(first & 7));
 	cycles = 3;
 }
 
 //===== LD RR, nn
-void sngLDW()
+void sngLDW(void)
 {
 	regW(first & 7) = fetch16();
 	cycles = 3;
 }
 
 //===== PUSH XRR
-void sngPUSHL()
+void sngPUSHL(void)
 {
 	push32(regL(first & 7));
 	cycles = 5;
 }
 
 //===== LD XRR, nnnn
-void sngLDL()
+void sngLDL(void)
 {
 	regL(first & 7) = fetch32();
 	cycles = 5;
 }
 
 //===== POP RR
-void sngPOPW()
+void sngPOPW(void)
 {
 	regW(first & 7) = pop16();
 	cycles = 4;
 }
 
 //===== POP XRR
-void sngPOPL()
+void sngPOPL(void)
 {
 	regL(first & 7) = pop32();
 	cycles = 6;
 }
 
 //===== JR cc,PC + d
-void sngJR()
+void sngJR(void)
 {
 	if (conditionCode(first & 0xF))
 	{
@@ -361,7 +361,7 @@ void sngJR()
 }
 
 //===== JR cc,PC + dd
-void sngJRL()
+void sngJRL(void)
 {
 	if (conditionCode(first & 0xF))
 	{
@@ -377,7 +377,7 @@ void sngJRL()
 }
 
 //===== LDX dst,src
-void sngLDX()
+void sngLDX(void)
 {
 	uint8 dst, src;
 
@@ -392,24 +392,39 @@ void sngLDX()
 }
 
 //===== SWI num
-void sngSWI()
+void sngSWI(void)
 {
-	cycles = 16;
+   cycles = 16;
 
-	//printf("SWI: %02x\n", first & 0x7);
-	switch(first & 7)
-	{
-	//System Call
-	case 1: push32(pc);
-		pc = loadL(0xFFFE00 + ((rCodeB(0x31) & 0x1F) << 2));
-		break;
-
-	case 3: set_interrupt(0, true); break;  //SWI 3
-	case 4: set_interrupt(1, true); break;  //SWI 4
-	case 5: set_interrupt(2, true); break;  //SWI 5
-	case 6: set_interrupt(3, true); break;  //SWI 6
-
-	default: instruction_error("SWI %d is not valid.", first & 7); break;
-	}
+   //printf("SWI: %02x\n", first & 0x7);
+   switch(first & 7)
+   {
+      //System Call
+      case 1:
+         push32(pc);
+         pc = loadL(0xFFFE00 + ((rCodeB(0x31) & 0x1F) << 2));
+         break;
+      case 3:
+         set_interrupt(0, true);
+         break;
+         //SWI 3
+      case 4:
+         set_interrupt(1, true);
+         break;
+         //SWI 4
+      case 5:
+         set_interrupt(2, true);
+         break;
+         //SWI 5
+      case 6:
+         set_interrupt(3, true);
+         break;
+         //SWI 6
+      default:
+#ifdef TLCS_ERRORS
+         instruction_error("SWI %d is not valid.", first & 7);
+#endif
+         break;
+   }
 }
 //=============================================================================

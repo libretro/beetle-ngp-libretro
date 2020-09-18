@@ -44,22 +44,22 @@
 
 //=========================================================================
 
-static void PUSH()
+static void PUSH(void)
 {
 	sprintf(instr, "PUSH (%s)", extra);
 }
 
-static void RLD()
+static void RLD(void)
 {
 	sprintf(instr, "RLD A,(%s)", extra);
 }
 
-static void RRD()
+static void RRD(void)
 {
 	sprintf(instr, "RRD A,(%s)", extra);
 }
 
-static void LDI()
+static void LDI(void)
 {
 	if ((first & 0xF) == 3)
 	{		
@@ -80,7 +80,7 @@ static void LDI()
 	}
 }
 
-static void LDIR()
+static void LDIR(void)
 {
 	if ((first & 0xF) == 3)
 	{		
@@ -101,7 +101,7 @@ static void LDIR()
 	}
 }
 
-static void LDD()
+static void LDD(void)
 {
 	if ((first & 0xF) == 3)
 	{		
@@ -122,7 +122,7 @@ static void LDD()
 	}
 }
 
-static void LDDR()
+static void LDDR(void)
 {
 	if ((first & 0xF) == 3)
 	{		
@@ -143,12 +143,12 @@ static void LDDR()
 	}
 }
 
-static void CPI()
+static void CPI(void)
 {
 	sprintf(instr, "CPI");
 }
 
-static void CPIR()
+static void CPIR(void)
 {
 	switch(size)
 	{
@@ -157,7 +157,7 @@ static void CPIR()
 	}
 }
 
-static void CPD()
+static void CPD(void)
 {
 	switch(size)
 	{
@@ -166,7 +166,7 @@ static void CPD()
 	}
 }
 
-static void CPDR()
+static void CPDR(void)
 {
 	switch(size)
 	{
@@ -175,17 +175,17 @@ static void CPDR()
 	}
 }
 
-static void LD16m()
+static void LD16m(void)
 {
 	sprintf(instr, "LD (0x%04X),(%s)", get16_dis(), extra);
 }
 
-static void LD()
+static void LD(void)
 {
 	sprintf(instr, "LD %s,(%s)", str_R, extra);
 }
 
-static void EX()
+static void EX(void)
 {
 	switch(size)
 	{
@@ -195,7 +195,7 @@ static void EX()
 	
 }
 
-static void ADDi()
+static void ADDi(void)
 {
 	switch(size)
 	{
@@ -204,7 +204,7 @@ static void ADDi()
 	}
 }
 
-static void ADCi()
+static void ADCi(void)
 {
 	switch(size)
 	{
@@ -213,7 +213,7 @@ static void ADCi()
 	}
 }
 
-static void SUBi()
+static void SUBi(void)
 {
 	switch(size)
 	{
@@ -222,7 +222,7 @@ static void SUBi()
 	}
 }
 
-static void SBCi()
+static void SBCi(void)
 {
 	switch(size)
 	{
@@ -231,7 +231,7 @@ static void SBCi()
 	}
 }
 
-static void ANDi()
+static void ANDi(void)
 {
 	switch(size)
 	{
@@ -240,7 +240,7 @@ static void ANDi()
 	}
 }
 
-static void XORi()
+static void XORi(void)
 {
 	switch(size)
 	{
@@ -249,7 +249,7 @@ static void XORi()
 	}
 }
 
-static void ORi()
+static void ORi(void)
 {
 	switch(size)
 	{
@@ -258,7 +258,7 @@ static void ORi()
 	}
 }
 
-static void CPi()
+static void CPi(void)
 {
 	switch(size)
 	{
@@ -267,7 +267,7 @@ static void CPi()
 	}
 }
 
-static void MUL()
+static void MUL(void)
 {
 	get_RR_Name();
 	switch(size)
@@ -277,7 +277,7 @@ static void MUL()
 	}
 }
 
-static void MULS()
+static void MULS(void)
 {
 	get_RR_Name();
 	switch(size)
@@ -287,7 +287,7 @@ static void MULS()
 	}
 }
 
-static void DIV()
+static void DIV(void)
 {
 	get_RR_Name();
 	switch(size)
@@ -297,7 +297,7 @@ static void DIV()
 	}
 }
 
-static void DIVS()
+static void DIVS(void)
 {
 	get_RR_Name();
 	switch(size)
@@ -307,7 +307,7 @@ static void DIVS()
 	}
 }
 
-static void INC()
+static void INC(void)
 {
 	uint8 val = (second & 7);
 	if (val == 0)
@@ -316,7 +316,7 @@ static void INC()
 	sprintf(instr, "INC %d,(%s)", val, extra);
 }
 
-static void DEC()
+static void DEC(void)
 {
 	uint8 val = (second & 7);
 	if (val == 0)
@@ -325,122 +325,122 @@ static void DEC()
 	sprintf(instr, "DEC %d,(%s)", val, extra);
 }
 
-static void RLC()
+static void RLC(void)
 {
 	sprintf(instr, "RLC (%s)", extra);
 }
 
-static void RRC()
+static void RRC(void)
 {
 	sprintf(instr, "RRC (%s)", extra);
 }
 
-static void RL()
+static void RL(void)
 {
 	sprintf(instr, "RL (%s)", extra);
 }
 
-static void RR()
+static void RR(void)
 {
 	sprintf(instr, "RR (%s)", extra);
 }
 
-static void SLA()
+static void SLA(void)
 {
 	sprintf(instr, "SLA (%s)", extra);
 }
 
-static void SRA()
+static void SRA(void)
 {
 	sprintf(instr, "SRA (%s)", extra);
 }
 
-static void SLL()
+static void SLL(void)
 {
 	sprintf(instr, "SLL (%s)", extra);
 }
 
-static void SRL()
+static void SRL(void)
 {
 	sprintf(instr, "SRL (%s)", extra);
 }
 
-static void ADDRm()
+static void ADDRm(void)
 {
 	sprintf(instr, "ADD %s,(%s)", str_R, extra);
 }
 
-static void ADDmR()
+static void ADDmR(void)
 {
 	sprintf(instr, "ADD (%s),%s", extra, str_R);
 }
 
-static void ADCRm()
+static void ADCRm(void)
 {
 	sprintf(instr, "ADC %s,(%s)", str_R, extra);
 }
 
-static void ADCmR()
+static void ADCmR(void)
 {
 	sprintf(instr, "ADC (%s),%s", extra, str_R);
 }
 
-static void SUBRm()
+static void SUBRm(void)
 {
 	sprintf(instr, "SUB %s,(%s)", str_R, extra);
 }
 
-static void SUBmR()
+static void SUBmR(void)
 {
 	sprintf(instr, "SUB (%s),%s", extra, str_R);
 }
 
-static void SBCRm()
+static void SBCRm(void)
 {
 	sprintf(instr, "SBC %s,(%s)", str_R, extra);
 }
 
-static void SBCmR()
+static void SBCmR(void)
 {
 	sprintf(instr, "SBC (%s),%s", extra, str_R);
 }
 
-static void ANDmR()
+static void ANDmR(void)
 {
 	sprintf(instr, "AND (%s),%s", extra, str_R);
 }
 
-static void ANDRm()
+static void ANDRm(void)
 {
 	sprintf(instr, "AND %s,(%s)", str_R, extra);
 }
 
-static void XORmR()
+static void XORmR(void)
 {
 	sprintf(instr, "XOR (%s),%s", extra, str_R);
 }
 
-static void XORRm()
+static void XORRm(void)
 {
 	sprintf(instr, "XOR %s,(%s)", str_R, extra);
 }
 
-static void ORmR()
+static void ORmR(void)
 {
 	sprintf(instr, "OR (%s),%s", extra, str_R);
 }
 
-static void ORRm()
+static void ORRm(void)
 {
 	sprintf(instr, "OR %s,(%s)", str_R, extra);
 }
 
-static void CPmR()
+static void CPmR(void)
 {
 	sprintf(instr, "CP (%s),%s", extra, str_R);
 }
 
-static void CPRm()
+static void CPRm(void)
 {
 	sprintf(instr, "CP %s,(%s)", str_R, extra);
 }
