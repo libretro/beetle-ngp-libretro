@@ -544,7 +544,9 @@ void srcMUL(void)
 	uint8 target = get_RR_Target();
 	if (target == 0x80)
 	{
+#ifdef TLCS_ERRORS
 		instruction_error("src: MUL bad \'RR\' dst code");
+#endif
 		return;
 	}
 
@@ -563,7 +565,9 @@ void srcMULS(void)
 	uint8 target = get_RR_Target();
 	if (target == 0x80)
 	{
+#ifdef TLCS_ERRORS
 		instruction_error("src: MUL bad \'RR\' dst code");
+#endif
 		return;
 	}
 
@@ -582,7 +586,9 @@ void srcDIV(void)
 	uint8 target = get_RR_Target();
 	if (target == 0x80)
 	{
+#ifdef TLCS_ERRORS
 		instruction_error("src: DIV bad \'RR\' dst code");
+#endif
 		return;
 	}
 
@@ -604,7 +610,9 @@ void srcDIVS(void)
 	uint8 target = get_RR_Target();
 	if (target == 0x80)
 	{
+#ifdef TLCS_ERRORS
 		instruction_error("src: DIVS bad \'RR\' dst code");
+#endif
 		return;
 	}
 
