@@ -61,9 +61,11 @@
 #include "TLCS900h_interpret_dst.h"
 #include "TLCS900h_interpret_reg.h"
 
+#ifdef TLCS_ERRORS
 static void DUMMY_instruction_error(const char* vaMessage,...) { }
 
 void (*instruction_error)(const char* vaMessage,...) = DUMMY_instruction_error;
+#endif
 
 //=========================================================================
 
