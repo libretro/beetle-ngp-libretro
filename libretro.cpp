@@ -225,15 +225,15 @@ extern "C" int StateAction(StateMem *sm, int load, int data_only)
 
    SFORMAT TLCS_StateRegs[] =
    {
-      SFVARN(pc, "PC"),
-      SFVARN(sr, "SR"),
-      SFVARN(f_dash, "F_DASH"),
-      SFARRAY32N(gpr, 4, "GPR"),
-      SFARRAY32N(gprBank[0], 4, "GPRB0"),
-      SFARRAY32N(gprBank[1], 4, "GPRB1"),
-      SFARRAY32N(gprBank[2], 4, "GPRB2"),
-      SFARRAY32N(gprBank[3], 4, "GPRB3"),
-      SFEND
+      { &pc, (uint32_t)sizeof(pc), MDFNSTATE_RLSB, "PC" },
+      { &sr, (uint32_t)sizeof(sr), MDFNSTATE_RLSB, "SR" },
+      { &f_dash, (uint32_t)sizeof(f_dash), MDFNSTATE_RLSB, "F_DASH" },
+      { gpr, (uint32_t)(4 * sizeof(uint32_t)), MDFNSTATE_RLSB32, "GPR" },
+      { gprBank[0], (uint32_t)(4 * sizeof(uint32_t)), MDFNSTATE_RLSB32, "GPRB0" },
+      { gprBank[1], (uint32_t)(4 * sizeof(uint32_t)), MDFNSTATE_RLSB32, "GPRB1" },
+      { gprBank[2], (uint32_t)(4 * sizeof(uint32_t)), MDFNSTATE_RLSB32, "GPRB2" },
+      { gprBank[3], (uint32_t)(4 * sizeof(uint32_t)), MDFNSTATE_RLSB32, "GPRB3" },
+      { 0, 0, 0, 0 }
    };
 
    if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "MAIN", false))
