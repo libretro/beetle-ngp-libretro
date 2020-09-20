@@ -13,7 +13,7 @@
 #include <compat/msvc.h>
 #endif
 
-#include <string>
+#include <string.h>
 
 /* core options */
 static int RETRO_SAMPLE_RATE = 44100;
@@ -44,7 +44,7 @@ static void hookup_ports(bool force);
 
 static bool initial_ports_hookup = false;
 
-extern "C" char retro_base_directory[1024];
+static char retro_base_directory[1024];
 static char retro_base_name[1024];
 static char retro_save_directory[1024];
 
@@ -522,15 +522,7 @@ void retro_init(void)
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &dir) && dir)
    {
-      std::string retro_base_dir_tmp = dir;
-      // Make sure that we don't have any lingering slashes, etc, as they break Windows.
-      size_t last = retro_base_dir_tmp.find_last_not_of("/\\");
-      if (last != std::string::npos)
-         last++;
-
-      retro_base_dir_tmp= retro_base_dir_tmp.substr(0, last);
-
-      strcpy(retro_base_directory, retro_base_dir_tmp.c_str());
+      strcpy(retro_base_directory, dir);
    }
    else
    {
@@ -540,19 +532,9 @@ void retro_init(void)
       failed_init = true;
    }
    
+   // If save directory is defined use it, otherwise use system directory
    if (environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &dir) && dir)
-   {
-      // If save directory is defined use it, otherwise use system directory
-      std::string retro_save_dir_tmp = *dir ? dir : retro_base_directory;
-      // Make sure that we don't have any lingering slashes, etc, as they break Windows.
-      size_t last = retro_save_dir_tmp.find_last_not_of("/\\");
-      if (last != std::string::npos)
-         last++;
-
-      retro_save_dir_tmp = retro_save_dir_tmp.substr(0, last);      
-
-      strcpy(retro_save_directory, retro_save_dir_tmp.c_str());
-   }
+      strcpy(retro_save_directory, dir);
    else
    {
       /* TODO: Add proper fallback */
