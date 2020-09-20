@@ -45,7 +45,7 @@ static void hookup_ports(bool force);
 static bool initial_ports_hookup = false;
 
 extern "C" char retro_base_directory[1024];
-std::string retro_base_name;
+static char retro_base_name[1024];
 static char retro_save_directory[1024];
 
 //---------------------------------------------------------------------------
@@ -375,18 +375,24 @@ static void MDFNI_CloseGame(void)
    MDFNGI_reset(&EmulatedNGP);
 }
 
-static void set_basename(const char *path)
+static void extract_basename(char *buf, const char *path, size_t size)
 {
+   char *ext        = NULL;
    const char *base = strrchr(path, '/');
    if (!base)
       base = strrchr(path, '\\');
+   if (!base)
+      base = path;
 
-   if (base)
-      retro_base_name = base + 1;
-   else
-      retro_base_name = path;
+   if (*base == '\\' || *base == '/')
+      base++;
 
-   retro_base_name = retro_base_name.substr(0, retro_base_name.find_last_of('.'));
+   strncpy(buf, base, size - 1);
+   buf[size - 1] = '\0';
+
+   ext = strrchr(buf, '.');
+   if (ext)
+      *ext = '\0';
 }
 
 static bool update_video = false;
@@ -622,7 +628,7 @@ bool retro_load_game(const struct retro_game_info *info)
    overscan = false;
    environ_cb(RETRO_ENVIRONMENT_GET_OVERSCAN, &overscan);
 
-   set_basename(info->path);
+   extract_basename(retro_base_name, info->path, sizeof(retro_base_name));
 
    check_variables();
    check_color_depth();
@@ -970,7 +976,7 @@ extern "C" void MDFN_MakeFName(MakeFName_Type type, char *s, size_t len,
    {
       case MDFNMKF_SAV:
          snprintf(s, len, "%s%c%s%s%s", 
-               retro_save_directory, slash, retro_base_name.c_str(), ".",
+               retro_save_directory, slash, retro_base_name, ".",
                cd1);
          break;
       default:	  
