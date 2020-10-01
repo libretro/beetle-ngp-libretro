@@ -67,7 +67,7 @@ extern "C" void dac_write_right(uint8_t data)
    LastDACRight = data;
 }
 
-int32_t MDFNNGPCSOUND_Flush(int16_t *SoundBuf, const int32_t MaxSoundFrames)
+extern "C" int32_t MDFNNGPCSOUND_Flush(int16_t *SoundBuf, const int32_t MaxSoundFrames)
 {
    int32_t FrameCount = 0;
 
@@ -90,7 +90,7 @@ static void RedoVolume(void)
    synth.volume(0.40);
 }
 
-void MDFNNGPCSOUND_Init(void)
+extern "C" void MDFNNGPCSOUND_Init(void)
 {
    MDFNNGPC_SetSoundRate(0);
    buf.clock_rate((long)(3072000));
@@ -99,13 +99,13 @@ void MDFNNGPCSOUND_Init(void)
    buf.bass_freq(20);
 }
 
-bool MDFNNGPC_SetSoundRate(uint32_t rate)
+extern "C" bool MDFNNGPC_SetSoundRate(uint32_t rate)
 {
    buf.set_sample_rate(rate?rate:44100, 60);
    return(true);
 }
 
-int MDFNNGPCSOUND_StateAction(void *data, int load, int data_only)
+extern "C" int MDFNNGPCSOUND_StateAction(void *data, int load, int data_only)
 {
    T6W28_ApuState *sn_state;
 

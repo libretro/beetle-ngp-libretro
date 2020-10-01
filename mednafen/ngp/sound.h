@@ -28,13 +28,13 @@ void Write_SoundChipRight(uint8_t data);
 void dac_write_left(uint8_t);
 void dac_write_right(uint8_t);
 void MDFNNGPCSOUND_SetEnable(bool set);
+void MDFNNGPCSOUND_Init(void);
+int MDFNNGPCSOUND_StateAction(void *data, int load, int data_only);
+bool MDFNNGPC_SetSoundRate(uint32_t rate);
+int32_t MDFNNGPCSOUND_Flush(int16_t *SoundBuf, const int32_t MaxSoundFrames);
+
 #ifdef __cplusplus
 }
 #endif
-
-int32_t MDFNNGPCSOUND_Flush(int16_t *SoundBuf, const int32_t MaxSoundFrames);
-void MDFNNGPCSOUND_Init(void);
-bool MDFNNGPC_SetSoundRate(uint32_t rate);
-int MDFNNGPCSOUND_StateAction(void *data, int load, int data_only);
 
 #endif

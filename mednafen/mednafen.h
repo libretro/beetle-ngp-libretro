@@ -15,7 +15,15 @@
 
 extern MDFNGI EmulatedNGP;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void MDFN_LoadGameCheats(void *override);
 void MDFN_FlushGameCheats(int nosave);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

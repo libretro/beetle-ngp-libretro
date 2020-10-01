@@ -99,7 +99,7 @@ static void RebuildSubCheats(void)
    }
 }
 
-bool MDFNMP_Init(uint32 ps, uint32 numpages)
+extern "C" bool MDFNMP_Init(uint32 ps, uint32 numpages)
 {
    PageSize = ps;
    NumPages = numpages;
@@ -110,7 +110,7 @@ bool MDFNMP_Init(uint32 ps, uint32 numpages)
    return(1);
 }
 
-void MDFNMP_Kill(void)
+extern "C" void MDFNMP_Kill(void)
 {
    if(RAMPtrs)
    {
@@ -119,8 +119,7 @@ void MDFNMP_Kill(void)
    }
 }
 
-
-void MDFNMP_AddRAM(uint32 size, uint32 A, uint8 *RAM)
+extern "C" void MDFNMP_AddRAM(uint32 size, uint32 A, uint8 *RAM)
 {
    unsigned x;
    uint32_t AB = A / PageSize;
@@ -135,7 +134,7 @@ void MDFNMP_AddRAM(uint32 size, uint32 A, uint8 *RAM)
    }
 }
 
-void MDFNMP_InstallReadPatches(void)
+extern "C" void MDFNMP_InstallReadPatches(void)
 {
    unsigned x;
    std::vector<SUBCHEAT>::iterator chit;
@@ -182,12 +181,12 @@ static int AddCheatEntry(char *name, char *conditions, uint32 addr, uint64 val, 
    return(1);
 }
 
-void MDFN_LoadGameCheats(void *override_ptr)
+extern "C" void MDFN_LoadGameCheats(void *override_ptr)
 {
    RebuildSubCheats();
 }
 
-void MDFN_FlushGameCheats(int nosave)
+extern "C" void MDFN_FlushGameCheats(int nosave)
 {
    std::vector<CHEATF>::iterator chit;
 
@@ -379,7 +378,7 @@ static bool TestConditions(const char *string)
    return(passed);
 }
 
-void MDFNMP_ApplyPeriodicCheats(void)
+extern "C" void MDFNMP_ApplyPeriodicCheats(void)
 {
    std::vector<CHEATF>::iterator chit;
 

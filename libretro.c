@@ -21,7 +21,7 @@ static int RETRO_SAMPLE_RATE = 44100;
 static int RETRO_PIX_BYTES = 2;
 static int RETRO_PIX_DEPTH = 15;
 
-// ====================================================
+/* ==================================================== */
 
 struct retro_perf_callback perf_cb;
 retro_get_cpu_features_t perf_get_cpu_features_cb = NULL;
@@ -48,19 +48,21 @@ static char retro_base_directory[1024];
 static char retro_base_name[1024];
 static char retro_save_directory[1024];
 
-//---------------------------------------------------------------------------
-// NEOPOP : Emulator as in Dreamland
-//
-// Copyright (c) 2001-2002 by neopop_uk
-//---------------------------------------------------------------------------
+/*---------------------------------------------------------------------------
+ * NEOPOP : Emulator as in Dreamland
+ *
+ * Copyright (c) 2001-2002 by neopop_uk
+ *---------------------------------------------------------------------------
+ */
 
-//---------------------------------------------------------------------------
-//	This program is free software; you can redistribute it and/or modify
-//	it under the terms of the GNU General Public License as published by
-//	the Free Software Foundation; either version 2 of the License, or
-//	(at your option) any later version. See also the license.txt file for
-//	additional informations.
-//---------------------------------------------------------------------------
+/*---------------------------------------------------------------------------
+ *	This program is free software; you can redistribute it and/or modify
+ *	it under the terms of the GNU General Public License as published by
+ *	the Free Software Foundation; either version 2 of the License, or
+ *	(at your option) any later version. See also the license.txt file for
+ *	additional informations.
+ *---------------------------------------------------------------------------
+ */
 
 #include "mednafen/ngp/neopop.h"
 #include "mednafen/general.h"
@@ -78,7 +80,7 @@ static char retro_save_directory[1024];
 #include "mednafen/ngp/flash.h"
 #include "mednafen/ngp/system.h"
 
-extern "C" uint8 CPUExRAM[16384];
+extern uint8 CPUExRAM[16384];
 
 ngpgfx_t *NGPGfx;
 
@@ -88,8 +90,8 @@ static uint8 *chee;
 
 static int32 z80_runtime;
 
-extern "C" bool NGPFrameSkip;
-extern "C" int32_t ngpc_soundTS;
+extern bool NGPFrameSkip;
+extern int32_t ngpc_soundTS;
 
 static void Emulate(EmulateSpecStruct *espec, int16_t *sound_buf)
 {
@@ -123,7 +125,7 @@ static void Emulate(EmulateSpecStruct *espec, int16_t *sound_buf)
       {
          int z80rantime = Z80_RunOP();
 
-         if (z80rantime < 0) // Z80 inactive, so take up all run time!
+         if (z80rantime < 0) /* Z80 inactive, so take up all run time! */
          {
             z80_runtime = 0;
             break;
@@ -153,14 +155,16 @@ static void neopop_reset_internal(void)
    reset_dma();
 }
 
-extern "C" void neopop_reset(void)
+void neopop_reset(void)
 {
    neopop_reset_internal();
 }
 
-static int Load(const char *name, MDFNFILE *fp, const uint8_t *data, size_t size)
+static int Load(const char *name, struct MDFNFILE *fp,
+      const uint8_t *data, size_t size)
 {
-   if ((data != NULL) && (size != 0)) {
+   if ((data != NULL) && (size != 0))
+   {
       if (!(ngpc_rom.data = (uint8 *)malloc(size)))
          return(0);
       ngpc_rom.length = size;
@@ -182,13 +186,13 @@ static int Load(const char *name, MDFNFILE *fp, const uint8_t *data, size_t size
    NGPGfx = (ngpgfx_t*)calloc(1, sizeof(*NGPGfx));
    NGPGfx->layer_enable = 1 | 2 | 4;
 
-   EmulatedNGP.fps = (uint32)((uint64)6144000 * 65536 * 256 / 515 / 198); // 3072000 * 2 * 10000 / 515 / 198
+   EmulatedNGP.fps = (uint32)((uint64)6144000 * 65536 * 256 / 515 / 198); /* 3072000 * 2 * 10000 / 515 / 198 */
 
    MDFNNGPCSOUND_Init();
 
    MDFNMP_AddRAM(16384, 0x4000, CPUExRAM);
 
-   SetFRM(); // Set up fast read memory mapping
+   SetFRM(); /* Set up fast read memory mapping */
 
    bios_install();
 
@@ -213,7 +217,7 @@ static void SetInput(int port, const char *type, void *ptr)
       chee = (uint8 *)ptr;
 }
 
-extern "C" int StateAction(StateMem *sm, int load, int data_only)
+int StateAction(StateMem *sm, int load, int data_only)
 {
    SFORMAT StateRegs[] =
    {
@@ -314,13 +318,13 @@ static const InputPortInfoStruct PortInfo[] =
  { "builtin", "Built-In", sizeof(InputDeviceInfo) / sizeof(InputDeviceInfoStruct), InputDeviceInfo, "gamepad" }
 };
 
-MDFNGI EmulatedNGP = {};
+MDFNGI EmulatedNGP = {0};
 
 static void MDFNGI_reset(MDFNGI *gameinfo)
 {
  gameinfo->MasterClock = MDFN_MASTERCLOCK_FIXED(6144000);
  gameinfo->fps = 0;
- gameinfo->multires = false; // Multires possible?
+ gameinfo->multires = false; /* Multires possible? */
 
  gameinfo->lcm_width = 160;
  gameinfo->lcm_height = 152;
@@ -337,7 +341,7 @@ static void MDFNGI_reset(MDFNGI *gameinfo)
 
 static bool MDFNI_LoadGame(const char *name)
 {
-   MDFNFILE *GameFile = file_open(name);
+   struct MDFNFILE *GameFile = file_open(name);
 
    if(!GameFile)
       goto error;
@@ -521,9 +525,7 @@ void retro_init(void)
       log_cb = NULL;
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &dir) && dir)
-   {
       strcpy(retro_base_directory, dir);
-   }
    else
    {
       /* TODO: Add proper fallback */
@@ -532,7 +534,7 @@ void retro_init(void)
       failed_init = true;
    }
    
-   // If save directory is defined use it, otherwise use system directory
+   /* If save directory is defined use it, otherwise use system directory */
    if (environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &dir) && dir)
       strcpy(retro_save_directory, dir);
    else
@@ -558,7 +560,7 @@ void retro_reset(void)
    DoSimpleCommand(MDFN_MSC_RESET);
 }
 
-bool retro_load_game_special(unsigned, const struct retro_game_info *, size_t)
+bool retro_load_game_special(unsigned a, const struct retro_game_info *b, size_t c)
 {
    return false;
 }
@@ -590,9 +592,6 @@ static void hookup_ports(bool force)
 
 bool retro_load_game(const struct retro_game_info *info)
 {
-   if (!info || failed_init)
-      return false;
-
    struct retro_input_descriptor desc[] = {
       { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT,  "D-Pad Left" },
       { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_UP,    "D-Pad Up" },
@@ -604,6 +603,9 @@ bool retro_load_game(const struct retro_game_info *info)
 
       { 0 },
    };
+
+   if (!info || failed_init)
+      return false;
 
    environ_cb(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS, desc);
 
@@ -627,10 +629,10 @@ bool retro_load_game(const struct retro_game_info *info)
    MDFNMP_InstallReadPatches();
 
    surf = (MDFN_Surface*)calloc(1, sizeof(*surf));
-   
+
    if (!surf)
       return false;
-   
+
    surf->width  = FB_WIDTH;
    surf->height = FB_HEIGHT;
    surf->pitch  = FB_WIDTH;
@@ -673,10 +675,10 @@ void retro_unload_game(void)
 static void update_input(void)
 {
    static unsigned map[] = {
-      RETRO_DEVICE_ID_JOYPAD_UP, //X Cursor horizontal-layout games
-      RETRO_DEVICE_ID_JOYPAD_DOWN, //X Cursor horizontal-layout games
-      RETRO_DEVICE_ID_JOYPAD_LEFT, //X Cursor horizontal-layout games
-      RETRO_DEVICE_ID_JOYPAD_RIGHT, //X Cursor horizontal-layout games
+      RETRO_DEVICE_ID_JOYPAD_UP,    /* X Cursor horizontal-layout games */
+      RETRO_DEVICE_ID_JOYPAD_DOWN,  /* X Cursor horizontal-layout games */
+      RETRO_DEVICE_ID_JOYPAD_LEFT,  /* X Cursor horizontal-layout games */
+      RETRO_DEVICE_ID_JOYPAD_RIGHT, /* X Cursor horizontal-layout games */
       RETRO_DEVICE_ID_JOYPAD_B,
       RETRO_DEVICE_ID_JOYPAD_A,
       RETRO_DEVICE_ID_JOYPAD_START,
@@ -821,7 +823,7 @@ void retro_deinit(void)
 
 unsigned retro_get_region(void)
 {
-   return RETRO_REGION_NTSC; // FIXME: Regions for other cores.
+   return RETRO_REGION_NTSC; /* FIXME: Regions for other cores. */
 }
 
 unsigned retro_api_version(void)
@@ -939,14 +941,11 @@ size_t retro_get_memory_size(unsigned type)
    return 0;
 }
 
-void retro_cheat_reset(void)
-{}
+void retro_cheat_reset(void) { }
+void retro_cheat_set(unsigned a, bool b, const char *c) { }
 
-void retro_cheat_set(unsigned, bool, const char *)
-{}
-
-// Use a simpler approach to make sure that things go right for libretro.
-extern "C" void MDFN_MakeFName(MakeFName_Type type, char *s, size_t len,
+/* Use a simpler approach to make sure that things go right for libretro. */
+void MDFN_MakeFName(MakeFName_Type type, char *s, size_t len,
       int id1, const char *cd1)
 {
 #ifdef _WIN32
