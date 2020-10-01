@@ -116,10 +116,10 @@ int MDFNNGPCSOUND_StateAction(void *data, int load, int data_only)
 
    SFORMAT StateRegs[] =
    {
-      SFVAR(CurrentDACLeft),
-      SFVAR(CurrentDACRight),
+      SFVARN(CurrentDACLeft, "CurrentDACLeft"),
+      SFVARN(CurrentDACRight, "CurrentDACRight"),
 
-      SFVAR(schipenable),
+      SFVARN_BOOL(schipenable, "schipenable"),
 
       { sn_state->delay, (uint32_t)(4 * sizeof(uint32_t)), MDFNSTATE_RLSB32, "Delay" },
       { sn_state->volume_left, (uint32_t)(4 * sizeof(uint32_t)), MDFNSTATE_RLSB32, "VolumeLeft" },

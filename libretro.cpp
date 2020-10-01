@@ -217,9 +217,9 @@ extern "C" int StateAction(StateMem *sm, int load, int data_only)
 {
    SFORMAT StateRegs[] =
    {
-      SFVAR(z80_runtime),
+      SFVARN(z80_runtime, "z80_runtime"),
       SFARRAY(CPUExRAM, 16384),
-      SFVAR(FlashStatusEnable),
+      SFVARN_BOOL(FlashStatusEnable, "FlashStatusEnable"),
       SFEND
    };
 
