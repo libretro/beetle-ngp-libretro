@@ -24,24 +24,6 @@
 char retro_base_directory[1024];
 uint32_t setting_ngp_language = 0;
 
-uint64_t MDFN_GetSettingUI(const char *name)
-{
-   fprintf(stderr, "unhandled setting UI: %s\n", name);
-   return 0;
-}
-
-int64_t MDFN_GetSettingI(const char *name)
-{
-   fprintf(stderr, "unhandled setting I: %s\n", name);
-   return 0;
-}
-
-double MDFN_GetSettingF(const char *name)
-{
-   fprintf(stderr, "unhandled setting F: %s\n", name);
-   return 0;
-}
-
 bool MDFN_GetSettingB(const char *name)
 {
    if (!strcmp("cheats", name))
@@ -49,6 +31,5 @@ bool MDFN_GetSettingB(const char *name)
    /* LIBRETRO */
    if (!strcmp("ngp.language", name))
       return setting_ngp_language;
-   fprintf(stderr, "unhandled setting B: %s\n", name);
    return 0;
 }
