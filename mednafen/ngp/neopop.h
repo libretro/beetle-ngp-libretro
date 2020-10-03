@@ -49,8 +49,4 @@ void neopop_reset(void);
 #define SCREEN_HEIGHT   152
 
 extern COLOURMODE system_colour;
-
-/* Core <--> System-Sound Interface */
-
-void int_redo_icache(void);
 #endif
