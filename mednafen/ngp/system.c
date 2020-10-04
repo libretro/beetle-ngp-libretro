@@ -66,19 +66,28 @@ int FLASH_StateAction(void *data, int load, int data_only)
       { 0, 0, 0, 0 }
    };
 
-   if(!MDFNSS_StateAction(data, load, data_only, FINF_StateRegs, "FINF", false))
-      return 0;
-
-   if(!FlashLength) // No flash data to save, OR no flash data to load.
-      return 1;
-
    if(!load)
       flashdata = make_flash_commit(&FlashLength);
-   else
+
+   if(!MDFNSS_StateAction(data, load, data_only, FINF_StateRegs, "FINF", false))
+   {
+      if(flashdata)
+         free(flashdata);
+      return 0;
+   }
+
+   if(!FlashLength) // No flash data to save, OR no flash data to load.
+   {
+      if(flashdata)
+         free(flashdata);
+      return 1;
+   }
+
+   if(load)
       flashdata = (uint8_t *)malloc(FlashLength);
 
-   FLSH_StateRegs[0].v = flashdata;
-   FLSH_StateRegs[0].size = FlashLength;
+   (*FLSH_StateRegs).v = flashdata;
+   (*FLSH_StateRegs).size = FlashLength;
 
    if(!MDFNSS_StateAction(data, load, data_only, FLSH_StateRegs, "FLSH", false))
    {
