@@ -34,7 +34,7 @@ struct T6W28_Square : T6W28_Osc
 	const Synth* synth;
 	
 	void reset();
-	void run( sms_time_t, sms_time_t );
+	void run( long, long );
 };
 
 struct T6W28_Noise : T6W28_Osc
@@ -48,7 +48,7 @@ struct T6W28_Noise : T6W28_Osc
 	Synth synth;
 	
 	void reset();
-	void run( sms_time_t, sms_time_t );
+	void run( long, long );
 };
 
 #endif

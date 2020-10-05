@@ -43,7 +43,7 @@ blip_inline void T6W28_Square::reset()
 	T6W28_Osc::reset();
 }
 
-void T6W28_Square::run( sms_time_t time, sms_time_t end_time )
+void T6W28_Square::run( long time, long end_time )
 {
 	if ((!volume_left && !volume_right) || period <= 128 )
 	{
@@ -131,7 +131,7 @@ blip_inline void T6W28_Noise::reset()
    T6W28_Osc::reset();
 }
 
-void T6W28_Noise::run( sms_time_t time, sms_time_t end_time )
+void T6W28_Noise::run( long time, long end_time )
 {
    int amp_left = volume_left;
    int amp_right = volume_right;
@@ -260,7 +260,7 @@ void T6W28_Apu::reset()
 	noise.reset();
 }
 
-void T6W28_Apu::run_until( sms_time_t end_time )
+void T6W28_Apu::run_until( long end_time )
 {
    int i;
    require( end_time >= last_time ); // end_time must not be before previous time
@@ -284,7 +284,7 @@ void T6W28_Apu::run_until( sms_time_t end_time )
    }
 }
 
-bool T6W28_Apu::end_frame( sms_time_t end_time )
+bool T6W28_Apu::end_frame( long end_time )
 {
    if ( end_time > last_time )
       run_until( end_time );
@@ -299,7 +299,7 @@ static const unsigned char volumes [16] = {
 	64, 50, 39, 31, 24, 19, 15, 12, 9, 7, 5, 4, 3, 2, 1, 0
 };
 
-void T6W28_Apu::write_data_left( sms_time_t time, int data )
+void T6W28_Apu::write_data_left( long time, int data )
 {
    require( (unsigned) data <= 0xFF );
 
@@ -324,7 +324,7 @@ void T6W28_Apu::write_data_left( sms_time_t time, int data )
    }
 }
 
-void T6W28_Apu::write_data_right( sms_time_t time, int data )
+void T6W28_Apu::write_data_right( long time, int data )
 {
    require( (unsigned) data <= 0xFF );
 

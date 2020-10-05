@@ -5,8 +5,6 @@
 
 #include <stdint.h>
 
-typedef long sms_time_t; // clock cycle count
-
 #include "T6W28_Oscs.h"
 
 typedef struct
@@ -52,14 +50,14 @@ class T6W28_Apu
       void reset();
 
       // Write to data port
-      void write_data_left( sms_time_t, int );
-      void write_data_right( sms_time_t, int );
+      void write_data_left( long, int );
+      void write_data_right( long, int );
 
       // Run all oscillators up to specified time, end current frame, then
       // start a new frame at time 0. Returns true if any oscillators added
       // sound to one of the left/right buffers, false if they only added
       // to the center buffer.
-      bool end_frame( sms_time_t );
+      bool end_frame( long );
 
       T6W28_ApuState *save_state(void);
       void load_state(T6W28_ApuState*);
@@ -74,11 +72,11 @@ class T6W28_Apu
       T6W28_Osc*    oscs [osc_count];
       T6W28_Square  squares [3];
       T6W28_Square::Synth square_synth; // used by squares
-      sms_time_t  last_time;
+      long  last_time;
       int         latch_left, latch_right;
       T6W28_Noise   noise;
 
-      void run_until( sms_time_t );
+      void run_until( long );
 };
 
 inline void T6W28_Apu::output( Blip_Buffer* b ) { output( b, b, b ); }
