@@ -42,7 +42,6 @@ class T6W28_Apu
       // which refer to Square 1, Square 2, Square 3, and Noise. If buffer is NULL,
       // silences oscillator.
       enum { osc_count = 4 };
-      void osc_output( int index, Blip_Buffer* mono );
       void osc_output( int index, Blip_Buffer* center, Blip_Buffer* left, Blip_Buffer* right );
 
       // Reset oscillators and internal state
@@ -77,8 +76,6 @@ class T6W28_Apu
 
       void run_until( long );
 };
-
-inline void T6W28_Apu::osc_output( int i, Blip_Buffer* b ) { osc_output( i, b, b, b ); }
 
 #endif
 
