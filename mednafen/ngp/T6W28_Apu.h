@@ -36,7 +36,6 @@ class T6W28_Apu
 
       // Assign all oscillator outputs to specified buffer(s). If buffer
       // is NULL, silences all oscillators.
-      void output( Blip_Buffer* mono );
       void output( Blip_Buffer* center, Blip_Buffer* left, Blip_Buffer* right );
 
       // Assign single oscillator output to buffer(s). Valid indicies are 0 to 3,
@@ -78,8 +77,6 @@ class T6W28_Apu
 
       void run_until( long );
 };
-
-inline void T6W28_Apu::output( Blip_Buffer* b ) { output( b, b, b ); }
 
 inline void T6W28_Apu::osc_output( int i, Blip_Buffer* b ) { osc_output( i, b, b, b ); }
 
