@@ -63,7 +63,4 @@ typedef uint64_t uint64;
 
 #define MDFN_COLD
 
-#undef require
-#define require( expr )
-
 #endif

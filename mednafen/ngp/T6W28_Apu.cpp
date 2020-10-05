@@ -233,8 +233,6 @@ void T6W28_Apu::treble_eq( const blip_eq_t& eq )
 
 void T6W28_Apu::osc_output( int index, Blip_Buffer* center, Blip_Buffer* left, Blip_Buffer* right )
 {
-	require( (unsigned) index < osc_count );
-	require( (center && left && right) || (!center && !left && !right) );
 	T6W28_Osc& osc = *oscs [index];
 	osc.outputs [1] = right;
 	osc.outputs [2] = left;
@@ -263,7 +261,6 @@ void T6W28_Apu::reset()
 void T6W28_Apu::run_until( long end_time )
 {
    int i;
-   require( end_time >= last_time ); // end_time must not be before previous time
 
    if ( end_time > last_time )
    {
@@ -301,8 +298,6 @@ static const unsigned char volumes [16] = {
 
 void T6W28_Apu::write_data_left( long time, int data )
 {
-   require( (unsigned) data <= 0xFF );
-
    run_until( time );
 
    if ( data & 0x80 )
@@ -326,8 +321,6 @@ void T6W28_Apu::write_data_left( long time, int data )
 
 void T6W28_Apu::write_data_right( long time, int data )
 {
-   require( (unsigned) data <= 0xFF );
-
    run_until( time );
 
    if ( data & 0x80 )
