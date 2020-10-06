@@ -1,7 +1,7 @@
 .core-defs:
   variables:
     JNI_PATH: .
-    CORENAME: mednafen_pce_fast
+    CORENAME: mednafen_ngp
 
 include:
   - template: Jobs/Code-Quality.gitlab-ci.yml
