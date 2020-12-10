@@ -560,24 +560,12 @@ uint8_t timer_read8(uint32_t address)
 {
    switch(address)
    {
-#if 0
-      default: printf("Baaaad: %08x\n", address); break;
-      /* Cool boarders is stupid and tries to read 
-       * from a write-only register >_<
-       * Returning 4 makes the game run ok, so 4 it is!
-       */
-#endif
       case 0x20:
          return TRUN;
       case 0x29:
          return TRDC;
-      default:
-         break;
    }
 
-#if 0
-   printf("UNK B R: %08x\n", address);
-#endif
    return 0x4;
 }
 

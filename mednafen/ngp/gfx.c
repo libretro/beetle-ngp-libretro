@@ -793,11 +793,6 @@ void ngpgfx_SetLayerEnableMask(ngpgfx_t *gfx, uint64_t mask)
 
 void ngpgfx_write8(ngpgfx_t *gfx, uint32 address, uint8 data)
 {
-#if 0
-   if(address >= 0x8032 && address <= 0x8035)
-      printf("%08x %02x %d\n", address, data, ngpc_soundTS);
-#endif
-
    if(address >= 0x9000 && address <= 0x9fff)
       gfx->ScrollVRAM[address - 0x9000] = data;
    else if(address >= 0xa000 && address <= 0xbfff)

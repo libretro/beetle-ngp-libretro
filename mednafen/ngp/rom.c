@@ -55,27 +55,6 @@ static void rom_hack(void)
    }
 }
 
-static void rom_display_header(void)
-{
-#if 0
-   printf("Name:    %s\n", ngpc_rom.name);
-   printf("System:  ");
-
-   if(rom_header->mode & 0x10)
-      printf("Color");
-   else
-      printf("Greyscale");
-
-   printf("\n");
-
-   printf("Catalog:  %d (sub %d)\n",
-         le16toh(rom_header->catalog),
-         rom_header->subCatalog);
-
-   printf("Starting PC:  0x%06X\n", le32toh(rom_header->startPC) & 0xFFFFFF);
-#endif
-}
-
 void rom_loaded(void)
 {
    int i;
@@ -97,8 +76,6 @@ void rom_loaded(void)
 
    /* Apply a hack if required! */
    rom_hack();	
-
-   rom_display_header();
 
    flash_read();
 }

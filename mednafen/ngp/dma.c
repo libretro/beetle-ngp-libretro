@@ -133,12 +133,6 @@ void DMA_update(int channel)
       case 5: /* Counter Mode */
          dmaS[channel] ++;
          break;
-
-      default:
-#if 0
-         printf("Bad DMA mode %d\nPlease report this to the author.", dmaM[channel]);
-#endif
-         return;
    }
 
 	/* Perform common counter decrement,
@@ -169,11 +163,6 @@ void dmaStoreB(uint8_t cr, uint8_t data)
       case 0x2E:
          dmaM[3] = data;
          break;
-      default: 
-#if 0
-         printf("dmaStoreB: Unknown register 0x%02X <- %02X\nPlease report this to the author.\n", cr, data);
-#endif
-         break;
    }
 }
 
@@ -192,12 +181,6 @@ void dmaStoreW(uint8_t cr, uint16_t data)
          break;
       case 0x2C:
          dmaC[3] = data;
-         break;
-
-      default: 
-#if 0
-         printf("dmaStoreW: Unknown register 0x%02X <- %04X\nPlease report this to the author.\n", cr, data);
-#endif
          break;
    }
 }
@@ -230,12 +213,6 @@ void dmaStoreL(uint8_t cr, uint32_t data)
       case 0x1C:
          dmaD[3] = data;
          break;
-
-      default: 
-#if 0
-         printf("dmaStoreL: Unknown register 0x%02X <- %08X\nPlease report this to the author.\n", cr, data);
-#endif
-         break;
    }
 }
 
@@ -252,11 +229,6 @@ uint8_t dmaLoadB(uint8_t cr)
          return dmaM[2];
       case 0x2E:
          return dmaM[3];
-      default: 
-#if 0
-         printf("dmaLoadB: Unknown register 0x%02X\nPlease report this to the author.", cr);
-#endif
-         break;
    }
 
    return 0;
@@ -274,11 +246,6 @@ uint16_t dmaLoadW(uint8_t cr)
          return dmaC[2];
       case 0x2C:
          return dmaC[3];
-      default: 
-#if 0
-         printf("dmaLoadW: Unknown register 0x%02X\nPlease report this to the author.", cr);
-#endif
-         break;
    }
 
    return 0;
@@ -304,11 +271,6 @@ uint32_t dmaLoadL(uint8_t cr)
          return dmaD[2];
       case 0x1C:
          return dmaD[3];
-      default: 
-#if 0
-         printf("dmaLoadL: Unknown register 0x%02X\nPlease report this to the author.", cr);
-#endif
-         break;
    }
 
    return 0;
