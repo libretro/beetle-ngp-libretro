@@ -80,8 +80,8 @@ ifneq (,$(findstring unix,$(platform)))
          FLAGS += -mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -marm
       else ifneq (,$(findstring rpi3,$(platform)))
          FLAGS += -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard -marm
-+      else ifneq (,$(findstring rpi4,$(platform)))
-+         FLAGS += -mcpu=cortex-a72 -mtune=cortex-a72
+      else ifneq (,$(findstring rpi4,$(platform)))
+         FLAGS += -mcpu=cortex-a72 -mtune=cortex-a72
       endif
    endif
    
