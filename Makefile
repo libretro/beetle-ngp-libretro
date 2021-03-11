@@ -4,6 +4,59 @@ LOAD_FROM_MEMORY = 1
 
 CORE_DIR := .
 
+# platform
+ifeq ($(platform),)
+platform = unix
+ifeq ($(shell uname -s),)
+   platform = win
+else ifneq ($(findstring MINGW,$(shell uname -s)),)
+   platform = win
+else ifneq ($(findstring Darwin,$(shell uname -s)),)
+   platform = osx
+else ifneq ($(findstring win,$(shell uname -s)),)
+   platform = win
+endif
+endif
+
+# system platform
+system_platform = unix
+ifeq ($(shell uname -a),)
+	EXE_EXT = .exe
+	system_platform = win
+else ifneq ($(findstring Darwin,$(shell uname -a)),)
+	system_platform = osx
+	arch = intel
+	ifeq ($(shell uname -p),powerpc)
+		arch = ppc
+	endif
+	ifeq ($(shell uname -p),arm)
+		arch = arm
+	endif
+else ifneq ($(findstring MINGW,$(shell uname -a)),)
+	system_platform = win
+endif
+
+TARGET_NAME := 2048
+GIT_VERSION ?= " $(shell git rev-parse --short HEAD || echo unknown)"
+ifneq ($(GIT_VERSION)," unknown")
+	CFLAGS += -DGIT_VERSION=\"$(GIT_VERSION)\"
+endif
+
+ifneq (,$(findstring msvc,$(platform)))
+LIBS :=
+else
+LIBS := -lm
+endif
+fpic=
+
+ifeq ($(STATIC_LINKING),1)
+	EXT=a
+
+ifeq ($(platform), unix)
+PLAT=_unix
+endif
+endif
+
 SPACE :=
 SPACE := $(SPACE) $(SPACE)
 BACKSLASH :=
@@ -11,32 +64,6 @@ BACKSLASH := \$(BACKSLASH)
 filter_out1 = $(filter-out $(firstword $1),$1)
 filter_out2 = $(call filter_out1,$(call filter_out1,$1))
 
-# system platform
-ifeq ($(platform),)
-   platform = unix
-   ifeq ($(shell uname -a),)
-      EXE_EXT = .exe
-      platform = win
-   else ifneq ($(findstring MINGW,$(shell uname -a)),)
-      platform = win
-   else ifneq ($(findstring win,$(shell uname -a)),)
-      platform = win
-   else ifneq ($(findstring Darwin,$(shell uname -a)),)
-      platform = osx
-   endif
-else ifneq (,$(findstring armv,$(platform)))
-	ifeq (,$(findstring classic_,$(platform)))
-		override platform += unix
-	endif
-else ifneq (,$(findstring rpi,$(platform)))
-   override platform += unix
-endif
-
-ifeq ($(shell uname -p),powerpc)
-   arch = ppc
-else
-   arch = intel
-endif
 
 
 NEED_BPP = 16
@@ -150,6 +177,18 @@ else ifeq ($(platform), osx)
       fpic += -mmacosx-version-min=10.5
    endif
 
+   ifeq ($(CROSS_COMPILE),1)
+		TARGET_RULE   = -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
+		CFLAGS   += $(TARGET_RULE)
+		CPPFLAGS += $(TARGET_RULE)
+		CXXFLAGS += $(TARGET_RULE)
+		LDFLAGS  += $(TARGET_RULE)
+   endif
+
+	CFLAGS  += $(ARCHFLAGS)
+	CXXFLAGS  += $(ARCHFLAGS)
+	LDFLAGS += $(ARCHFLAGS)
+
 # iOS
 else ifneq (,$(findstring ios,$(platform)))
    TARGET := $(TARGET_NAME)_libretro_ios.dylib
@@ -186,6 +225,8 @@ else ifeq ($(platform), tvos-arm64)
 ifeq ($(IOSSDK),)
    IOSSDK := $(shell xcodebuild -version -sdk appletvos Path)
 endif
+   CC = cc -arch arm64 -isysroot $(IOSSDK)
+   CXX = c++ -arch arm64 -isysroot $(IOSSDK)
 
 # QNX
 else ifeq ($(platform), qnx)
