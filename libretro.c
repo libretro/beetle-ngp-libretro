@@ -339,28 +339,6 @@ static void MDFNGI_reset(MDFNGI *gameinfo)
  gameinfo->soundchan = 2;
 }
 
-static bool MDFNI_LoadGame(const char *name)
-{
-   struct MDFNFILE *GameFile = file_open(name);
-
-   if(!GameFile)
-      goto error;
-
-   if(Load(GameFile, NULL, 0) <= 0)
-      goto error;
-
-   file_close(GameFile);
-   GameFile     = NULL;
-
-   return true;
-
-error:
-   if (GameFile)
-      file_close(GameFile);
-   GameFile     = NULL;
-   return false;
-}
-
 static void MDFNI_CloseGame(void)
 {
    CloseGame();
@@ -609,8 +587,17 @@ bool retro_load_game(const struct retro_game_info *info)
    if (Load(NULL, (const uint8_t*)info->data, info->size) <= 0)
       goto error;
 #else
-   if (!MDFNI_LoadGame(info->path))
-      goto error;
+   {
+      struct MDFNFILE *GameFile = file_open(info->path);
+      bool ret                  = (GameFile != NULL);
+      if (ret)
+         ret                    = Load(GameFile, NULL, 0) == 1;
+      if (GameFile)
+         file_close(GameFile);
+      GameFile     = NULL;
+      if (!ret)
+         goto error;
+   }
 #endif
 
    MDFN_LoadGameCheats(NULL);
