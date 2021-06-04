@@ -160,7 +160,7 @@ void neopop_reset(void)
    neopop_reset_internal();
 }
 
-static int Load(const char *name, struct MDFNFILE *fp,
+static int Load(struct MDFNFILE *fp,
       const uint8_t *data, size_t size)
 {
    if ((data != NULL) && (size != 0))
@@ -346,7 +346,7 @@ static bool MDFNI_LoadGame(const char *name)
    if(!GameFile)
       goto error;
 
-   if(Load(name, GameFile, NULL, 0) <= 0)
+   if(Load(GameFile, NULL, 0) <= 0)
       goto error;
 
    file_close(GameFile);
@@ -358,18 +358,6 @@ error:
    if (GameFile)
       file_close(GameFile);
    GameFile     = NULL;
-   MDFNGI_reset(&EmulatedNGP);
-   return false;
-}
-
-static bool MDFNI_LoadGameData(const uint8_t *data, size_t size)
-{
-   if(Load("", NULL, data, size) <= 0)
-      goto error;
-   return true;
-
-error:
-   MDFNGI_reset(&EmulatedNGP);
    return false;
 }
 
@@ -618,11 +606,11 @@ bool retro_load_game(const struct retro_game_info *info)
    check_color_depth();
 
 #ifdef LOAD_FROM_MEMORY
-   if (!MDFNI_LoadGameData((const uint8_t *)info->data, info->size))
-      return false;
+   if (Load(NULL, (const uint8_t*)info->data, info->size) <= 0)
+      goto error;
 #else
    if (!MDFNI_LoadGame(info->path))
-      return false;
+      goto error;
 #endif
 
    MDFN_LoadGameCheats(NULL);
@@ -631,7 +619,7 @@ bool retro_load_game(const struct retro_game_info *info)
    surf = (MDFN_Surface*)calloc(1, sizeof(*surf));
 
    if (!surf)
-      return false;
+      goto error;
 
    surf->width  = FB_WIDTH;
    surf->height = FB_HEIGHT;
@@ -643,7 +631,7 @@ bool retro_load_game(const struct retro_game_info *info)
    if (!surf->pixels)
    {
       free(surf);
-      return false;
+      goto error;
    }
 
    hookup_ports(true);
@@ -655,6 +643,10 @@ bool retro_load_game(const struct retro_game_info *info)
    update_audio = false;
 
    return true;
+
+error:
+   MDFNGI_reset(&EmulatedNGP);
+   return false;
 }
 
 void retro_unload_game(void)
