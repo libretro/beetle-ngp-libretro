@@ -20,6 +20,7 @@ extern "C" {
 #endif
 
 #include <boolean.h>
+#include <stddef.h>
 
 typedef struct 
 {
