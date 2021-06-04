@@ -18,8 +18,10 @@
 /* core options */
 static int RETRO_SAMPLE_RATE = 44100;
 
-static int RETRO_PIX_BYTES = 2;
-static int RETRO_PIX_DEPTH = 15;
+static int RETRO_PIX_BYTES   = 2;
+static int RETRO_PIX_DEPTH   = 15;
+
+static bool persistent_data  = false;
 
 /* ==================================================== */
 
@@ -163,12 +165,26 @@ void neopop_reset(void)
 static int Load(struct MDFNFILE *fp,
       const uint8_t *data, size_t size)
 {
+   const struct retro_game_info_ext *info_ext = NULL;
+
+   persistent_data                            = 
+      (environ_cb(RETRO_ENVIRONMENT_GET_GAME_INFO_EXT, &info_ext) &&
+       info_ext->persistent_data);
+
    if ((data != NULL) && (size != 0))
    {
-      if (!(ngpc_rom.orig_data = (uint8 *)malloc(size)))
-         return 0;
-      ngpc_rom.length = size;
-      memcpy(ngpc_rom.orig_data, data, size);
+      if (persistent_data)
+      {
+         ngpc_rom.orig_data = (uint8_t*)info_ext->data;
+         ngpc_rom.length    = info_ext->size;
+      }
+      else
+      {
+         if (!(ngpc_rom.orig_data = (uint8 *)malloc(size)))
+            return 0;
+         ngpc_rom.length = size;
+         memcpy(ngpc_rom.orig_data, data, size);
+      }
    }
    else
    {
@@ -205,7 +221,7 @@ static int Load(struct MDFNFILE *fp,
 
 static void CloseGame(void)
 {
-   rom_unload(false);
+   rom_unload(persistent_data);
    if (NGPGfx)
       free(NGPGfx);
    NGPGfx = NULL;
@@ -648,7 +664,9 @@ void retro_unload_game(void)
          free(surf->pixels);
       free(surf);
    }
-   surf = NULL;
+   surf            = NULL;
+
+   persistent_data = false;
 }
 
 static void update_input(void)
@@ -817,6 +835,14 @@ void retro_set_controller_port_device(unsigned in_port, unsigned device)
 void retro_set_environment(retro_environment_t cb)
 {
    struct retro_vfs_interface_info vfs_iface_info;
+   static const struct retro_system_content_info_override content_overrides[] = {
+      {
+         MEDNAFEN_CORE_EXTENSIONS, /* extensions */
+         false,    /* need_fullpath */
+         true      /* persistent_data */
+      },
+      { NULL, false, false }
+   };
    environ_cb = cb;
 
    libretro_set_core_options(environ_cb);
@@ -825,6 +851,9 @@ void retro_set_environment(retro_environment_t cb)
    vfs_iface_info.iface                      = NULL;
    if (environ_cb(RETRO_ENVIRONMENT_GET_VFS_INTERFACE, &vfs_iface_info))
 	   filestream_vfs_init(&vfs_iface_info);
+   /* Request a persistent content data buffer */
+   environ_cb(RETRO_ENVIRONMENT_SET_CONTENT_INFO_OVERRIDE,
+         (void*)content_overrides);
 }
 
 void retro_set_audio_sample(retro_audio_sample_t cb)
