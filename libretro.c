@@ -165,21 +165,21 @@ static int Load(struct MDFNFILE *fp,
 {
    if ((data != NULL) && (size != 0))
    {
-      if (!(ngpc_rom.data = (uint8 *)malloc(size)))
-         return(0);
+      if (!(ngpc_rom.orig_data = (uint8 *)malloc(size)))
+         return 0;
       ngpc_rom.length = size;
-      memcpy(ngpc_rom.data, data, size);
+      memcpy(ngpc_rom.orig_data, data, size);
    }
    else
    {
-      if(!(ngpc_rom.data = (uint8 *)malloc(fp->size)))
-         return(0);
+      if (!(ngpc_rom.orig_data = (uint8 *)malloc(fp->size)))
+         return 0;
 
       ngpc_rom.length = fp->size;
-      memcpy(ngpc_rom.data, fp->data, fp->size);
+      memcpy(ngpc_rom.orig_data, fp->data, fp->size);
    }
 
-   rom_loaded();
+   rom_loaded(ngpc_rom.orig_data, ngpc_rom.length);
 
    MDFNMP_Init(1024, 1024 * 1024 * 16 / 1024);
 
@@ -200,12 +200,12 @@ static int Load(struct MDFNFILE *fp,
 
    neopop_reset();
 
-   return(1);
+   return 1;
 }
 
 static void CloseGame(void)
 {
-   rom_unload();
+   rom_unload(false);
    if (NGPGfx)
       free(NGPGfx);
    NGPGfx = NULL;

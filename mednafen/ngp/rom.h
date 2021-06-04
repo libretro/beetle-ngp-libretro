@@ -19,6 +19,8 @@
 extern "C" {
 #endif
 
+#include <boolean.h>
+
 typedef struct 
 {
 	uint8_t* data;		/* Pointer to the ROM data */
@@ -59,10 +61,10 @@ extern RomHeader *rom_header;
 
 /*! Call this function when a rom has just been loaded, it will perform
 	the system independent actions required. */
-void rom_loaded(void);
+void rom_loaded(uint8_t *buf, size_t len);
 
 /*!	Tidy up the rom and free the resources used. */
-void rom_unload(void);
+void rom_unload(bool is_persistent);
 
 #ifdef __cplusplus
 }

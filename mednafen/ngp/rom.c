@@ -32,35 +32,30 @@ RomHeader* rom_header = NULL;
 
 static void rom_hack(void)
 {
-   //=============================
-   // SPECIFIC ROM HACKS !
-   //=============================
+   /*=============================
+    * SPECIFIC ROM HACKS !
+    *=============================
+    */
 
+   /* "Neo-Neo! V1.0 (PD)" */
    if (MATCH_CATALOG(0, 16))
-   {
-      /* "Neo-Neo! V1.0 (PD)" */
-      ngpc_rom.data[0x23] = 0x10;	// Fix rom header
-   }
+      ngpc_rom.data[0x23] = 0x10;	/* Fix ROM header */
 
+   /* "Cool Cool Jam SAMPLE (U)" */
    if (MATCH_CATALOG(4660, 161))
-   {
-      /* "Cool Cool Jam SAMPLE (U)" */
-      ngpc_rom.data[0x23] = 0x10;	// Fix rom header
-   }
+      ngpc_rom.data[0x23] = 0x10;	/* Fix ROM header */
 
+   /* "Dokodemo Mahjong (J)" */
    if (MATCH_CATALOG(51, 33))
-   {
-      /* "Dokodemo Mahjong (J)" */
-      ngpc_rom.data[0x23] = 0x00;	// Fix rom header
-   }
+      ngpc_rom.data[0x23] = 0x00;	/* Fix ROM header */
 }
 
-void rom_loaded(void)
+void rom_loaded(uint8_t *buf, size_t len)
 {
    int i;
 
-   ngpc_rom.orig_data = (uint8 *)malloc(ngpc_rom.length);
-   memcpy(ngpc_rom.orig_data, ngpc_rom.data, ngpc_rom.length);
+   ngpc_rom.data = (uint8 *)malloc(ngpc_rom.length);
+   memcpy(ngpc_rom.data, buf, len);
 
    /* Extract the header */
    rom_header = (RomHeader*)(ngpc_rom.data);
@@ -80,7 +75,7 @@ void rom_loaded(void)
    flash_read();
 }
 
-void rom_unload(void)
+void rom_unload(bool is_persistent)
 {
    if (ngpc_rom.data)
    {
@@ -99,7 +94,8 @@ void rom_unload(void)
 
    if(ngpc_rom.orig_data)
    {
-      free(ngpc_rom.orig_data);
+      if (!is_persistent)
+         free(ngpc_rom.orig_data);
       ngpc_rom.orig_data = NULL;
    }
 }
