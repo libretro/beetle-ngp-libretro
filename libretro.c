@@ -572,6 +572,48 @@ static void hookup_ports(bool force)
    initial_ports_hookup = true;
 }
 
+#ifndef LOAD_FROM_MEMORY
+static struct MDFNFILE *file_open(const char *path)
+{
+   int64_t size          = 0;
+   const char        *ld = NULL;
+   struct MDFNFILE *file = (struct MDFNFILE*)calloc(1, sizeof(*file));
+
+   if (!file)
+      return NULL;
+
+   if (!filestream_read_file(path, (void**)&file->data, &size))
+   {
+      free(file);
+      return NULL;
+   }
+
+   ld         = (const char*)strrchr(path, '.');
+   file->size = size;
+   file->ext  = strdup(ld ? ld + 1 : "");
+
+   return file;
+}
+
+static int file_close(struct MDFNFILE *file)
+{
+   if (!file)
+      return 0;
+
+   if (file->ext)
+      free(file->ext);
+   file->ext = NULL;
+
+   if (file->data)
+      free(file->data);
+   file->data = NULL;
+
+   free(file);
+
+   return 1;
+}
+#endif
+
 bool retro_load_game(const struct retro_game_info *info)
 {
    struct retro_input_descriptor desc[] = {
