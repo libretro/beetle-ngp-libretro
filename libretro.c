@@ -165,7 +165,7 @@ void neopop_reset(void)
 static int Load(struct MDFNFILE *fp,
       const uint8_t *data, size_t size)
 {
-   const struct retro_game_info_ext *info_ext = NULL;
+   struct retro_game_info_ext *info_ext = NULL;
 
    persistent_data                            = 
       (environ_cb(RETRO_ENVIRONMENT_GET_GAME_INFO_EXT, &info_ext) &&
@@ -499,7 +499,7 @@ static void check_variables(void)
 void retro_init(void)
 {
    struct retro_log_callback log;
-   const char *dir = NULL;
+   char *dir = NULL;
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_LOG_INTERFACE, &log))
       log_cb = log.log;
