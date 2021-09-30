@@ -6,6 +6,7 @@
 #include <streams/file_stream.h>
 
 #include "libretro_core_options.h"
+#include "mednafen/file.h"
 #include "mednafen/state.h"
 #include "mednafen/state_helpers.h"
 
@@ -309,21 +310,19 @@ static void SetLayerEnableMask(uint64 mask)
 
 static const InputDeviceInputInfoStruct IDII[] =
 {
- { "up", "UP ↑", 0, IDIT_BUTTON, "down" },
- { "down", "DOWN ↓", 1, IDIT_BUTTON, "up" },
- { "left", "LEFT ←", 2, IDIT_BUTTON, "right" },
- { "right", "RIGHT →", 3, IDIT_BUTTON, "left" },
- { "a", "A", 5, IDIT_BUTTON_CAN_RAPID,  NULL },
- { "b", "B", 6, IDIT_BUTTON_CAN_RAPID, NULL },
- { "option", "OPTION", 4, IDIT_BUTTON, NULL },
+ { "up", "UP ↑", 0, "down" },
+ { "down", "DOWN ↓", 1, "up" },
+ { "left", "LEFT ←", 2, "right" },
+ { "right", "RIGHT →", 3, "left" },
+ { "a", "A", 5, NULL },
+ { "b", "B", 6, NULL },
+ { "option", "OPTION", 4, NULL },
 };
 static InputDeviceInfoStruct InputDeviceInfo[] =
 {
  {
   "gamepad",
   "Gamepad",
-  NULL,
-  NULL,
   sizeof(IDII) / sizeof(InputDeviceInputInfoStruct),
   IDII,
  }
@@ -338,21 +337,16 @@ MDFNGI EmulatedNGP = {0};
 
 static void MDFNGI_reset(MDFNGI *gameinfo)
 {
- gameinfo->MasterClock = MDFN_MASTERCLOCK_FIXED(6144000);
- gameinfo->fps = 0;
- gameinfo->multires = false; /* Multires possible? */
-
- gameinfo->lcm_width = 160;
- gameinfo->lcm_height = 152;
+ gameinfo->MasterClock     = MDFN_MASTERCLOCK_FIXED(6144000);
+ gameinfo->fps             = 0;
+ gameinfo->lcm_width       = 160;
+ gameinfo->lcm_height      = 152;
  gameinfo->dummy_separator = NULL;
-
- gameinfo->nominal_width = 160;
- gameinfo->nominal_height = 152;
-
- gameinfo->fb_width = 160;
- gameinfo->fb_height = 152;
-
- gameinfo->soundchan = 2;
+ gameinfo->nominal_width   = 160;
+ gameinfo->nominal_height  = 152;
+ gameinfo->fb_width        = 160;
+ gameinfo->fb_height       = 152;
+ gameinfo->soundchan       = 2;
 }
 
 static void MDFNI_CloseGame(void)

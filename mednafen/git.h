@@ -4,59 +4,23 @@
 #include <string.h>
 #include <boolean.h>
 
-#include "video.h"
-#include "file.h"
-
-typedef enum
-{
- GMT_CART,	// Self-explanatory!
- GMT_ARCADE,	// VS Unisystem, PC-10...
- GMT_DISK,	// Famicom Disk System, mostly
- GMT_CDROM,	// PC Engine CD, PC-FX
- GMT_PLAYER	// Music player(NSF, HES, GSF)
-} GameMediumTypes;
-
 #include "state.h"
-
-typedef enum
-{
- IDIT_BUTTON,		// 1-bit
- IDIT_BUTTON_CAN_RAPID, // 1-bit
- IDIT_BUTTON_BYTE, // 8-bits, Button as a byte instead of a bit.
- IDIT_X_AXIS,	   // (mouse) 32-bits, signed, fixed-point: 1.15.16 - in-screen/window range: [0.0, nominal_width)
- IDIT_Y_AXIS,	   // (mouse) 32-bits, signed, fixed-point: 1.15.16 - in-screen/window range: [0.0, nominal_height)
- IDIT_X_AXIS_REL,  // (mouse) 32-bits, signed
- IDIT_Y_AXIS_REL,  // (mouse) 32-bits, signed
- IDIT_BYTE_SPECIAL,
- IDIT_BUTTON_ANALOG, // 32-bits, 0 - 32767
- IDIT_RUMBLE,	// 32-bits, lower 8 bits are weak rumble(0-255), next 8 bits are strong rumble(0-255), 0=no rumble, 255=max rumble.  Somewhat subjective, too...
-		// May extend to 16-bit each in the future.
-		// It's also rather a special case of game module->driver code communication.
-} InputDeviceInputType;
+#include "video.h"
 
 typedef struct
 {
 	const char *SettingName;	// No spaces, shouldbe all a-z0-9 and _. Definitely no ~!
 	const char *Name;
-	/*const InputDeviceInputVB VirtButton;*/
         const int ConfigOrder;          // Configuration order during in-game config process, -1 for no config.
-	const InputDeviceInputType Type;
 	const char *ExcludeName;	// SettingName of a button that can't be pressed at the same time as this button
 					// due to physical limitations.
-
-	const char *RotateName[3];	// 90, 180, 270
-	//const char *Rotate180Name;
-	//const char *Rotate270Name;
 } InputDeviceInputInfoStruct;
 
 typedef struct
 {
  const char *ShortName;
  const char *FullName;
- const char *Description;
 
- //struct InputPortInfoStruct *PortExpanderDeviceInfo;
- const void *PortExpanderDeviceInfo;	// DON'T USE, IT'S NOT IMPLEMENTED PROPERLY CURRENTLY.
  int NumInputs; // Usually just the number of buttons....OR if PortExpanderDeviceInfo is non-NULL, it's the number of input
 		// ports this port expander device provides.
  const InputDeviceInputInfoStruct *IDII;
@@ -123,15 +87,6 @@ typedef struct
 	// you can ignore this.  If you do wish to use this, you must set all elements every frame.
 	MDFN_Rect *LineWidths;
 
-	// TODO
-	bool *IsFMV;
-
-	// Set(optionally) by emulation code.  If InterlaceOn is true, then assume field height is 1/2 DisplayRect.h, and
-	// only every other line in surface (with the start line defined by InterlacedField) has valid data
-	// (it's up to internal Mednafen code to deinterlace it).
-	bool InterlaceOn;
-	bool InterlaceField;
-
 	// Skip rendering this frame if true.  Set by the driver code.
 	int skip;
 
@@ -168,20 +123,6 @@ typedef struct
 
  uint32 fps; // frames per second * 65536 * 256, truncated
 
- // multires is a hint that, if set, indicates that the system has fairly programmable video modes(particularly, the ability
- // to display multiple horizontal resolutions, such as the PCE, PC-FX, or Genesis).  In practice, it will cause the driver
- // code to set the linear interpolation on by default.
- //
- // lcm_width and lcm_height are the least common multiples of all possible
- // resolutions in the frame buffer as specified by DisplayRect/LineWidths(Ex for PCE: widths of 256, 341.333333, 512,
- // lcm = 1024)
- //
- // nominal_width and nominal_height specify the resolution that Mednafen should display
- // the framebuffer image in at 1x scaling, scaled from the dimensions of DisplayRect, and optionally the LineWidths array
- // passed through espec to the Emulate() function.
- //
- bool multires;
-
  int lcm_width;
  int lcm_height;
 
@@ -194,16 +135,6 @@ typedef struct
  int fb_height;		// Height of the framebuffer passed to the Emulate() function(not necessarily height of the image)
 
  int soundchan; 	// Number of output sound channels.
-
-
- GameMediumTypes GameType;
-
- //int DiskLogicalCount;	// A single double-sided disk would be 2 here.
- //const char *DiskNames;	// Null-terminated.
-
- const char *cspecial;  /* Special cart expansion: DIP switches, barcode reader, etc. */
-
- double mouse_sensitivity;
 } MDFNGI;
 
 #ifdef __cplusplus
