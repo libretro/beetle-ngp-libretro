@@ -16,6 +16,8 @@ else ifneq ($(findstring Darwin,$(shell uname -s)),)
 else ifneq ($(findstring win,$(shell uname -s)),)
    platform = win
 endif
+else ifneq (,$(findstring rpi,$(platform)))
+   override platform += unix
 endif
 
 # system platform
