@@ -41,7 +41,6 @@ struct SSDescriptor
 {
    SFORMAT *sf;
    const char *name;
-   bool optional;
 };
 
 #ifdef __cplusplus
