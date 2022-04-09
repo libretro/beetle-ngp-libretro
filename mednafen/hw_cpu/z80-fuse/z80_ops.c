@@ -68,7 +68,5 @@ int z80_do_opcode( void )
    ret              = z80_tstates - last_z80_tstates;
    last_z80_tstates = z80_tstates;
 
-   //printf("PC: %04x, %02x, time=%d\n", lastpc, opcode, ret);
-
    return ret;
 }

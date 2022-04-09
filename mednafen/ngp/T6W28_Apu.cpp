@@ -321,13 +321,13 @@ void T6W28_Apu::write_data_left( long time, int data )
 
 void T6W28_Apu::write_data_right( long time, int data )
 {
+   int index;
    run_until( time );
 
    if ( data & 0x80 )
       latch_right = data;
 
-   int index = (latch_right >> 5) & 3;
-   //printf("%d\n", index);
+   index = (latch_right >> 5) & 3;
 
    if ( latch_right & 0x10 )
       oscs [index]->volume_right = volumes [data & 15];

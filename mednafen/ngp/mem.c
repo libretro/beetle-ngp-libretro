@@ -234,8 +234,6 @@ uint8_t loadB(uint32 address)
          return Z80_ReadComm();
    }
 
-   //printf("UNK B R: %08x\n", address);
-
    return 0;
 }
 
@@ -313,8 +311,6 @@ uint16_t loadW(uint32 address)
 
    if(address == 0xBC)
       return Z80_ReadComm();
-
-   //printf("UNK W R: %08x\n", address);
 
    return(0);
 }

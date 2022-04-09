@@ -257,7 +257,6 @@ static bool TestConditions(const char *string)
    unsigned int bytelen;
    bool passed = 1;
 
-   //printf("TR: %s\n", string);
    while(sscanf(string, "%u %c %63s %63s %63s", &bytelen, &endian, address, operation, value) == 5 && passed)
    {
       uint64 v_value;
@@ -270,7 +269,6 @@ static bool TestConditions(const char *string)
 
       value_at_address = 0;
 
-      //printf("A: %08x, V: %08llx, VA: %08llx, OP: %s\n", v_address, v_value, value_at_address, operation);
       if(!strcmp(operation, ">="))
       {
          if(!(value_at_address >= v_value))
