@@ -100,10 +100,6 @@ static void Emulate(EmulateSpecStruct *espec, int16_t *sound_buf)
 {
    bool MeowMeow        = false;
 
-   espec->DisplayRect.x = 0;
-   espec->DisplayRect.y = 0;
-   espec->DisplayRect.w = 160;
-   espec->DisplayRect.h = 152;
 
    if(espec->VideoFormatChanged)
       ngpgfx_set_pixel_format(NGPGfx, espec->surface->depth);
@@ -116,7 +112,7 @@ static void Emulate(EmulateSpecStruct *espec, int16_t *sound_buf)
    MDFNMP_ApplyPeriodicCheats();
 
    ngpc_soundTS         = 0;
-   NGPFrameSkip         = espec->skip;
+   NGPFrameSkip         = false;
 
    do
    {
@@ -139,8 +135,6 @@ static void Emulate(EmulateSpecStruct *espec, int16_t *sound_buf)
       }
    }while(!MeowMeow);
 
-
-   espec->MasterCycles = ngpc_soundTS;
    espec->SoundBufSize = MDFNNGPCSOUND_Flush(sound_buf,
          espec->SoundBufMaxSize);
 }
@@ -202,8 +196,6 @@ static int Load(struct MDFNFILE *fp,
 
    NGPGfx = (ngpgfx_t*)calloc(1, sizeof(*NGPGfx));
    NGPGfx->layer_enable = 1 | 2 | 4;
-
-   EmulatedNGP.fps = (uint32)((uint64)6144000 * 65536 * 256 / 515 / 198); /* 3072000 * 2 * 10000 / 515 / 198 */
 
    MDFNNGPCSOUND_Init();
 
@@ -337,8 +329,6 @@ MDFNGI EmulatedNGP = {0};
 
 static void MDFNGI_reset(MDFNGI *gameinfo)
 {
- gameinfo->MasterClock     = MDFN_MASTERCLOCK_FIXED(6144000);
- gameinfo->fps             = 0;
  gameinfo->lcm_width       = 160;
  gameinfo->lcm_height      = 152;
  gameinfo->dummy_separator = NULL;
@@ -346,7 +336,6 @@ static void MDFNGI_reset(MDFNGI *gameinfo)
  gameinfo->nominal_height  = 152;
  gameinfo->fb_width        = 160;
  gameinfo->fb_height       = 152;
- gameinfo->soundchan       = 2;
 }
 
 static void MDFNI_CloseGame(void)
@@ -734,16 +723,12 @@ static void update_input(void)
          input_buf |= (1 << i);
 }
 
-static uint64_t video_frames, audio_frames;
-
 void retro_run(void)
 {
    int total = 0;
-   int32 SoundBufSize;
    unsigned width, height;
    static int16_t sound_buf[0x10000];
-   static MDFN_Rect rects[FB_MAX_HEIGHT];
-   EmulateSpecStruct spec = {0};
+   EmulateSpecStruct spec;
    bool updated = false;
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
@@ -753,15 +738,16 @@ void retro_run(void)
 
    update_input();
 
-   rects[0].w              = ~0;
-
    spec.surface            = surf;
+   spec.VideoFormatChanged = update_video;
+   spec.DisplayRect.x      = 0;
+   spec.DisplayRect.y      = 0;
+   spec.DisplayRect.w      = 160;
+   spec.DisplayRect.h      = 152;
+   spec.SoundFormatChanged = update_audio;
    spec.SoundRate          = RETRO_SAMPLE_RATE;
-   spec.LineWidths         = rects;
    spec.SoundBufMaxSize    = sizeof(sound_buf) / 2;
    spec.SoundBufSize       = 0;
-   spec.VideoFormatChanged = update_video;
-   spec.SoundFormatChanged = update_audio;
 
    if (update_video || update_audio)
    {
@@ -784,16 +770,12 @@ void retro_run(void)
 
    Emulate(&spec, sound_buf);
 
-   SoundBufSize      = spec.SoundBufSize - spec.SoundBufSizeALMS;
-   spec.SoundBufSize = spec.SoundBufSizeALMS + SoundBufSize;
+   spec.SoundBufSize = spec.SoundBufSize;
 
    width  = spec.DisplayRect.w;
    height = spec.DisplayRect.h;
 
    video_cb(surf->pixels, width, height, FB_WIDTH * RETRO_PIX_BYTES);
-
-   video_frames++;
-   audio_frames += spec.SoundBufSize;
 
    for (total = 0; total < spec.SoundBufSize; )
       total += audio_batch_cb(sound_buf + total*2, spec.SoundBufSize - total);
@@ -842,14 +824,6 @@ void retro_deinit(void)
       free(surf);
    }
    surf = NULL;
-
-   if (log_cb)
-   {
-      log_cb(RETRO_LOG_INFO, "[%s]: Samples / Frame: %.5f\n",
-            MEDNAFEN_CORE_NAME, (double)audio_frames / video_frames);
-      log_cb(RETRO_LOG_INFO, "[%s]: Estimated FPS: %.5f\n",
-            MEDNAFEN_CORE_NAME, (double)video_frames * 44100 / audio_frames);
-   }
 
    libretro_supports_bitmasks = false;
 }

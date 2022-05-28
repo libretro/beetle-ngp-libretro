@@ -81,15 +81,6 @@ typedef struct
 	// are ignored while drawing the image.
 	MDFN_Rect DisplayRect;
 
-	// Pointer to an array of MDFN_Rect, number of elements = fb_height, set by the driver code.  Individual MDFN_Rect structs written
-	// to by system emulation code.  If the emulated system doesn't support multiple screen widths per frame, or if you handle
-	// such a situation by outputting at a constant width-per-frame that is the least-common-multiple of the screen widths, then
-	// you can ignore this.  If you do wish to use this, you must set all elements every frame.
-	MDFN_Rect *LineWidths;
-
-	// Skip rendering this frame if true.  Set by the driver code.
-	int skip;
-
 	//
 	// If sound is disabled, the driver code must set SoundRate to false, SoundBuf to NULL, SoundBufMaxSize to 0.
 
@@ -105,24 +96,12 @@ typedef struct
 
 	// Number of frames currently in internal sound buffer.  Set by the system emulation code, to be read by the driver code.
 	int32 SoundBufSize;
-	int32 SoundBufSizeALMS;	// SoundBufSize value at last MidSync(), 0
-				// if mid sync isn't implemented for the emulation module in use.
-
-	// Number of cycles that this frame consumed, using MDFNGI::MasterClock as a time base.
-	// Set by emulation code.
-	int64 MasterCycles;
-
 } EmulateSpecStruct;
 
 #define MDFN_MASTERCLOCK_FIXED(n)	((int64)((double)(n) * (1LL << 32)))
 
 typedef struct
 {
- // Time base for EmulateSpecStruct::MasterCycles
- int64 MasterClock;
-
- uint32 fps; // frames per second * 65536 * 256, truncated
-
  int lcm_width;
  int lcm_height;
 
@@ -133,8 +112,6 @@ typedef struct
 
  int fb_width;		// Width of the framebuffer(not necessarily width of the image).  MDFN_Surface width should be >= this.
  int fb_height;		// Height of the framebuffer passed to the Emulate() function(not necessarily height of the image)
-
- int soundchan; 	// Number of output sound channels.
 } MDFNGI;
 
 #ifdef __cplusplus
