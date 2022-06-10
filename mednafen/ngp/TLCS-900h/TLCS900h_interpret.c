@@ -498,37 +498,37 @@ bool conditionCode(int cc)
    switch(cc)
    {
       case 0:
-         return 0;	//(F)
+	 break;		//(F)
       case 1:
          if (FLAG_S ^ FLAG_V)
             return 1;
-         return 0;	//(LT)
+	 break;		//(LT)
       case 2:
          if (FLAG_Z | (FLAG_S ^ FLAG_V))
             return 1;
-         return 0;	//(LE)
+	 break;		//(LE)
       case 3:
          if (FLAG_C | FLAG_Z)
             return 1;
-         return 0;	//(ULE)
+	 break;		//(ULE)
       case 4:
          if (FLAG_V)
             return 1;
-         return 0;	//(OV)
+	 break;		//(OV)
       case 5:
          if (FLAG_S)
             return 1;
-         return 0;	//(MI)
+	 break;		//(MI)
       case 6:
          if (FLAG_Z)
             return 1;
-         return 0;	//(Z)
+	 break;		//(Z)
       case 7:
          if (FLAG_C)
             return 1;
          return 0;	//(C)
       case 8:
-         return 1;	//always True														
+         return 1;	//always True
       case 9:
          if (FLAG_S ^ FLAG_V)
             return 0;
@@ -559,10 +559,7 @@ bool conditionCode(int cc)
          return 1;	//(NC)
    }
 
-#ifdef NEOPOP_DEBUG
-   system_debug_message("Unknown Condition Code %d", cc);
-#endif
-   return false;
+   return 0;
 }
 
 //=============================================================================
