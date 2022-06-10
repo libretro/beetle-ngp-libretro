@@ -641,7 +641,7 @@ bool retro_load_game(const struct retro_game_info *info)
    }
 #endif
 
-   MDFN_LoadGameCheats(NULL);
+   MDFN_LoadGameCheats();
    MDFNMP_InstallReadPatches();
 
    surf = (MDFN_Surface*)calloc(1, sizeof(*surf));

@@ -167,7 +167,7 @@ static int AddCheatEntry(char *name, char *conditions, uint32 addr, uint64 val, 
    return(1);
 }
 
-extern "C" void MDFN_LoadGameCheats(void *override_ptr)
+extern "C" void MDFN_LoadGameCheats(void)
 {
    RebuildSubCheats();
 }
