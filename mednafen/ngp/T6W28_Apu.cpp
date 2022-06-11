@@ -62,9 +62,7 @@ void T6W28_Square::run( long time, long end_time )
 
 		time += delay;
 		if ( !period )
-		{
 			time = end_time;
-		}
 		else if ( time < end_time )
 		{
 			// keep calculating phase
@@ -281,14 +279,12 @@ void T6W28_Apu::run_until( long end_time )
    }
 }
 
-bool T6W28_Apu::end_frame( long end_time )
+void T6W28_Apu::end_frame( long end_time )
 {
    if ( end_time > last_time )
       run_until( end_time );
 
    last_time -= end_time;
-
-   return(1);
 }
 
 static const unsigned char volumes [16] = {
@@ -415,4 +411,3 @@ void T6W28_Apu::load_state(T6W28_ApuState *state)
    latch_left = state->latch_left;
    latch_right = state->latch_right;
 }
-

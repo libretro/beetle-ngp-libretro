@@ -17,7 +17,7 @@ endif
 
 include $(CORE_DIR)/Makefile.common
 
-COREFLAGS := -funroll-loops $(INCFLAGS) -DMEDNAFEN_VERSION_NUMERIC=926 -D__LIBRETRO__ -D_LOW_ACCURACY_ -DINLINE="inline" $(FLAGS)
+COREFLAGS := -funroll-loops $(INCFLAGS) -DMEDNAFEN_VERSION_NUMERIC=926 -D__LIBRETRO__ -DINLINE="inline" $(FLAGS)
 COREFLAGS += -DWANT_NGP_EMU
 
 GIT_VERSION := " $(shell git rev-parse --short HEAD || echo unknown)"

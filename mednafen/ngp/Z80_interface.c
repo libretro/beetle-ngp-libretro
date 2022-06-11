@@ -89,15 +89,8 @@ static uint8_t NGP_z80_readbyte(uint16_t address)
 {
    if (address <= 0xFFF)
       return loadB(0x7000 + address);
-
-   switch (address)
-   {
-      case 0x8000:
+   if (address == 0x8000)
          return CommByte;
-      default:
-         break;
-   }
-
    return 0;
 }
 
@@ -149,12 +142,12 @@ void Z80_irq(void)
 
 void Z80_reset(void)
 {
-	Z80Enabled = 0;
+	Z80Enabled    = 0;
 
 	z80_writebyte = NGP_z80_writebyte;
-	z80_readbyte = NGP_z80_readbyte;
+	z80_readbyte  = NGP_z80_readbyte;
 	z80_writeport = NGP_z80_writeport;
-	z80_readport = NGP_z80_readport;
+	z80_readport  = NGP_z80_readport;
 
 	z80_init();
 	z80_reset();

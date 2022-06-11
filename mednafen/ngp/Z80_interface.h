@@ -28,10 +28,10 @@ extern "C" {
 uint8_t Z80_ReadComm(void);
 void Z80_WriteComm(uint8_t data);
 
-void Z80_reset(void);	// z80 reset
+void Z80_reset(void);		/* z80 reset */
 
-void Z80_irq(void);		// Cause an interrupt
-void Z80_nmi(void);		// Cause an NMI
+void Z80_irq(void);		/* Cause an interrupt */
+void Z80_nmi(void);		/* Cause an NMI */
 void Z80_SetEnable(bool set);
 bool Z80_IsEnabled(void);
 int Z80_RunOP(void);

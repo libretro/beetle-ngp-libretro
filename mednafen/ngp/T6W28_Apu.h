@@ -52,10 +52,8 @@ class T6W28_Apu
       void write_data_right( long, int );
 
       // Run all oscillators up to specified time, end current frame, then
-      // start a new frame at time 0. Returns true if any oscillators added
-      // sound to one of the left/right buffers, false if they only added
-      // to the center buffer.
-      bool end_frame( long );
+      // start a new frame at time 0.
+      void end_frame( long );
 
       T6W28_ApuState *save_state(void);
       void load_state(T6W28_ApuState*);
