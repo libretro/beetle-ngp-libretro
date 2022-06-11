@@ -199,18 +199,12 @@ void iBIOSHLE(void)
             if (rCodeB(0x30) == 1)
                bank = 0x800000;
 
-            memory_flash_error = false;
             memory_unlock_flash_write = true;
             //Copy as 32 bit values for speed
             for (i = 0; i < rCodeW(0x34) * 64ul; i++)
                storeL(rCodeL(0x38) + bank + (i * 4), loadL(rCodeL(0x3C) + (i * 4)));
             memory_unlock_flash_write = false;
 
-            if (memory_flash_error)
-            {
-               rCodeB(0x30) = 0xFF;	//RA3 = SYS_FAILURE
-            }
-            else
             {
                uint32 address = rCodeL(0x38);
                if (rCodeB(0x30) == 1)
@@ -249,7 +243,6 @@ void iBIOSHLE(void)
 		       flash_write(addr, size);
 		       flash_optimise_blocks();
 
-		       memory_flash_error = false;
 		       memory_unlock_flash_write = true;
 
 		       for(i = 0; i < size; i += 4)

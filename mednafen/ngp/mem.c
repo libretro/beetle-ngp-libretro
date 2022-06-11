@@ -37,7 +37,6 @@ static uint32 FlashStatus;
 uint8_t CPUExRAM[16384];
 
 bool memory_unlock_flash_write = false;
-bool memory_flash_error = false;
 bool memory_flash_command = false;
 
 
@@ -154,7 +153,6 @@ static void *translate_address_write(uint32 address)
          //Ignore Flash commands
          if (address == 0x202AAA || address == 0x205555)
          {
-            //			system_debug_message("%06X: Enable Flash command from %06X", pc, address);
             memory_flash_command = true;
             return NULL;
          }
@@ -162,7 +160,6 @@ static void *translate_address_write(uint32 address)
          //Set Flash status reading?
          if (address == 0x220000 || address == 0x230000)
          {
-            //			system_debug_message("%06X: Flash status read from %06X", pc, address);
             FlashStatusEnable = true;
             RecacheFRM();
             return NULL;
@@ -175,9 +172,6 @@ static void *translate_address_write(uint32 address)
 
             //Need to issue a new command before writing will work again.
             memory_flash_command = false;
-
-            //			system_debug_message("%06X: Direct Flash write to %06X", pc, address & 0xFFFF00);
-            //			system_debug_stop();
 
             //Write to the rom itself.
             if (address < ROM_START + ngpc_rom.length)

@@ -34,7 +34,6 @@ extern "C" {
 void reset_memory(void);
 
 extern bool memory_unlock_flash_write;
-extern bool memory_flash_error;
 extern bool memory_flash_command;
 
 extern bool FlashStatusEnable;

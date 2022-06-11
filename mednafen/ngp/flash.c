@@ -147,12 +147,6 @@ void do_flash_read(uint8_t *flashdata)
    memory_unlock_flash_write = PREV_memory_unlock_flash_write;
 
    flash_optimise_blocks();		//Optimise
-
-
-   //Output block list...
-   /*	for (i = 0; i < block_count; i++)
-      system_debug_message("flash block: %06X, %d bytes", 
-      blocks[i].start_address, blocks[i].data_length);*/
 }
 
 void flash_read(void)
@@ -189,9 +183,7 @@ void flash_write(uint32_t start_address, uint16_t length)
    uint16_t i;
 
    //Now we need a new flash command before the next flash write will work!
-   memory_flash_command = 0;
-
-   //	system_debug_message("flash write: %06X, %d bytes", start_address, length);
+   memory_flash_command = false;
 
    for (i = 0; i < block_count; i++)
    {
