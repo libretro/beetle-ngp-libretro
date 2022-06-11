@@ -36,9 +36,6 @@ static uint32 FlashStatus;
 
 uint8_t CPUExRAM[16384];
 
-bool debug_abort_memory = false;
-bool debug_mask_memory_error_messages = false;
-
 bool memory_unlock_flash_write = false;
 bool memory_flash_error = false;
 bool memory_flash_command = false;

@@ -61,12 +61,6 @@
 #include "TLCS900h_interpret_dst.h"
 #include "TLCS900h_interpret_reg.h"
 
-#ifdef TLCS_ERRORS
-static void DUMMY_instruction_error(const char* vaMessage,...) { }
-
-void (*instruction_error)(const char* vaMessage,...) = DUMMY_instruction_error;
-#endif
-
 //=========================================================================
 
 uint32	mem;		//Result of addressing mode
@@ -526,7 +520,7 @@ bool conditionCode(int cc)
       case 7:
          if (FLAG_C)
             return 1;
-         return 0;	//(C)
+         break;		//(C)
       case 8:
          return 1;	//always True
       case 9:
@@ -601,75 +595,73 @@ uint8 get_rr_Target(void)
 
 uint8 get_RR_Target(void)
 {
-   uint8 target = 0x80;
-
    //Create a regCode
    switch(second & 7)
    {
       case 0:
          if (size == 1)
-            target = 0xE0;
+            return 0xE0;
          break;
       case 1:	
          if (size == 0)
-            target = 0xE0;
-         if (size == 1)
-            target = 0xE4;
+            return 0xE0;
+         else if (size == 1)
+            return 0xE4;
          break;
       case 2:
          if (size == 1)
-            target = 0xE8;
+            return 0xE8;
          break;
       case 3:
          if (size == 0)
-            target = 0xE4;
-         if (size == 1)
-            target = 0xEC;
+            return 0xE4;
+         else if (size == 1)
+            return 0xEC;
          break;
       case 4:
          if (size == 1)
-            target = 0xF0;
+            return 0xF0;
          break;
       case 5:	
          if (size == 0)
-            target = 0xE8;
-         if (size == 1)
-            target = 0xF4;
+            return 0xE8;
+         else if (size == 1)
+            return 0xF4;
          break;
       case 6:
          if (size == 1)
-            target = 0xF8;
+            return 0xF8;
          break;
       case 7:
          if (size == 0)
-            target = 0xEC;
-         if (size == 1)
-            target = 0xFC;
+            return 0xEC;
+         else if (size == 1)
+            return 0xFC;
          break;
    }
 
-   return target;
+   return 0x80;
 }
 
 //=========================================================================
 
-static void ExXWA()		{mem = regL(0);}
-static void ExXBC()		{mem = regL(1);}
-static void ExXDE()		{mem = regL(2);}
-static void ExXHL()		{mem = regL(3);}
-static void ExXIX()		{mem = regL(4);}
-static void ExXIY()		{mem = regL(5);}
-static void ExXIZ()		{mem = regL(6);}
-static void ExXSP()		{mem = regL(7);}
+static void ExXWA(void)		{mem = regL(0);}
+static void ExXBC(void)		{mem = regL(1);}
+static void ExXDE(void)		{mem = regL(2);}
+static void ExXHL(void)		{mem = regL(3);}
+static void ExXIX(void)		{mem = regL(4);}
+static void ExXIY(void)		{mem = regL(5);}
+static void ExXIZ(void)		{mem = regL(6);}
+static void ExXSP(void)		{mem = regL(7);}
 
-static void ExXWAd()	{mem = regL(0) + (int8)FETCH8; cycles_extra = 2;}
-static void ExXBCd()	{mem = regL(1) + (int8)FETCH8; cycles_extra = 2;}
-static void ExXDEd()	{mem = regL(2) + (int8)FETCH8; cycles_extra = 2;}
-static void ExXHLd()	{mem = regL(3) + (int8)FETCH8; cycles_extra = 2;}
-static void ExXIXd()	{mem = regL(4) + (int8)FETCH8; cycles_extra = 2;}
-static void ExXIYd()	{mem = regL(5) + (int8)FETCH8; cycles_extra = 2;}
-static void ExXIZd()	{mem = regL(6) + (int8)FETCH8; cycles_extra = 2;}
-static void ExXSPd()	{mem = regL(7) + (int8)FETCH8; cycles_extra = 2;}
+static void ExXWAd(void)	{mem = regL(0) + (int8)FETCH8; cycles_extra = 2;}
+static void ExXBCd(void)	{mem = regL(1) + (int8)FETCH8; cycles_extra = 2;}
+static void ExXDEd(void)	{mem = regL(2) + (int8)FETCH8; cycles_extra = 2;}
+static void ExXHLd(void)	{mem = regL(3) + (int8)FETCH8; cycles_extra = 2;}
+static void ExXIXd(void)	{mem = regL(4) + (int8)FETCH8; cycles_extra = 2;}
+static void ExXIYd(void)	{mem = regL(5) + (int8)FETCH8; cycles_extra = 2;}
+static void ExXIZd(void)	{mem = regL(6) + (int8)FETCH8; cycles_extra = 2;}
+static void ExXSPd(void)	{mem = regL(7) + (int8)FETCH8; cycles_extra = 2;}
 
 static void Ex8(void)
 {
@@ -702,8 +694,7 @@ static void ExR32(void)
 		cycles_extra = 8;
 		return;
 	}
-
-	if (data == 0x07)
+	else if (data == 0x07)
 	{
 		uint8 rIndex, r32;
 		r32 = FETCH8;		//r32
@@ -712,9 +703,8 @@ static void ExR32(void)
 		cycles_extra = 8;
 		return;
 	}
-
 	//Undocumented mode!
-	if (data == 0x13)
+	else if (data == 0x13)
 	{
 		int16 disp = fetch16();
 		mem = pc + disp;
@@ -724,12 +714,12 @@ static void ExR32(void)
 
 	cycles_extra = 5;
 
-   mem = rCodeL(data);
+	mem = rCodeL(data);
 	if ((data & 3) == 1)
 		mem += (int16)fetch16();
 }
 
-static void ExDec()
+static void ExDec(void)
 {
 	uint8 data = FETCH8;
 	uint8 r32 = data & 0xFC;
@@ -744,7 +734,7 @@ static void ExDec()
 	}
 }
 
-static void ExInc()
+static void ExInc(void)
 {
    uint8 data = FETCH8;
    uint8 r32 = data & 0xFC;
@@ -768,7 +758,7 @@ static void ExInc()
    }
 }
 
-static void ExRC()
+static void ExRC(void)
 {
 	brCode = true;
 	rCode = FETCH8;
@@ -778,7 +768,7 @@ static void ExRC()
 //=========================================================================
 
 //Address Mode & Register Code
-static void (*decodeExtra[256])() = 
+static void (*decodeExtra[256])(void) = 
 {
 /*0*/	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 /*1*/	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -808,32 +798,15 @@ static void (*decodeExtra[256])() =
 
 //=========================================================================
 
-static void e(void)
-{
-#ifdef TLCS_ERRORS
-	instruction_error("Unknown instruction %02X", first);
-#endif
-}
-
-static void es(void)
-{
-	//instruction_error("Unknown [src] instruction %02X", second);
-}
-
-static void ed(void)
-{
-	//instruction_error("Unknown [dst] instruction %02X", second);
-}
-
-static void er(void)
-{
-	//instruction_error("Unknown [reg] instruction %02X", second);
-}
+static void e(void)  { }
+static void es(void) { }
+static void ed(void) { }
+static void er(void) { }
 
 //=========================================================================
 
 //Secondary (SRC) Instruction decode
-static void (*srcDecode[256])() = 
+static void (*srcDecode[256])(void) = 
 {
 /*0*/	es,			es,			es,			es,			srcPUSH,	es,			srcRLD,		srcRRD,
 		es,			es,			es,			es,			es,			es,			es,			es,
@@ -945,7 +918,7 @@ static void (*regDecode[256])() =
 
 //=========================================================================
 
-static void src_B()
+static void src_B(void)
 {
 	second = FETCH8;			//Get the second opcode
 	R = second & 7;
@@ -954,7 +927,7 @@ static void src_B()
 	(*srcDecode[second])();		//Call
 }
 
-static void src_W()
+static void src_W(void)
 {
 	second = FETCH8;			//Get the second opcode
 	R = second & 7;
@@ -963,7 +936,7 @@ static void src_W()
 	(*srcDecode[second])();		//Call
 }
 
-static void src_L()
+static void src_L(void)
 {
 	second = FETCH8;			//Get the second opcode
 	R = second & 7;
@@ -972,7 +945,7 @@ static void src_L()
 	(*srcDecode[second])();		//Call
 }
 
-static void dst()
+static void dst(void)
 {
 	second = FETCH8;			//Get the second opcode
 	R = second & 7;
@@ -980,9 +953,6 @@ static void dst()
 	(*dstDecode[second])();		//Call
 }
 
-static uint8 rCodeConversionB[8] = { 0xE1, 0xE0, 0xE5, 0xE4, 0xE9, 0xE8, 0xED, 0xEC };
-static uint8 rCodeConversionW[8] = { 0xE0, 0xE4, 0xE8, 0xEC, 0xF0, 0xF4, 0xF8, 0xFC };
-static uint8 rCodeConversionL[8] = { 0xE0, 0xE4, 0xE8, 0xEC, 0xF0, 0xF4, 0xF8, 0xFC };
 
 static void reg_B(void)
 {
@@ -990,10 +960,11 @@ static void reg_B(void)
 	R = second & 7;
 	size = 0;					//Byte Size
 
-	if (brCode == false)
+	if (!brCode)
 	{
+		static uint8 rCodeConversionB[8] = { 0xE1, 0xE0, 0xE5, 0xE4, 0xE9, 0xE8, 0xED, 0xEC };
 		brCode = true;
-		rCode = rCodeConversionB[first & 7];
+		rCode  = rCodeConversionB[first & 7];
 	}
 
 	(*regDecode[second])();		//Call
@@ -1002,13 +973,14 @@ static void reg_B(void)
 static void reg_W(void)
 {
 	second = FETCH8;			//Get the second opcode
-	R = second & 7;
-	size = 1;					//Word Size
+	R      = second & 7;
+	size   = 1;					//Word Size
 
-	if (brCode == false)
+	if (!brCode)
 	{
+		static uint8 rCodeConversionW[8] = { 0xE0, 0xE4, 0xE8, 0xEC, 0xF0, 0xF4, 0xF8, 0xFC };
 		brCode = true;
-		rCode = rCodeConversionW[first & 7];
+		rCode  = rCodeConversionW[first & 7];
 	}
 
 	(*regDecode[second])();		//Call
@@ -1017,13 +989,14 @@ static void reg_W(void)
 static void reg_L(void)
 {
 	second = FETCH8;			//Get the second opcode
-	R = second & 7;
-	size = 2;					//Long Size
+	R      = second & 7;
+	size   = 2;				//Long Size
 
-	if (brCode == false)
+	if (!brCode)
 	{
+		static uint8 rCodeConversionL[8] = { 0xE0, 0xE4, 0xE8, 0xEC, 0xF0, 0xF4, 0xF8, 0xFC };
 		brCode = true;
-		rCode = rCodeConversionL[first & 7];
+		rCode  = rCodeConversionL[first & 7];
 	}
 
 	(*regDecode[second])();		//Call
@@ -1032,7 +1005,7 @@ static void reg_L(void)
 //=============================================================================
 
 //Primary Instruction decode
-static void (*decode[256])() = 
+static void (*decode[256])(void) = 
 {
 /*0*/	sngNOP,		sngNORMAL,	sngPUSHSR,	sngPOPSR,	sngMAX,		sngHALT,	sngEI,		sngRETI,
 		sngLD8_8,	sngPUSH8,	sngLD8_16,	sngPUSH16,	sngINCF,	sngDECF,	sngRET,		sngRETD,
@@ -1073,9 +1046,7 @@ static void (*decode[256])() =
 int32 TLCS900h_interpret(void)
 {
 	brCode = false;
-
-	first = FETCH8;	//Get the first byte
-
+	first  = FETCH8;	//Get the first byte
 	//Is any extra data used by this instruction?
 	cycles_extra = 0;
 	if (decodeExtra[first])
@@ -1085,5 +1056,3 @@ int32 TLCS900h_interpret(void)
 
 	return cycles + cycles_extra;
 }
-
-//=============================================================================

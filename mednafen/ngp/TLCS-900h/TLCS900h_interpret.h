@@ -70,10 +70,6 @@ extern bool brCode;
 
 //=============================================================================
 
-extern void (*instruction_error)(const char* vaMessage,...);
-
-//=============================================================================
-
 #define FETCH8		loadB(pc++)
 
 uint16 fetch16(void);
@@ -106,22 +102,22 @@ uint16 generic_DIVS_B(int16 val, int8 div);
 uint32 generic_DIVS_W(int32 val, int16 div);
 
 //ADD ===============
-uint8	generic_ADD_B(uint8 dst, uint8 src);
+uint8  generic_ADD_B(uint8 dst, uint8 src);
 uint16 generic_ADD_W(uint16 dst, uint16 src);
 uint32 generic_ADD_L(uint32 dst, uint32 src);
 
 //ADC ===============
-uint8	generic_ADC_B(uint8 dst, uint8 src);
+uint8  generic_ADC_B(uint8 dst, uint8 src);
 uint16 generic_ADC_W(uint16 dst, uint16 src);
 uint32 generic_ADC_L(uint32 dst, uint32 src);
 
 //SUB ===============
-uint8	generic_SUB_B(uint8 dst, uint8 src);
+uint8  generic_SUB_B(uint8 dst, uint8 src);
 uint16 generic_SUB_W(uint16 dst, uint16 src);
 uint32 generic_SUB_L(uint32 dst, uint32 src);
 
 //SBC ===============
-uint8	generic_SBC_B(uint8 dst, uint8 src);
+uint8  generic_SBC_B(uint8 dst, uint8 src);
 uint16 generic_SBC_W(uint16 dst, uint16 src);
 uint32 generic_SBC_L(uint32 dst, uint32 src);
 

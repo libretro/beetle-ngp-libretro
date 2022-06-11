@@ -131,13 +131,6 @@ void regNEG(void)
 void regMULi(void)
 {
 	uint8 target = get_rr_Target();
-#ifdef TLCS_ERRORS
-	if (target == 0x80)
-	{
-		instruction_error("reg: MULi bad \'rr\' dst code");
-		return;
-	}
-#endif
 
 	switch(size)
 	{
@@ -152,13 +145,6 @@ void regMULi(void)
 void regMULSi(void)
 {
 	uint8 target = get_rr_Target();
-#ifdef TLCS_ERRORS
-	if (target == 0x80)
-	{
-		instruction_error("reg: MULSi bad \'rr\' dst code");
-		return;
-	}
-#endif
 
 	switch(size)
 	{
@@ -173,13 +159,6 @@ void regMULSi(void)
 void regDIVi(void)
 {
 	uint8 target = get_rr_Target();
-#ifdef TLCS_ERRORS
-	if (target == 0x80)
-	{
-		instruction_error("reg: DIVi bad \'rr\' dst code");
-		return;
-	}
-#endif
 
 	switch(size)
 	{
@@ -197,13 +176,6 @@ void regDIVi(void)
 void regDIVSi(void)
 {
 	uint8 target = get_rr_Target();
-#ifdef TLCS_ERRORS
-	if (target == 0x80)
-	{
-		instruction_error("reg: DIVSi bad \'rr\' dst code");
-		return;
-	}
-#endif
 
 	switch(size)
 	{
@@ -834,13 +806,6 @@ void regMDEC4(void)
 void regMUL(void)
 {
 	uint8 target = get_RR_Target();
-#ifdef TLCS_ERRORS
-	if (target == 0x80)
-	{
-		instruction_error("reg: MUL bad \'RR\' dst code");
-		return;
-	}
-#endif
 
 	switch(size)
 	{
@@ -855,13 +820,6 @@ void regMUL(void)
 void regMULS(void)
 {
 	uint8 target = get_RR_Target();
-#ifdef TLCS_ERRORS
-	if (target == 0x80)
-	{
-		instruction_error("reg: MUL bad \'RR\' dst code");
-		return;
-	}
-#endif
 
 	switch(size)
 	{
@@ -876,13 +834,6 @@ void regMULS(void)
 void regDIV(void)
 {
 	uint8 target = get_RR_Target();
-#ifdef TLCS_ERRORS
-	if (target == 0x80)
-	{
-		instruction_error("reg: DIV bad \'RR\' dst code");
-		return;
-	}
-#endif
 
 	switch(size)
 	{
@@ -900,13 +851,6 @@ void regDIV(void)
 void regDIVS(void)
 {
 	uint8 target = get_RR_Target();
-#ifdef TLCS_ERRORS
-	if (target == 0x80)
-	{
-		instruction_error("reg: DIVS bad \'RR\' dst code");
-		return;
-	}
-#endif
 
 	switch(size)
 	{

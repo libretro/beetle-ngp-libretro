@@ -419,9 +419,6 @@ void sngSWI(void)
          break;
          //SWI 6
       default:
-#ifdef TLCS_ERRORS
-         instruction_error("SWI %d is not valid.", first & 7);
-#endif
          break;
    }
 }

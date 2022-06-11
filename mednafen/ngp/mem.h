@@ -33,10 +33,6 @@ extern "C" {
 
 void reset_memory(void);
 
-void dump_memory(uint32_t start, uint32_t length);
-extern bool debug_abort_memory;
-extern bool debug_mask_memory_error_messages;
-
 extern bool memory_unlock_flash_write;
 extern bool memory_flash_error;
 extern bool memory_flash_command;

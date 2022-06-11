@@ -64,7 +64,7 @@ int z80_state_action(void *data, int load, int data_only, const char *section_na
       r_register = (z80.r7 & 0x80) | (z80.r & 0x7f);
 
    if(!MDFNSS_StateAction(data, load, data_only, StateRegs, section_name, false))
-      return(0);
+      return 0;
 
    if(load)
    {
@@ -72,7 +72,7 @@ int z80_state_action(void *data, int load, int data_only, const char *section_na
       z80.r = r_register & 0x7F;
    }
 
-   return(1);
+   return 1;
 }
 
 uint8_t Z80_ReadComm(void)
@@ -89,7 +89,7 @@ static uint8_t NGP_z80_readbyte(uint16_t address)
 {
    if (address <= 0xFFF)
       return loadB(0x7000 + address);
-   if (address == 0x8000)
+   else if (address == 0x8000)
          return CommByte;
    return 0;
 }

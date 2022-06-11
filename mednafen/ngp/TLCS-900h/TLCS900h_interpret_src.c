@@ -89,11 +89,10 @@ void srcPUSH(void)
 //===== RLD A,(mem)
 void srcRLD(void)
 {
-	uint8 al = REGA & 0xF, m, mh, ml;
-
-	m = loadB(mem);
-	mh = (m & 0xF0) >> 4;
-	ml = (m & 0x0F) << 4;
+	uint8 al = REGA & 0xF;
+	uint8 m  = loadB(mem);
+	uint8 mh = (m & 0xF0) >> 4;
+	uint8 ml = (m & 0x0F) << 4;
 	
 	REGA = (REGA & 0xF0) | mh;
 	storeB(mem, ml | al);
@@ -110,11 +109,10 @@ void srcRLD(void)
 //===== RRD A,(mem)
 void srcRRD(void)
 {
-	uint8 al = (REGA & 0xF) << 4, m, mh, ml;
-
-	m = loadB(mem);
-	mh = (m & 0xF0) >> 4;
-	ml = m & 0x0F;
+	uint8 al = (REGA & 0xF) << 4;
+	uint8 m  = loadB(mem);
+	uint8 mh = (m & 0xF0) >> 4;
+	uint8 ml = m & 0x0F;
 	
 	REGA = (REGA & 0xF0) | ml;
 	storeB(mem, al | mh);
@@ -178,14 +176,12 @@ void srcLDIR(void)
       switch(size)
       {
          case 0:
-            if (debug_abort_memory == false)
-               storeB(regL(dst), loadB(regL(src)));
+            storeB(regL(dst), loadB(regL(src)));
             regL(dst) += 1;
             regL(src) += 1;
             break;
          case 1:
-            if (debug_abort_memory == false)
-               storeW(regL(dst), loadW(regL(src)));
+            storeW(regL(dst), loadW(regL(src)));
             regL(dst) += 2;
             regL(src) += 2;
             break;
@@ -244,15 +240,13 @@ void srcLDDR(void)
 		switch(size)
 		{
 		case 0:
-			if (debug_abort_memory == false)
-				storeB(regL(dst), loadB(regL(src)));
+			storeB(regL(dst), loadB(regL(src)));
 			regL(dst) -= 1;
 			regL(src) -= 1;
 			break;
 
 		case 1:
-			if (debug_abort_memory == false)
-				storeW(regL(dst), loadW(regL(src)));
+			storeW(regL(dst), loadW(regL(src)));
 			regL(dst) -= 2;
 			regL(src) -= 2;
 			break;
@@ -300,13 +294,14 @@ void srcCPIR(void)
 	{
 		switch(size)
 		{
-		case 0:	if (debug_abort_memory == false)
-					generic_SUB_B(REGA, loadB(regL(R)));
-				regL(R) ++; break;
-
-		case 1:	if (debug_abort_memory == false)
-					generic_SUB_W(REGWA, loadW(regL(R)));
-				regL(R) += 2; break;
+			case 0:	
+				generic_SUB_B(REGA, loadB(regL(R)));
+				regL(R) ++;
+				break;
+			case 1:	
+				generic_SUB_W(REGWA, loadW(regL(R)));
+				regL(R) += 2;
+				break;
 		}
 
 		REGBC --;
@@ -348,13 +343,15 @@ void srcCPDR(void)
 	{
 		switch(size)
 		{
-		case 0:	if (debug_abort_memory == false)
-					generic_SUB_B(REGA, loadB(regL(R)));
-				regL(R) -= 1; break;
+			case 0:	
+				generic_SUB_B(REGA, loadB(regL(R)));
+				regL(R) -= 1;
+				break;
 
-		case 1: if (debug_abort_memory == false)
-					generic_SUB_W(REGWA, loadW(regL(R)));
-				regL(R) -= 2; break;
+			case 1: 
+				generic_SUB_W(REGWA, loadW(regL(R)));
+				regL(R) -= 2;
+				break;
 		}
 
 		REGBC --;
@@ -543,12 +540,7 @@ void srcMUL(void)
 {
 	uint8 target = get_RR_Target();
 	if (target == 0x80)
-	{
-#ifdef TLCS_ERRORS
-		instruction_error("src: MUL bad \'RR\' dst code");
-#endif
 		return;
-	}
 
 	switch(size)
 	{
@@ -564,12 +556,7 @@ void srcMULS(void)
 {
 	uint8 target = get_RR_Target();
 	if (target == 0x80)
-	{
-#ifdef TLCS_ERRORS
-		instruction_error("src: MUL bad \'RR\' dst code");
-#endif
 		return;
-	}
 
 	switch(size)
 	{
@@ -585,12 +572,7 @@ void srcDIV(void)
 {
 	uint8 target = get_RR_Target();
 	if (target == 0x80)
-	{
-#ifdef TLCS_ERRORS
-		instruction_error("src: DIV bad \'RR\' dst code");
-#endif
 		return;
-	}
 
 	switch(size)
 	{
@@ -609,12 +591,7 @@ void srcDIVS(void)
 {
 	uint8 target = get_RR_Target();
 	if (target == 0x80)
-	{
-#ifdef TLCS_ERRORS
-		instruction_error("src: DIVS bad \'RR\' dst code");
-#endif
 		return;
-	}
 
 	switch(size)
 	{
