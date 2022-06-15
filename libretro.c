@@ -812,7 +812,7 @@ void retro_deinit(void)
 
 unsigned retro_get_region(void)
 {
-   return RETRO_REGION_NTSC; /* FIXME: Regions for other cores. */
+   return RETRO_REGION_NTSC;
 }
 
 unsigned retro_api_version(void)
