@@ -12,8 +12,6 @@
 #define strcasecmp _stricmp
 #endif
 
-extern MDFNGI EmulatedNGP;
-
 #ifdef __cplusplus
 extern "C" {
 #endif

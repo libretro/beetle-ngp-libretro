@@ -98,22 +98,6 @@ typedef struct
 	int32 SoundBufSize;
 } EmulateSpecStruct;
 
-#define MDFN_MASTERCLOCK_FIXED(n)	((int64)((double)(n) * (1LL << 32)))
-
-typedef struct
-{
- int lcm_width;
- int lcm_height;
-
- void *dummy_separator;	//
-
- int nominal_width;
- int nominal_height;
-
- int fb_width;		// Width of the framebuffer(not necessarily width of the image).  MDFN_Surface width should be >= this.
- int fb_height;		// Height of the framebuffer passed to the Emulate() function(not necessarily height of the image)
-} MDFNGI;
-
 #ifdef __cplusplus
 extern "C" {
 #endif

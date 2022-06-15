@@ -325,23 +325,9 @@ static const InputPortInfoStruct PortInfo[] =
  { "builtin", "Built-In", sizeof(InputDeviceInfo) / sizeof(InputDeviceInfoStruct), InputDeviceInfo, "gamepad" }
 };
 
-MDFNGI EmulatedNGP = {0};
-
-static void MDFNGI_reset(MDFNGI *gameinfo)
-{
- gameinfo->lcm_width       = 160;
- gameinfo->lcm_height      = 152;
- gameinfo->dummy_separator = NULL;
- gameinfo->nominal_width   = 160;
- gameinfo->nominal_height  = 152;
- gameinfo->fb_width        = 160;
- gameinfo->fb_height       = 152;
-}
-
 static void MDFNI_CloseGame(void)
 {
    CloseGame();
-   MDFNGI_reset(&EmulatedNGP);
 }
 
 static void extract_basename(char *buf, const char *path, size_t size)
@@ -626,7 +612,7 @@ bool retro_load_game(const struct retro_game_info *info)
 
 #ifdef LOAD_FROM_MEMORY
    if (Load(NULL, (const uint8_t*)info->data, info->size) <= 0)
-      goto error;
+      return false;
 #else
    {
       struct MDFNFILE *GameFile = file_open(info->path);
@@ -637,7 +623,7 @@ bool retro_load_game(const struct retro_game_info *info)
          file_close(GameFile);
       GameFile     = NULL;
       if (!ret)
-         goto error;
+         return false;
    }
 #endif
 
@@ -647,7 +633,7 @@ bool retro_load_game(const struct retro_game_info *info)
    surf = (MDFN_Surface*)calloc(1, sizeof(*surf));
 
    if (!surf)
-      goto error;
+      return false;
 
    surf->width  = FB_WIDTH;
    surf->height = FB_HEIGHT;
@@ -659,7 +645,7 @@ bool retro_load_game(const struct retro_game_info *info)
    if (!surf->pixels)
    {
       free(surf);
-      goto error;
+      return false;
    }
 
    hookup_ports(true);
@@ -671,10 +657,6 @@ bool retro_load_game(const struct retro_game_info *info)
    update_audio = false;
 
    return true;
-
-error:
-   MDFNGI_reset(&EmulatedNGP);
-   return false;
 }
 
 void retro_unload_game(void)
