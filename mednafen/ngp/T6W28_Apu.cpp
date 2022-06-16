@@ -1,6 +1,7 @@
 // T6W28_Snd_Emu
 
-#include "../mednafen.h"
+#include <stdlib.h>
+
 #include "T6W28_Apu.h"
 
 /* Copyright (C) 2003-2006 Shay Green. This module is free software; you

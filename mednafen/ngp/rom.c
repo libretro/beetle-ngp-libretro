@@ -12,11 +12,14 @@
 //	additional informations.
 //---------------------------------------------------------------------------
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "neopop.h"
 #include "flash.h"
 #include "interrupt.h"
 #include "rom.h"
-#include "../mednafen.h"
+#include "../mednafen-types.h"
 
 #ifdef MSB_FIRST
 #define HTOLE16(l)      ((((l)>>8) & 0xff) | (((l)<<8) & 0xff00))

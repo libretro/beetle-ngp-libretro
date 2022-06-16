@@ -1,6 +1,7 @@
 #ifndef _GIT_H
 #define _GIT_H
 
+#include <stdint.h>
 #include <string.h>
 #include <boolean.h>
 
@@ -92,10 +93,10 @@ typedef struct
 	double SoundRate;
 
 	// Maximum size of the sound buffer, in frames.  Set by the driver code.
-	int32 SoundBufMaxSize;
+	int32_t SoundBufMaxSize;
 
 	// Number of frames currently in internal sound buffer.  Set by the system emulation code, to be read by the driver code.
-	int32 SoundBufSize;
+	int32_t SoundBufSize;
 } EmulateSpecStruct;
 
 #ifdef __cplusplus

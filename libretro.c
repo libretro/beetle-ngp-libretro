@@ -1,12 +1,14 @@
-#include "mednafen/mednafen.h"
-#include "mednafen/mempatcher.h"
-#include "mednafen/git.h"
-#include "mednafen/general.h"
 #include <libretro.h>
+#include <string.h>
 #include <streams/file_stream.h>
 
 #include "libretro_core_options.h"
+#include "mednafen/git.h"
+#include "mednafen/general.h"
 #include "mednafen/file.h"
+#include "mednafen/mednafen-types.h"
+#include "mednafen/mempatcher.h"
+#include "mednafen/settings.h"
 #include "mednafen/state.h"
 #include "mednafen/state_helpers.h"
 
@@ -14,7 +16,9 @@
 #include <compat/msvc.h>
 #endif
 
-#include <string.h>
+/* Forward declarations */
+void MDFN_LoadGameCheats(void);
+void MDFN_FlushGameCheats(void);
 
 /* core options */
 static int RETRO_SAMPLE_RATE = 44100;
@@ -661,7 +665,7 @@ bool retro_load_game(const struct retro_game_info *info)
 
 void retro_unload_game(void)
 {
-   MDFN_FlushGameCheats(0);
+   MDFN_FlushGameCheats();
    MDFNI_CloseGame();
    MDFNMP_Kill();
 
@@ -945,7 +949,7 @@ void retro_cheat_reset(void) { }
 void retro_cheat_set(unsigned a, bool b, const char *c) { }
 
 /* Use a simpler approach to make sure that things go right for libretro. */
-void MDFN_MakeFName(MakeFName_Type type, char *s, size_t len,
+void MDFN_MakeFName(uint8_t type, char *s, size_t len,
       int id1, const char *cd1)
 {
 #ifdef _WIN32
@@ -959,11 +963,10 @@ void MDFN_MakeFName(MakeFName_Type type, char *s, size_t len,
          snprintf(s, len, "%s%c%s%s%s", 
                retro_save_directory, slash, retro_base_name, ".",
                cd1);
+	 if (log_cb)
+	       log_cb(RETRO_LOG_INFO, "MDFN_MakeFName: %s\n", s);
          break;
       default:	  
          break;
    }
-
-   if (log_cb)
-      log_cb(RETRO_LOG_INFO, "MDFN_MakeFName: %s\n", s);
 }

@@ -15,16 +15,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
 #include <vector>
 
 #include "general.h"
-#include "mednafen.h"
+#include "mednafen-types.h"
 #include "mempatcher.h"
+#include "settings.h"
 
 #ifdef _WIN32
 #include "compat/msvc.h"
@@ -172,7 +173,7 @@ extern "C" void MDFN_LoadGameCheats(void)
    RebuildSubCheats();
 }
 
-extern "C" void MDFN_FlushGameCheats(int nosave)
+extern "C" void MDFN_FlushGameCheats(void)
 {
    std::vector<CHEATF>::iterator chit;
 
