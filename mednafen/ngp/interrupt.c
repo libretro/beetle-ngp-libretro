@@ -259,7 +259,6 @@ void TestIntHDMA(int bios_num, int vec_num)
 
 
 extern int32_t ngpc_soundTS;
-extern bool NGPFrameSkip;
 
 bool updateTimers(void *data, int cputicks)
 {
@@ -276,7 +275,7 @@ bool updateTimers(void *data, int cputicks)
       uint8_t _data;
 
       h_int = ngpgfx_hint(NGPGfx);	
-      ret   = ngpgfx_draw(NGPGfx, data, NGPFrameSkip);
+      ret   = ngpgfx_draw(NGPGfx, data, false);
 
       timer_hint -= TIMER_HINT_RATE;	/* Start of next scanline */
 

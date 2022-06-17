@@ -43,13 +43,7 @@ static bool overscan;
 
 static MDFN_Surface *surf;
 
-static bool failed_init;
-
 static bool libretro_supports_bitmasks = false;
-
-static void hookup_ports(bool force);
-
-static bool initial_ports_hookup = false;
 
 static char retro_base_directory[1024];
 static char retro_base_name[1024];
@@ -97,13 +91,11 @@ static uint8 *chee;
 
 static int32 z80_runtime;
 
-extern bool NGPFrameSkip;
 extern int32_t ngpc_soundTS;
 
 static void Emulate(EmulateSpecStruct *espec, int16_t *sound_buf)
 {
    bool MeowMeow        = false;
-
 
    if(espec->VideoFormatChanged)
       ngpgfx_set_pixel_format(NGPGfx, espec->surface->depth);
@@ -116,7 +108,6 @@ static void Emulate(EmulateSpecStruct *espec, int16_t *sound_buf)
    MDFNMP_ApplyPeriodicCheats();
 
    ngpc_soundTS         = 0;
-   NGPFrameSkip         = false;
 
    do
    {
@@ -143,7 +134,7 @@ static void Emulate(EmulateSpecStruct *espec, int16_t *sound_buf)
          espec->SoundBufMaxSize);
 }
 
-static void neopop_reset_internal(void)
+void neopop_reset(void)
 {
    ngpgfx_power(NGPGfx);
    Z80_reset();
@@ -156,17 +147,12 @@ static void neopop_reset_internal(void)
    reset_dma();
 }
 
-void neopop_reset(void)
-{
-   neopop_reset_internal();
-}
-
 static int Load(struct MDFNFILE *fp,
       const uint8_t *data, size_t size)
 {
    struct retro_game_info_ext *info_ext = NULL;
 
-   persistent_data                            = 
+   persistent_data                      = 
       (environ_cb(RETRO_ENVIRONMENT_GET_GAME_INFO_EXT, &info_ext) &&
        info_ext->persistent_data);
 
@@ -216,20 +202,6 @@ static int Load(struct MDFNFILE *fp,
    return 1;
 }
 
-static void CloseGame(void)
-{
-   rom_unload(persistent_data);
-   if (NGPGfx)
-      free(NGPGfx);
-   NGPGfx = NULL;
-}
-
-static void SetInput(int port, const char *type, void *ptr)
-{
-   if(!port)
-      chee = (uint8 *)ptr;
-}
-
 int StateAction(StateMem *sm, int load, int data_only)
 {
    SFORMAT StateRegs[] =
@@ -254,84 +226,31 @@ int StateAction(StateMem *sm, int load, int data_only)
    };
 
    if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "MAIN", false))
-      return(0);
-
+      return 0;
    if(!MDFNSS_StateAction(sm, load, data_only, TLCS_StateRegs, "TLCS", false))
-      return(0);
-
+      return 0;
    if(!MDFNNGPCDMA_StateAction(sm, load, data_only))
-      return(0);
-
+      return 0;
    if(!MDFNNGPCSOUND_StateAction(sm, load, data_only))
-      return(0);
-
+      return 0;
    if(!ngpgfx_StateAction(NGPGfx, sm, load, data_only))
-      return(0);
-
+      return 0;
    if(!MDFNNGPCZ80_StateAction(sm, load, data_only))
-      return(0);
-
+      return 0;
    if(!int_timer_StateAction(sm, load, data_only))
-      return(0);
-
+      return 0;
    if(!BIOSHLE_StateAction(sm, load, data_only))
-      return(0);
-
+      return 0;
    if(!FLASH_StateAction(sm, load, data_only))
-      return(0);
+      return 0;
 
    if(load)
    {
       RecacheFRM();
       changedSP();
    }
-   return(1);
-}
 
-static void DoSimpleCommand(int cmd)
-{
-   switch(cmd)
-   {
-      case MDFN_MSC_POWER:
-      case MDFN_MSC_RESET:
-         neopop_reset();
-         break;
-   }
-}
-
-static void SetLayerEnableMask(uint64 mask)
-{
- ngpgfx_SetLayerEnableMask(NGPGfx, mask);
-}
-
-static const InputDeviceInputInfoStruct IDII[] =
-{
- { "up", "UP ↑", 0, "down" },
- { "down", "DOWN ↓", 1, "up" },
- { "left", "LEFT ←", 2, "right" },
- { "right", "RIGHT →", 3, "left" },
- { "a", "A", 5, NULL },
- { "b", "B", 6, NULL },
- { "option", "OPTION", 4, NULL },
-};
-static InputDeviceInfoStruct InputDeviceInfo[] =
-{
- {
-  "gamepad",
-  "Gamepad",
-  sizeof(IDII) / sizeof(InputDeviceInputInfoStruct),
-  IDII,
- }
-};
-
-static const InputPortInfoStruct PortInfo[] =
-{
- { "builtin", "Built-In", sizeof(InputDeviceInfo) / sizeof(InputDeviceInfoStruct), InputDeviceInfo, "gamepad" }
-};
-
-static void MDFNI_CloseGame(void)
-{
-   CloseGame();
+   return 1;
 }
 
 static void extract_basename(char *buf, const char *path, size_t size)
@@ -468,7 +387,6 @@ static void check_variables(void)
    }
 }
 
-
 void retro_init(void)
 {
    struct retro_log_callback log;
@@ -486,7 +404,6 @@ void retro_init(void)
       /* TODO: Add proper fallback */
       if (log_cb)
          log_cb(RETRO_LOG_WARN, "System directory is not defined. Fallback on using same dir as ROM for system directory later ...\n");
-      failed_init = true;
    }
    
    /* If save directory is defined use it, otherwise use system directory */
@@ -512,7 +429,7 @@ void retro_init(void)
 
 void retro_reset(void)
 {
-   DoSimpleCommand(MDFN_MSC_RESET);
+   neopop_reset();
 }
 
 bool retro_load_game_special(unsigned a, const struct retro_game_info *b, size_t c)
@@ -520,30 +437,9 @@ bool retro_load_game_special(unsigned a, const struct retro_game_info *b, size_t
    return false;
 }
 
-static void set_volume (uint32_t *ptr, unsigned number)
-{
-   switch(number)
-   {
-      case 0:
-      default:
-         *ptr = number;
-         break;
-   }
-}
-
 #define MAX_PLAYERS 1
 #define MAX_BUTTONS 7
 static uint8_t input_buf;
-
-static void hookup_ports(bool force)
-{
-   if (initial_ports_hookup && !force)
-      return;
-
-   SetInput(0, "gamepad", &input_buf);
-
-   initial_ports_hookup = true;
-}
 
 #ifndef LOAD_FROM_MEMORY
 static struct MDFNFILE *file_open(const char *path)
@@ -601,7 +497,7 @@ bool retro_load_game(const struct retro_game_info *info)
       { 0 },
    };
 
-   if (!info || failed_init)
+   if (!info)
       return false;
 
    environ_cb(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS, desc);
@@ -652,7 +548,7 @@ bool retro_load_game(const struct retro_game_info *info)
       return false;
    }
 
-   hookup_ports(true);
+   chee = (uint8 *)&input_buf;
 
    ngpgfx_set_pixel_format(NGPGfx, RETRO_PIX_DEPTH);
    MDFNNGPC_SetSoundRate(RETRO_SAMPLE_RATE);
@@ -666,7 +562,12 @@ bool retro_load_game(const struct retro_game_info *info)
 void retro_unload_game(void)
 {
    MDFN_FlushGameCheats();
-   MDFNI_CloseGame();
+
+   rom_unload(persistent_data);
+   if (NGPGfx)
+      free(NGPGfx);
+   NGPGfx = NULL;
+
    MDFNMP_Kill();
 
    if (surf)
