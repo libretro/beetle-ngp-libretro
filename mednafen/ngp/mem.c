@@ -40,7 +40,7 @@ bool memory_unlock_flash_write = false;
 bool memory_flash_command = false;
 
 
-uint8_t SC0BUF; /* Serial channel 0 buffer. */
+static uint8_t SC0BUF; /* Serial channel 0 buffer. */
 uint8_t COMMStatus;
 
 /* In very very very rare conditions(like on embedded platforms with 
@@ -185,9 +185,6 @@ static void *translate_address_write(uint32 address)
 
 /* WARNING:  32-bit loads and stores apparently DON'T have to be 4-byte-aligned(so we must +2 instead of |2). */
 /* Treat all 32-bit operations as two 16-bit operations */
-extern uint32 pc;
-
-uint8_t lastpoof = 0;
 
 uint8_t loadB(uint32 address)
 {
@@ -220,7 +217,7 @@ uint8_t loadB(uint32 address)
    switch (address)
    {
       case 0x50:
-         return(SC0BUF);
+         return SC0BUF;
       case 0xBC:
          return Z80_ReadComm();
    }
@@ -275,7 +272,7 @@ uint16_t loadW(uint32 address)
    }
 
    if(address == 0x50)
-      return(SC0BUF);
+      return SC0BUF;
 
    if(address >= 0x70 && address <= 0x7F)
    {
@@ -318,9 +315,6 @@ void storeB(uint32 address, uint8_t data)
 {
    uint8_t* ptr;
    address &= 0xFFFFFF;
-
-   if(address < 0x80)
-      lastpoof = data;
 
    if(address >= 0x8000 && address <= 0xbfff)
    {
@@ -409,9 +403,6 @@ void storeW(uint32 address, uint16_t data)
       storeB(address + 1, data >> 8);
       return;
    }
-
-   if(address < 0x80)
-      lastpoof = data >> 8;
 
    if(address >= 0x8000 && address <= 0xbfff)
    {

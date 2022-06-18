@@ -202,7 +202,7 @@ static int Load(struct MDFNFILE *fp,
    return 1;
 }
 
-int StateAction(StateMem *sm, int load, int data_only)
+void StateAction(StateMem *sm, int load, int data_only)
 {
    SFORMAT StateRegs[] =
    {
@@ -225,32 +225,21 @@ int StateAction(StateMem *sm, int load, int data_only)
       { 0, 0, 0, 0 }
    };
 
-   if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, "MAIN", false))
-      return 0;
-   if(!MDFNSS_StateAction(sm, load, data_only, TLCS_StateRegs, "TLCS", false))
-      return 0;
-   if(!MDFNNGPCDMA_StateAction(sm, load, data_only))
-      return 0;
-   if(!MDFNNGPCSOUND_StateAction(sm, load, data_only))
-      return 0;
-   if(!ngpgfx_StateAction(NGPGfx, sm, load, data_only))
-      return 0;
-   if(!MDFNNGPCZ80_StateAction(sm, load, data_only))
-      return 0;
-   if(!int_timer_StateAction(sm, load, data_only))
-      return 0;
-   if(!BIOSHLE_StateAction(sm, load, data_only))
-      return 0;
-   if(!FLASH_StateAction(sm, load, data_only))
-      return 0;
+   MDFNSS_StateAction(sm, load, data_only, StateRegs, "MAIN", false);
+   MDFNSS_StateAction(sm, load, data_only, TLCS_StateRegs, "TLCS", false);
+   MDFNNGPCDMA_StateAction(sm, load, data_only);
+   MDFNNGPCSOUND_StateAction(sm, load, data_only);
+   ngpgfx_StateAction(NGPGfx, sm, load, data_only);
+   MDFNNGPCZ80_StateAction(sm, load, data_only);
+   int_timer_StateAction(sm, load, data_only);
+   BIOSHLE_StateAction(sm, load, data_only);
+   FLASH_StateAction(sm, load, data_only);
 
    if(load)
    {
       RecacheFRM();
       changedSP();
    }
-
-   return 1;
 }
 
 static void extract_basename(char *buf, const char *path, size_t size)
@@ -278,7 +267,8 @@ static bool update_audio = false;
 
 #define MEDNAFEN_CORE_NAME_MODULE "ngp"
 #define MEDNAFEN_CORE_NAME "Beetle NeoPop"
-#define MEDNAFEN_CORE_VERSION "v0.9.36.1"
+/* TODO/FIXME - only thing missing is flash/RTC refactors */
+#define MEDNAFEN_CORE_VERSION "v1.29.0.0"
 #define MEDNAFEN_CORE_EXTENSIONS "ngp|ngc|ngpc|npc"
 #define MEDNAFEN_CORE_TIMING_FPS 60.25
 #define MEDNAFEN_CORE_GEOMETRY_BASE_W 160 
@@ -829,7 +819,9 @@ bool retro_unserialize(const void *data, size_t size)
    st.malloced       = 0;
    st.initial_malloc = 0;
 
-   return MDFNSS_LoadSM(&st, 0, 0);
+   MDFNSS_LoadSM(&st, 0, 0);
+
+   return true;
 }
 
 void *retro_get_memory_data(unsigned type)
