@@ -617,8 +617,6 @@ void retro_run(void)
 
    spec.surface            = surf;
    spec.VideoFormatChanged = update_video;
-   spec.DisplayRect.x      = 0;
-   spec.DisplayRect.y      = 0;
    spec.DisplayRect.w      = 160;
    spec.DisplayRect.h      = 152;
    spec.SoundFormatChanged = update_audio;
