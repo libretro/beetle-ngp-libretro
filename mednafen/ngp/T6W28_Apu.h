@@ -55,8 +55,8 @@ class T6W28_Apu
       // start a new frame at time 0.
       void end_frame( long );
 
-      T6W28_ApuState *save_state(void);
-      void load_state(T6W28_ApuState*);
+      void save_state(T6W28_ApuState*);
+      void load_state(const T6W28_ApuState*);
    public:
       T6W28_Apu();
       ~T6W28_Apu();

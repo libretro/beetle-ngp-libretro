@@ -31,7 +31,7 @@
 #define RLSB 		MDFNSTATE_RLSB	/* 0x80000000 */
 
 /* Forward declaration */
-int StateAction(StateMem *sm, int load, int data_only);
+void StateAction(StateMem *sm, int load, int data_only);
 
 static INLINE void MDFN_en32lsb(uint8_t *buf, uint32_t morp)
 {
@@ -473,17 +473,16 @@ int MDFNSS_SaveSM(void *st_p, int a, int b, const void *c, const void *d, const 
    MDFN_en32lsb(header + 28, neoheight);
    smem_write(st, header, 32);
 
-   if(!StateAction(st, 0, 0))
-      return(0);
+   StateAction(st, 0, 0);
 
    sizy = st->loc;
    smem_seek(st, 16 + 4, SSEEK_SET);
    smem_write32le(st, sizy);
 
-   return(1);
+   return 1;
 }
 
-int MDFNSS_LoadSM(void *st_p, int a, int b)
+void MDFNSS_LoadSM(void *st_p, int a, int b)
 {
    uint8_t header[32];
    uint32_t stateversion;
@@ -492,9 +491,9 @@ int MDFNSS_LoadSM(void *st_p, int a, int b)
    smem_read(st, header, 32);
 
    if(memcmp(header, "MEDNAFENSVESTATE", 16) && memcmp(header, "MDFNSVST", 8))
-      return(0);
+      return;
 
    stateversion = MDFN_de32lsb(header + 16);
 
-   return(StateAction(st, stateversion, 0));
+   StateAction(st, stateversion, 0);
 }
