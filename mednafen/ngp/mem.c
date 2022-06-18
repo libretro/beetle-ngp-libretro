@@ -40,7 +40,7 @@ bool memory_unlock_flash_write = false;
 bool memory_flash_command = false;
 
 
-uint8_t SC0BUF; /* Serial channel 0 buffer. */
+static uint8_t SC0BUF; /* Serial channel 0 buffer. */
 uint8_t COMMStatus;
 
 /* In very very very rare conditions(like on embedded platforms with 
@@ -217,7 +217,7 @@ uint8_t loadB(uint32 address)
    switch (address)
    {
       case 0x50:
-         return(SC0BUF);
+         return SC0BUF;
       case 0xBC:
          return Z80_ReadComm();
    }
@@ -272,7 +272,7 @@ uint16_t loadW(uint32 address)
    }
 
    if(address == 0x50)
-      return(SC0BUF);
+      return SC0BUF;
 
    if(address >= 0x70 && address <= 0x7F)
    {
