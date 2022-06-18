@@ -8,40 +8,6 @@
 #include "state.h"
 #include "video.h"
 
-typedef struct
-{
-	const char *SettingName;	// No spaces, shouldbe all a-z0-9 and _. Definitely no ~!
-	const char *Name;
-        const int ConfigOrder;          // Configuration order during in-game config process, -1 for no config.
-	const char *ExcludeName;	// SettingName of a button that can't be pressed at the same time as this button
-					// due to physical limitations.
-} InputDeviceInputInfoStruct;
-
-typedef struct
-{
- const char *ShortName;
- const char *FullName;
-
- int NumInputs; // Usually just the number of buttons....OR if PortExpanderDeviceInfo is non-NULL, it's the number of input
-		// ports this port expander device provides.
- const InputDeviceInputInfoStruct *IDII;
-} InputDeviceInfoStruct;
-
-typedef struct
-{
- const char *ShortName;
- const char *FullName;
- int NumTypes; // Number of unique input devices available for this input port
- InputDeviceInfoStruct *DeviceInfo;
- const char *DefaultDevice;	// Default device for this port.
-} InputPortInfoStruct;
-
-typedef struct
-{
- int InputPorts;
- const InputPortInfoStruct *Types;
-} InputInfoStruct;
-
 struct MemoryPatch;
 
 struct CheatFormatStruct
@@ -55,15 +21,6 @@ struct CheatFormatInfoStruct
  unsigned NumFormats;
 
  struct CheatFormatStruct *Formats;
-};
-
-// Miscellaneous system/simple commands(power, reset, dip switch toggles, coin insert, etc.)
-// (for DoSimpleCommand() )
-enum
-{
- MDFN_MSC_RESET = 0x01,
- MDFN_MSC_POWER = 0x02,
- MDFN_MSC__LAST = 0x3F	// WARNING: Increasing(or having the enum'd value of a command greater than this :b) this will necessitate a change to the netplay protocol.
 };
 
 typedef struct
