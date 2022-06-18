@@ -267,7 +267,7 @@ static bool update_audio = false;
 
 #define MEDNAFEN_CORE_NAME_MODULE "ngp"
 #define MEDNAFEN_CORE_NAME "Beetle NeoPop"
-#define MEDNAFEN_CORE_VERSION "v0.9.36.5"
+#define MEDNAFEN_CORE_VERSION "v0.9.39.2"
 #define MEDNAFEN_CORE_EXTENSIONS "ngp|ngc|ngpc|npc"
 #define MEDNAFEN_CORE_TIMING_FPS 60.25
 #define MEDNAFEN_CORE_GEOMETRY_BASE_W 160 
