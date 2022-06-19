@@ -24,7 +24,6 @@ Blip_Buffer::Blip_Buffer()
 	offset_       = 0;
 	buffer_       = 0;
 	buffer_size_  = 0;
-	sample_rate_  = 0;
 	reader_accum_ = 0;
 	bass_shift_   = 0;
 	clock_rate_   = 0;
@@ -58,9 +57,9 @@ int Blip_Buffer::set_sample_rate( long new_rate, int msec )
 	if(new_size > ((1LL << 30) - 1))
 	 new_size = (1LL << 30) - 1;
 
-	if ( msec != blip_max_length )
+	if (msec != BLIP_MAX_LENGTH)
 	{
-		int64_t s = ((int64_t)new_rate * (msec + 1) + 999) / 1000;
+		int64_t s = ((int64_t)44100 * (msec + 1) + 999) / 1000;
 		if ( s < new_size )
 			new_size = s;
 	}
@@ -77,8 +76,7 @@ int Blip_Buffer::set_sample_rate( long new_rate, int msec )
 	buffer_size_ = new_size;
 	
 	// update things based on the sample rate
-	sample_rate_ = new_rate;
-	length_ = new_size * 1000 / new_rate - 1;
+	length_      = new_size * 1000 / 44100 - 1;
 	if ( clock_rate_ )
 		clock_rate( clock_rate_ );
 	bass_freq( bass_freq_ );
@@ -90,7 +88,7 @@ int Blip_Buffer::set_sample_rate( long new_rate, int msec )
 
 uint64_t Blip_Buffer::clock_rate_factor( long rate ) const
 {
-	double ratio   = (double) sample_rate_ / rate;
+	double ratio   = (double) 44100 / rate;
 	int64_t factor = (int64_t) floor( ratio * (1LL << BLIP_BUFFER_ACCURACY) + 0.5 );
 	return (uint64_t) factor;
 }
@@ -102,7 +100,7 @@ void Blip_Buffer::bass_freq( int freq )
 	if ( freq > 0 )
 	{
 		shift = 13;
-		long f = (freq << 16) / sample_rate_;
+		long f = (freq << 16) / 44100;
 		while ( (f >>= 1) && --shift ) { }
 	}
 	bass_shift_ = shift;

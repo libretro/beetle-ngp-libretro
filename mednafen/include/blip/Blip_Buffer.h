@@ -83,7 +83,6 @@ public:
 	int32_t reader_accum_;
 	int bass_shift_;
 private:
-	long sample_rate_;
 	long clock_rate_;
 	int bass_freq_;
 	int length_;
@@ -294,10 +293,7 @@ blip_inline blip_eq_t::blip_eq_t( double t ) :
 blip_inline blip_eq_t::blip_eq_t( double t, long rf, long sr, long cf ) :
 		treble( t ), rolloff_freq( rf ), sample_rate( sr ), cutoff_freq( cf ) { }
 
-blip_inline int  Blip_Buffer::length() const         { return length_; }
 blip_inline long Blip_Buffer::samples_avail() const  { return (long) (offset_ >> BLIP_BUFFER_ACCURACY); }
-blip_inline long Blip_Buffer::sample_rate() const    { return sample_rate_; }
-blip_inline long Blip_Buffer::clock_rate() const     { return clock_rate_; }
 blip_inline void Blip_Buffer::clock_rate( long cps ) { factor_ = clock_rate_factor( clock_rate_ = cps ); }
 
 blip_inline int Blip_Reader::begin( Blip_Buffer& blip_buf )
@@ -307,7 +303,6 @@ blip_inline int Blip_Reader::begin( Blip_Buffer& blip_buf )
 	return blip_buf.bass_shift_;
 }
 
-int const blip_max_length = 0;
-int const blip_default_length = 250;
+#define BLIP_MAX_LENGTH 0
 
 #endif

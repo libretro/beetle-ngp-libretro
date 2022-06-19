@@ -21,7 +21,7 @@ Stereo_Buffer::~Stereo_Buffer() {
 
 bool Stereo_Buffer::set_sample_rate( long rate, int msec )
 {
-	for ( int i = 0; i < buf_count; i++ ) {
+	for ( int i = 0; i < BUF_COUNT; i++ ) {
 		if ( bufs [i].set_sample_rate( rate, msec ) == -1)
 			return false;
 	}
@@ -31,13 +31,13 @@ bool Stereo_Buffer::set_sample_rate( long rate, int msec )
 
 void Stereo_Buffer::clock_rate( long rate )
 {
-	for ( int i = 0; i < buf_count; i++ )
+	for ( int i = 0; i < BUF_COUNT; i++ )
 		bufs [i].clock_rate( rate );
 }
 
 void Stereo_Buffer::bass_freq( int bass )
 {
-	for ( unsigned i = 0; i < buf_count; i++ )
+	for ( unsigned i = 0; i < BUF_COUNT; i++ )
 		bufs [i].bass_freq( bass );
 }
 
@@ -45,13 +45,13 @@ void Stereo_Buffer::clear()
 {
 	stereo_added = false;
 	was_stereo = false;
-	for ( int i = 0; i < buf_count; i++ )
+	for ( int i = 0; i < BUF_COUNT; i++ )
 		bufs [i].clear();
 }
 
 void Stereo_Buffer::end_frame(int32_t clock_count)
 {
-	for ( unsigned i = 0; i < buf_count; i++ )
+	for ( unsigned i = 0; i < BUF_COUNT; i++ )
 		bufs [i].end_frame( clock_count );
 	stereo_added = true;
 }

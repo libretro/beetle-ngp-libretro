@@ -9,13 +9,15 @@
 
 #include "Blip_Buffer.h"
 
+#define BUF_COUNT 3
+
 class Stereo_Buffer {
 public:
 	Stereo_Buffer();
 	~Stereo_Buffer();
 	
 	// Same as in Blip_Buffer (see Blip_Buffer.h)
-	bool set_sample_rate( long, int msec = 0 );
+	bool set_sample_rate( long, int msec );
 	void clock_rate( long );
 	void bass_freq( int );
 	void clear();
@@ -40,8 +42,7 @@ private:
 	Stereo_Buffer( const Stereo_Buffer& );
 	Stereo_Buffer& operator = ( const Stereo_Buffer& );
 	
-	enum { buf_count = 3 };
-	Blip_Buffer bufs [buf_count];
+	Blip_Buffer bufs [BUF_COUNT];
 	bool stereo_added;
 	bool was_stereo;
 	

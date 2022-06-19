@@ -74,7 +74,7 @@ extern "C" int32_t MDFNNGPCSOUND_Flush(int16_t *SoundBuf, const int32_t MaxSound
 
 extern "C" void MDFNNGPCSOUND_Init(void)
 {
-   MDFNNGPC_SetSoundRate(0);
+   MDFNNGPC_SetSoundRate();
    buf.clock_rate((long)(3072000));
 
    apu.output(buf.center(), buf.left(), buf.right());
@@ -83,10 +83,9 @@ extern "C" void MDFNNGPCSOUND_Init(void)
    buf.bass_freq(20);
 }
 
-extern "C" bool MDFNNGPC_SetSoundRate(uint32_t rate)
+extern "C" void MDFNNGPC_SetSoundRate(void)
 {
-   buf.set_sample_rate(rate?rate:44100, 60);
-   return(true);
+   buf.set_sample_rate(44100, 60);
 }
 
 extern "C" int MDFNNGPCSOUND_StateAction(void *data, int load, int data_only)

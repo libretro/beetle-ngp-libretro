@@ -21,7 +21,6 @@ void MDFN_LoadGameCheats(void);
 void MDFN_FlushGameCheats(void);
 
 /* core options */
-static int RETRO_SAMPLE_RATE = 44100;
 
 static int RETRO_PIX_BYTES   = 2;
 static int RETRO_PIX_DEPTH   = 15;
@@ -99,9 +98,6 @@ static void Emulate(EmulateSpecStruct *espec, int16_t *sound_buf)
 
    if(espec->VideoFormatChanged)
       ngpgfx_set_pixel_format(NGPGfx, espec->surface->depth);
-
-   if(espec->SoundFormatChanged)
-      MDFNNGPC_SetSoundRate(espec->SoundRate);
 
    storeB(0x6F82, *chee);
 
@@ -263,7 +259,6 @@ static void extract_basename(char *buf, const char *path, size_t size)
 }
 
 static bool update_video = false;
-static bool update_audio = false;
 
 #define MEDNAFEN_CORE_NAME_MODULE "ngp"
 #define MEDNAFEN_CORE_NAME "Beetle NeoPop"
@@ -339,19 +334,6 @@ static void check_variables(void)
          setting_ngp_language = 0;
       else if (!strcmp(var.value, "english"))
          setting_ngp_language = 1;
-   }
-
-   var.key = "ngp_sound_sample_rate";
-   var.value = NULL;
-
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
-   {
-      int old_value = RETRO_SAMPLE_RATE;
-
-      RETRO_SAMPLE_RATE = atoi(var.value);
-
-      if (old_value != RETRO_SAMPLE_RATE)
-         update_audio = true;
    }
 
    var.key = "ngp_gfx_colors";
@@ -541,10 +523,9 @@ bool retro_load_game(const struct retro_game_info *info)
    chee = (uint8 *)&input_buf;
 
    ngpgfx_set_pixel_format(NGPGfx, RETRO_PIX_DEPTH);
-   MDFNNGPC_SetSoundRate(RETRO_SAMPLE_RATE);
+   MDFNNGPC_SetSoundRate();
 
    update_video = false;
-   update_audio = false;
 
    return true;
 }
@@ -619,12 +600,10 @@ void retro_run(void)
    spec.VideoFormatChanged = update_video;
    spec.DisplayRect.w      = 160;
    spec.DisplayRect.h      = 152;
-   spec.SoundFormatChanged = update_audio;
-   spec.SoundRate          = RETRO_SAMPLE_RATE;
    spec.SoundBufMaxSize    = sizeof(sound_buf) / 2;
    spec.SoundBufSize       = 0;
 
-   if (update_video || update_audio)
+   if (update_video)
    {
       struct retro_system_av_info system_av_info;
 
@@ -640,12 +619,9 @@ void retro_run(void)
       surf->depth = RETRO_PIX_DEPTH;
 
       update_video = false;
-      update_audio = false;
    }
 
    Emulate(&spec, sound_buf);
-
-   spec.SoundBufSize = spec.SoundBufSize;
 
    width  = spec.DisplayRect.w;
    height = spec.DisplayRect.h;
@@ -680,7 +656,7 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
 {
    memset(info, 0, sizeof(*info));
    info->timing.fps            = MEDNAFEN_CORE_TIMING_FPS;
-   info->timing.sample_rate    = RETRO_SAMPLE_RATE;
+   info->timing.sample_rate    = 44100;
    info->geometry.base_width   = MEDNAFEN_CORE_GEOMETRY_BASE_W;
    info->geometry.base_height  = MEDNAFEN_CORE_GEOMETRY_BASE_H;
    info->geometry.max_width    = MEDNAFEN_CORE_GEOMETRY_MAX_W;

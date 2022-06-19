@@ -39,16 +39,6 @@ typedef struct
 	// are ignored while drawing the image.
 	MDFN_Rect DisplayRect;
 
-	//
-	// If sound is disabled, the driver code must set SoundRate to false, SoundBuf to NULL, SoundBufMaxSize to 0.
-
-        // Will be set to TRUE if the sound format(only rate for now, at least) has changed since the last call to Emulate(), FALSE otherwise.
-        // Will be set to TRUE on the first call to the Emulate() function/method
-	bool SoundFormatChanged;
-
-	// Sound rate.  Set by driver side.
-	double SoundRate;
-
 	// Maximum size of the sound buffer, in frames.  Set by the driver code.
 	int32_t SoundBufMaxSize;
 
