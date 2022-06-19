@@ -113,16 +113,11 @@ void Blip_Buffer::end_frame( int32_t t )
 	offset_ += t * factor_;
 }
 
-void Blip_Buffer::remove_silence( long count )
-{
-	offset_ -= (uint64_t) count << BLIP_BUFFER_ACCURACY;
-}
-
 void Blip_Buffer::remove_samples( long count )
 {
 	if ( count )
 	{
-		remove_silence( count );
+		offset_ -= (uint64_t) count << BLIP_BUFFER_ACCURACY;
 		
 		// copy remaining samples to beginning and clear old samples
 		long remain = samples_avail() + blip_buffer_extra_;

@@ -67,7 +67,6 @@ public:
 // Experimental features
 	
 	// not documented yet
-	void remove_silence( long count );
 	uint64_t clock_rate_factor( long clock_rate ) const;
 public:
 	Blip_Buffer();
