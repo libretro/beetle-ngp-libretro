@@ -6,7 +6,6 @@ DEBUG                    := 0
 FRONTEND_SUPPORTS_RGB565 := 1
 NEED_BPP                 := 16
 NEED_BLIP                := 1
-NEED_STEREO_SOUND        := 1
 IS_X86                   := 0
 LOAD_FROM_MEMORY         := 1
 FLAGS                    :=

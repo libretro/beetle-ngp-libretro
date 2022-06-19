@@ -28,12 +28,12 @@ public:
 	// Same as in Blip_Buffer. For more efficient operation, pass false
 	// for was_stereo if the left and right buffers had nothing added
 	// to them for this frame.
-	void end_frame( blip_time_t, bool was_stereo = true );
+	void end_frame( int32_t);
 	
 	// Output is stereo with channels interleved, left before right. Counts
 	// are in samples, *not* pairs.
 	long samples_avail() const;
-	long read_samples( blip_sample_t*, long );
+	long read_samples( int16_t*, long );
 	
 private:
 	// noncopyable
@@ -45,10 +45,7 @@ private:
 	bool stereo_added;
 	bool was_stereo;
 	
-	void mix_stereo( blip_sample_t*, long );
-	void mix_mono( blip_sample_t*, long );
-        void mix_stereo( float*, long );
-        void mix_mono( float*, long );
+	void mix_stereo( int16_t*, long );
 };
 
 	inline Blip_Buffer* Stereo_Buffer::left() {

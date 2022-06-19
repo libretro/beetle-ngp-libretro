@@ -66,11 +66,8 @@ BACKSLASH := \$(BACKSLASH)
 filter_out1 = $(filter-out $(firstword $1),$1)
 filter_out2 = $(call filter_out1,$(call filter_out1,$1))
 
-
-
 NEED_BPP = 16
 NEED_BLIP = 1
-NEED_STEREO_SOUND = 1
 
 prefix := /usr
 libdir := $(prefix)/lib

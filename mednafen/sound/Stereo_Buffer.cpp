@@ -22,10 +22,8 @@ Stereo_Buffer::~Stereo_Buffer() {
 bool Stereo_Buffer::set_sample_rate( long rate, int msec )
 {
 	for ( int i = 0; i < buf_count; i++ ) {
-		if ( bufs [i].set_sample_rate( rate, msec ) )
-		{
+		if ( bufs [i].set_sample_rate( rate, msec ) == -1)
 			return false;
-		}
 	}
 	
 	return true;
@@ -51,18 +49,16 @@ void Stereo_Buffer::clear()
 		bufs [i].clear();
 }
 
-void Stereo_Buffer::end_frame( blip_time_t clock_count, bool stereo )
+void Stereo_Buffer::end_frame(int32_t clock_count)
 {
 	for ( unsigned i = 0; i < buf_count; i++ )
-	{
 		bufs [i].end_frame( clock_count );
-	}
-	stereo_added |= stereo;
+	stereo_added = true;
 }
 
 
 
-long Stereo_Buffer::read_samples( blip_sample_t* out, long max_samples )
+long Stereo_Buffer::read_samples( int16_t *out, long max_samples )
 {
 	long count = bufs [0].samples_avail();
 	if ( count > max_samples / 2 )
@@ -77,17 +73,6 @@ long Stereo_Buffer::read_samples( blip_sample_t* out, long max_samples )
 			bufs [1].remove_samples( count );
 			bufs [2].remove_samples( count );
 		}
-#ifndef WANT_STEREO_SOUND
-		else
-		{
-			mix_mono( out, count );
-			
-			bufs [0].remove_samples( count );
-			
-			bufs [1].remove_silence( count );
-			bufs [2].remove_silence( count );
-		}
-#endif
 		
 		// to do: this might miss opportunities for optimization
 		if ( !bufs [0].samples_avail() ) {
@@ -99,7 +84,7 @@ long Stereo_Buffer::read_samples( blip_sample_t* out, long max_samples )
 	return count * 2;
 }
 
-void Stereo_Buffer::mix_stereo( blip_sample_t* out, long count )
+void Stereo_Buffer::mix_stereo( int16_t *out, long count )
 {
 	Blip_Reader left; 
 	Blip_Reader right; 
@@ -125,67 +110,3 @@ void Stereo_Buffer::mix_stereo( blip_sample_t* out, long count )
 	right.end( bufs [2] );
 	left.end( bufs [1] );
 }
-
-void Stereo_Buffer::mix_stereo( float* out, long count )
-{
-        Blip_Reader left;
-        Blip_Reader right;
-        Blip_Reader center;
-
-        left.begin( bufs [1] );
-        right.begin( bufs [2] );
-        int bass = center.begin( bufs [0] );
-
-        while ( count-- )
-        {
-                int c = center.read();
-                out [0] = (float)(c + left.read()) / 32768;
-                out [1] = (float)(c + right.read()) / 32768;
-                out += 2;
-
-                center.next( bass );
-                left.next( bass );
-                right.next( bass );
-        }
-
-        center.end( bufs [0] );
-        right.end( bufs [2] );
-        left.end( bufs [1] );
-}
-
-#ifndef WANT_STEREO_SOUND
-void Stereo_Buffer::mix_mono( blip_sample_t* out, long count )
-{
-	Blip_Reader in;
-	int bass = in.begin( bufs [0] );
-	
-	while ( count-- )
-	{
-		int sample = in.read();
-		out [0] = sample;
-		out [1] = sample;
-		out += 2;
-		in.next( bass );
-	}
-	
-	in.end( bufs [0] );
-}
-
-void Stereo_Buffer::mix_mono( float* out, long count )
-{
-        Blip_Reader in;
-        int bass = in.begin( bufs [0] );
-
-        while ( count-- )
-        {
-                int sample = in.read();
-                out [0] = (float)(sample) / 32768;
-                out [1] = (float)(sample) / 32768;
-                out += 2;
-                in.next( bass );
-        }
-
-        in.end( bufs [0] );
-}
-#endif
-

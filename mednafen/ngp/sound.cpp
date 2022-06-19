@@ -27,26 +27,16 @@ extern "C" void MDFNNGPCSOUND_SetEnable(bool set)
       apu.reset();
 }
 
-static void Write_SoundChipLeftInternal(uint8_t data)
+extern "C" void Write_SoundChipLeft(uint8_t data)
 {
    if(schipenable)
       apu.write_data_left(ngpc_soundTS >> 1, data);
 }
 
-static void Write_SoundChipRightInternal(uint8_t data)
+extern "C" void Write_SoundChipRight(uint8_t data)
 {
    if(schipenable)
       apu.write_data_right(ngpc_soundTS >> 1, data);
-}
-
-extern "C" void Write_SoundChipLeft(uint8_t data)
-{
-   Write_SoundChipLeftInternal(data);
-}
-
-extern "C" void Write_SoundChipRight(uint8_t data)
-{
-   Write_SoundChipRightInternal(data);
 }
 
 extern "C" void dac_write_left(uint8_t data)
@@ -72,7 +62,6 @@ extern "C" int32_t MDFNNGPCSOUND_Flush(int16_t *SoundBuf, const int32_t MaxSound
    int32_t FrameCount = 0;
 
    apu.end_frame(ngpc_soundTS >> 1);
-
    buf.end_frame(ngpc_soundTS >> 1);
 
    if(SoundBuf)
@@ -83,19 +72,14 @@ extern "C" int32_t MDFNNGPCSOUND_Flush(int16_t *SoundBuf, const int32_t MaxSound
    return(FrameCount);
 }
 
-static void RedoVolume(void)
-{
-   apu.output(buf.center(), buf.left(), buf.right());
-   apu.volume(0.30);
-   synth.volume(0.40);
-}
-
 extern "C" void MDFNNGPCSOUND_Init(void)
 {
    MDFNNGPC_SetSoundRate(0);
    buf.clock_rate((long)(3072000));
 
-   RedoVolume();
+   apu.output(buf.center(), buf.left(), buf.right());
+   apu.volume(0.30);
+   synth.volume(0.40);
    buf.bass_freq(20);
 }
 
