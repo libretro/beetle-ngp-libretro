@@ -22,7 +22,6 @@ void MDFN_FlushGameCheats(void);
 
 /* core options */
 
-static int RETRO_PIX_BYTES   = 2;
 static int RETRO_PIX_DEPTH   = 15;
 
 static bool persistent_data  = false;
@@ -283,27 +282,12 @@ static void check_system_specs(void)
 
 static void check_color_depth(void)
 {
-   if (RETRO_PIX_DEPTH == 24)
-   {
-      enum retro_pixel_format rgb888 = RETRO_PIXEL_FORMAT_XRGB8888;
-
-      if(!environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &rgb888))
-      {
-         if(log_cb) log_cb(RETRO_LOG_ERROR, "Pixel format XRGB8888 not supported by platform.\n");
-
-         RETRO_PIX_BYTES = 2;
-         RETRO_PIX_DEPTH = 15;
-      }
-   }
-
-   if (RETRO_PIX_BYTES == 2)
-   {
 #if defined(FRONTEND_SUPPORTS_RGB565)
       enum retro_pixel_format rgb565 = RETRO_PIXEL_FORMAT_RGB565;
 
       if (environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &rgb565))
       {
-         if(log_cb) log_cb(RETRO_LOG_INFO, "Frontend supports RGB565 - will use that instead of XRGB1555.\n");
+         if(log_cb) log_cb(RETRO_LOG_INFO, "Frontend supports RGB565 - will use that instead of 0RGB1555.\n");
 
          RETRO_PIX_DEPTH = 16;
       }
@@ -317,7 +301,6 @@ static void check_color_depth(void)
          RETRO_PIX_DEPTH = 15;
       }
 #endif
-   }
 }
 
 static void check_variables(void)
@@ -334,28 +317,6 @@ static void check_variables(void)
          setting_ngp_language = 0;
       else if (!strcmp(var.value, "english"))
          setting_ngp_language = 1;
-   }
-
-   var.key = "ngp_gfx_colors";
-   var.value = NULL;
-
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
-   {
-      int old_value = RETRO_PIX_BYTES;
-
-      if (strcmp(var.value, "16bit") == 0)
-      {
-         RETRO_PIX_BYTES = 2;
-         RETRO_PIX_DEPTH = 16;
-      }
-      else if (strcmp(var.value, "24bit") == 0)
-      {
-         RETRO_PIX_BYTES = 4;
-         RETRO_PIX_DEPTH = 24;
-      }
-
-      if (old_value != RETRO_PIX_BYTES)
-         update_video = true;
    }
 }
 
@@ -626,7 +587,7 @@ void retro_run(void)
    width  = spec.DisplayRect.w;
    height = spec.DisplayRect.h;
 
-   video_cb(surf->pixels, width, height, FB_WIDTH * RETRO_PIX_BYTES);
+   video_cb(surf->pixels, width, height, FB_WIDTH * 2);
 
    for (total = 0; total < spec.SoundBufSize; )
       total += audio_batch_cb(sound_buf + total*2, spec.SoundBufSize - total);

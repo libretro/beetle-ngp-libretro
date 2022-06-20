@@ -662,8 +662,8 @@ void ngpgfx_set_pixel_format(ngpgfx_t *gfx, int depth)
       switch(depth)
       {
          case 15: gfx->ColorMap[i] = MAKECOLOR_15(r, g, b, 0); break;
-         case 16: gfx->ColorMap[i] = MAKECOLOR_16(r, g, b, 0); break;
-         default: gfx->ColorMap[i] = MAKECOLOR_24(r, g, b, 0); break;
+         case 16:
+	 default: gfx->ColorMap[i] = MAKECOLOR_16(r, g, b, 0); break;
       }
    }
 }

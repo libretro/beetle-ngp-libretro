@@ -3,12 +3,6 @@
 
 #include <stdint.h>
 
-#define RED_SHIFT_24 16
-#define GREEN_SHIFT_24 8
-#define BLUE_SHIFT_24 0
-#define ALPHA_SHIFT_24 24
-#define MAKECOLOR_24(r, g, b, a) ((r << RED_SHIFT_24) | (g << GREEN_SHIFT_24) | (b << BLUE_SHIFT_24) | (a << ALPHA_SHIFT_24))
-
 /* 16bit color - RGB565 */
 #define RED_MASK_16  0xf800
 #define GREEN_MASK_16 0x7e0

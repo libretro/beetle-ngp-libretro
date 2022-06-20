@@ -40,17 +40,6 @@ struct retro_core_option_definition option_defs_us[] = {
       },
       "english",
    },
-   {
-      "ngp_gfx_colors",
-      "Color Depth",
-      "24-bit is slower and not available on all platforms.",
-      {
-         { "16bit", "Thousands (16-bit)" },
-         { "24bit", "Millions (24-bit)" },
-         { NULL, NULL },
-      },
-      "16bit"
-   },
    { NULL, NULL, NULL, { NULL, NULL }, NULL },
 };
 
