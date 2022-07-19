@@ -223,8 +223,6 @@ static void draw_scanline_colour(ngpgfx_t *gfx, uint16_t *cfb_scanline,
 		if (gfx->negative)
          data16 = ~data16;
 
-      data16 = data16;
-		
       x    = gfx->winx;
       scan = &cfb_scanline[x];
 
