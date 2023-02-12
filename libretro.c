@@ -1,5 +1,6 @@
 #include <libretro.h>
 #include <string.h>
+#include <string/stdstring.h>
 #include <streams/file_stream.h>
 
 #include "libretro_core_options.h"
@@ -142,37 +143,130 @@ void neopop_reset(void)
    reset_dma();
 }
 
-static int Load(struct MDFNFILE *fp,
+static void extract_basename(char *buf, const char *path, size_t size)
+{
+   char *ext        = NULL;
+   const char *base = strrchr(path, '/');
+   if (!base)
+      base = strrchr(path, '\\');
+   if (!base)
+      base = path;
+
+   if (*base == '\\' || *base == '/')
+      base++;
+
+   strncpy(buf, base, size - 1);
+   buf[size - 1] = '\0';
+
+   ext = strrchr(buf, '.');
+   if (ext)
+      *ext = '\0';
+}
+
+static struct MDFNFILE *file_open(const char *path)
+{
+   int64_t size          = 0;
+   const char        *ld = NULL;
+   struct MDFNFILE *file = (struct MDFNFILE*)calloc(1, sizeof(*file));
+
+   if (!file)
+      return NULL;
+
+   if (!filestream_read_file(path, (void**)&file->data, &size))
+   {
+      free(file);
+      return NULL;
+   }
+
+   ld         = (const char*)strrchr(path, '.');
+   file->size = size;
+   file->ext  = strdup(ld ? ld + 1 : "");
+
+   return file;
+}
+
+static int file_close(struct MDFNFILE *file)
+{
+   if (!file)
+      return 0;
+
+   if (file->ext)
+      free(file->ext);
+   file->ext = NULL;
+
+   if (file->data)
+      free(file->data);
+   file->data = NULL;
+
+   free(file);
+
+   return 1;
+}
+
+static int Load(const char *path,
       const uint8_t *data, size_t size)
 {
    struct retro_game_info_ext *info_ext = NULL;
+   const char *rom_path = NULL;
+   const uint8_t *rom_data = NULL;
+   size_t rom_size = 0;
 
-   persistent_data                      = 
-      (environ_cb(RETRO_ENVIRONMENT_GET_GAME_INFO_EXT, &info_ext) &&
-       info_ext->persistent_data);
-
-   if ((data != NULL) && (size != 0))
+   /* Attempt to fetch extended game info */
+   if (environ_cb(RETRO_ENVIRONMENT_GET_GAME_INFO_EXT, &info_ext))
    {
-      if (persistent_data)
-      {
-         ngpc_rom.orig_data = (uint8_t*)info_ext->data;
-         ngpc_rom.length    = info_ext->size;
-      }
-      else
-      {
-         if (!(ngpc_rom.orig_data = (uint8 *)malloc(size)))
-            return 0;
-         ngpc_rom.length = size;
-         memcpy(ngpc_rom.orig_data, data, size);
-      }
+      rom_path = info_ext->full_path;
+      rom_data = (const uint8_t *)info_ext->data;
+      rom_size = info_ext->size;
+      persistent_data = info_ext->persistent_data;
+      /* Use canonical content name for save files */
+      strlcpy(retro_base_name, info_ext->name, sizeof(retro_base_name));
    }
    else
    {
-      if (!(ngpc_rom.orig_data = (uint8 *)malloc(fp->size)))
+      rom_path = path;
+      rom_data = data;
+      rom_size = size;
+      persistent_data = false;
+      if (rom_path)
+         extract_basename(retro_base_name, rom_path, sizeof(retro_base_name));
+   }
+
+   /* Use existing ROM data if available */
+   if (rom_data && rom_size)
+   {
+      if (persistent_data)
+      {
+         ngpc_rom.orig_data = (uint8_t*)rom_data;
+         ngpc_rom.length    = rom_size;
+      }
+      else
+      {
+         if (!(ngpc_rom.orig_data = (uint8 *)malloc(rom_size)))
+            return 0;
+         ngpc_rom.length = rom_size;
+         memcpy(ngpc_rom.orig_data, rom_data, rom_size);
+      }
+   }
+   /* Load ROM data from file */
+   else
+   {
+      struct MDFNFILE *rom_file = NULL;
+
+      if (rom_path)
+         rom_file = file_open(rom_path);
+
+      if (!rom_file)
          return 0;
 
-      ngpc_rom.length = fp->size;
-      memcpy(ngpc_rom.orig_data, fp->data, fp->size);
+      if (!(ngpc_rom.orig_data = (uint8 *)malloc(rom_file->size)))
+      {
+         file_close(rom_file);
+         return 0;
+      }
+
+      ngpc_rom.length = rom_file->size;
+      memcpy(ngpc_rom.orig_data, rom_file->data, rom_file->size);
+      file_close(rom_file);
    }
 
    rom_loaded(ngpc_rom.orig_data, ngpc_rom.length);
@@ -235,26 +329,6 @@ void StateAction(StateMem *sm, int load, int data_only)
       RecacheFRM();
       changedSP();
    }
-}
-
-static void extract_basename(char *buf, const char *path, size_t size)
-{
-   char *ext        = NULL;
-   const char *base = strrchr(path, '/');
-   if (!base)
-      base = strrchr(path, '\\');
-   if (!base)
-      base = path;
-
-   if (*base == '\\' || *base == '/')
-      base++;
-
-   strncpy(buf, base, size - 1);
-   buf[size - 1] = '\0';
-
-   ext = strrchr(buf, '.');
-   if (ext)
-      *ext = '\0';
 }
 
 static bool update_video = false;
@@ -374,48 +448,6 @@ bool retro_load_game_special(unsigned a, const struct retro_game_info *b, size_t
 #define MAX_BUTTONS 7
 static uint8_t input_buf;
 
-#ifndef LOAD_FROM_MEMORY
-static struct MDFNFILE *file_open(const char *path)
-{
-   int64_t size          = 0;
-   const char        *ld = NULL;
-   struct MDFNFILE *file = (struct MDFNFILE*)calloc(1, sizeof(*file));
-
-   if (!file)
-      return NULL;
-
-   if (!filestream_read_file(path, (void**)&file->data, &size))
-   {
-      free(file);
-      return NULL;
-   }
-
-   ld         = (const char*)strrchr(path, '.');
-   file->size = size;
-   file->ext  = strdup(ld ? ld + 1 : "");
-
-   return file;
-}
-
-static int file_close(struct MDFNFILE *file)
-{
-   if (!file)
-      return 0;
-
-   if (file->ext)
-      free(file->ext);
-   file->ext = NULL;
-
-   if (file->data)
-      free(file->data);
-   file->data = NULL;
-
-   free(file);
-
-   return 1;
-}
-#endif
-
 bool retro_load_game(const struct retro_game_info *info)
 {
    struct retro_input_descriptor desc[] = {
@@ -438,27 +470,11 @@ bool retro_load_game(const struct retro_game_info *info)
    overscan = false;
    environ_cb(RETRO_ENVIRONMENT_GET_OVERSCAN, &overscan);
 
-   extract_basename(retro_base_name, info->path, sizeof(retro_base_name));
-
    check_variables();
    check_color_depth();
 
-#ifdef LOAD_FROM_MEMORY
-   if (Load(NULL, (const uint8_t*)info->data, info->size) <= 0)
+   if (Load(info->path, (const uint8_t*)info->data, info->size) <= 0)
       return false;
-#else
-   {
-      struct MDFNFILE *GameFile = file_open(info->path);
-      bool ret                  = (GameFile != NULL);
-      if (ret)
-         ret                    = Load(GameFile, NULL, 0) == 1;
-      if (GameFile)
-         file_close(GameFile);
-      GameFile     = NULL;
-      if (!ret)
-         return false;
-   }
-#endif
 
    MDFN_LoadGameCheats();
    MDFNMP_InstallReadPatches();
@@ -602,12 +618,7 @@ void retro_get_system_info(struct retro_system_info *info)
 #define GIT_VERSION ""
 #endif
 
-#ifdef LOAD_FROM_MEMORY
-   info->need_fullpath    = false;
-#else
    info->need_fullpath    = true;
-#endif
-
    info->library_version  = MEDNAFEN_CORE_VERSION GIT_VERSION;
    info->valid_extensions = MEDNAFEN_CORE_EXTENSIONS;
    info->block_extract    = false;
@@ -660,8 +671,13 @@ void retro_set_environment(retro_environment_t cb)
    static const struct retro_system_content_info_override content_overrides[] = {
       {
          MEDNAFEN_CORE_EXTENSIONS, /* extensions */
-         false,    /* need_fullpath */
-         true      /* persistent_data */
+#ifdef LOAD_FROM_MEMORY
+         false, /* need_fullpath */
+         true   /* persistent_data */
+#else
+         true,  /* need_fullpath */
+         false  /* persistent_data */
+#endif
       },
       { NULL, false, false }
    };
