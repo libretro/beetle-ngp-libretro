@@ -28,6 +28,38 @@ extern "C" {
 
 #define MAX_CORE_OPTIONS 32
 
+struct retro_core_option_v2_category option_cats_us[] = {
+   {"system",  "System",   NULL},
+   //{"video",   "Video",    NULL},
+   //{"audio",   "Audio",    NULL},
+   //{"input",   "Input",    NULL},
+   //{"advanced","Advanced", NULL},
+   { NULL,     NULL,       NULL },
+};
+
+struct retro_core_option_v2_definition option_defs_us_v2[] = {
+   {
+      "ngp_language",
+      "Language (*)",
+      NULL,
+      "Language games should display text in.\n(*) Core restart required.",
+      NULL,
+      "system",
+      {
+         { "english",  NULL },
+         { "japanese",  NULL },
+         { NULL, NULL},
+      },
+      "english",
+   },
+   { NULL, NULL, NULL, NULL, NULL, NULL, {{0}}, NULL },
+};
+
+struct retro_core_options_v2 options_us = {
+   option_cats_us,
+   option_defs_us_v2
+};
+
 struct retro_core_option_definition option_defs_us[] = {
    {
       "ngp_language",
@@ -107,6 +139,28 @@ struct retro_core_option_definition *option_defs_intl[RETRO_LANGUAGE_LAST] = {
    NULL,           /* RETRO_LANGUAGE_TURKISH */
 };
 
+struct retro_core_options_v2 *options_intl[RETRO_LANGUAGE_LAST] = {
+   &options_us, /* RETRO_LANGUAGE_ENGLISH */
+   NULL,        /* RETRO_LANGUAGE_JAPANESE */
+   NULL,        /* RETRO_LANGUAGE_FRENCH */
+   NULL,        /* RETRO_LANGUAGE_SPANISH */
+   NULL,        /* RETRO_LANGUAGE_GERMAN */
+   NULL,        /* RETRO_LANGUAGE_ITALIAN */
+   NULL,        /* RETRO_LANGUAGE_DUTCH */
+   NULL,        /* RETRO_LANGUAGE_PORTUGUESE_BRAZIL */
+   NULL,        /* RETRO_LANGUAGE_PORTUGUESE_PORTUGAL */
+   NULL,        /* RETRO_LANGUAGE_RUSSIAN */
+   NULL,        /* RETRO_LANGUAGE_KOREAN */
+   NULL,        /* RETRO_LANGUAGE_CHINESE_TRADITIONAL */
+   NULL,        /* RETRO_LANGUAGE_CHINESE_SIMPLIFIED */
+   NULL,        /* RETRO_LANGUAGE_ESPERANTO */
+   NULL,        /* RETRO_LANGUAGE_POLISH */
+   NULL,        /* RETRO_LANGUAGE_VIETNAMESE */
+   NULL,        /* RETRO_LANGUAGE_ARABIC */
+   NULL,        /* RETRO_LANGUAGE_GREEK */
+   NULL,        /* RETRO_LANGUAGE_TURKISH */
+};
+
 /*
  ********************************
  * Functions
@@ -127,7 +181,24 @@ static INLINE void libretro_set_core_options(retro_environment_t environ_cb)
    if (!environ_cb)
       return;
 
-   if (environ_cb(RETRO_ENVIRONMENT_GET_CORE_OPTIONS_VERSION, &version) && (version == 1))
+   if (!environ_cb(RETRO_ENVIRONMENT_GET_CORE_OPTIONS_VERSION, &version))
+      version = 0;
+
+   if (version >= 2)
+   {
+      struct retro_core_options_v2_intl core_options_intl;
+      unsigned language = 0;
+
+      core_options_intl.us    = &options_us;
+      core_options_intl.local = NULL;
+
+      if (environ_cb(RETRO_ENVIRONMENT_GET_LANGUAGE, &language) &&
+          (language < RETRO_LANGUAGE_LAST) && (language != RETRO_LANGUAGE_ENGLISH))
+         core_options_intl.local = options_intl[language];
+
+      environ_cb(RETRO_ENVIRONMENT_SET_CORE_OPTIONS_V2_INTL, &core_options_intl);
+   }
+   else if (version >= 1)
    {
       struct retro_core_options_intl core_options_intl;
       unsigned language = 0;
