@@ -88,15 +88,18 @@ void flash_optimise_blocks(void)
    //blocks to be compared to the newly expanded block.
    for (i = 0; i < block_count - 1; /**/)
    {
+      uint32_t end_i = blocks[i].start_address + blocks[i].data_length;
+      uint32_t end_n = blocks[i+1].start_address + blocks[i+1].data_length;
+      uint32_t new_end = (end_n > end_i) ? end_n : end_i;
+
       //Next block lies within (or borders) this one?
-      if (blocks[i+1].start_address <=
-            (blocks[i].start_address + blocks[i].data_length))
+      //Merge up to the larger of the two ends (a block lying inside the
+      //previous one used to shrink it), and only while the merged length
+      //still fits the 16-bit data_length.
+      if (blocks[i+1].start_address <= end_i && new_end - blocks[i].start_address <= 0xFFFF)
       {
          //Extend the first block
-         blocks[i].data_length = 
-            (uint16_t)((blocks[i+1].start_address + blocks[i+1].data_length) - 
-                  blocks[i].start_address);
-         //FIXME: std::max
+         blocks[i].data_length = (uint16_t)(new_end - blocks[i].start_address);
 
          //Remove the next one.
          for (j = i+2; j < block_count; j++)
@@ -111,6 +114,11 @@ void flash_optimise_blocks(void)
          i++;	// Try the next block
       }
    }
+}
+
+void flash_clear_blocks(void)
+{
+   block_count = 0;
 }
 
 void do_flash_read(uint8_t *flashdata)
