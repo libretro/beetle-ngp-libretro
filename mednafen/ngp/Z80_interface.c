@@ -25,6 +25,7 @@
 #include "../state.h"
 
 static uint8_t CommByte;
+extern int iline; /* z80_ops.c */
 static bool Z80Enabled;
 
 int z80_state_action(void *data, int load, int data_only, const char *section_name)
@@ -56,6 +57,9 @@ int z80_state_action(void *data, int load, int data_only, const char *section_na
 
       { &((z80_tstates)), sizeof((z80_tstates)), 0x80000000, "z80_tstates" },
       { &((last_z80_tstates)), sizeof((last_z80_tstates)), 0x80000000, "last_z80_tstates" },
+      /* The Z80 IRQ line; without it the Z80 can take a different path
+       * after a state load (rewind, run-ahead and netplay desyncs). */
+      { &(iline), sizeof(iline), 0x80000000, "iline" },
 
       { 0, 0, 0, 0 }
    };
