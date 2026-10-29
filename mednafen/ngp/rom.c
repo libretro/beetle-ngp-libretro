@@ -53,6 +53,12 @@ static void rom_hack(void)
       ngpc_rom.data[0x23] = 0x00;	/* Fix ROM header */
 }
 
+void rom_restore(void)
+{
+   memcpy(ngpc_rom.data, ngpc_rom.orig_data, ngpc_rom.length);
+   rom_hack();
+}
+
 void rom_loaded(uint8_t *buf, size_t len)
 {
    int i;

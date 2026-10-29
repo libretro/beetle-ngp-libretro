@@ -35,6 +35,7 @@ void flash_commit(void);
 int FLASH_StateAction(void *data, int load, int data_only);
 
 void do_flash_read(uint8_t *flashdata);
+void flash_clear_blocks(void);
 
 #ifdef __cplusplus
 }
