@@ -67,6 +67,9 @@ void rom_loaded(uint8_t *buf, size_t len);
 /*!	Tidy up the rom and free the resources used. */
 void rom_unload(bool is_persistent);
 
+/* Copy orig_data back over the ROM image and re-apply the ROM hacks. */
+void rom_restore(void);
+
 #ifdef __cplusplus
 }
 #endif

@@ -80,6 +80,13 @@ int FLASH_StateAction(void *data, int load, int data_only)
    {
       if(flashdata)
          free(flashdata);
+      // Loading a state without flash data: drop the flash writes and the
+      // block list of the current timeline, or they would survive the load.
+      if(load)
+      {
+         rom_restore();
+         flash_clear_blocks();
+      }
       return 1;
    }
 
@@ -97,7 +104,7 @@ int FLASH_StateAction(void *data, int load, int data_only)
 
    if(load)
    {
-      memcpy(ngpc_rom.data, ngpc_rom.orig_data, ngpc_rom.length);
+      rom_restore();
       do_flash_read(flashdata);
    }
 
